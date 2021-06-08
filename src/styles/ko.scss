@@ -1,0 +1,52 @@
+@charset "UTF-8";
+/* webpack kr patch */
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@700&display=swap');
+
+body {
+  font-family: "Source Sans Pro", system-ui, -apple-system,
+  BlinkMacSystemFont, "Segoe UI",  Helvetica, Arial, 'Malgun gothic', '맑은 고딕', 'Dotum', '돋움', sans-serif;
+  font-size: 15px;
+}
+
+.markdown {
+  line-height: 1.55em;
+}
+.markdown h1,
+.markdown h2,
+.markdown h3,
+.markdown h4,
+.markdown h5,
+.markdown h6 {
+  font-family: "Source Serif Pro", 'Noto Serif KR', ui-serif, Georgia, Cambria, Times New Roman, Times,serif;
+}
+
+
+// Text rotater 
+
+@media screen and (max-width: 767px) {
+  .splash-viz__cube {
+    top: 70px;
+  }
+  .splash-viz__heading {
+    margin-top: auto;
+    margin-bottom: auto;
+    transform: translateY(-145%);
+  }
+  .text-rotater {
+    display: block;
+  }
+  .text-rotater__wrap {
+    text-align: center;
+  }
+}
+@media screen and (max-width: 320px) {
+  .splash-viz__cube {
+    top: 120px;
+  }
+  .splash-viz__heading {
+    transform: translateY(-105%);
+  }
+}
+
+

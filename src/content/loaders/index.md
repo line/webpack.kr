@@ -1,0 +1,70 @@
+---
+title: Loaders
+sort: -1
+contributors:
+  - simon04
+  - bajras
+  - rhys-vdw
+  - EugeneHlushko
+  - hemal7735
+  - snitin315
+  - anshumanv
+  - jamesgeorge007
+---
+
+webpack의 [loaders](/concepts/loaders)를 사용하면 파일을 전처리 할 수 있습니다. 이렇게 하면 JavaScript를 넘어 모든 정적 리소스를 번들링할 수 있습니다. Node.js를 사용하여 자신만의 로더를 쉽게 작성할 수 있습니다.
+
+로더는 `require()` 구문에서 `loadername!` 접두사를 사용하거나, webpack 설정에서 정규식을 통해 자동으로 활성화됩니다. [configuration](/concepts/loaders/#configuration)을 참고하세요.
+
+## Files
+
+- [`val-loader`](/loaders/val-loader)는 코드를 모듈로 실행하고 JS 코드로 내보낼지 고려합니다.
+- [`ref-loader`](https://www.npmjs.com/package/ref-loader)는 수동으로 파일 간의 의존성을 생성합니다.
+
+## JSON
+
+- [`cson-loader`](https://github.com/awnist/cson-loader)는 [CSON](https://github.com/bevry/cson#what-is-cson) 파일을 로드 및 트랜스파일 합니다.
+
+## Transpiling
+
+- [`babel-loader`](/loaders/babel-loader)는 ES2015+ 코드를 로드하고 [Babel](https://babeljs.io/)을 사용해 ES5로 트랜스파일 합니다.
+- [`buble-loader`](https://github.com/sairion/buble-loader)는 ES2015+ 코드를 로드하고 [Bublé](https://buble.surge.sh/guide/)를 사용해 ES5로 트랜스파일 합니다.
+- [`traceur-loader`](https://github.com/jupl/traceur-loader)는 ES2015+ 코드를 로드하고 [Traceur](https://github.com/google/traceur-compiler#readme)를 사용해 ES5로 트랜스파일 합니다.
+- [`ts-loader`](https://github.com/TypeStrong/ts-loader)는 JavaScript처럼 [TypeScript](https://www.typescriptlang.org/) 2.0+를 로드합니다.
+- [`coffee-loader`](/loaders/coffee-loader)는 JavaScript처럼 [CoffeeScript](http://coffeescript.org/)를 로드합니다.
+- [`fengari-loader`](https://github.com/fengari-lua/fengari-loader/)는 [fengari](https://fengari.io/)를 사용해 Lua 코드를 로드합니다.
+- [`elm-webpack-loader`](https://github.com/elm-community/elm-webpack-loader)는 JavaScript처럼 [Elm](https://elm-lang.org/)을 로드합니다.
+
+## Templating
+
+- [`html-loader`](/loaders/html-loader)는 HTML을 문자열로 내보내고, 정적 리소스에 대한 참조가 필요합니다.
+- [`pug-loader`](https://github.com/pugjs/pug-loader)는 Pug 그리고 Jade 템플릿을 로드하고 함수를 반환합니다.
+- [`markdown-loader`](https://github.com/peerigon/markdown-loader)는 마크다운을 HTML로 컴파일합니다.
+- [`react-markdown-loader`](https://github.com/javiercf/react-markdown-loader)는 markdown-parse 파서를 사용해 마크다운을 React Component로 컴파일합니다.
+- [`posthtml-loader`](https://github.com/posthtml/posthtml-loader)는 [PostHTML](https://github.com/posthtml/posthtml)을 사용해 HTML 파일을 로드하고 변환합니다.
+- [`handlebars-loader`](https://github.com/pcardune/handlebars-loader)는 Handlebars를 HTML로 컴파일합니다.
+- [`markup-inline-loader`](https://github.com/asnowwolf/markup-inline-loader)는 인라인 SVG/MathML 파일을 HTML로 변환합니다. 아이콘 폰트를 적용하거나 SVG에 CSS 애니메이션을 적용할 때 유용합니다.
+- [`twig-loader`](https://github.com/zimmo-be/twig-loader)는 Twig 템플릿을 컴파일하고 함수를 반환합니다.
+- [`remark-loader`](https://github.com/webpack-contrib/remark-loader)는 빌트인 이미지 해상도로 `remark`를 통해 마크다운을 로드합니다.
+
+## Styling
+
+- [`style-loader`](/loaders/style-loader)는 DOM에 스타일로 모듈 내보내기를 추가합니다.
+- [`css-loader`](/loaders/css-loader)는 리졸브된 가져오기로 CSS 파일을 로드하고 CSS 코드를 반환합니다.
+- [`less-loader`](/loaders/less-loader)는 LESS 파일을 로드하고 컴파일합니다.
+- [`sass-loader`](/loaders/sass-loader)는 SASS/SCSS 파일을 로드하고 컴파일합니다.
+- [`postcss-loader`](/loaders/postcss-loader)는 [PostCSS](http://postcss.org) 을 사용해 CSS/SSS 파일을 로드하고 변환합니다.
+- [`stylus-loader`](/loaders/stylus-loader/)는 Stylus 파일을 로드하고 컴파일합니다.
+
+## Testing
+
+- [`mocha-loader`](/loaders/mocha-loader)는 [mocha](https://mochajs.org/)를 사용해 테스트합니다(Browser/NodeJS).
+
+## Frameworks
+
+- [`vue-loader`](https://github.com/vuejs/vue-loader)는 [Vue Components](https://vuejs.org/v2/guide/components.html)를 로드하고 컴파일합니다.
+- [`angular2-template-loader`](https://github.com/TheLarkInn/angular2-template-loader)는 [Angular](https://angular.io/) 컴포넌트를 로드하고 컴파일합니다.
+
+## Awesome
+
+더 많은 써드 파티 로더는, [awesome-webpack](https://github.com/webpack-contrib/awesome-webpack#loaders)의 목록을 참고하세요.

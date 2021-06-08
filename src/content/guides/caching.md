@@ -1,0 +1,337 @@
+---
+title: Caching
+sort: 6
+contributors:
+  - okonet
+  - jouni-kantola
+  - skipjack
+  - dannycjones
+  - fadysamirsadek
+  - afontcu
+  - rosavage
+  - saiprasad2595
+  - EugeneHlushko
+  - AnayaDesign
+  - aholzner
+related:
+  - title: Issue 652
+    url: https://github.com/webpack/webpack.js.org/issues/652
+---
+
+T> [시작하기](/guides/getting-started), [출력 관리](/guides/output-management), [코드 스플릿팅](/guides/code-splitting)의 예시를 사용합니다.
+
+우리는 배포 가능한 `/dist`디렉토리를 생성하는 모듈형 애플리케이션을 번들링하기 위해 webpack을 사용하고 있습니다. 일단 서버에 `/dist`의 콘텐츠가 배포되면 클라이언트(일반적으로 브라우저)가 해당 서버에 접근하여 사이트와 애셋을 가져옵니다. 마지막 단계는 시간이 많이 걸릴 수 있기 때문에 브라우저는 [캐싱](https://en.wikipedia.org/wiki/Cache_(computing))이라는 기술을 사용합니다. 이렇게 하면 불필요한 네트워크 트래픽을 줄이면서 사이트를 더 빨리 로드할 수 있습니다. 그러나 새 코드를 불러올 경우에는 어려움을 느낄 수 있습니다.  
+
+이 가이드는 webpack 컴파일로 생성 된 파일의 내용이 변경되지 않는 한 캐시된 상태로 유지되도록 하는 데 필요한 설정에 초점을 맞춥니다.
+
+## Output Filenames
+
+`output.filename` [substitutions](/configuration/output/#outputfilename) 설정을 사용하여 출력 파일의 이름을 정의할 수 있습니다. webpack은 **substitutions** 이라고 하는 대괄호 문자열을 사용하여 파일 이름을 템플릿화하는 방법을 제공합니다. `[contenthash]` substitution은 애셋의 콘텐츠에 따라 고유한 해시를 추가합니다. 애셋의 콘텐츠가 변경되면 `[contenthash]`도 변경됩니다.
+
+`index.html` 파일을 수동으로 관리할 필요가 없도록 [출력 관리의](/guides/output-management) `플러그인`과 [시작하기의](/guides/getting-started) 예제를 사용하여 프로젝트를 설정해 보겠습니다.
+
+**project**
+
+```diff
+webpack-demo
+|- package.json
+|- webpack.config.js
+|- /dist
+|- /src
+  |- index.js
+|- /node_modules
+```
+
+**webpack.config.js**
+
+```diff
+  const path = require('path');
+  const HtmlWebpackPlugin = require('html-webpack-plugin');
+
+  module.exports = {
+    entry: './src/index.js',
+    plugins: [
+      new HtmlWebpackPlugin({
+-       title: 'Output Management',
++       title: 'Caching',
+      }),
+    ],
+    output: {
+-     filename: 'bundle.js',
++     filename: '[name].[contenthash].js',
+      path: path.resolve(__dirname, 'dist'),
+      clean: true,
+    },
+  };
+```
+
+이 설정으로 빌드 스크립트 `npm run build`를 실행하면, 다음과 같은 출력이 생성됩니다.
+
+```bash
+...
+                       Asset       Size  Chunks                    Chunk Names
+main.7e2c49a622975ebd9b7e.js     544 kB       0  [emitted]  [big]  main
+                  index.html  197 bytes          [emitted]
+...
+```
+
+보다시피, 번들의 이름은 해시를 통해 콘텐츠를 반영합니다. 변경하지 않고 다른 빌드를 실행하면 해당 파일 이름이 동일하게 유지될 거라고 생각합니다. 그러나 다시 실행하면 이 경우에는 그렇지 않을 수 있다는 것을 알 수 있습니다.
+
+```bash
+...
+                       Asset       Size  Chunks                    Chunk Names
+main.205199ab45963f6a62ec.js     544 kB       0  [emitted]  [big]  main
+                  index.html  197 bytes          [emitted]
+...
+```
+
+이것은 webpack이 특정 보일러플레이트, 특히 런타임과 매니페스트를 엔트리 청크에 포함하기 때문입니다.
+
+W> 현재 webpack 버전에 따라 출력이 다를 수 있습니다. 최신 버전에는 일부 이전 버전과 동일한 해싱 문제가 없을 수 있지만, 안전을 위해 다음 단계를 권장합니다.
+
+## Extracting Boilerplate
+
+[코드 스플릿팅](/guides/code-splitting)에서 배운 것처럼 [`SplitChunksPlugin`](/plugins/split-chunks-plugin/)을 사용하여 모듈을 별도의 번들로 분할 할 수 있습니다. webpack은 [`optimization.runtimeChunk`](/configuration/optimization/#optimizationruntimechunk) 옵션을 사용하여 런타임 코드를 별도의 청크로 분할하는 최적화 기능을 제공합니다. 모든 청크에 대해 단일 런타임 번들을 생성하려면 `single`로 설정합니다.
+
+**webpack.config.js**
+
+```diff
+  const path = require('path');
+  const HtmlWebpackPlugin = require('html-webpack-plugin');
+
+  module.exports = {
+    entry: './src/index.js',
+    plugins: [
+      new HtmlWebpackPlugin({
+        title: 'Caching',
+      }),
+    ],
+    output: {
+      filename: '[name].[contenthash].js',
+      path: path.resolve(__dirname, 'dist'),
+      clean: true,
+    },
++   optimization: {
++     runtimeChunk: 'single',
++   },
+  };
+```
+
+추출한 `런타임` 번들을 보기위해 다른 빌드를 실행해 보겠습니다.
+
+```bash
+Hash: 82c9c385607b2150fab2
+Version: webpack 4.12.0
+Time: 3027ms
+                          Asset       Size  Chunks             Chunk Names
+runtime.cc17ae2a94ec771e9221.js   1.42 KiB       0  [emitted]  runtime
+   main.e81de2cf758ada72f306.js   69.5 KiB       1  [emitted]  main
+                     index.html  275 bytes          [emitted]
+[1] (webpack)/buildin/module.js 497 bytes {1} [built]
+[2] (webpack)/buildin/global.js 489 bytes {1} [built]
+[3] ./src/index.js 309 bytes {1} [built]
+    + 1 hidden module
+```
+
+`lodash` 또는 `react`와 같은 타사 라이브러리는 로컬 소스 코드보다 변경 될 가능성이 적기 때문에 별도의 `vendor` 청크로 추출하는 것도 좋은 방법입니다. 이 단계를 통해 클라이언트는 최신 상태를 유지하기 위해 서버에 더 적은 요청을 할 수 있습니다.
+이는 [Example 2 of SplitChunksPlugin](/plugins/split-chunks-plugin/#split-chunks-example-2)에 표시된 [`SplitChunksPlugin`](/plugins/split-chunks-plugin/)의 [`cacheGroups`](/plugins/split-chunks-plugin/#splitchunkscachegroups) 옵션을 사용하여 수행할 수 있습니다. `cacheGroups`과 함께   `optimization.splitChunks`를 추가하고 다음 파라미터를 사용하여 빌드합니다.
+
+**webpack.config.js**
+
+```diff
+  const path = require('path');
+  const HtmlWebpackPlugin = require('html-webpack-plugin');
+
+  module.exports = {
+    entry: './src/index.js',
+    plugins: [
+      new HtmlWebpackPlugin({
+        title: 'Caching',
+      }),
+    ],
+    output: {
+      filename: '[name].[contenthash].js',
+      path: path.resolve(__dirname, 'dist'),
+      clean: true,
+    },
+    optimization: {
+      runtimeChunk: 'single',
++     splitChunks: {
++       cacheGroups: {
++         vendor: {
++           test: /[\\/]node_modules[\\/]/,
++           name: 'vendors',
++           chunks: 'all',
++         },
++       },
++     },
+    },
+  };
+```
+
+새로운 `vendor`번들을 확인하기 위해 다른 빌드를 실행해 보겠습니다.
+
+```bash
+...
+                          Asset       Size  Chunks             Chunk Names
+runtime.cc17ae2a94ec771e9221.js   1.42 KiB       0  [emitted]  runtime
+vendors.a42c3ca0d742766d7a28.js   69.4 KiB       1  [emitted]  vendors
+   main.abf44fedb7d11d4312d7.js  240 bytes       2  [emitted]  main
+                     index.html  353 bytes          [emitted]
+...
+```
+
+이제 `main` 번들에 `node_modules` 디렉토리의 `vendor` 코드가 포함되어 있지 않고 크기가 `240 bytes`로 줄어든 것을 볼 수 있습니다!
+
+## Module Identifiers
+
+프로젝트에 다른 모듈`print.js`를 추가해 보겠습니다.
+
+**프로젝트**
+
+```diff
+webpack-demo
+|- package.json
+|- webpack.config.js
+|- /dist
+|- /src
+  |- index.js
++ |- print.js
+|- /node_modules
+```
+
+**print.js**
+
+```diff
++ export default function print(text) {
++   console.log(text);
++ };
+```
+
+**src/index.js**
+
+```diff
+  import _ from 'lodash';
++ import Print from './print';
+
+  function component() {
+    const element = document.createElement('div');
+
+    // Lodash, now imported by this script
+    element.innerHTML = _.join(['Hello', 'webpack'], ' ');
++   element.onclick = Print.bind(null, 'Hello webpack!');
+
+    return element;
+  }
+
+  document.body.appendChild(component());
+```
+
+다른 빌드를 실행하면 `main` 번들의 해시만 변경 될 것으로 예상합니다, 하지만...
+
+```bash
+...
+                           Asset       Size  Chunks                    Chunk Names
+  runtime.1400d5af64fc1b7b3a45.js    5.85 kB      0  [emitted]         runtime
+  vendor.a7561fb0e9a071baadb9.js     541 kB       1  [emitted]  [big]  vendor
+    main.b746e3eb72875af2caa9.js    1.22 kB       2  [emitted]         main
+                      index.html  352 bytes          [emitted]
+...
+```
+
+... 세가지 모두가 변경 된 것을 볼 수 있습니다. 이는 각 [`module.id`](/api/module-variables/#moduleid-commonjs)가 기본적으로 해석 순서에 따라 증가하기 때문입니다. 해석 순서가 변경되면 ID도 변경됩니다. 그래서 요약하자면:
+
+- 새로운 콘텐츠로 인해 `main` 번들이 변경되었습니다.
+- `module.id`가 바뀌어 `vendor` 번들이 변경되었습니다.
+- 그리고, `runtime` 번들은 이제 새로운 모듈에 대한 참조를 포함하기 때문에 변경되었습니다.
+
+첫번째와 마지막은 우리가 고치고 싶은 `vendor` 해시입니다. `'deterministic'`옵션과 함께 [`optimization.moduleIds`](/configuration/optimization/#optimizationmoduleids)를 사용하겠습니다.
+
+**webpack.config.js**
+
+```diff
+  const path = require('path');
+  const HtmlWebpackPlugin = require('html-webpack-plugin');
+
+  module.exports = {
+    entry: './src/index.js',
+    plugins: [
+      new HtmlWebpackPlugin({
+        title: 'Caching',
+      }),
+    ],
+    output: {
+      filename: '[name].[contenthash].js',
+      path: path.resolve(__dirname, 'dist'),
+      clean: true,
+    },
+    optimization: {
++     moduleIds: 'deterministic',
+      runtimeChunk: 'single',
+      splitChunks: {
+        cacheGroups: {
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendors',
+            chunks: 'all',
+          },
+        },
+      },
+    },
+  };
+```
+
+이제 새로운 로컬 의존성에도 불구하고 `vendor`해시는 빌드간에 일관성을 유지해야합니다.
+
+```bash
+...
+                          Asset       Size  Chunks             Chunk Names
+   main.216e852f60c8829c2289.js  340 bytes       0  [emitted]  main
+vendors.55e79e5927a639d21a1b.js   69.5 KiB       1  [emitted]  vendors
+runtime.725a1a51ede5ae0cfde0.js   1.42 KiB       2  [emitted]  runtime
+                     index.html  353 bytes          [emitted]
+Entrypoint main = runtime.725a1a51ede5ae0cfde0.js vendors.55e79e5927a639d21a1b.js main.216e852f60c8829c2289.js
+...
+```
+
+그리고 `src/index.js`를 수정하여 추가 의존성을 일시적으로 제거해 보겠습니다.
+
+**src/index.js**
+
+```diff
+  import _ from 'lodash';
+- import Print from './print';
++ // import Print from './print';
+
+  function component() {
+    const element = document.createElement('div');
+
+    // Lodash, now imported by this script
+    element.innerHTML = _.join(['Hello', 'webpack'], ' ');
+-   element.onclick = Print.bind(null, 'Hello webpack!');
++   // element.onclick = Print.bind(null, 'Hello webpack!');
+
+    return element;
+  }
+
+  document.body.appendChild(component());
+```
+
+마지막으로 빌드를 다시 실행합니다.
+
+```bash
+...
+                          Asset       Size  Chunks             Chunk Names
+   main.ad717f2466ce655fff5c.js  274 bytes       0  [emitted]  main
+vendors.55e79e5927a639d21a1b.js   69.5 KiB       1  [emitted]  vendors
+runtime.725a1a51ede5ae0cfde0.js   1.42 KiB       2  [emitted]  runtime
+                     index.html  353 bytes          [emitted]
+Entrypoint main = runtime.725a1a51ede5ae0cfde0.js vendors.55e79e5927a639d21a1b.js main.ad717f2466ce655fff5c.js
+...
+```
+
+두 빌드 모두 `55e79e5927a639d21a1b`를 vendor 번들 파일 이름으로 표시한 것을 알 수 있습니다.
+
+## Conclusion
+
+캐싱은 복잡할 수 있지만, 애플리케이션이나 사이트 사용자에게 주는 이점으로 그만한 가치가 있습니다. 자세한 내용은 아래의 _추가 자료_ 섹션을 참고하세요.

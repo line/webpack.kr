@@ -1,0 +1,472 @@
+---
+title: Externals
+sort: 15
+contributors:
+  - sokra
+  - skipjack
+  - pksjce
+  - fadysamirsadek
+  - byzyk
+  - zefman
+  - Mistyyyy
+  - jamesgeorge007
+  - tanhauhau
+  - snitin315
+  - beejunk
+  - EugeneHlushko
+  - chenxsan
+  - pranshuchittora
+  - kinetifex
+  - anshumanv
+---
+
+`externals` 옵션은 출력 번들에서 의존성을 제외하는 방법을 제공합니다. 대신, 생성된 번들은 소비자(모든 최종 사용자 애플리케이션)의 환경에 존재하기 위해 해당 의존성에 의존합니다. 이 기능은 일반적으로 __라이브러리 개발자에게__ 가장 유용하지만, 이것을 위한 다양한 애플리케이션이 있습니다.
+
+## `externals`
+
+`string` `[string]` `object` `function` `RegExp`
+
+특정 `import` 된 패키지의 **번들링을 방지하고** 대신 런타임에 이러한 _외부 종속성을_ 검색합니다.
+
+예를 들어, 번들링 대신 CDN에서 [jQuery](https://jquery.com/)를 포함하려면 다음을 수행해야 합니다.
+
+**index.html**
+
+```html
+<script
+  src="https://code.jquery.com/jquery-3.1.0.js"
+  integrity="sha256-slogkvB1K3VOkzAI8QITxV3VzpOnkeNVsKvtkYLMjfk="
+  crossorigin="anonymous"
+></script>
+```
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  //...
+  externals: {
+    jquery: 'jQuery',
+  },
+};
+```
+
+이렇게 하면 종속 모듈이 변경되지 않습니다. 즉, 아래 표시된 코드가 계속 작동합니다.
+
+```javascript
+import $ from 'jquery';
+
+$('.my-element').animate(/* ... */);
+```
+
+외부 종속성이 있는 번들은 [CommonJS, AMD, global 그리고 ES2015 모듈](/concepts/modules)과 같은 다양한 모듈 컨텍스트에서 사용할 수 있습니다. 외부 라이브러리는 다음 형식 중 하나로 사용할 수 있습니다.
+
+- **root**: 라이브러리는 전역변수로 사용할 수 있어야 합니다. (예. 스크립트 태그를 통해)
+- **commonjs**: 라이브러리는 CommonJS 모듈로 사용할 수 있어야 합니다.
+- **commonjs2**: 위와 비슷하지만, export는 `module.exports.default`입니다.
+- **amd**: `commonjs`와 유사하지만, AMD 모듈 시스템을 사용합니다.
+
+다음 구문이 허용됩니다.
+
+### string
+
+위의 예를 참고하세요. 프로퍼티 이름 `jquery`는 `import $ from 'jquery'`에서 `jquery` 모듈이 제외되어야 함을 나타냅니다. 이 모듈을 대체하기 위해, `jQuery` 값을 사용하여 전역 `jQuery` 변수를 검색합니다. 즉, 문자열이 제공되면 위와 아래에 정의된 `root`로서 처리됩니다.
+
+반면에, CommonJS 모듈로 사용 가능한 라이브러리를 외부화하려는 경우, 라이브러리 이름과 유형을 제공할 수 있습니다.
+
+예를 들어, 출력 번들에서 `fs-extra` 번들을 제외하고 대신 런타임 중에 가져오려면, 다음과 같이 지정할 수 있습니다.
+
+```javascript
+module.exports = {
+  // ...
+  externals: {
+    'fs-extra': 'commonjs2 fs-extra',
+  },
+};
+```
+
+이렇게 하면 종속 모듈이 변경되지 않습니다. 예. 아래 표시된 코드.
+
+```javascript
+import fs from 'fs-extra';
+```
+
+다음과 같이 컴파일됩니다.
+
+```javascript
+const fs = require('fs-extra');
+```
+
+### `[string]`
+
+```javascript
+module.exports = {
+  //...
+  externals: {
+    subtract: ['./math', 'subtract'],
+  },
+};
+```
+
+`subtract: ['./math', 'subtract']`을 사용하면 commonjs 모듈의 일부를 선택할 수 있으며, 여기서 `./math`는 모듈이고 번들에는 `subtract` 변수 아래의 하위 집합만 필요합니다. 이 예제는 `require('./math').subtract;`로 번역됩니다.
+
+### object
+
+W> `{ root, amd, commonjs, ... }`가 있는 객체는 [`libraryTarget: 'umd'`](/configuration/output/#outputlibrarytarget)에만 허용됩니다. 다른 라이브러리 타켓에는 허용되지 않습니다.
+
+```javascript
+module.exports = {
+  //...
+  externals: {
+    react: 'react',
+  },
+
+  // 또는
+
+  externals: {
+    lodash: {
+      commonjs: 'lodash',
+      amd: 'lodash',
+      root: '_', // 전역 변수를 나타냅니다.
+    }
+  },
+
+  // 또는
+
+  externals: {
+    subtract: {
+      root: ['math', 'subtract'],
+    },
+  },
+};
+```
+
+이 구문은 외부 라이브러리를 사용할 수 있는 모든 가능한 방법을 설명하는 데 사용됩니다. 여기서 `lodash`는 AMD 및 CommonJS 모듈 시스템에서 `lodash`로 사용할 수 있지만 전역 변수 형식에서는 `_`로 사용할 수 있습니다. 여기서 `subtract`는 전역 `math` 객체 아래의 `subtract` 속성을 통해 사용할 수 있습니다. (예. `window['math']['subtract']`)
+
+### function
+
+- `function ({ context, request, contextInfo, getResolve }, callback)`
+- `function ({ context, request, contextInfo, getResolve }) => promise` <Badge text='5.15.0+' />
+
+webpack에서 외부화하려는 동작을 제어하기 위해 자체 함수를 정의하는 것이 유용할 수 있습니다. 예를 들어 [webpack-node-externals](https://www.npmjs.com/package/webpack-node-externals)는, `node_modules` 디렉터리에서 모든 모듈을 제외하고 패키지를 허용 목록에 추가하는 옵션을 제공합니다.
+
+함수가 받을 수 있는 인수는 다음과 같습니다.
+
+- `ctx` (`object`): 파일 세부 정보를 포함하는 객체입니다.
+    - `ctx.context` (`string`): import를 포함하는 파일의 디렉터리입니다.
+    - `ctx.request` (`string`): 요청 중인 import 경로입니다.
+    - `ctx.contextInfo` (`string`): issuer(예. 레이어)에 대한 정보를 포함합니다.
+    - `ctx.getResolve` <Badge text='5.15.0+' />: 현재 리졸브 옵션으로 리졸브 함수 가져오기.
+- `callback` (`function (err, result, type)`): 모듈을 외부화하는 방법을 나타내는 데 사용되는 콜백 함수입니다.
+
+콜백 함수는 세 가지 인수를 사용합니다.
+
+- `err` (`Error`): import를 외부화하는 동안 오류가 있었는지 나타내는 데 사용됩니다. 오류가 있는 경우 이 파라미터만 사용해야 합니다.
+- `result` (`string` `[string]` `object`): 외부 모듈을 설명합니다. `${type} ${path}` 형식의 문자열 또는 다른 표준 외부 형식([`string`](#string), [`[string]`](#string-1), 또는 [`object`](#object)) 중 하나를 허용할 수 있습니다.
+- `type` (`string`): 모듈 유형을 나타내는 선택적 파라미터입니다(`result` 파라미터에 아직 표시되지 않은 경우).
+
+예를들어, import 경로가 정규 표현식과 일치하는 모든 import를 외부화 하려면 다음을 수행할 수 있습니다.
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  //...
+  externals: [
+    function ({ context, request }, callback) {
+      if (/^yourregex$/.test(request)) {
+        // 요청 경로를 사용하여 commonjs 모듈로 외부화
+        return callback(null, 'commonjs ' + request);
+      }
+
+      // import를 외부화하지 않고 계속
+      callback();
+    },
+  ],
+};
+```
+
+다른 모듈 형식을 사용하는 다른 예제입니다.
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  externals: [
+    function (ctx, callback) {
+      // external은 `@scope/library`에 있는 `commonjs2` 모듈입니다.
+      callback(null, '@scope/library', 'commonjs2');
+    },
+  ],
+};
+```
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  externals: [
+    function (ctx, callback) {
+      // external은 `nameOfGlobal`이라는 전역 변수입니다.
+      callback(null, 'nameOfGlobal');
+    },
+  ],
+};
+```
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  externals: [
+    function (ctx, callback) {
+      // external은 `@scope/library` 모듈에서 명명된 export입니다.
+      callback(null, ['@scope/library', 'namedexport'], 'commonjs');
+    },
+  ],
+};
+```
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  externals: [
+    function (ctx, callback) {
+      // external은 UMD 모듈입니다.
+      callback(null, {
+        root: 'componentsGlobal',
+        commonjs: '@scope/components',
+        commonjs2: '@scope/components',
+        amd: 'components',
+      });
+    },
+  ],
+};
+```
+
+### RegExp
+
+주어진 정규식과 일치하는 모든 의존성은 출력 번들에서 제외됩니다.
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  //...
+  externals: /^(jquery|\$)$/i,
+};
+```
+
+이 경우, `jQuery`, 대문자 여부, 또는 `$`라는 종속성이 외부화됩니다.
+
+### Combining syntaxes
+
+때때로 위의 구문을 조합하여 사용할 수 있습니다. 다음과 같은 방식으로 수행할 수 있습니다.
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  //...
+  externals: [
+    {
+      // String
+      react: 'react',
+      // Object
+      lodash: {
+        commonjs: 'lodash',
+        amd: 'lodash',
+        root: '_', // 전역 변수를 나타냅니다.
+      },
+      // [string]
+      subtract: ['./math', 'subtract'],
+    },
+    // Function
+    function ({ context, request }, callback) {
+      if (/^yourregex$/.test(request)) {
+        return callback(null, 'commonjs ' + request);
+      }
+      callback();
+    },
+    // Regex
+    /^(jquery|\$)$/i,
+  ],
+};
+```
+
+W> [기본 유형](/configuration/externals/#externalstype)은 유형 없이 `externals`를 지정하면 됩니다. `externals: { react: 'react' }` 대신 `externals: { react: 'commonjs-module react' }`.
+
+이 설정을 사용하는 방법에 대한 자세한 내용은, [라이브러리 작성 방법](/guides/author-libraries)에 대한 문서를 참고하십시오.
+
+### `byLayer`
+
+`function` `object`
+
+레이어별로 external을 지정합니다.
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  externals: {
+    byLayer: {
+      layer: {
+        external1: 'var 43',
+      },
+    },
+  },
+};
+```
+
+## `externalsType`
+
+`string = 'var'`
+
+기본 외부 유형을 지정합니다. `amd`, `umd`, `system` 그리고 `jsonp` external은 **[`output.libraryTarget`](/configuration/output/#outputlibrarytarget)이** 동일한 값으로 설정되는 것에 의존합니다. 예. `amd` 라이브러리 내에서만  `amd` external을 사용할 수 있습니다.
+
+지원 유형:
+
+- `'var'`
+- `'module'`
+- `'assign'`
+- `'this'`
+- `'window'`
+- `'self'`
+- `'global'`
+- `'commonjs'`
+- `'commonjs-module'`
+- `'amd'`
+- `'amd-require'`
+- `'umd'`
+- `'umd2'`
+- `'jsonp'`
+- `'system'`
+- `'promise'` - `'var'`과 동일하지만, 결과를 기다립니다(비동기 모듈)
+- `'import'` - `import()`를 사용하여 네이티브 EcmaScript 모듈을 로드합니다(비동기 모듈)
+- `'script'` - HTML `<script>` 요소로 사전 정의 된 전역 변수를 노출하는 스크립트를 로드합니다
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  //...
+  externalsType: 'promise',
+};
+```
+
+### `script`
+
+[`externalsType`](#externalstype)이 `'script'`로 설정된 경우 모든 URL에서 외부 스크립트를 로드할 수 있습니다. `<script>` 태그는 스크립트가 로드된 후 제거됩니다.
+
+#### Syntax
+
+```javascript
+module.exports = {
+  externals: {
+    packageName: [
+      'http://example.com/script.js',
+      'global',
+      'property',
+      'property',
+    ], // 프로퍼티는 선택 사항입니다.
+  },
+};
+```
+
+프로퍼티를 지정하지 않을 경우 바로 가기 구문을 사용할 수도 있습니다.
+
+```javascript
+module.exports = {
+  externals: {
+    packageName: 'global@http://example.com/script.js', // 여기엔 프로퍼티가 없습니다
+  }
+};
+```
+
+T> [`output.publicPath`](/configuration/output/#outputpublicpath)는 제공된 URL에 추가되지 않습니다.
+
+#### Example
+
+CDN에서 `lodash`를 로드해 보겠습니다.
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  // ...
+  externalsType: 'script',
+  externals: {
+    lodash: ['https://cdn.jsdelivr.net/npm/lodash@4.17.19/lodash.min.js', '_'],
+  },
+};
+```
+
+그런 다음 코드에서 사용합니다.
+
+```js
+import _ from 'lodash';
+console.log(_.head([1, 2, 3]));
+```
+
+위의 예제 코드를 위해 다음과 같이 프로퍼티를 지정해야 합니다.
+
+```js
+module.exports = {
+  // ...
+  externalsType: 'script',
+  externals: {
+    lodash: [
+      'https://cdn.jsdelivr.net/npm/lodash@4.17.19/lodash.min.js',
+      '_',
+      'head',
+    ],
+  },
+};
+```
+
+로컬 변수 `head`와 전역 `window._`는 `import` `lodash`를 사용할 때 노출됩니다.
+
+```js
+import head from 'lodash';
+console.log(head([1, 2, 3])); // 여기 로그는 1 입니다
+console.log(window._.head(['a', 'b'])); // 여기 로그는 a 입니다
+```
+
+T> HTML `<script>` 태그를 사용하여 코드를 로드할 때, webpack 런타임은 `src` 속성과 일치하거나 특정 `data-webpack` 속성이 있는 기존 `<script>` 태그를 찾으려고 시도합니다. 청크 로딩의 경우 `data-webpack` 속성은 `'[output.uniqueName]:chunk-[chunkId]'` 값을 가지며 외부 스크립트의 값은 `'[output.uniqueName]:[global]'` 입니다.
+
+T> `output.chunkLoadTimeout`, `output.crossOriginLoading` 및 `output.scriptType`와 같은 옵션은 이러한 방식으로 로드된 외부 스크립트에도 영향을 줍니다.
+
+## `externalsPresets`
+
+`object`
+
+특정 대상에 대한 외부 프리셋 설정을 활성화합니다.
+
+W> 이전 webpack 버전에서는, [`target`](/configuration/target/) 을 사용하여 다음 기능을 수행했습니다.
+
+| Option             | Description                                                                                                                                                                                                     | Input Type |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| `electron`         | `electron`, `ipc` 또는 `shell`과 같은 main 및 preload 컨텍스트에서 공통 일렉트론 내장 모듈을 외부로 취급하고, 사용 시 `require()`를 통해 로드합니다.                                                       | boolean    |
+| `electronMain`     | `app`, `ipc-main` 또는 `shell`과 같은 같은 주 컨텍스트에서 일렉트론 내장 모듈을 외부로 취급하고, 사용 시 `require()`를 통해 로드합니다.                                                                      | boolean    |
+| `electronPreload`  | `web-frame`, `ipc-renderer` 또는 `shell`과 같은 사전 로드 컨텍스트에서 일렉트론 내장 모듈을 외부로 취급하고, 사용 시 require()를 통해 로드합니다.                                                            | boolean    |
+| `electronRenderer` | `web-frame`, `ipc-renderer` 또는 `shell`과 같은 렌더러 컨텍스트에서 일렉토론 내장 모듈을 외부로 취급하고, 사용 시 `require()`를 통해 로드합니다.                                                         | boolean    |
+| `node`             | `fs`, `path` 또는 `vm`과 같은 node.js 내장 모듈을 외부 모듈로 취급하고, 사용 시 `require()`를 통해 로드합니다.                                                                                                  | boolean    |
+| `nwjs`             | `NW.js` 레거시 `nw.gui` 모듈을 외부 모듈로 취급하고, 사용 시 `require()`를 통해 로드합니다.                                                                                                                       | boolean    |
+| `web`              | `http(s)://...` 그리고 `std:...`에 대한 참조를 외부로 취급하고, 사용 시 `import`를 통해 로드합니다**(청크의 다른 코드보다 먼저 외부가 실행되므로 실행 순서가 변경됩니다)**.  | boolean    |
+| `webAsync`         | `http(s)://...` 그리고 `std:...`에 대한 참조를 외부로 취급하고, 사용 시 `async import()`를 통해 로드합니다**(이 유형의 외부 모듈은 `async` 모듈이며, 실행에 다양한 영향을 미칩니다)**. | boolean    |
+
+**Example**
+
+`node` 프리셋을 사용하면 내장 모듈을 번들로 묶지 않고 외부 모듈로 취급하고 사용할 때 `require()`를 통해 로드합니다.
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  // ...
+  externalsPresets: {
+    node: true,
+  },
+};
+```

@@ -1,0 +1,134 @@
+---
+title: Loaders
+sort: 3
+contributors:
+  - manekinekko
+  - evenstensberg
+  - SpaceK33z
+  - gangachris
+  - TheLarkInn
+  - simon04
+  - jhnns
+  - byzyk
+  - debs-obrien
+  - EugeneHlushko
+  - wizardofhogwarts
+  - lukasgeiter
+  - furkle
+  - jamesgeorge007
+  - textbook
+---
+
+로더는 모듈의 소스 코드에 변경 사항을 적용합니다. 파일을 `import` 하거나 “로드”할 때 전처리를 할 수 있습니다. 따라서 로더는 다른 빌드 도구의 “태스크”와 유사하며 프런트엔드 빌드 단계를 처리하는 강력한 방법을 제공합니다. 로더는 파일을 TypeScript와 같은 다른 언어에서 JavaScript로 변환하거나 인라인 이미지를 데이터 URL로 로드 할 수 있습니다. 로더를 사용하면 JavaScript 모듈에서 직접 CSS 파일을 `import` 하는 작업도 수행 할 수 있습니다!
+
+## Example
+
+예를 들어 로더를 사용하여 webpack에 CSS 파일을 로드하거나 TypeScript를 JavaScript로 변환할 수 있습니다. 이를 위해서 필요한 로더를 설치해봅시다.
+
+```bash
+npm install --save-dev css-loader ts-loader
+```
+
+그리고 모든`.css` 파일에 [`css-loader`](/loaders/css-loader)를 사용하고, `.ts` 파일에는 [`ts-loader`](https://github.com/TypeStrong/ts-loader)를 사용하도록 webpack에 지시합니다.
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  module: {
+    rules: [
+      { test: /\.css$/, use: 'css-loader' },
+      { test: /\.ts$/, use: 'ts-loader' },
+    ],
+  },
+};
+```
+
+## Using Loaders
+
+애플리케이션에서 로더를 사용하는 두 가지 방법이 있습니다.
+
+- [설정](#configuration) (추천): **webpack.config.js** 파일에 지정합니다.
+- [인라인](#inline): 각 `import` 문에서 명확하게 지정합니다.
+
+### Configuration
+
+[`module.rules`](/configuration/module/#modulerules)를 사용하면 webpack 설정 내에 여러 개의 로더를 지정할 수 있습니다.
+이것은 로더를 표시하는 간결한 방법이며, 클린 코드를 유지하는 데 도움이 됩니다. 또한 각각의 로더에 대한 전체 개요를 제공합니다.
+
+로더는 오른쪽에서 왼쪽으로 (또는 아래에서 위로) 평가/실행됩니다. 아래 예제에서는 sass-loader로 실행이 시작되고, css-loader로 이어지며 마지막으로 style-loader로 끝납니다. 로더 순서에 대한 더 자세한 내용은 ["로더 기능"](/concepts/loaders/#loader-features)을 참고하세요.
+
+```js-with-links
+module.exports = {
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: [
+          // [style-loader](/loaders/style-loader)
+          { loader: 'style-loader' },
+          // [css-loader](/loaders/css-loader)
+          {
+            loader: 'css-loader',
+            options: {
+              modules: true
+            }
+          },
+          // [sass-loader](/loaders/sass-loader)
+          { loader: 'sass-loader' }
+        ]
+      }
+    ]
+  }
+};
+```
+
+### Inline
+
+`import` 문이나 [그와 동등한 "importing" 메소드](/api/module-methods)에서 로더를 지정할 수 있습니다. 접두사 `!`로 리소스에서 로더를 분리하세요. 각 부분은 현재 디렉터리를 기준으로 해석됩니다.
+
+```js
+import Styles from 'style-loader!css-loader?modules!./styles.css';
+```
+
+[configuration](/configuration)에서 인라인 `import` 문 앞에 접두사를 붙여 모든 로더, 프리 로더 및 포스트 로더를 재정의할 수 있습니다.
+
+- 접두사 `!`는 구성된 모든 일반 로더를 비활성화합니다.
+
+  ```js
+  import Styles from '!style-loader!css-loader?modules!./styles.css';
+  ```
+
+- 접두사 `!!`는 구성된 모든 로더(프리 로더, 로더, 포스트 로더)를 비활성화합니다.
+
+  ```js
+  import Styles from '!!style-loader!css-loader?modules!./styles.css';
+  ```
+
+- 접두사 `-!`는 포스트 로더를 제외한 구성된 모든 프리 로더와 로더를 비활성화합니다.
+
+  ```js
+  import Styles from '-!style-loader!css-loader?modules!./styles.css';
+  ```
+
+옵션은 쿼리 파라미터(예: `?key=value&foo=bar`) 또는 JSON 객체(예: `? { "key": "value", "foo": "bar"}`)로 전달할 수 있습니다.
+
+T> 가능하면 항상 `module.rules` 사용을 권장합니다. 소스 코드의 보일러플레이트를 줄이고 문제가 발생할 경우 더 빨리 디버깅하거나 로더를 찾을 수 있기 때문입니다.
+
+## Loader Features
+
+- 로더는 연결할 수 있습니다. 체인의 각 로더는 처리된 리소스에 변환을 적용합니다. 체인은 역순으로 실행됩니다. 첫 번째 로더는 결과(변환이 적용된 리소스)를 다음 로더로 전달하며, 전달은 다음 로더로 계속됩니다. 마지막으로, webpack은 체인의 마지막 로더가 JavaScript를 반환할 것으로 예상합니다.
+- 로더는 동기식 또는 비동기식일 수 있습니다.
+- 로더는 Node.js에서 실행되며 Node.js에서 가능한 모든 작업을 수행 할 수 있습니다.
+- 로더는 `options` 객체로 구성 할 수 있습니다. (여전히 `query` 파라미터를 사용하여 옵션을 설정할 수 있지만 권장하지 않음)
+- 일반 모듈은 `loader` 필드가 있는 `package.json`을 통해 `main` 및 로더를 내보낼 수 있습니다.
+- 플러그인은 로더에 더 많은 기능을 제공 할 수 있습니다.
+- 로더는 추가로 임의의 파일을 생성할 수 있습니다.
+
+로더는 전처리 기능을 통해 결과물을 커스터마이즈 할 수 있도록 합니다. 이제 사용자는 압축, 패키징, 언어 번역 뿐만 아니라 [더 많은](/loaders) 세밀한 로직을 유연하게 추가할 수 있습니다.
+
+## Resolving Loaders
+
+로더는 표준 [모듈 해석](/concepts/module-resolution/)을 따릅니다. 대부분의 경우 [모듈 경로](/concepts/module-resolution/#module-paths)에서 로드됩니다 (`npm install`,`node_modules` 를 생각해보세요).
+
+로더 모듈은 함수를 내보내고 Node.js와 호환되는 JavaScript로 작성해야 합니다. 로더 모듈은 일반적으로 npm으로 관리하지만, 커스텀 로더를 애플리케이션 내에 파일로 포함할 수도 있습니다. 컨벤션에 따르면 로더는 일반적으로 `xxx-loader`(예 :`json-loader`)로 명명합니다. 더 자세한 내용은 ["로더 작성하기"](/contribute/writing-a-loader/)를 참고하세요.
