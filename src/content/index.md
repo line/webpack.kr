@@ -3,12 +3,12 @@ title: webpack
 sort: -1
 ---
 
-## 코드를 작성해 보세요
+## Write Your Code
 
 <div class="splash__wrap">
 <div class="splash__left">
 
-**src/index.js**
+__src/index.js__
 
 ```js
 import bar from './bar.js';
@@ -19,7 +19,7 @@ bar();
 </div>
 <div class="splash__right">
 
-**src/bar.js**
+__src/bar.js__
 
 ```js
 export default function bar() {
@@ -31,12 +31,12 @@ export default function bar() {
 </div>
 
 
-## 번들해 보세요
+## Bundle It
 
 <div class="splash__wrap">
 <div class="splash__left">
 
-**[설정 없이도](https://youtu.be/3Nv9muOkb6k?t=21293)** 번들할 수 있고 사용자 지정 **webpack.config.js를** 제공할 수도 있어요.
+__[Without config](https://youtu.be/3Nv9muOkb6k?t=21293)__ or provide custom __webpack.config.js__
 
 ```js
 const path = require('path');
@@ -45,21 +45,21 @@ module.exports = {
   entry: './src/index.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'bundle.js',
-  },
+    filename: 'bundle.js'
+  }
 };
 ```
 
 </div>
 <div class="splash__right">
 
-**page.html**
+__page.html__
 
 ```html
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
-    <meta charset="utf-8" />
+    <meta charset='utf-8' />
     ...
   </head>
   <body>
@@ -72,8 +72,8 @@ module.exports = {
 </div>
 </div>
 
-그다음 커멘드 라인에서 `webpack` 명령어를 실행해 `bundle.js`를 생성하세요.
+Then run `webpack` on the command-line to create `bundle.js`.
 
-## 멋지지 않나요? 좀 더 알아보세요!
+## Awesome isn't it? Let's dive in!
 
-**가이드를** 따라 빠르게 **[시작해](/guides/getting-started)** 보거나, **[Concepts](/concepts)에서** webpack의 핵심 개념을 자세히 알아보세요.
+__[Get Started](/guides/getting-started)__ quickly in our __Guides__ section, or dig into the __[Concepts](/concepts)__ section for more high-level information on the core notions behind webpack.

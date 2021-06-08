@@ -13,19 +13,19 @@ contributors:
   - astonizer
 ---
 
-처음부터 가이드를 따라왔다면 이제 "Hello webpack"을 표시하는 작은 프로젝트가 생성되었을 것입니다. 이제 이미지와 같은 다른 애셋을 통합하고, 애셋이 어떻게 처리되는지 살펴보겠습니다.
+If you've been following the guides from the start, you will now have a small project that shows "Hello webpack". Now let's try to incorporate some other assets, like images, to see how they can be handled.
 
-webpack 이전에 프런트엔드 개발자는 [grunt](https://gruntjs.com/)와 [gulp](https://gulpjs.com/) 같은 도구를 사용하여 애셋을 처리하고 `/src` 폴더에서 `/dist` 또는 `/build` 디렉터리로 옮겼습니다. JavaScript 모듈에도 동일한 아이디어가 사용되었지만, webpack과 같은 도구는 모든 의존성을 **동적으로 번들합니다.** ([디펜던시 그래프](/concepts/dependency-graph)로 알려진 것을 생성합니다). 이것이 좋은 이유는 이제 모든 모듈이 **의존성을 명확하게 명시하고** 사용하지 않는 모듈을 번들에서 제외할 수 있기 때문입니다.
+Prior to webpack, front-end developers would use tools like [grunt](https://gruntjs.com/) and [gulp](https://gulpjs.com/) to process these assets and move them from their `/src` folder into their `/dist` or `/build` directory. The same idea was used for JavaScript modules, but tools like webpack will __dynamically bundle__ all dependencies (creating what's known as a [dependency graph](/concepts/dependency-graph)). This is great because every module now _explicitly states its dependencies_ and we'll avoid bundling modules that aren't in use.
 
-webpack의 가장 멋진 기능 중 하나는 JavaScript 외에도 로더 또는 내장 [애셋 모듈](/guides/asset-modules/)이 지원하는 __다른 유형의 파일도 포함__ 할 수 있다는 것입니다. 즉, 위에 나열된 JavaScript의 이점(예: 명시적 의존성)을 웹 사이트 또는 웹 앱을 만드는 데 사용한 모든 것에 적용할 수 있습니다. 이미 설정에 익숙 할 수 있는 CSS부터 시작해 보겠습니다.
+One of the coolest webpack features is that you can also _include any other type of file_, besides JavaScript, for which there is a loader or built-in [Asset Modules](/guides/asset-modules/) support. This means that the same benefits listed above for JavaScript (e.g. explicit dependencies) can be applied to everything used in building a website or web app. Let's start with CSS, as you may already be familiar with that setup.
 
 ## Setup
 
-시작하기 전에 프로젝트를 조금 변경해 보겠습니다.
+Let's make a minor change to our project before we get started:
 
-**dist/index.html**
+__dist/index.html__
 
-```diff
+``` diff
  <!DOCTYPE html>
  <html>
    <head>
@@ -40,11 +40,11 @@ webpack의 가장 멋진 기능 중 하나는 JavaScript 외에도 로더 또는
  </html>
 ```
 
-**webpack.config.js**
+__webpack.config.js__
 
-```diff
+``` diff
  const path = require('path');
-
+ 
  module.exports = {
    entry: './src/index.js',
    output: {
@@ -55,19 +55,20 @@ webpack의 가장 멋진 기능 중 하나는 JavaScript 외에도 로더 또는
  };
 ```
 
+
 ## Loading CSS
 
-JavaScript 모듈 내에서 CSS 파일을 `import` 하려면 [style-loader](/loaders/style-loader)와 [css-loader](/loaders/css-loader)를 설치하고 [`module` 설정](/configuration/module)에 추가해야 합니다.
+In order to `import` a CSS file from within a JavaScript module, you need to install and add the [style-loader](/loaders/style-loader) and [css-loader](/loaders/css-loader) to your [`module` configuration](/configuration/module):
 
-```bash
+``` bash
 npm install --save-dev style-loader css-loader
 ```
 
-**webpack.config.js**
+__webpack.config.js__
 
-```diff
+``` diff
  const path = require('path');
-
+ 
  module.exports = {
    entry: './src/index.js',
    output: {
@@ -85,19 +86,19 @@ npm install --save-dev style-loader css-loader
  };
 ```
 
-모듈 로더는 체인으로 연결할 수 있습니다. 체인의 각 로더는 리소스에 변형을 적용합니다. 체인은 역순으로 실행됩니다. 첫 번째 로더는 결과(변형이 적용된 리소스)를 다음 로더로 전달합니다. 마지막으로 webpack은 체인의 마지막 로더가 JavaScript를 반환할 것으로 예상합니다.
+Module loaders can be chained. Each loader in the chain applies transformations to the processed resource. A chain is executed in reverse order. The first loader passes its result (resource with applied transformations) to the next one, and so forth. Finally, webpack expects JavaScript to be returned by the last loader in the chain. 
 
-위의 로더 순서는 유지되어야 합니다. [`'style-loader'`](/loaders/style-loader)가 먼저 오고 그 뒤에 [`'css-loader'`](/loaders/css-loader)가 따라오게 됩니다. 이 컨벤션을 따르지 않으면 webpack에서 오류가 발생할 수 있습니다.
+The above order of loaders should be maintained: [`'style-loader'`](/loaders/style-loader) comes first and followed by [`'css-loader'`](/loaders/css-loader). If this convention is not followed, webpack is likely to throw errors.
 
-T> webpack은 정규 표현식을 사용하여 어떤 파일을 찾아 특정 로더에 전달해야 하는지 알아냅니다. 이 경우 `.css`로 끝나는 모든 파일은 `style-loader`와 `css-loader`에 전달됩니다.
+T> webpack uses a regular expression to determine which files it should look for and serve to a specific loader. In this case, any file that ends with `.css` will be served to the `style-loader` and the `css-loader`.
 
-이렇게 하면 스타일이 필요한 파일에 `import './style.css'`하여 가져올 수 있습니다. 이제 모듈이 실행될 때 html 파일의 `<head>`에 문자열화 된 CSS가 `<style>`태그로 삽입됩니다.
+This enables you to `import './style.css'` into the file that depends on that styling. Now, when that module is run, a `<style>` tag with the stringified css will be inserted into the `<head>` of your html file.
 
-이제 새로운 `style.css` 파일을 프로젝트에 추가하고 `index.js`로 가져와 볼까요?
+Let's try it out by adding a new `style.css` file to our project and import it in our `index.js`:
 
-**project**
+__project__
 
-```diff
+``` diff
   webpack-demo
   |- package.json
   |- webpack.config.js
@@ -110,36 +111,36 @@ T> webpack은 정규 표현식을 사용하여 어떤 파일을 찾아 특정 �
   |- /node_modules
 ```
 
-**src/style.css**
+__src/style.css__
 
-```css
+``` css
 .hello {
   color: red;
 }
 ```
 
-**src/index.js**
+__src/index.js__
 
-```diff
+``` diff
  import _ from 'lodash';
 +import './style.css';
-
+ 
  function component() {
    const element = document.createElement('div');
-
+ 
    // Lodash, now imported by this script
    element.innerHTML = _.join(['Hello', 'webpack'], ' ');
 +  element.classList.add('hello');
-
+ 
    return element;
  }
-
+ 
  document.body.appendChild(component());
 ```
 
-이제 빌드 커맨드를 실행합니다.
+Now run your build command:
 
-```bash
+``` bash
 $ npm run build
 
 ...
@@ -158,19 +159,20 @@ cacheable modules 539 KiB
 webpack 5.4.0 compiled successfully in 2231 ms
 ```
 
-브라우저에서 `dist/index.html`을 다시 열면 이제 `Hello webpack`이 빨간색으로 표시됩니다. webpack이 무엇을 했는지 확인하려면 페이지를 검사하여 head 태그를 살펴보세요. (`<style>`태그는 JavaScript를 통해 동적으로 생성되며 결과를 표시하지 않으므로 페이지 소스를 확인하지 마세요) head 태그에 `index.js`에서 가져온 스타일 블록이 포함되어 있을 것입니다.
+Open up `dist/index.html` in your browser again and you should see that `Hello webpack` is now styled in red. To see what webpack did, inspect the page (don't view the page source, as it won't show you the result, because the `<style>` tag is dynamically created by JavaScript) and look at the page's head tags. It should contain the style block that we imported in `index.js`.
 
-대부분의 경우 필수겠지만, 이제 프로덕션에서 로드 시간을 단축하기 위해 [css를 압축](/plugins/mini-css-extract-plugin/#minimizing-for-production) 할 수 있습니다. 또한 생각할 수 있는 거의 모든 종류의 CSS 로더가 존재합니다. 몇 가지 예를 들면 [postcss](/loaders/postcss-loader), [sass](/loaders/sass-loader) 및 [less](/loaders/less-loader) 등이 있습니다.
+Note that you can, and in most cases should, [minimize css](/plugins/mini-css-extract-plugin/#minimizing-for-production) for better load times in production. On top of that, loaders exist for pretty much any flavor of CSS you can think of – [postcss](/loaders/postcss-loader), [sass](/loaders/sass-loader), and [less](/loaders/less-loader) to name a few.
+
 
 ## Loading Images
 
-이제 CSS는 가져왔는데, 배경이나 아이콘과 같은 이미지는 어떻게 할까요? 이미지도 webpack 5부터 내장된 [Asset Modules](/guides/asset-modules/)를 사용하여 시스템에 쉽게 통합할 수 있습니다.
+So now we're pulling in our CSS, but what about our images like backgrounds and icons? As of webpack 5, using the built-in [Asset Modules](/guides/asset-modules/) we can easily incorporate those in our system as well:
 
-**webpack.config.js**
+__webpack.config.js__
 
-```diff
+``` diff
  const path = require('path');
-
+ 
  module.exports = {
    entry: './src/index.js',
    output: {
@@ -192,13 +194,13 @@ webpack 5.4.0 compiled successfully in 2231 ms
  };
 ```
 
-이제 `import myImage from './my-image.png'`를 사용하면 해당 이미지가 처리되어 `output` 디렉터리에 추가됩니다. _그리고_ `MyImage` 변수는 이미지의 최종 URL을 포함합니다. 위와 같이 [css-loader](/loaders/css-loader)를 사용하면 CSS 내의 `url('./my-image.png')`에도 유사한 프로세스가 적용됩니다. 로더는 이것이 로컬 파일임을 인식하고` './my-image.png'` 경로를 `output` 디렉터리에 있는 이미지의 최종 경로로 변경합니다. [html-loader](/loaders/html-loader)는 `<img src="./my-image.png" />`를 동일한 방식으로 처리합니다.
+Now, when you `import MyImage from './my-image.png'`, that image will be processed and added to your `output` directory _and_ the `MyImage` variable will contain the final url of that image after processing. When using the [css-loader](/loaders/css-loader), as shown above, a similar process will occur for `url('./my-image.png')` within your CSS. The loader will recognize this is a local file, and replace the `'./my-image.png'` path with the final path to the image in your `output` directory. The [html-loader](/loaders/html-loader) handles `<img src="./my-image.png" />` in the same manner.
 
-이제 프로젝트에 이미지를 추가하고 어떻게 작동하는지 살펴볼까요? 원하는 이미지를 아무거나 사용해도 좋습니다.
+Let's add an image to our project and see how this works, you can use any image you like:
 
-**project**
+__project__
 
-```diff
+``` diff
   webpack-demo
   |- package.json
   |- webpack.config.js
@@ -212,21 +214,21 @@ webpack 5.4.0 compiled successfully in 2231 ms
   |- /node_modules
 ```
 
-**src/index.js**
+__src/index.js__
 
-```diff
+``` diff
  import _ from 'lodash';
  import './style.css';
 +import Icon from './icon.png';
-
+ 
  function component() {
    const element = document.createElement('div');
-
+ 
    // Lodash, now imported by this script
    element.innerHTML = _.join(['Hello', 'webpack'], ' ');
    element.classList.add('hello');
-
-+  // 원래 있던 div 에 이미지를 추가합니다.
+ 
++  // Add the image to our existing div.
 +  const myIcon = new Image();
 +  myIcon.src = Icon;
 +
@@ -234,22 +236,22 @@ webpack 5.4.0 compiled successfully in 2231 ms
 +
    return element;
  }
-
+ 
  document.body.appendChild(component());
 ```
 
-**src/style.css**
+__src/style.css__
 
-```diff
+``` diff
  .hello {
    color: red;
 +  background: url('./icon.png');
  }
 ```
 
-새 빌드를 만들고 `index.html` 파일을 다시 엽니다.
+Let's create a new build and open up the `index.html` file again:
 
-```bash
+``` bash
 $ npm run build
 
 ...
@@ -272,17 +274,18 @@ cacheable modules 540 KiB (javascript) 9.88 KiB (asset)
 webpack 5.4.0 compiled successfully in 1972 ms
 ```
 
-모든 것이 순조롭게 진행되었다면 이제 아이콘이 반복해서 배경으로 표시되고, `Hello webpack` 텍스트 옆에 `img` 요소가 보이게 됩니다. 이 요소를 살펴보면 실제 파일 이름이 `29822eaa871e8eadeaa4.png`와 같이 변경된 것을 볼 수 있습니다. 이것은 webpack이 `src` 폴더에서 파일을 찾아서 처리했음을 의미합니다!
+If all went well, you should now see your icon as a repeating background, as well as an `img` element beside our `Hello webpack` text. If you inspect this element, you'll see that the actual filename has changed to something like `29822eaa871e8eadeaa4.png`. This means webpack found our file in the `src` folder and processed it!
+
 
 ## Loading Fonts
 
-그렇다면 폰트와 같은 다른 애셋은 어떨까요? 애셋 모듈은 로드한 모든 파일을 가져와 빌드 디렉터리로 내보냅니다. 즉, 폰트를 포함한 모든 종류의 파일에 사용할 수 있습니다. 폰트 파일을 처리하도록 `webpack.config.js`를 업데이트해 보겠습니다.
+So what about other assets like fonts? The Asset Modules will take any file you load through them and output it to your build directory. This means we can use them for any kind of file, including fonts. Let's update our `webpack.config.js` to handle font files:
 
-**webpack.config.js**
+__webpack.config.js__
 
-```diff
+``` diff
  const path = require('path');
-
+ 
  module.exports = {
    entry: './src/index.js',
    output: {
@@ -308,11 +311,12 @@ webpack 5.4.0 compiled successfully in 1972 ms
  };
 ```
 
-프로젝트에 몇 개의 폰트 파일을 추가합니다.
+Add some font files to your project:
 
-**project**
+__project__
 
-```diff
+
+``` diff
   webpack-demo
   |- package.json
   |- webpack.config.js
@@ -328,11 +332,11 @@ webpack 5.4.0 compiled successfully in 1972 ms
   |- /node_modules
 ```
 
-로더를 설정하고 폰트가 맞는 위치에 있으면 `@font-face` 선언을 통해 적용 할 수 있습니다. 로컬 `url(...)` 지시문은 이미지와 마찬가지로 webpack에서 골라냅니다.
+With the loader configured and fonts in place, you can incorporate them via an `@font-face` declaration. The local `url(...)` directive will be picked up by webpack just as it was with the image:
 
-**src/style.css**
+__src/style.css__
 
-```diff
+``` diff
 +@font-face {
 +  font-family: 'MyFont';
 +  src: url('./my-font.woff2') format('woff2'),
@@ -348,9 +352,9 @@ webpack 5.4.0 compiled successfully in 1972 ms
  }
 ```
 
-이제 새 빌드를 실행하고 webpack이 폰트를 처리했는지 살펴보겠습니다.
+Now run a new build and let's see if webpack handled our fonts:
 
-```bash
+``` bash
 $ npm run build
 
 ...
@@ -378,21 +382,22 @@ cacheable modules 541 KiB (javascript) 43.1 KiB (asset)
 webpack 5.4.0 compiled successfully in 2142 ms
 ```
 
-`dist/index.html`을 다시 열고 `Hello webpack` 텍스트가 새 폰트로 변경되었는지 확인합니다. 모든 것이 잘되었다면, 변경된 폰트를 확인할 수 있을 것입니다.
+Open up `dist/index.html` again and see if our `Hello webpack` text has changed to the new font. If all is well, you should see the changes.
+
 
 ## Loading Data
 
-로드할 수 있는 또 다른 유용한 애셋은 JSON 파일, CSV, TSV 및 XML과 같은 데이터입니다. JSON 지원은 기본으로 내장되어 있으며 NodeJS와 유사합니다. 즉, 기본적으로 `import Data from './data.json'`이 동작합니다. CSV, TSV 및 XML을 가져오려면 [csv-loader](https://github.com/theplatapi/csv-loader) 및 [xml-loader](https://github.com/gisikw/xml)를 사용할 수 있습니다. 세 가지 모두 로드해 보겠습니다.
+Another useful asset that can be loaded is data, like JSON files, CSVs, TSVs, and XML. Support for JSON is actually built-in, similar to NodeJS, meaning `import Data from './data.json'` will work by default. To import CSVs, TSVs, and XML you could use the [csv-loader](https://github.com/theplatapi/csv-loader) and [xml-loader](https://github.com/gisikw/xml-loader). Let's handle loading all three:
 
-```bash
+``` bash
 npm install --save-dev csv-loader xml-loader
 ```
 
-**webpack.config.js**
+__webpack.config.js__
 
-```diff
+``` diff
  const path = require('path');
-
+ 
  module.exports = {
    entry: './src/index.js',
    output: {
@@ -426,11 +431,11 @@ npm install --save-dev csv-loader xml-loader
  };
 ```
 
-프로젝트에 데이터 파일을 추가합니다.
+Add some data files to your project:
 
-**project**
+__project__
 
-```diff
+``` diff
   webpack-demo
   |- package.json
   |- webpack.config.js
@@ -448,9 +453,9 @@ npm install --save-dev csv-loader xml-loader
   |- /node_modules
 ```
 
-**src/data.xml**
+__src/data.xml__
 
-```xml
+``` xml
 <?xml version="1.0" encoding="UTF-8"?>
 <note>
   <to>Mary</to>
@@ -460,69 +465,69 @@ npm install --save-dev csv-loader xml-loader
 </note>
 ```
 
-**src/data.csv**
+__src/data.csv__
 
-```csv
+``` csv
 to,from,heading,body
 Mary,John,Reminder,Call Cindy on Tuesday
 Zoe,Bill,Reminder,Buy orange juice
 Autumn,Lindsey,Letter,I miss you
 ```
 
-이제 네 가지 데이터 유형(JSON, CSV, TSV, XML) 중 하나를 `import` 할 수 있으며, 가져오는 `Data` 변수에는 파싱된 JSON이 포함되어 쉽게 사용할 수 있습니다.
+Now you can `import` any one of those four types of data (JSON, CSV, TSV, XML) and the `Data` variable you import, will contain parsed JSON for easy consumption:
 
-**src/index.js**
+__src/index.js__
 
-```diff
+``` diff
  import _ from 'lodash';
  import './style.css';
  import Icon from './icon.png';
 +import Data from './data.xml';
 +import Notes from './data.csv';
-
+ 
  function component() {
    const element = document.createElement('div');
-
+ 
    // Lodash, now imported by this script
    element.innerHTML = _.join(['Hello', 'webpack'], ' ');
    element.classList.add('hello');
-
+ 
    // Add the image to our existing div.
    const myIcon = new Image();
    myIcon.src = Icon;
-
+ 
    element.appendChild(myIcon);
-
+ 
 +  console.log(Data);
 +  console.log(Notes);
 +
    return element;
  }
-
+ 
  document.body.appendChild(component());
 ```
 
-`npm run build` 명령을 다시 실행하고 `dist/index.html`을 엽니다. 개발자 도구의 콘솔에 가져온 데이터가 기록되는 것을 볼 수 있습니다!
+Re-run the `npm run build` command and open `dist/index.html`. If you look at the console in your developer tools, you should be able to see your imported data being logged to the console!
 
-T> 이것은 [d3](https://github.com/d3)와 같은 도구를 사용하여 데이터를 시각화할 때 특히 유용할 수 있습니다. ajax 요청을 만들고 런타임에 데이터를 파싱하는 대신 빌드 프로세스 중 모듈에 로드하여 모듈이 브라우저에 도달하자마자 파싱된 데이터가 준비되도록 합니다.
+T> This can be especially helpful when implementing some sort of data visualization using a tool like [d3](https://github.com/d3). Instead of making an ajax request and parsing the data at runtime you can load it into your module during the build process so that the parsed data is ready to go as soon as the module hits the browser.
 
-W> JSON 모듈의 기본 내보내기만 경고 없이 사용할 수 있습니다.
+W> Only the default export of JSON modules can be used without warning.
 
 ```javascript
-// 경고 없음
+// No warning
 import data from './data.json';
 
-// 스펙에서 허용하지 않으므로 경고가 노출됨
+// Warning shown, this is not allowed by the spec.
 import { foo } from './data.json';
 ```
 
 ### Customize parser of JSON modules
 
-특정 webpack 로더 대신 [커스텀 파서](/configuration/modules# ruleparserparse)를 사용하여 `toml`, `yaml` 또는 `json5` 파일을 JSON 모듈로 가져올 수 있습니다.
+It's possible to import any `toml`, `yaml` or `json5` files as a JSON module by using a [custom parser](/configuration/module/#ruleparserparse) instead of a specific webpack loader.
 
-`src` 폴더에 `data.toml`, `data.yaml` 및 `data.json5` 파일이 있다고 가정해 보겠습니다.
+Let's say you have a `data.toml`, a `data.yaml` and a `data.json5` files under `src` folder:
 
-**src/data.toml**
+__src/data.toml__
 
 ```toml
 title = "TOML Example"
@@ -534,7 +539,7 @@ bio = "GitHub Cofounder & CEO\nLikes tater tots and beer."
 dob = 1979-05-27T07:32:00Z
 ```
 
-**src/data.yaml**
+__src/data.yaml__
 
 ```yaml
 title: YAML Example
@@ -547,38 +552,38 @@ owner:
   dob: 1979-05-27T07:32:00.000Z
 ```
 
-**src/data.json5**
+__src/data.json5__
 
 ```json5
 {
   // comment
-  title: 'JSON5 Example',
+  title: "JSON5 Example",
   owner: {
-    name: 'Tom Preston-Werner',
-    organization: 'GitHub',
-    bio: 'GitHub Cofounder & CEO\n\
-Likes tater tots and beer.',
-    dob: '1979-05-27T07:32:00.000Z',
-  },
+    name: "Tom Preston-Werner",
+    organization: "GitHub",
+    bio: "GitHub Cofounder & CEO\n\
+Likes tater tots and beer.",
+    dob: "1979-05-27T07:32:00.000Z"
+  }
 }
 ```
 
-먼저 `toml`, `yamljs` 및 `json5` 패키지를 설치합니다.
+Install `toml`, `yamljs` and `json5` packages first:
 
 ```bash
 npm install toml yamljs json5 --save-dev
 ```
 
-그리고 webpack 설정에 추가합니다.
+And configure them in your webpack configuration:
 
-**webpack.config.js**
+__webpack.config.js__
 
 ```diff
  const path = require('path');
 +const toml = require('toml');
 +const yaml = require('yamljs');
 +const json5 = require('json5');
-
+ 
  module.exports = {
    entry: './src/index.js',
    output: {
@@ -633,7 +638,7 @@ npm install toml yamljs json5 --save-dev
  };
 ```
 
-**src/index.js**
+__src/index.js__
 
 ```diff
  import _ from 'lodash';
@@ -653,36 +658,36 @@ npm install toml yamljs json5 --save-dev
 +
 +console.log(json.title); // output `JSON5 Example`
 +console.log(json.owner.name); // output `Tom Preston-Werner`
-
+ 
  function component() {
    const element = document.createElement('div');
-
+ 
    // Lodash, now imported by this script
    element.innerHTML = _.join(['Hello', 'webpack'], ' ');
    element.classList.add('hello');
-
+ 
    // Add the image to our existing div.
    const myIcon = new Image();
    myIcon.src = Icon;
-
+ 
    element.appendChild(myIcon);
-
+ 
    console.log(Data);
    console.log(Notes);
-
+ 
    return element;
  }
-
+ 
  document.body.appendChild(component());
 ```
 
-`npm run build` 명령을 다시 실행하고 `dist/index.html`을 확인합니다. 가져온 데이터가 콘솔에 기록되는 것을 볼 수 있습니다!
+Re-run the `npm run build` command and open `dist/index.html`. You should be able to see your imported data being logged to the console!
 
 ## Global Assets
 
-위에서 언급 한 모든 것 중 가장 멋진 점은 이러한 방식으로 애셋을 로드하면 모듈과 애셋을 보다 직관적인 방식으로 그룹화할 수 있다는 것입니다. 모든 것을 포함한 글로벌 `/assets` 디렉터리에 의존하는 대신 애셋을 사용하는 코드와 그룹화할 수 있습니다. 예를 들어 다음과 같은 구조가 유용할 수 있습니다.
+The coolest part of everything mentioned above, is that loading assets this way allows you to group modules and assets in a more intuitive way. Instead of relying on a global `/assets` directory that contains everything, you can group assets with the code that uses them. For example, a structure like this can be useful:
 
-```diff
+``` diff
 - |- /assets
 + |– /components
 + |  |– /my-component
@@ -692,17 +697,18 @@ npm install toml yamljs json5 --save-dev
 + |  |  |– img.png
 ```
 
-이러한 설정은 밀접하게 연결된 모든 것이 함께 있기 때문에 코드를 다른 곳에 훨씬 더 쉽게 적용할 수 있도록 합니다. 다른 프로젝트에서 `/my-component`를 사용한다고 가정해 봅시다. 간단히 복사하거나 다른 프로젝트의 `/components` 디렉터리로 옮기면 됩니다. _외부 의존성을_ 설치하고 _설정에 동일한 로더가 정의되어있는 한_ 아무 문제가 없습니다.
+This setup makes your code a lot more portable as everything that is closely coupled now lives together. Let's say you want to use `/my-component` in another project, simply copy or move it into the `/components` directory over there. As long as you've installed any _external dependencies_ and your _configuration has the same loaders_ defined, you should be good to go.
 
-그러나 예전 방식을 고수하고 있거나 여러 컴포넌트(뷰, 템플릿, 모듈 등) 간에 공유되는 애셋이 있다고 가정해 보겠습니다. 이러한 애셋을 기본 디렉터리에 저장하는 것도 가능하며 [aliasing](/configuration/resolve/#resolvealias)을 사용하여 쉽게 `import` 할 수 있습니다.
+However, let's say you're locked into your old ways or you have some assets that are shared between multiple components (views, templates, modules, etc.). It's still possible to store these assets in a base directory and even use [aliasing](/configuration/resolve/#resolvealias) to make them easier to `import`.
+
 
 ## Wrapping up
 
-다음 가이드에서는 이 가이드에서 사용한 각기 다른 애셋을 모두 사용하지 않을 것이므로 다음 가이드인 [Output Management](https://webpack.js.org/guides/output-management/) 준비를 위해 정리를 해 보겠습니다.
+For the next guides we won't be using all the different assets we've used in this guide, so let's do some cleanup so we're prepared for the next piece of the guides [Output Management](https://webpack.js.org/guides/output-management/):
 
-**project**
+__project__
 
-```diff
+``` diff
   webpack-demo
   |- package.json
   |- webpack.config.js
@@ -723,14 +729,14 @@ npm install toml yamljs json5 --save-dev
   |- /node_modules
 ```
 
-**webpack.config.js**
+__webpack.config.js__
 
 ```diff
  const path = require('path');
 -const toml = require('toml');
 -const yaml = require('yamljs');
 -const json5 = require('json5');
-
+ 
  module.exports = {
    entry: './src/index.js',
    output: {
@@ -785,9 +791,9 @@ npm install toml yamljs json5 --save-dev
  };
 ```
 
-**src/index.js**
+__src/index.js__
 
-```diff
+``` diff
  import _ from 'lodash';
 -import './style.css';
 -import Icon from './icon.png';
@@ -805,10 +811,10 @@ npm install toml yamljs json5 --save-dev
 -
 -console.log(json.title); // output `JSON5 Example`
 -console.log(json.owner.name); // output `Tom Preston-Werner`
-
+ 
  function component() {
    const element = document.createElement('div');
-
+ 
 -  // Lodash, now imported by this script
    element.innerHTML = _.join(['Hello', 'webpack'], ' ');
 -  element.classList.add('hello');
@@ -821,14 +827,14 @@ npm install toml yamljs json5 --save-dev
 -
 -  console.log(Data);
 -  console.log(Notes);
-
+ 
    return element;
  }
-
+ 
  document.body.appendChild(component());
 ```
 
-그리고 추가했던 의존성을 제거합니다.
+And remove those dependencies we added before:
 
 ```bash
 npm uninstall css-loader csv-loader json5 style-loader toml xml-loader yamljs
@@ -836,8 +842,9 @@ npm uninstall css-loader csv-loader json5 style-loader toml xml-loader yamljs
 
 ## Next guide
 
-이제 [Output Management](https://webpack.js.org/guides/output-management/)로 넘어가 보겠습니다.
+Let's move on to [Output Management](https://webpack.js.org/guides/output-management/)
+
 
 ## Further Reading
 
-- SurviveJS의 [Loading Fonts](https://survivejs.com/webpack/loading/fonts/)
+- [Loading Fonts](https://survivejs.com/webpack/loading/fonts/) on SurviveJS

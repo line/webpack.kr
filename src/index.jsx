@@ -1,16 +1,13 @@
 // Import External Dependencies
 import ReactDOM from 'react-dom';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, Route } from 'react-router-dom';
 import { BrowserRouter as AnalyticsRouter } from 'react-g-analytics';
 
-import App from './App.jsx';
+// Import Components
+import Site from './components/Site/Site';
 
-import './styles/tailwind.css';
 // Import helpers
 import isClient from './utilities/is-client';
-import { HelmetProvider } from 'react-helmet-async';
-
-const gaTrackingID = process.env.PHASE === 'real' ? 'UA-192982695-2' : 'UA-192982695-1';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -19,12 +16,15 @@ const render = isProduction ? ReactDOM.hydrate : ReactDOM.render;
 
 // Client Side Rendering
 if (isClient) {
-  render(
-    <Router id={gaTrackingID}>
-      <HelmetProvider>
-        <App />
-      </HelmetProvider>
-    </Router>,
-    document.getElementById('root')
-  );
+  render((
+      <Router id="UA-46921629-2">
+      <Route
+        path="/"
+        render={ props => (
+          <Site
+            { ...props }
+            import={ path => import(`./content/${path}`) } />
+        )} />
+    </Router>
+  ), document.getElementById('root'));
 }

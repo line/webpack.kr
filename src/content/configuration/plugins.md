@@ -10,17 +10,18 @@ contributors:
   - snitin315
 ---
 
-`plugins` 옵션은 다양한 방법으로 webpack 빌드 프로세스를 사용자 정의하는 데 사용됩니다. webpack은 사용 가능한 다양한 내장 플러그인을 `webpack.[plugin-name]`으로 제공합니다. 플러그인 및 문서 목록은 [Plugins 페이지](/plugins)를 참고하세요. 커뮤니티에는 더 많은 내용이 있습니다.
+The `plugins` option is used to customize the webpack build process in a variety of ways. webpack comes with a variety built-in plugins available under `webpack.[plugin-name]`. See [Plugins page](/plugins) for a list of plugins and documentation but note that there are a lot more out in the community.
 
-T> 참고: 이 페이지에서는 플러그인 사용에 대해서만 설명합니다. 직접 플러그인을 작성하는 데 관심이 있다면 [Writing a Plugin](/contribute/writing-a-plugin/)을 확인해보세요.
+T> Note: This page only discusses using plugins, however if you are interested in writing your own please visit [Writing a Plugin](/contribute/writing-a-plugin/).
+
 
 ## `plugins`
 
 [`[Plugin]`](/plugins/)
 
-webpack 플러그인의 배열입니다. 예를 들어 [`DefinePlugin`](/plugins/define-plugin/)을 사용하면 컴파일 때에 구성 가능한 전역 상수를 만들 수 있습니다. 이는 개발 빌드와 릴리스 빌드 간에 서로 다른 동작을 허용하는 데 유용합니다.
+An array of webpack plugins. For example, [`DefinePlugin`](/plugins/define-plugin/) allows you to create global constants which can be configured at compile time. This can be useful for allowing different behavior between development builds and release builds.
 
-**webpack.config.js**
+__webpack.config.js__
 
 ```js
 module.exports = {
@@ -28,32 +29,32 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       // Definitions...
-    }),
-  ],
+    })
+  ]
 };
 ```
 
-여러 플러그인을 사용하는 더 복잡한 예는 다음과 같습니다.
+A more complex example, using multiple plugins, might look something like this:
 
-**webpack.config.js**
+__webpack.config.js__
 
 ```js
 var webpack = require('webpack');
-// webpack에 기본적으로 제공되지 않는 플러그인을 import
+// importing plugins that do not come by default in webpack
 var DashboardPlugin = require('webpack-dashboard/plugin');
 
-// 설정에 플러그인 추가
+// adding plugins to your configuration
 module.exports = {
   //...
   plugins: [
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-    // 컴파일 타임 플러그인
+    // compile time plugins
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': '"production"',
     }),
-    // webpack-dev-server 향상 플러그인
+    // webpack-dev-server enhancement plugins
     new DashboardPlugin(),
     new webpack.HotModuleReplacementPlugin(),
-  ],
+  ]
 };
 ```

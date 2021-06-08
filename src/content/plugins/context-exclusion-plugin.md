@@ -8,10 +8,12 @@ _Context_ refers to a [require with an expression](/guides/dependency-management
 
 The `ContextExclusionPlugin` allows you to exclude context. Provide RegExp as an argument when initializing the Plugin to exclude all context that matches it.
 
-**webpack.config.js**
+__webpack.config.js__
 
-```javascript
+``` javascript
 module.exports = {
-  plugins: [new webpack.ContextExclusionPlugin(/dont/)],
+  plugins: [
+    new webpack.ContextExclusionPlugin(/dont/)
+  ]
 };
 ```

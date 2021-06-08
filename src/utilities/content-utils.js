@@ -7,8 +7,8 @@
 export const walkContent = (tree, callback) => {
   callback(tree);
 
-  if (tree.children) {
-    tree.children.forEach((child) => {
+  if ( tree.children ) {
+    tree.children.forEach(child => {
       walkContent(child, callback);
     });
   }
@@ -20,13 +20,14 @@ export const walkContent = (tree, callback) => {
  * @param  {object} tree - Any node in the content tree
  * @return {array}       - A flattened list of leaf node descendants
  */
-export const flattenContent = (tree) => {
-  if (tree.children) {
+export const flattenContent = tree => {
+  if ( tree.children ) {
     return tree.children.reduce((flat, item) => {
       return flat.concat(
         Array.isArray(item.children) ? flattenContent(item) : item
       );
     }, []);
+
   } else return [];
 };
 
@@ -49,8 +50,8 @@ export const findInContent = (tree, test) => {
  * @param  {object} tree - Any node in the content tree
  * @return {array}       - Immediate children of the given `tree` that are directories
  */
-export const extractSections = (tree) => {
-  return tree.children.filter((item) => item.type === 'directory');
+export const extractSections = tree => {
+  return tree.children.filter(item => item.type === 'directory');
 };
 
 /**
@@ -59,10 +60,8 @@ export const extractSections = (tree) => {
  * @param  {object} tree - Any node in the content tree
  * @return {array}       - All markdown descendants of the given `tree`
  */
-export const extractPages = (tree) => {
-  return flattenContent(tree).filter(
-    (item) => item.extension === '.md' || item.extension === '.mdx'
-  );
+export const extractPages = tree => {
+  return flattenContent(tree).filter(item => item.extension === '.md' || item.extension === '.mdx');
 };
 
 /**
@@ -73,24 +72,18 @@ export const extractPages = (tree) => {
  * @return {string}      - The title specified by that page or a fallback
  */
 export const getPageTitle = (tree, path) => {
-  const page = findInContent(tree, (item) => item.url === path);
+  let page = findInContent(tree, item => item.url === path);
+  let title;
 
-  // non page found
-  if (!page) return '웹팩';
+  if (!page) {
+    if (!path.endsWith('/')) path += '/';
+    title = path.replace(/.*\/(.+)\//g, '$1');
+    title = title.replace(/-/g, ' ');
+  } else if (path === '/') {
+    title = page.title;
+  } else if (path.includes('/printable')) {
+    title = 'Combined printable page | webpack';
+  } else title =`${page.title} | webpack`;
 
-  if (page) {
-    if (path.includes('/printable')) {
-      return '인쇄 가능한 페이지 | 웹팩';
-    }
-    if (path === '/') return page.title ?? '웹팩';
-    return `${page.title} | 웹팩`;
-  }
-};
-
-export const getPageDescription = (tree, path) => {
-  const page = findInContent(tree, (item) => item.url === path);
-  if (!page) return undefined;
-  if (path.includes('/printable')) return '';
-
-  return page.description ?? '';
+  return title;
 };

@@ -5,9 +5,9 @@ contributors:
   - sokra
 ---
 
-새로운 소식은 여기에서 읽어보세요.
+Read here for announcements.
 
-최근 블로그 게시글은 사이드바에서 확인하실 수 있습니다.
+See recent blog posts in the side bar.
 
 ## Popular posts
 

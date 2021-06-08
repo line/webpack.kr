@@ -13,106 +13,107 @@ contributors:
   - smelukov
 ---
 
-webpack은 다양한 환경과 _target을_ 컴파일합니다. `target`이 무엇인지 자세히 이해하고 싶다면 [target의 개념에 대한 페이지](/concepts/targets/)를 읽어보세요.
+webpack can compile for multiple environments or _targets_. To understand what a `target` is in detail, read through [the targets concept page](/concepts/targets/).
 
 ## `target`
 
 `string` `[string]` `false`
 
-특정 환경을 대상으로 하도록 webpack에 지정합니다. browserslist 설정이 없으면 `'browserslist'` 혹은 `'web'`으로 설정됩니다.
+Instructs webpack to target a specific environment. Defaults to `'browserslist'` or to `'web'` when no browserslist configuration was found.
+
 
 ### `string`
 
-다음의 문자열은 [`WebpackOptionsApply`](https://github.com/webpack/webpack/blob/master/lib/WebpackOptionsApply.js)를 통해서 지원됩니다.
+The following string values are supported via [`WebpackOptionsApply`](https://github.com/webpack/webpack/blob/master/lib/WebpackOptionsApply.js):
 
-| Option                     | Description                                                                                                                                                                                                                                                                                          |
-| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `async-node[[X].Y]`        | Node.js와 유사한 환경에서 사용할 수 있도록 컴파일합니다 (`fs`와 `vm`을 사용하여 청크를 비동기식으로 로드합니다.) |
-| `electron[[X].Y]-main`     | 메인 프로세스를 위해 [Electron](https://electronjs.org/)으로 컴파일합니다. |
-| `electron[[X].Y]-renderer` | 렌더러 프로세스를 위해 [Electron](https://electronjs.org/)으로 컴파일하여 `JsonpTemplatePlugin`, 브라우저 환경을 위한 `FunctionModulePlugin`, CommonJS와 Electron의 내장 모듈을 위한 `NodeTargetPlugin` 및 `ExternalsPlugin`을 사용하여 대상을 제공합니다. |
-| `electron[[X].Y]-preload`  | 렌더러 프로세스를 위해 [Electron](https://electronjs.org/)으로 컴파일하여 `asyncChunkLoading`을 `true`로 설정한 `NodeTemplatePlugin`, 브라우저 환경을 위한`FunctionModulePlugin`, `NodeTargetPlugin`, CommonJS 및 Electron의 내장 모듈을 위한 `ExternalsPlugin`을 사용하여 대상을 제공합니다. |
-| `node[[X].Y]`              | Node.js와 유사한 환경에서 사용할 수 있도록 컴파일 합니다. (Node.js `require`를 사용하여 청크를 로드합니다.) |
-| `node-webkit[[X].Y]`       | WebKit에서 사용하기 위해 컴파일하고 청크를 로드하기 위해 JSONP를 사용합니다. 내장된 Node.js 모듈 및 (실험적으로) [`nw.gui`](http://docs.nwjs.io/en/latest/)를 가져올 수 있습니다. |
-| `nwjs[[X].Y]`              | `node-webkit`과 동일합니다. |
-| `web`                      | 브라우저와 동일한 환경에서 사용하기 위하여 컴파일합니다. **(기본값)** |
-| `webworker`                | 웹 워커로 컴파일합니다. |
-| `esX`                      | 지정된 ECMAScript 버전으로 컴파일합니다. 예: es5, es2020 |
-| `browserslist`             | browserslist-config에서 **(browserslist config를 사용할 수 있는 경우 기본값)** 플랫폼과 ES 기능을 추론합니다. |
+Option                     | Description
+-------------------------- | -----------------------
+`async-node[[X].Y]`        | Compile for usage in a Node.js-like environment (uses `fs` and `vm` to load chunks asynchronously)
+`electron[[X].Y]-main`     | Compile for [Electron](https://electronjs.org/) for main process.
+`electron[[X].Y]-renderer` | Compile for [Electron](https://electronjs.org/) for renderer process, providing a target using `JsonpTemplatePlugin`, `FunctionModulePlugin` for browser environments and `NodeTargetPlugin` and `ExternalsPlugin` for CommonJS and Electron built-in modules.
+`electron[[X].Y]-preload`  | Compile for [Electron](https://electronjs.org/) for renderer process, providing a target using `NodeTemplatePlugin` with `asyncChunkLoading` set to `true`, `FunctionModulePlugin` for browser environments and `NodeTargetPlugin` and `ExternalsPlugin` for CommonJS and Electron built-in modules.
+`node[[X].Y]`              | Compile for usage in a Node.js-like environment (uses Node.js `require` to load chunks)
+`node-webkit[[X].Y]`       | Compile for usage in WebKit and uses JSONP for chunk loading. Allows importing of built-in Node.js modules and [`nw.gui`](http://docs.nwjs.io/en/latest/) (experimental)
+`nwjs[[X].Y]`              | The same as `node-webkit`
+`web`                      | Compile for usage in a browser-like environment __(default)__
+`webworker`                | Compile as WebWorker
+`esX`                      | Compile for specified ECMAScript version. Examples: es5, es2020.
+`browserslist`             | Infer a platform and the ES-features from a browserslist-config __(default if browserslist config is available)__
 
-예를 들어, `target`을 `"electron-main"`으로 설정하면, webpack은 electron의 여러 변수를 추가합니다.
+For example, when the `target` is set to `"electron-main"`, webpack includes multiple electron specific variables.
 
-`node`와 `electron`의 버전은 선택할 수 있습니다. 위 표에서 `[[X].Y]`로 표시됩니다.
+A version of `node` or `electron` may be optionally specified. This is denoted by the `[[X].Y]` in the table above.
 
-**webpack.config.js**
+__webpack.config.js__
 
 ```js
 module.exports = {
   // ...
-  target: 'node12.18',
+  target: 'node12.18'
 };
 ```
 
-런타임 코드를 생성하는데 사용할 수 있는 ES 기능의 결정에 도움을 줍니다. (모든 청크와 모듈은 런타임 코드로 래핑 됩니다)
+It helps determinate ES-features that may be used to generate a runtime-code (all the chunks and modules are wrapped by runtime code).
 
 #### `browserslist`
 
-프로젝트에 browserslist 설정이 있으면, webpack은 이 설정을 사용합니다.
+If a project has a browserslist config, then webpack will use it for:
 
-- 런타임 코드를 생성하는데 사용할 수 있는 ES 기능을 결정합니다.
-- 환경을 추론합니다. (예를 들어 일부 [`output.environment`](/configuration/output/#outputenvironment) 설정이 있는 `target: "node"`와 동일한 `마지막 2개의 Node 버전`).
+- Determinate ES-features that may be used to generate a runtime-code.
+- Infer an environment (e.g: `last 2 node versions` the same as `target: "node"` with some [`output.environment`](/configuration/output/#outputenvironment) settings).
 
-지원되는 browserslist
+Supported browserslist values:
 
-- `browserslist` - 자동으로 browserslist 설정과 환경을 사용 (가장 근접한 `package.json`이나 `BROWSERSLIST` 환경 변수, 자세한 사항은 [browserslist documentation](https://github.com/browserslist/browserslist#queries)을 참고)
-- `browserslist:modern` - 자동으로 해석된 browserslist 설정에서 `modern`사용
-- `browserslist:last 2 versions` - 명시적으로 browserslist 쿼리 사용(설정은 무시됨)
-- `browserslist:/path/to/config` - browserslist 설정을 지정할 수 있음
-- `browserslist:/path/to/config:modern` - browserslist 설정 및 환경을 명시적으로 지정
+- `browserslist` - use automatically resolved browserslist config and environment (from the nearest `package.json` or `BROWSERSLIST` environment variable, see [browserslist documentation](https://github.com/browserslist/browserslist#queries) for details)
+- `browserslist:modern` - use `modern` environment from automatically resolved browserslist config
+- `browserslist:last 2 versions` - use an explicit browserslist query (config will be ignored)
+- `browserslist:/path/to/config` - explicitly specify browserslist config
+- `browserslist:/path/to/config:modern` - explicitly specify browserslist config and an environment
 
 ### `[string]`
 
-복수의 target을 작성하면 기능의 공통적인 하위 집합이 사용됩니다.
+When multiple targets are passed, then common subset of features will be used:
 
-**webpack.config.js**
-
-```js
-module.exports = {
-  // ...
-  target: ['web', 'es5'],
-};
-```
-
-webpack은 웹 플랫폼을 위해 런타임 코드를 생성하고 ES5 기능만 사용합니다.
-
-현재로서는 모든 target을 같이 혼용하여 사용하지 못합니다.
-
-**webpack.config.js**
+__webpack.config.js__
 
 ```js
 module.exports = {
   // ...
-  target: ['web', 'node'],
+  target: ['web', 'es5']
 };
 ```
 
-에러의 원인이 됩니다. 현재 webpack은 범용적인 target을 지원하지 않습니다.
+webpack will generate a runtime code for web platform and will use only ES5 features.
+
+Not all targets may be mixed for now.
+
+__webpack.config.js__
+
+```js
+module.exports = {
+  // ...
+  target: ['web', 'node']
+};
+```
+
+Will cause an error. webpack does not support universal target for now.
 
 ### `false`
 
-`target`을 `false`로 설정하면, 위 목록에서 미리 정의된 target 중에 원하는 target이 없으면 플러그인이 적용되지 않습니다.
+Set `target` to `false` if none of the predefined targets from the list above meet your needs, no plugins will be applied.
 
-**webpack.config.js**
+__webpack.config.js__
 
 ```js
 module.exports = {
   // ...
-  target: false,
+  target: false
 };
 ```
 
-혹은 원하는 특정한 플러그인을 적용할 수 있습니다.
+Or you can apply specific plugins you want:
 
-**webpack.config.js**
+__webpack.config.js__
 
 ```js
 const webpack = require('webpack');
@@ -121,10 +122,10 @@ module.exports = {
   // ...
   target: false,
   plugins: [
-    new webpack.web.JsonpTemplatePlugin(options.output),
-    new webpack.LoaderTargetPlugin('web'),
-  ],
+    new webpack.JsonpTemplatePlugin(options.output),
+    new webpack.LoaderTargetPlugin('web')
+  ]
 };
 ```
 
-target 또는 [환경](/configuration/output/#outputenvironment)에 대한 정보가 없으면, ES2015를 사용합니다.
+When no information about the target or the [environment](/configuration/output/#outputenvironment) features is provided, then ES2015 will be used.

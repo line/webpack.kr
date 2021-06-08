@@ -10,25 +10,27 @@ contributors:
   - anikethsaha
 ---
 
-이 가이드에는 빌드/컴파일 성능을 개선하기 위한 몇 가지 유용한 팁이 포함되어 있습니다.
+This guide contains some useful tips for improving build/compilation performance.
 
 ---
 
 ## General
 
-다음의 모범 사례는 [development](/guides/development) 또는 [production](/guides/production)에서 빌드 스크립트를 실행하는 경우 도움이 될 것입니다.
+The following best practices should help, whether you're running build scripts in [development](/guides/development) or [production](/guides/production).
+
 
 ### Stay Up to Date
 
-최신 webpack 버전을 사용하세요. 우리는 항상 성능을 개선하고 있습니다. webpack의 권장 최신 버전은 다음과 같습니다.
+Use the latest webpack version. We are always making performance improvements. The latest recommended version of webpack is:
 
 [![latest webpack version](https://img.shields.io/github/package-json/v/webpack/webpack.svg?label=webpack&style=flat-square&maxAge=3600)](https://github.com/webpack/webpack/releases)
 
-**Node.js를** 최신 상태로 유지하면 성능에 도움이 될 수 있습니다. 또한 패키지 관리자(예: `npm` 또는 `yarn`)를 최신 상태로 유지하는 것도 도움이 될 수 있습니다. 최신 버전은 더 효율적인 모듈 트리를 생성하고 해석하는 속도를 높입니다.
+Staying up-to-date with __Node.js__  can also help with performance. On top of this, keeping your package manager (e.g. `npm` or `yarn`) up-to-date can also help. Newer versions create more efficient module trees and increase resolving speed.
+
 
 ### Loaders
 
-최소한으로 필요한 모듈에만 로더를 적용하세요.
+Apply loaders to the minimal number of modules necessary. Instead of:
 
 ```js
 module.exports = {
@@ -44,7 +46,7 @@ module.exports = {
 };
 ```
 
-위와 같은 방식보다는 아래처럼 `include` 필드를 사용하여 실제로 변환해야 하는 모듈에만 로더를 적용합니다.
+Use the `include` field to only apply the loader modules that actually need to be transformed by it:
 
 ```js
 const path = require('path');
@@ -63,67 +65,77 @@ module.exports = {
 };
 ```
 
+
 ### Bootstrap
 
-각각의 추가 로더/플러그인에는 부팅 시간이 있습니다. 가능한 한 도구를 적게 사용하세요.
+Each additional loader/plugin has a bootup time. Try to use as few tools as possible.
+
 
 ### Resolving
 
-아래의 단계들로 해석 속도를 향상 시킬 수 있습니다.
+The following steps can increase resolving speed:
 
-- 파일 시스템의 호출 수가 증가되기 때문에 `resolve.modules`, `resolve.extensions`, `resolve.mainFiles`, `resolve.descriptionFiles`의 항목 수를 최소화하세요.
-- 심볼릭 링크를 사용하지 않는 경우 `resolve.symlinks: false`를 설정하세요(예: `npm link` 또는 `yarn link`).
-- 컨텍스트에 특정적이지 않은 커스텀 해석 플러그인을 사용하는 경우 `resolve.cacheWithContext: false`를 설정하세요.
+- Minimize the number of items in `resolve.modules`, `resolve.extensions`, `resolve.mainFiles`, `resolve.descriptionFiles`, as they increase the number of filesystem calls.
+- Set `resolve.symlinks: false` if you don't use symlinks (e.g. `npm link` or `yarn link`).
+- Set `resolve.cacheWithContext: false` if you use custom resolving plugins, that are not context specific.
+
 
 ### Dlls
 
-자주 변경되지 않는 코드를 별도의 컴파일로 이동하려면 `DllPlugin`을 사용하세요. 이렇게 하면 빌드 프로세스가 복잡해 지지만 애플리케이션의 컴파일 속도가 향상됩니다.
+Use the `DllPlugin` to move code that is changed less often into a separate compilation. This will improve the application's compilation speed, although it does increase complexity of the build process.
+
 
 ### Smaller = Faster
 
-빌드 성능을 높이려면 컴파일의 총 크기를 줄이세요. 청크를 작게 유지하세요.
+Decrease the total size of the compilation to increase build performance. Try to keep chunks small.
 
-- 더 적고 작은 라이브러리 사용
-- 다중 페이지 애플리케이션에서 `SplitChunksPlugin`을 사용
-- 다중 페이지 애플리케이션의 `async` 모드에서 `SplitChunksPlugin`을 사용
-- 사용하지 않는 코드를 제거
-- 현재 개발중인 코드의 일부만 컴파일
+- Use fewer/smaller libraries.
+- Use the `SplitChunksPlugin` in Multi-Page Applications.
+- Use the `SplitChunksPlugin` in `async` mode in Multi-Page Applications.
+- Remove unused code.
+- Only compile the part of the code you are currently developing on.
+
 
 ### Worker Pool
 
-`thread-loader`는 작업량이 큰 로더를 worker 풀에 작업을 분담할 때 사용할 수 있습니다.
+The `thread-loader` can be used to offload expensive loaders to a worker pool.
 
-W> Node.js 런타임 및 로더에 대한 부팅 오버헤드가 있음으로 너무 많은 worker를 사용하지 마세요. worker와 메인 프로세스 간의 모듈 전송을 최소화하세요. IPC는 큰 비용을 필요로 합니다.
+W> Don't use too many workers, as there is a boot overhead for the Node.js runtime and the loader. Minimize the module transfers between worker and main process. IPC is expensive.
+
 
 ### Persistent cache
 
-webpack 설정에서 [`cache`](/configuration/other-options/#cache) 옵션을 사용하세요. `package.json`의 `"postinstall"`에서 캐시 디렉터리를 지우세요.
+Use [`cache`](/configuration/other-options/#cache) option in webpack configuration. Clear cache directory on `"postinstall"` in `package.json`.
 
-T> 영구 캐싱을 위해 yarn PnP 버전 3 [`yarn 2 berry`](https://yarnpkg.com/features/pnp)를 지원합니다.
+
+T> We support yarn PnP version 3 [`yarn 2 berry`](https://yarnpkg.com/features/pnp) for persistent caching.
 
 ### Custom plugins/loaders
 
-커스텀 플러그인과 로더에서 성능 문제가 발생하지 않도록 프로파일 하세요.
+Profile them to not introduce a performance problem here.
 
 ### Progress plugin
 
-webpack 구성에서 `ProgressPlugin`을 제거하여 빌드 시간을 단축 할 수 있습니다. `ProgressPlugin`은 빠른 빌드에 유용하지 않을 수 있기 때문에 이점을 잘 활용하고 있는지 확인하세요.
+It is possible to shorten build times by removing `ProgressPlugin` from webpack's configuration. Keep in mind, `ProgressPlugin` might not provide as much value for fast builds as well, so make sure you are leveraging the benefits of using it.
 
 ---
 
+
 ## Development
 
-다음 단계는 _개발 단계에서_ 특히 유용합니다.
+The following steps are especially useful in _development_.
+
 
 ### Incremental Builds
 
-webpack의 watch 모드를 사용하세요. 다른 도구를 사용하여 파일을 보고 webpack을 호출하지 마세요. 내장된 watch 모드는 타임 스탬프를 추적하고 캐시 무효화를 위해 이 정보를 컴파일에 전달합니다.
+Use webpack's watch mode. Don't use other tools to watch your files and invoke webpack. The built-in watch mode will keep track of timestamps and passes this information to the compilation for cache invalidation.
 
-일부 설정에서는 watch가 폴링 모드로 돌아갑니다. watch 되는 파일이 많으면 이로 인해 많은 CPU 로드가 발생할 수 있습니다. 이 경우 `watchOptions.poll`을 사용하여 폴링 간격을 늘릴 수 있습니다.
+In some setups, watching falls back to polling mode. With many watched files, this can cause a lot of CPU load. In these cases, you can increase the polling interval with `watchOptions.poll`.
+
 
 ### Compile in Memory
 
-아래의 유틸리티는 디스크에 쓰는 대신 메모리에서 애셋을 컴파일하고 제공하여 성능을 향상시킵니다.
+The following utilities improve performance by compiling and serving assets in memory rather than writing to disk:
 
 - `webpack-dev-server`
 - `webpack-hot-middleware`
@@ -131,21 +143,22 @@ webpack의 watch 모드를 사용하세요. 다른 도구를 사용하여 파일
 
 ### stats.toJson speed
 
-webpack 4는 기본적으로 `stats.toJson()`을 사용하여 많은 양의 데이터를 출력합니다. 증분 단계에서 필요한 경우가 아니면 `stats` 개체의 일부를 찾지 마세요. v3.1.3 이후의 `webpack-dev-server`에는 증분 빌드 단계에서 `stats` 객체에서 검색되는 데이터의 양을 최소화하기 위한 상당한 성능 수정이 포함되었습니다.
+webpack 4 outputs a large amount of data with its `stats.toJson()` by default. Avoid retrieving portions of the `stats` object unless necessary in the incremental step. `webpack-dev-server` after v3.1.3 contained a substantial performance fix to minimize the amount of data retrieved from the `stats` object per incremental build step.
 
 ### Devtool
 
-서로 다른 `devtool` 설정 간의 성능 차이에 유의하세요.
+Be aware of the performance differences between the different `devtool` settings.
 
-- `"eval"`은 성능이 좋지만 트랜스파일 된 코드에는 도움이 되지 않습니다.
-- `cheap-source-map` 변형은 매핑의 질이 약간 떨어지지만, 성능이 좋습니다.
-- 증분 빌드에서는 `eval-source-map` 변형을 사용합니다.
+- `"eval"` has the best performance, but doesn't assist you for transpiled code.
+- The `cheap-source-map` variants are more performant if you can live with the slightly worse mapping quality.
+- Use a `eval-source-map` variant for incremental builds.
 
-T> 대부분의 경우 `eval-cheap-module-source-map`이 가장 좋은 옵션입니다.
+T> In most cases, `eval-cheap-module-source-map` is the best option.
+
 
 ### Avoid Production Specific Tooling
 
-특정 유틸리티, 플러그인 및 로더는 production으로 빌드할 때만 의미가 있습니다. 예를 들어, 개발 중에 `TerserPlugin`을 사용하여 코드를 축소하고 조작하는 것은 일반적으로 이치에 맞지 않습니다. 이러한 도구는 일반적으로 개발 단계에서 제외되어야 합니다.
+Certain utilities, plugins, and loaders only make sense when building for production. For example, it usually doesn't make sense to minify and mangle your code with the `TerserPlugin` while in development. These tools should typically be excluded in development:
 
 - `TerserPlugin`
 - `[fullhash]`/`[chunkhash]`/`[contenthash]`
@@ -153,24 +166,25 @@ T> 대부분의 경우 `eval-cheap-module-source-map`이 가장 좋은 옵션입
 - `AggressiveMergingPlugin`
 - `ModuleConcatenationPlugin`
 
+
 ### Minimal Entry Chunk
 
-webpack은 파일 시스템에 업데이트된 청크만 내보냅니다. 일부 설정 옵션의 경우(HMR, `output.chunkFilename`,`[fullhash]` 안의 `[name]`/`[chunkhash]`/`[contenthash]`) 변경된 청크와 함께 엔트리 청크가 무효화됩니다.
+webpack only emits updated chunks to the filesystem. For some configuration options, (HMR, `[name]`/`[chunkhash]`/`[contenthash]` in `output.chunkFilename`, `[fullhash]`) the entry chunk is invalidated in addition to the changed chunks.
 
-엔트리 청크를 작게 유지하여 내보내는 비용이 저렴한지 확인하세요. 아래의 설정은 런타임 코드에 대한 추가 청크를 생성하므로 생성 비용이 저렴합니다.
+Make sure the entry chunk is cheap to emit by keeping it small. The following configuration creates an additional chunk for the runtime code, so it's cheap to generate:
 
 ```js
 module.exports = {
   // ...
   optimization: {
-    runtimeChunk: true,
-  },
+    runtimeChunk: true
+  }
 };
 ```
 
 ### Avoid Extra Optimization Steps
 
-webpack은 크기 및 부하 성능에 대한 출력을 최적화하기 위해 추가 알고리즘 작업을 수행합니다. 이러한 최적화는 작은 코드 베이스에서는 성능이 좋지만 큰 코드에서는 비용이 많이들 수 있습니다.
+webpack does extra algorithmic work to optimize the output for size and load performance. These optimizations are performant for smaller codebases, but can be costly in larger ones:
 
 ```js
 module.exports = {
@@ -185,7 +199,7 @@ module.exports = {
 
 ### Output Without Path Info
 
-webpack은 출력 번들에 경로 정보를 생성하는 기능이 있습니다. 그러나 이것은 수천 개의 모듈을 번들로 묶는 프로젝트에서 가비지 컬렉션에 과부화를 줍니다. `options.output.pathinfo` 설정에서 이 기능을 끄세요.
+webpack has the ability to generate path info in the output bundle. However, this puts garbage collection pressure on projects that bundle thousands of modules. Turn this off in the `options.output.pathinfo` setting:
 
 ```js
 module.exports = {
@@ -199,13 +213,15 @@ module.exports = {
 ### Node.js Versions 8.9.10-9.11.1
 
 
-Node.js 버전 8.9.10 - 9.11.1의 ES2015 `Map` 및 `Set` 구현에서 [성능 저하](https://github.com/nodejs/node/issues/19769)가 있었습니다. webpack은 이러한 데이터 구조를 자유롭게 사용하므로 이 성능저하는 컴파일 시간에 영향을 줍니다.
+There was a [performance regression](https://github.com/nodejs/node/issues/19769) in Node.js versions 8.9.10 - 9.11.1 in the ES2015 `Map` and `Set` implementations. webpack uses those data structures liberally, so this regression affects compile times.
 
-이전 및 이후 Node.js 버전은 영향을 받지 않습니다.
+Earlier and later Node.js versions are not affected.
+
 
 ### TypeScript Loader
 
-`ts-loader`를 사용할 때 빌드 시간을 개선하려면 `transpileOnly` 로더 옵션을 사용하세요. 이 옵션은 자체적으로 타입 검사를 해제합니다. 타입 검사를 다시 받으려면 [`ForkTsCheckerWebpackPlugin`](https://www.npmjs.com/package/fork-ts-checker-webpack-plugin)을 사용하세요. 이렇게 각각 별도의 프로세스로 이동시키면 TypeScript 유형 검사 및 ESLint linting 속도가 빨라집니다.
+To improve the build time when using `ts-loader`, use the `transpileOnly` loader option. On its own, this option turns off type checking. To gain type checking again, use the [`ForkTsCheckerWebpackPlugin`](https://www.npmjs.com/package/fork-ts-checker-webpack-plugin). This speeds up TypeScript type checking and ESLint linting by moving each to a separate process.
+
 
 ```js
 module.exports = {
@@ -215,51 +231,57 @@ module.exports = {
     {
       loader: 'ts-loader',
       options: {
-        transpileOnly: true,
+        transpileOnly: true
       },
     },
   ],
 };
 ```
 
-T> `ts-loader` GitHub 저장소에 [전체 예시](https://github.com/TypeStrong/ts-loader/tree/master/examples/fork-ts-checker-webpack-plugin)가 있습니다.
+T> There is a [full example](https://github.com/TypeStrong/ts-loader/tree/master/examples/fork-ts-checker-webpack-plugin) on the `ts-loader` GitHub repository.
 
 ---
 
+
 ## Production
 
-다음 단계는 _production에서_ 특히 유용합니다.
+The following steps are especially useful in _production_.
 
-W> **작은 성능 향상을 위해 애플리케이션의 품질을 희생하지 마세요!** 대부분의 경우 최적화 품질이 빌드 성능보다 더 중요합니다.
+W> __Don't sacrifice the quality of your application for small performance gains!__ Keep in mind that optimization quality is, in most cases, more important than build performance.
 
 
 ### Multiple Compilations
 
-다중 컴파일을 사용할 때 다음 도구가 도움이 될 수 있습니다.
+When using multiple compilations, the following tools can help:
 
-- [`parallel-webpack`](https://github.com/trivago/parallel-webpack): worker 풀에서 컴파일 할 수 있습니다.
-- `cache-loader`: 캐시는 여러 컴파일 간에 공유될 수 있습니다.
+- [`parallel-webpack`](https://github.com/trivago/parallel-webpack): It allows for compilation in a worker pool.
+- `cache-loader`: The cache can be shared between multiple compilations.
+
 
 ### Source Maps
 
-소스맵은 비용이 많이 듭니다. 정말로 필요한가요?
+Source maps are really expensive. Do you really need them?
 
 ---
 
+
 ## Specific Tooling Issues
 
-다음 도구에는 빌드 성능을 저하시킬 수 있는 특정 문제가 있습니다.
+The following tools have certain problems that can degrade build performance:
+
 
 ### Babel
 
-- preset/plugins 수를 최소화하세요.
+- Minimize the number of preset/plugins
+
 
 ### TypeScript
 
-- 별도의 프로세스에서 타입 검사를 위해 `fork-ts-checker-webpack-plugin`을 사용하세요.
-- 타입 검사를 건너뛰도록 로더를 설정합니다.
-- `happyPackMode: true` / `transpileOnly: true`에서 `ts-loader`를 사용합니다.
+- Use the `fork-ts-checker-webpack-plugin` for typechecking in a separate process.
+- Configure loaders to skip typechecking.
+- Use the `ts-loader` in `happyPackMode: true` / `transpileOnly: true`.
+
 
 ### Sass
 
-- `node-sass`에는 Node.js 스레드 풀의 스레드를 차단하는 버그가 있습니다. `thread-loader`와 함께 사용하는 경우 `workerParallelJobs: 2`를 설정하세요.
+- `node-sass` has a bug which blocks threads from the Node.js thread pool. When using it with the `thread-loader` set `workerParallelJobs: 2`.

@@ -9,23 +9,24 @@ contributors:
   - EugeneHlushko
 ---
 
-T> 이 가이드는 [_시작하기_](/guides/getting-started/) 가이드에서 파생했습니다.
+T> This guide stems from the [_Getting Started_](/guides/getting-started/) guide.
 
-[TypeScript는](https://www.typescriptlang.org) 일반 JavaScript로 컴파일되고 타입이 있는 상위 집합입니다. 이 가이드에서는 TypeScript를 webpack과 통합하는 방법에 대해 알아보겠습니다.
+[TypeScript](https://www.typescriptlang.org) is a typed superset of JavaScript that compiles to plain JavaScript. In this guide we will learn how to integrate TypeScript with webpack.
+
 
 ## Basic Setup
 
-먼저 다음을 실행하여 TypeScript 컴파일러와 로더를 설치하세요.
+First install the TypeScript compiler and loader by running:
 
-```bash
+``` bash
 npm install --save-dev typescript ts-loader
 ```
 
-이제 디렉터리 구조와 설정 파일을 수정합니다.
+Now we'll modify the directory structure & the configuration files:
 
-**project**
+__project__
 
-```diff
+``` diff
   webpack-demo
   |- package.json
 + |- tsconfig.json
@@ -39,11 +40,11 @@ npm install --save-dev typescript ts-loader
   |- /node_modules
 ```
 
-**tsconfig.json**
+__tsconfig.json__
 
-JSX를 지원하도록 간단하게 설정하고 TypeScript를 ES5로 컴파일 합니다.
+Let's set up a simple configuration to support JSX and compile TypeScript down to ES5...
 
-```json
+``` json
 {
   "compilerOptions": {
     "outDir": "./dist/",
@@ -51,21 +52,20 @@ JSX를 지원하도록 간단하게 설정하고 TypeScript를 ES5로 컴파일 
     "module": "es6",
     "target": "es5",
     "jsx": "react",
-    "allowJs": true,
-    "moduleResolution": "node",
+    "allowJs": true
   }
 }
 ```
 
-`tsconfig.json` 설정 옵션에 대한 자세한 내용은 [TypeScript 문서를](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html) 참고하세요.
+See [TypeScript's documentation](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html) to learn more about `tsconfig.json` configuration options.
 
-webpack 설정에 대한 자세한 내용은 [설정 콘셉트를](/concepts/configuration/) 참고하세요.
+To learn more about webpack configuration, see the [configuration concepts](/concepts/configuration/).
 
-이제 TypeScript를 처리하도록 webpack을 설정해 보겠습니다.
+Now let's configure webpack to handle TypeScript:
 
-**webpack.config.js**
+__webpack.config.js__
 
-```js
+``` js
 const path = require('path');
 
 module.exports = {
@@ -80,7 +80,7 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.js'],
+    extensions: [ '.tsx', '.ts', '.js' ],
   },
   output: {
     filename: 'bundle.js',
@@ -89,13 +89,13 @@ module.exports = {
 };
 ```
 
-이렇게하면 webpack이 `./index.ts` 를 통해 진입하고, `ts-loader`를 통해 모든 `.ts` 및 `.tsx` 파일을 로드합니다. 그리고 현재 디렉터리에 `bundle.js`파일을 출력합니다.
+This will direct webpack to _enter_ through `./index.ts`, _load_ all `.ts` and `.tsx` files through the `ts-loader`, and _output_ a `bundle.js` file in our current directory.
 
-`lodash`의 정의에는 기본 export 표현이 없기 때문에, 이제 `./index.ts`의 `lodash`를 import하는 부분을 변경해 보겠습니다.
+Now lets change the import of `lodash` in our `./index.ts` due to the fact that there is no default export present in `lodash` definitions.
 
-**./index.ts**
+__./index.ts__
 
-```diff
+``` diff
 - import _ from 'lodash';
 + import * as _ from 'lodash';
 
@@ -110,27 +110,27 @@ module.exports = {
   document.body.appendChild(component());
 ```
 
-T> import 부분에서 기본적으로 이 작업을 하도록 하고 TypeScript에서 `import _ from 'lodash';` 문법을 유지하기 위해 **tsconfig.json** 파일에 `"allowSyntheticDefaultImports" : true` 와 `"esModuleInterop" : true`로 설정 합니다. 이는 TypeScript 설정과 연관이 있기때문에 이 가이드에서는 정보를 제공하기 위해서만 언급하겠습니다.
+T> To make imports do this by default and keep `import _ from 'lodash';` syntax in TypeScript, set `"allowSyntheticDefaultImports" : true` and `"esModuleInterop" : true` in your __tsconfig.json__ file. This is related to TypeScript configuration and mentioned in our guide only for your information.
 
 ## Loader
 
 [`ts-loader`](https://github.com/TypeStrong/ts-loader)
 
-이 가이드에서는 `ts-loader`를 사용하여 다른 웹 애셋 import 같은 추가적인 webpack 기능을 조금 더 쉽게 활성화 할 수 있습니다.
+We use `ts-loader` in this guide as it makes enabling additional webpack features, such as importing other web assets, a bit easier.
 
-W> `ts-loader` 는 TypeScript 컴파일러인 `tsc`를 사용하고, `tsconfig.json`의 설정을 따릅니다. [`모듈을`](https://www.typescriptlang.org/tsconfig#module) "CommonJS"로 설정하지 않도록 주의하세요. 안그러면 webpack이 [코드 tree-shake를](/guides/tree-shaking) 할 수 없습니다.
+W> `ts-loader` uses `tsc`, the TypeScript compiler, and relies on your `tsconfig.json` configuration. Make sure to avoid setting [`module`](https://www.typescriptlang.org/tsconfig#module) to "CommonJS", or webpack won't be able to [tree-shake your code](/guides/tree-shaking).
 
-이미 [`babel-loader`를](https://github.com/babel/babel-loader) 사용하여 코드를 트랜스파일 하는 경우라면 [`@babel/preset-typescript`](https://babeljs.io/docs/en/babel-preset-typescript)를 사용하여 Babel이 추가 로더를 사용하는 대신 JavaScript와 TypeScript 파일을 모두 처리하도록 합니다. `ts-loader`와 달리, 기본 [`@babel/plugin-transform-typescript`](https://babeljs.io/docs/en/babel-plugin-transform-typescript) 플러그인은 어떠한 타입 검사도 수행하지 않습니다.
+Note that if you're already using [`babel-loader`](https://github.com/babel/babel-loader) to transpile your code, you can use [`@babel/preset-typescript`](https://babeljs.io/docs/en/babel-preset-typescript) and let Babel handle both your JavaScript and TypeScript files instead of using an additional loader. Keep in mind that, contrary to `ts-loader`, the underlying [`@babel/plugin-transform-typescript`](https://babeljs.io/docs/en/babel-plugin-transform-typescript) plugin does not perform any type checking.
 
 ## Source Maps
 
-소스맵에 대한 자세한 내용은 [개발 가이드를](/guides/development) 참고하세요.
+To learn more about source maps, see the [development guide](/guides/development).
 
-소스맵을 사용하려면 TypeScript가 컴파일된 JavaScript 파일로 인라인 소스맵을 출력하도록 설정해야 합니다. TypeScript 설정에 다음 내용을 꼭 추가해야합니다.
+To enable source maps, we must configure TypeScript to output inline source maps to our compiled JavaScript files. The following line must be added to our TypeScript configuration:
 
-**tsconfig.json**
+__tsconfig.json__
 
-```diff
+``` diff
   {
     "compilerOptions": {
       "outDir": "./dist/",
@@ -139,17 +139,16 @@ W> `ts-loader` 는 TypeScript 컴파일러인 `tsc`를 사용하고, `tsconfig.j
       "module": "commonjs",
       "target": "es5",
       "jsx": "react",
-      "allowJs": true,
-      "moduleResolution": "node",
+      "allowJs": true
     }
   }
 ```
 
-이제 webpack에 이러한 소스맵을 추출해 최종 번들에 포함되도록 지시해야 합니다.
+Now we need to tell webpack to extract these source maps and include in our final bundle:
 
-**webpack.config.js**
+__webpack.config.js__
 
-```diff
+``` diff
   const path = require('path');
 
   module.exports = {
@@ -174,37 +173,40 @@ W> `ts-loader` 는 TypeScript 컴파일러인 `tsc`를 사용하고, `tsconfig.j
   };
 ```
 
-자세한 내용은 [개발자 도구 문서를](/configuration/devtool/) 참고하세요.
+See the [devtool documentation](/configuration/devtool/) for more information.
+
 
 ## Using Third Party Libraries
 
-npm으로부터 타사 라이브러리를 설치할 때는 해당 라이브러리에 대한 타입 정의를 설치해야 한다는 사실을 기억해야 합니다. 이런 정의는 [TypeSearch에서](https://microsoft.github.io/TypeSearch/) 찾을 수 있습니다.
+When installing third party libraries from npm, it is important to remember to install the typing definition for that library. These definitions can be found at [TypeSearch](https://microsoft.github.io/TypeSearch/).
 
-예를 들어 lodash를 설치하려는 경우 다음 명령을 실행해서 타입을 가져올 수 있습니다.
+For example if we want to install lodash we can run the following command to get the typings for it:
 
-```bash
+``` bash
 npm install --save-dev @types/lodash
 ```
 
-자세한 내용은 [블로그 포스트를](https://blogs.msdn.microsoft.com/typescript/2016/06/15/the-future-of-declaration-files/) 참고하세요.
+For more information see [this blog post](https://blogs.msdn.microsoft.com/typescript/2016/06/15/the-future-of-declaration-files/).
+
 
 ## Importing Other Assets
 
-TypeScript와 함께 비코드 애셋을 사용하려면 이러한 import에 대한 타입을 연기해야 합니다. 이를 위해서 프로젝트에 TypeScript에 대한 사용자 정의를 나타내는 `custom.d.ts` 파일이 필요합니다. `.svg` 파일에 대한 선언을 설정해 보겠습니다.
+To use non-code assets with TypeScript, we need to defer the type for these imports. This requires a `custom.d.ts` file which signifies custom definitions for TypeScript in our project. Let's set up a declaration for `.svg` files:
 
-**custom.d.ts**
+__custom.d.ts__
 
 ```typescript
-declare module '*.svg' {
+declare module "*.svg" {
   const content: any;
   export default content;
 }
 ```
 
-여기에서는 `.svg`로 끝나는 import를 지정하고 모듈의 `content`를 `any`로 정의하여 SVG를 위한 새로운 모듈을 선언합니다. 타입을 문자열로 정의하여 URL이라는 것을 더 명확하게 할 수 있습니다. CSS, SCSS, JSON 등을 포함한 다른 애셋에도 동일한 개념이 적용됩니다.
+Here we declare a new module for SVGs by specifying any import that ends in `.svg` and defining the module's `content` as `any`. We could be more explicit about it being a url by defining the type as string. The same concept applies to other assets including CSS, SCSS, JSON and more.
+
 
 ## Build Performance
 
-W> 이로 인해 빌드 성능이 저하 될 수 있습니다.
+W> This may degrade build performance.
 
-빌드 도구에 대한 [빌드 성능 가이드를](/guides/build-performance/) 참고하세요.
+See the [Build Performance](/guides/build-performance/) guide on build tooling.

@@ -9,9 +9,13 @@ The `NormalModuleReplacementPlugin` allows you to replace resources that match `
 
 This can be useful for allowing different behaviour between builds.
 
-```js
-new webpack.NormalModuleReplacementPlugin(resourceRegExp, newResource);
+``` js
+new webpack.NormalModuleReplacementPlugin(
+  resourceRegExp,
+  newResource
+);
 ```
+
 
 ## Basic Example
 
@@ -21,12 +25,13 @@ Say you have a configuration file `some/path/config.development.module.js` and a
 
 Just add the following plugin when building for production:
 
-```javascript
+``` javascript
 new webpack.NormalModuleReplacementPlugin(
   /some\/path\/config\.development\.js/,
   './config.production.js'
 );
 ```
+
 
 ## Advanced Example
 
@@ -34,46 +39,41 @@ Conditional build depending on an [specified environment](/configuration/configu
 
 Say you want a configuration with specific values for different build targets.
 
-```javascript
-module.exports = function (env) {
+``` javascript
+module.exports = function(env) {
   var appTarget = env.APP_TARGET || 'VERSION_A';
   return {
     plugins: [
-      new webpack.NormalModuleReplacementPlugin(
-        /(.*)-APP_TARGET(\.*)/,
-        function (resource) {
-          resource.request = resource.request.replace(
-            /-APP_TARGET/,
-            `-${appTarget}`
-          );
-        }
-      ),
-    ],
+      new webpack.NormalModuleReplacementPlugin(/(.*)-APP_TARGET(\.*)/, function(resource) {
+        resource.request = resource.request.replace(/-APP_TARGET/, `-${appTarget}`);
+      })
+    ]
   };
+
 };
 ```
 
 Create the two configuration files:
 
-**app/config-VERSION_A.js**
+__app/config-VERSION_A.js__
 
-```javascript
+``` javascript
 export default {
-  title: 'I am version A',
+  title : 'I am version A'
 };
 ```
 
-**app/config-VERSION_B.js**
+__app/config-VERSION_B.js__
 
-```javascript
+``` javascript
 export default {
-  title: 'I am version B',
+  title : 'I am version B'
 };
 ```
 
 Then import that configuration using the keyword you're looking for in the regexp:
 
-```javascript
+``` javascript
 import config from 'app/config-APP_TARGET';
 console.log(config.title);
 ```
@@ -81,9 +81,9 @@ console.log(config.title);
 And now you just get the right configuration imported depending on which target you're building for:
 
 ```bash
-npx webpack --env APP_TARGET=VERSION_A
+webpack --env.APP_TARGET VERSION_A
 => 'I am version A'
 
-npx webpack --env APP_TARGET=VERSION_B
+webpack --env.APP_TARGET VERSION_B
 => 'I am version B'
 ```

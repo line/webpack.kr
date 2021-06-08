@@ -17,7 +17,8 @@ const absoluteFilename = path.resolve(
   filename
 );
 
-const graphqlEndpoint = 'https://api.opencollective.com/graphql/v2';
+const graphqlEndpoint =
+  'https://api.opencollective.com/graphql/v2';
 
 // https://github.com/opencollective/opencollective-api/blob/master/server/graphql/v2/query/TransactionsQuery.ts#L81
 const graphqlPageSize = 1000;
@@ -92,9 +93,9 @@ const getAllNodes = async (graphqlQuery, getNodes) => {
       method: 'POST',
       body: JSON.stringify(body),
       headers: {
-        'Content-Type': 'application/json',
-      },
-    }).then((response) => response.json());
+        'Content-Type': 'application/json'
+      }
+    }).then(response => response.json());
     const nodes = getNodes(result.data);
     allNodes = [...allNodes, ...nodes];
     body.variables.offset += graphqlPageSize;
@@ -106,6 +107,7 @@ const getAllNodes = async (graphqlQuery, getNodes) => {
     }
   }
 };
+
 
 (async () => {
   const members = await getAllNodes(

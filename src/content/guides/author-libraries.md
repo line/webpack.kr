@@ -14,17 +14,18 @@ contributors:
   - wizardofhogwarts
 ---
 
-애플리케이션 외에도 JavaScript 라이브러리를 번들링 할 때도 webpack을 사용할 수 있습니다. 아래의 가이드는 번들링 전략을 간소화하려는 라이브러리 작성자를 위한 것입니다.
+Aside from applications, webpack can also be used to bundle JavaScript libraries. The following guide is meant for library authors looking to streamline their bundling strategy.
+
 
 ## Authoring a Library
 
-사용자가 1부터 5까지의 숫자를 숫자 표현에서 텍스트로 또는 그 반대로 변환할 수 있는 작은 라이브러리 `webpack-numbers`를 작성한다고 가정해 보겠습니다. 예. 2 에서 'two'.
+Let's assume that you are writing a small library ,`webpack-numbers`, that allows users to convert the numbers 1 through 5 from their numeric representation to a textual one and vice-versa, e.g. 2 to 'two'.
 
-프로젝트의 기본 구조는 다음과 같을 것입니다.
+The basic project structure may look like this:
 
-**project**
+__project__
 
-```diff
+``` diff
 +  |- webpack.config.js
 +  |- package.json
 +  |- /src
@@ -32,16 +33,14 @@ contributors:
 +    |- ref.json
 ```
 
-npm을 초기화하고 `webpack`, `webpack-cli`, `lodash`를 설치합니다.
+Initialize npm, install webpack and lodash:
 
-```bash
+``` bash
 npm init -y
-npm install --save-dev webpack webpack-cli lodash
+npm install --save-dev webpack lodash
 ```
 
-라이브러리에 번들 되는 것을 막고 라이브러리가 비대해지는 것을 방지하기 위해 `lodash`를 `dependencies` 대신 `devDependencies`로 설치합니다.
-
-**src/ref.json**
+__src/ref.json__
 
 ```json
 [
@@ -72,40 +71,100 @@ npm install --save-dev webpack webpack-cli lodash
 ]
 ```
 
-**src/index.js**
+__src/index.js__
 
-```js
+``` js
 import _ from 'lodash';
 import numRef from './ref.json';
 
 export function numToWord(num) {
-  return _.reduce(
-    numRef,
-    (accum, ref) => {
-      return ref.num === num ? ref.word : accum;
-    },
-    ''
-  );
+  return _.reduce(numRef, (accum, ref) => {
+    return ref.num === num ? ref.word : accum;
+  }, '');
 }
 
 export function wordToNum(word) {
-  return _.reduce(
-    numRef,
-    (accum, ref) => {
-      return ref.word === word && word.toLowerCase() ? ref.num : accum;
-    },
-    -1
-  );
+  return _.reduce(numRef, (accum, ref) => {
+    return ref.word === word && word.toLowerCase() ? ref.num : accum;
+  }, -1);
 }
 ```
 
-## Webpack Configuration
+The usage specification for the library use will be as follows:
 
-아래의 기본적인 webpack 설정으로 시작해봅시다.
+- __ES2015 module import:__
 
-**webpack.config.js**
+``` js
+import * as webpackNumbers from 'webpack-numbers';
+// ...
+webpackNumbers.wordToNum('Two');
+```
 
-```js
+- __CommonJS module require:__
+
+``` js
+const webpackNumbers = require('webpack-numbers');
+// ...
+webpackNumbers.wordToNum('Two');
+```
+
+- __AMD module require:__
+
+``` js
+require(['webpackNumbers'], function (webpackNumbers) {
+  // ...
+  webpackNumbers.wordToNum('Two');
+});
+```
+
+The consumer also can use the library by loading it via a script tag:
+
+``` html
+<!doctype html>
+<html>
+  ...
+  <script src="https://unpkg.com/webpack-numbers"></script>
+  <script>
+    // ...
+    // Global variable
+    webpackNumbers.wordToNum('Five')
+    // Property in the window object
+    window.webpackNumbers.wordToNum('Five')
+    // ...
+  </script>
+</html>
+```
+
+Note that we can also configure it to expose the library in the following ways:
+
+- Property in the global object, for node.
+- Property in the `this` object.
+
+For full library configuration and code please refer to [webpack-library-example](https://github.com/kalcifer/webpack-library-example).
+
+
+## Base Configuration
+
+Now let's bundle this library in a way that will achieve the following goals:
+
+- Using `externals` to avoid bundling `lodash`, so the consumer is required to load it.
+- Setting the library name as `webpack-numbers`.
+- Exposing the library as a variable called `webpackNumbers`.
+- Being able to access the library inside Node.js.
+
+Also, the consumer should be able to access the library in the following ways:
+
+- ES2015 module. i.e. `import webpackNumbers from 'webpack-numbers'`.
+- CommonJS module. i.e. `require('webpack-numbers')`.
+- Global variable when included through `script` tag.
+
+
+
+We can start with this basic webpack configuration:
+
+__webpack.config.js__
+
+``` js
 const path = require('path');
 
 module.exports = {
@@ -117,107 +176,44 @@ module.exports = {
 };
 ```
 
-webpack으로 애플리케이션을 번들해보았다면 익숙할 것입니다. 기본적으로 webpack에게 `src/index.js`를 `dist/webpack-numbers.js`로 번들하도록 지시합니다.
+## Base Configuration with source map
 
-## Expose the Library
+ Source maps is a useful debugging tool that allows you to view where the minified code originated from.
 
-지금까지는 애플리케이션 번들링과 동일하며 다른 점은 [`output.library`](/configuration/output/#outputlibrary) 옵션을 통해 엔트리 포인트를 export 해야 합니다.
+__webpack.config.js__
 
-**webpack.config.js**
+``` js
+const path = require('path');
 
-```diff
-  const path = require('path');
+module.exports = [
+  'source-map'
+].map(devtool => ({
+  mode: 'development',
+  entry: './src/index.js',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'webpack-numbers.js'
+  },
+  devtool,
+  optimization: {
+    runtimeChunk: true
+  }
+}));
+ ```
 
-  module.exports = {
-    entry: './src/index.js',
-    output: {
-      path: path.resolve(__dirname, 'dist'),
-      filename: 'webpack-numbers.js',
-+     library: "webpackNumbers",
-    },
-  };
-```
+>  For more information about getting source maps setup and available options please refer to [Devtool configuration](https://webpack.js.org/configuration/devtool/)
 
-사용자가 script 태그를 통해 사용할 수 있도록 엔트리 포인트를 `webpackNumbers`로 export 했습니다.
-
-```html
-<script src="https://example.org/webpack-numbers.js"></script>
-<script>
-  window.webpackNumbers.wordToNum('Five');
-</script>
-```
-
-그러나, script 태그를 통해 참조될 때만 작동하며 CommonJS, AMD, Node.js 등과 같은 다른 환경에서는 사용할 수 없습니다.
-
-라이브러리 작성자는 다양한 환경에서 호환되기를 원합니다. 즉, 사용자가 아래 나열된 여러 방법으로 번들 된 라이브러리를 사용할 수 있어야 합니다.
-
-- **CommonJS module require**:
-
-  ```js
-  const webpackNumbers = require('webpack-numbers');
-  // ...
-  webpackNumbers.wordToNum('Two');
-  ```
-
-- **AMD module require**:
-
-  ```js
-  require(['webpackNumbers'], function (webpackNumbers) {
-    // ...
-    webpackNumbers.wordToNum('Two');
-  });
-  ```
-
-- **script tag**:
-
-  ```html
-  <!DOCTYPE html>
-  <html>
-    ...
-    <script src="https://example.org/webpack-numbers.js"></script>
-    <script>
-      // ...
-      // 전역 변수
-      webpackNumbers.wordToNum('Five');
-      // window 객체의 프로퍼티
-      window.webpackNumbers.wordToNum('Five');
-      // ...
-    </script>
-  </html>
-  ```
-
-`type`을 [`'umd'`](/configuration/output/#type-amd)로 설정하여 `output.library` 옵션을 업데이트해 보겠습니다.
-
-```diff
- const path = require('path');
-
- module.exports = {
-   entry: './src/index.js',
-   output: {
-     path: path.resolve(__dirname, 'dist'),
-     filename: 'webpack-numbers.js',
--    library: 'webpackNumbers',
-+    library: {
-+      name: 'webpackNumbers',
-+      type: 'umd',
-+    },
-   },
- };
-```
-
-webpack은 라이브러리를 CommonJS, AMD, script 태그에서 사용할 수 있도록 번들할 것입니다.
-
-T> `library` 설정은 `entry` 설정과 연관되어 있습니다. 대부분의 라이브러리의 경우 단일 엔트리 포인트를 지정하는 것으로 충분합니다. [다중 진입 라이브러리](https://github.com/webpack/webpack/tree/master/examples/multi-part-library)도 가능하지만, [index script](https://stackoverflow.com/questions/34072598/es6-exporting-importing-in-index-file)를 통해 부분적으로 export하는 것이 더 간단합니다. 라이브러리의 `entry`를 `array`를 사용하는 것은 **권장되지 않습니다.**
+> To see code examples please refer to [webpack repository](https://github.com/webpack/webpack/tree/master/examples/source-map)
 
 ## Externalize Lodash
 
-`npx webpack`을 실행하면 큰 번들이 생성 된 것을 알 수 있습니다. 파일을 검사하면 lodash가 코드와 함께 번들로 제공되는 것을 볼 수 있습니다. 이 경우 `lodash`를 _peer dependency_ 로 취급하는 것이 좋습니다. 사용자는 이미 `lodash`가 설치되어 있어야합니다. 따라서 이 외부 라이브러리의 제어권을 라이브러리 사용자에게 넘겨야합니다.
+Now, if you run `webpack`, you will find that a largish bundle is created. If you inspect the file, you'll see that lodash has been bundled along with your code. In this case, we'd prefer to treat `lodash` as a `peerDependency`. Meaning that the consumer should already have `lodash` installed. Hence you would want to give up control of this external library to the consumer of your library.
 
-[`externals`](/configuration/externals/) 설정을 사용하면 됩니다.
+This can be done using the `externals` configuration:
 
-**webpack.config.js**
+__webpack.config.js__
 
-```diff
+``` diff
   const path = require('path');
 
   module.exports = {
@@ -225,10 +221,6 @@ T> `library` 설정은 `entry` 설정과 연관되어 있습니다. 대부분의
     output: {
       path: path.resolve(__dirname, 'dist'),
       filename: 'webpack-numbers.js',
-      library: {
-        name: "webpackNumbers",
-        type: "umd"
-      },
     },
 +   externals: {
 +     lodash: {
@@ -241,40 +233,111 @@ T> `library` 설정은 `entry` 설정과 연관되어 있습니다. 대부분의
   };
 ```
 
-이는 라이브러리가 사용자 환경에서 `lodash`라는 종속성을 사용할 수 있다고 예상한다는 것을 의미합니다.
+This means that your library expects a dependency named `lodash` to be available in the consumer's environment.
 
-### External Limitations
+T> Note that if you only plan on using your library as a dependency in another webpack bundle, you may specify `externals` as an array.
 
-종속성에서 여러 파일을 사용하는 라이브러리의 경우:
 
-```js
+## External Limitations
+
+For libraries that use several files from a dependency:
+
+``` js
 import A from 'library/one';
 import B from 'library/two';
 
 // ...
 ```
 
-externals에서 `library`를 지정하여 번들에서 제외할 수 없습니다. 하나씩 또는 정규식을 사용하여 제외해야 합니다.
+You won't be able to exclude them from the bundle by specifying `library` in the externals. You'll either need to exclude them one by one or by using a regular expression.
 
-```js
+``` js
 module.exports = {
   //...
   externals: [
     'library/one',
     'library/two',
-    // "library/"로 시작하는 모든 것
+    // Everything that starts with "library/"
     /^library\/.+$/,
   ],
 };
 ```
 
-## Final Steps
 
-[프로덕션 가이드](/guides/production)에 언급된 단계에 따라 프로덕션에 맞게 출력을 최적화하세요. 또한 생성된 번들의 경로를 `package.json`의 `main` 필드에 추가하세요.
+## Expose the Library
 
-**package.json**
+For widespread use of the library, we would like it to be compatible in different environments, i.e. CommonJS, AMD, Node.js and as a global variable. To make your library available for consumption, add the `library` property inside `output`:
 
-```json
+__webpack.config.js__
+
+``` diff
+  const path = require('path');
+
+  module.exports = {
+    entry: './src/index.js',
+    output: {
+      path: path.resolve(__dirname, 'dist'),
+      filename: 'webpack-numbers.js',
++     library: 'webpackNumbers',
+    },
+    externals: {
+      lodash: {
+        commonjs: 'lodash',
+        commonjs2: 'lodash',
+        amd: 'lodash',
+        root: '_',
+      },
+    },
+  };
+```
+
+T> Note that the `library` setup is tied to the `entry` configuration. For most libraries, specifying a single entry point is sufficient. While [multi-part libraries](https://github.com/webpack/webpack/tree/master/examples/multi-part-library) are possible, it is simpler to expose partial exports through an [index script](https://stackoverflow.com/questions/34072598/es6-exporting-importing-in-index-file) that serves as a single entry point. Using an `array` as an `entry` point for a library is __not recommended__.
+
+This exposes your library bundle available as a global variable named `webpackNumbers` when imported. To make the library compatible with other environments, add `libraryTarget` property to the config. This will add various options about how the library can be exposed.
+
+__webpack.config.js__
+
+``` diff
+  const path = require('path');
+
+  module.exports = {
+    entry: './src/index.js',
+    output: {
+      path: path.resolve(__dirname, 'dist'),
+      filename: 'webpack-numbers.js',
+      library: 'webpackNumbers',
++     libraryTarget: 'umd',
+    },
+    externals: {
+      lodash: {
+        commonjs: 'lodash',
+        commonjs2: 'lodash',
+        amd: 'lodash',
+        root: '_',
+      },
+    },
+  };
+```
+
+You can expose the library in the following ways:
+
+- Variable: as a global variable made available by a `script` tag (`libraryTarget:'var'`).
+- This: available through the `this` object (`libraryTarget:'this'`).
+- Window: available through the `window` object, in the browser (`libraryTarget:'window'`).
+- UMD: available after AMD or CommonJS `require` (`libraryTarget:'umd'`).
+
+If `library` is set and `libraryTarget` is not, `libraryTarget` defaults to `var` as specified in the [output configuration documentation](/configuration/output). See [`output.libraryTarget`](/configuration/output/#outputlibrarytarget) there for a detailed list of all available options.
+
+W> With webpack 3.5.5, using `libraryTarget: { root:'_' }` doesn't work properly (as stated in [issue 4824](https://github.com/webpack/webpack/issues/4824)). However, you can set `libraryTarget: { var: '_' }` to expect the library as a global variable.
+
+
+### Final Steps
+
+Optimize your output for production by following the steps mentioned in the [production guide](/guides/production). Let's also add the path to your generated bundle as the package's `main` field in with the `package.json`
+
+__package.json__
+
+``` json
 {
   ...
   "main": "dist/webpack-numbers.js",
@@ -282,9 +345,9 @@ module.exports = {
 }
 ```
 
-또는 [이 가이드](https://github.com/dherman/defense-of-dot-js/blob/master/proposal.md#typical-usage)에 따라 표준 모듈로 추가하세요.
+Or, to add it as a standard module as per [this guide](https://github.com/dherman/defense-of-dot-js/blob/master/proposal.md#typical-usage):
 
-```json
+``` json
 {
   ...
   "module": "src/index.js",
@@ -292,10 +355,10 @@ module.exports = {
 }
 ```
 
-키 `main`은 [`package.json`의 표준](https://docs.npmjs.com/files/package.json#main)을, `module`은 JavaScript 생태계 업그레이드가 하위 호환성을 깨지 않고 ES2015 모듈을 사용할 수 있도록 하는 제안[[1]](https://github.com/dherman/defense-of-dot-js/blob/master/proposal.md)[[2]](https://github.com/rollup/rollup/wiki/pkg.module)을 의미합니다.
+The key `main` refers to the [standard from `package.json`](https://docs.npmjs.com/files/package.json#main), and `module` to [a](https://github.com/dherman/defense-of-dot-js/blob/master/proposal.md) [proposal](https://github.com/rollup/rollup/wiki/pkg.module) to allow the JavaScript ecosystem upgrade to use ES2015 modules without breaking backwards compatibility.
 
-W> `module` 속성은 ES2015 모듈 구문을 사용하는 스크립트를 가리켜야 하지만 아직 브라우저나 노드에서 지원하지 않는 다른 구문 기능은 없습니다. 이를 통해 webpack은 사용자가 라이브러리의 특정 부분만 소비하는 경우 모듈 구문 자체를 파싱하여 [트리 쉐이킹](https://webpack.js.org/guides/tree-shaking/)을 통해 보다 가벼운 번들을 제공할 수 있습니다.
+W> The `module` property should point to a script that utilizes ES2015 module syntax but no other syntax features that aren't yet supported by browsers or node. This enables webpack to parse the module syntax itself, allowing for lighter bundles via [tree shaking](https://webpack.js.org/guides/tree-shaking/) if users are only consuming certain parts of the library.
 
-이제 사용자에게 배포하기 위해 [npm 패키지로 게시하고](https://docs.npmjs.com/getting-started/publishing-npm-packages) [unpkg.com](https://unpkg.com/#/)에서 찾을 수 있습니다.
+Now you can [publish it as an npm package](https://docs.npmjs.com/getting-started/publishing-npm-packages) and find it at [unpkg.com](https://unpkg.com/#/) to distribute it to your users.
 
-T> 라이브러리와 관련된 스타일 시트를 노출하려면 [`MiniCssExtractPlugin`](/plugins/mini-css-extract-plugin)을 사용해야 합니다. 사용자는 다른 스타일 시트와 마찬가지로 이를 사용하고 로드 할 수 있습니다.
+T> To expose stylesheets associated with your library, the [`MiniCssExtractPlugin`](/plugins/mini-css-extract-plugin) should be used. Users can then consume and load these as they would any other stylesheet.

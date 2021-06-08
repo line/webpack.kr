@@ -13,36 +13,38 @@ contributors:
   - snitin315
 ---
 
-엔트리 객체는 webpack이 번들 빌드를 시작하는 곳입니다. 컨텍스트는 엔트리 파일을 포함하는 디렉터리에 대한 절대 경로입니다.
+The entry object is where webpack looks to start building the bundle. The context is an absolute string to the directory that contains the entry files.
+
 
 ## `context`
 
 `string`
 
-설정에서 엔트리 포인트와 로더를 확인하기 위한 **절대 경로의** 기본 디렉터리.
+The base directory, an __absolute path__, for resolving entry points and loaders from configuration.
 
-```js
+``` js
 const path = require('path');
 
 module.exports = {
   //...
-  context: path.resolve(__dirname, 'app'),
+  context: path.resolve(__dirname, 'app')
 };
 ```
 
-기본적으로 현재 디렉터리가 사용되지만, 설정에 값을 전달하는 것이 좋습니다. 이렇게 하면 CWD(현재 작업 디렉터리)와 독립적인 설정이 가능합니다.
+By default the current directory is used, but it's recommended to pass a value in your configuration. This makes your configuration independent from CWD (current working directory).
 
 ---
+
 
 ## `entry`
 
 `string` `[string]` `object = { <key> string | [string] | object = { import string | [string], dependOn string | [string], filename string, layer string }}` `(function() => string | [string] | object = { <key> string | [string] } | object = { import string | [string], dependOn string | [string], filename string })`
 
-애플리케이션 번들 처리를 시작할 지점입니다. 배열이 전달되면 배열의 모든 항목이 처리됩니다.
+The point or points where to start the application bundling process. If an array is passed then all items will be processed.
 
-동적으로 로드된 모듈은 엔트리 포인트가 **아닙니다.**
+A dynamically loaded module is __not__ an entry point.
 
-간단한 규칙: HTML 페이지 당 하나의 엔트리 포인트. SPA: 하나의 엔트리 포인트, MPA: 다중 엔트리 포인트.
+Simple rule: one entry point per HTML page. SPA: one entry point, MPA: multiple entry points.
 
 ```js
 module.exports = {
@@ -50,18 +52,19 @@ module.exports = {
   entry: {
     home: './home.js',
     about: './about.js',
-    contact: './contact.js',
-  },
+    contact: './contact.js'
+  }
 };
 ```
 
+
 ### Naming
 
-문자열 또는 문자열 배열이 전달되면, 청크 이름은 `main`입니다. 객체가 전달되면, 객체의 키는 청크의 이름이 되고, 객체의 값은 청크의 엔트리 포인트를 설명합니다.
+If a string or array of strings is passed, the chunk is named `main`. If an object is passed, each key is the name of a chunk, and the value describes the entry point for the chunk.
 
 ### Entry descriptor
 
-객체가 전달되면 객체의 값은 문자열, 문자열 배열 또는 디스크립터가 될 수 있습니다.
+If an object is passed the value might be a string, array of strings or a descriptor:
 
 ```js
 module.exports = {
@@ -72,24 +75,25 @@ module.exports = {
     catalog: {
       import: './catalog.js',
       filename: 'pages/catalog.js',
-      dependOn: 'shared',
+      dependOn:'shared'
     },
     personal: {
       import: './personal.js',
       filename: 'pages/personal.js',
       dependOn: 'shared',
       chunkLoading: 'jsonp',
-      layer: 'name of layer', // 엔트리 포인트에 대한 레이어 설정
+      layer: 'name of layer', // set the layer for an entry point
     }
   }
 };
 ```
 
-디스크립터를 사용하여 추가 옵션을 엔트리 포인트에 전달할 수 있습니다.
+Descriptor syntax might be used to pass additional options to an entry point.
+
 
 ### Output filename
 
-기본적으로, 엔트리 청크의 출력 파일 이름은 [`output.filename`](/configuration/output/#outputfilename)에서 추출되지만, 특정 엔트리에 대한 커스텀 출력 파일 이름을 지정할 수 있습니다.
+By default, the output filename for the entry chunk is extracted from [`output.filename`](/configuration/output/#outputfilename) but you can specify a custom output filename for a specific entry:
 
 ```js
 module.exports = {
@@ -97,30 +101,31 @@ module.exports = {
   entry: {
     app: './app.js',
     home: { import: './contact.js', filename: 'pages/[name][ext]' },
-    about: { import: './about.js', filename: 'pages/[name][ext]' },
-  },
+    about: { import: './about.js', filename: 'pages/[name][ext]' }
+  }
 };
 ```
 
-여기의 디스크립터는 특정 엔트리 포인트에 `filename` 옵션을 전달하는 데 사용되었습니다.
+Descriptor syntax was used here to pass `filename`-option to the specific entry points.
+
 
 ### Dependencies
 
-기본적으로, 모든 엔트리 청크는 사용하는 모든 모듈을 저장합니다. `dependOn` 옵션을 사용하면 한 엔트리 청크에서 다른 엔트리 청크로 모듈을 공유할 수 있습니다.
+By default, every entry chunk stores all the modules that it uses. With `dependOn` option you can share the modules from one entry chunk to another:
 
 ```js
 module.exports = {
   //...
   entry: {
     app: { import: './app.js', dependOn: 'react-vendors' },
-    'react-vendors': ['react', 'react-dom', 'prop-types'],
-  },
+    'react-vendors': ['react', 'react-dom', 'prop-types']
+  }
 };
 ```
 
-`app` 청크에는 `react-vendors`에 있는 모듈이 포함되지 않습니다.
+The `app` chunk will not contain the modules that `react-vendors` has.
 
-`dependOn` 옵션은 문자열 배열을 허용합니다.
+`dependOn` option can also accept an array of strings:
 
 ```js
 module.exports = {
@@ -136,50 +141,50 @@ module.exports = {
 };
 ```
 
-또한, 배열을 사용해서 하나의 엔트리에 여러 개의 파일을 지정할 수 있습니다.
+Also, you can specify multiple files per entry using an array:
 
 ```js
 module.exports = {
   //...
   entry: {
     app: { import: ['./app.js', './app2.js'], dependOn: 'react-vendors' },
-    'react-vendors': ['react', 'react-dom', 'prop-types'],
-  },
+    'react-vendors': ['react', 'react-dom', 'prop-types']
+  }
 };
 ```
 
 ### Dynamic entry
 
-함수가 전달되면 모든 [make](/api/compiler-hooks/#make) 이벤트에서 호출됩니다.
+If a function is passed then it will be invoked on every [make](/api/compiler-hooks/#make) event.
 
-> make 이벤트는 webpack이 시작될 때와 [파일 변경을 감시](/configuration/watch/) 할 때 모든 유효하지 않은 상황에서 호출됩니다.
-
-```js
-module.exports = {
-  //...
-  entry: () => './demo',
-};
-```
-
-또는
+> Note that the make event triggers when webpack starts and for every invalidation when [watching for file changes](/configuration/watch/).
 
 ```js
 module.exports = {
   //...
-  entry: () => new Promise((resolve) => resolve(['./demo', './demo2'])),
+  entry: () => './demo'
 };
 ```
 
-예: 외부 소스(원격 서버, 파일 시스템 콘텐츠 또는 데이터베이스)에서 실제 엔트리를 가져오기 위해 동적 엔트리를 사용할 수 있습니다.
-
-**webpack.config.js**
+or
 
 ```js
+module.exports = {
+  //...
+  entry: () => new Promise((resolve) => resolve(['./demo', './demo2']))
+};
+```
+
+For example: you can use dynamic entries to get the actual entries from an external source (remote server, file system content or database):
+
+__webpack.config.js__
+
+``` js
 module.exports = {
   entry() {
     return fetchPathsFromSomeExternalSource(); // returns a promise that will be resolved with something like ['src/main-layout.js', 'src/admin-layout.js']
-  },
+  }
 };
 ```
 
-[`output.library`](/configuration/output/#outputlibrary) 옵션과 결합하는 경우, 배열이 전달되면 마지막 항목만 내보냅니다.
+When combining with the [`output.library`](/configuration/output/#outputlibrary) option: If an array is passed only the last item is exported.

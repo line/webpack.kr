@@ -21,50 +21,52 @@ contributors:
 
 `object` `string`
 
-`stats` 옵션을 사용하면 표시되는 번들 정보를 정확하게 제어할 수 있습니다. 번들 정보를 얻고 싶지만 전부에 대한 정보를 얻고자 하는 것은 아닐 것이기 때문에 `quiet` 또는 `noInfo`를 사용하지 않는 경우 좋은 절충안이 될 수 있습니다.
+The `stats` option lets you precisely control what bundle information gets displayed. This can be a nice middle ground if you don't want to use `quiet` or `noInfo` because you want some bundle information, but not all of it.
 
-T> webpack-dev-server의 경우 이 속성은 [`devServer` 설정 객체](/configuration/dev-server/#devserverstats-)에 있어야 합니다.
+T> For webpack-dev-server, this property needs to be in the [`devServer` configuration object](/configuration/dev-server/#devserverstats-).
 
-W> 이 옵션은 Node.js API를 사용할 경우에는 아무 효과가 없습니다. stats 옵션을 `stats.toString()`에 전달해야 합니다. 대신 `stats.toJson()`이 호출됩니다.
+W> This option does not have any effect when using the Node.js API.
+
+__webpack.js.org__
 
 ```js
 module.exports = {
   //...
-  stats: 'errors-only',
+  stats: 'errors-only'
 };
 ```
 
 ## Stats Presets
 
-webpack은 stats 출력에 사용할 수있는 특정 프리셋을 함께 제공합니다.
+webpack comes with certain presets available for the stats output:
 
-| Preset              | Alternative | Description                                         |
-| ------------------- | ----------- | --------------------------------------------------- |
-| `'errors-only'`     | _none_      | 에러가 발생할 때만 출력                             |
-| `'errors-warnings'` | _none_      | 에러와 경고가 발생할 때만 출력                      |
-| `'minimal'`         | _none_      | 에러와 새로운 컴파일이 발생할 때만 출력             |
-| `'none'`            | `false`     | 출력 없음                                           |
-| `'normal'`          | `true`      | 표준 출력                                           |
-| `'verbose'`         | _none_      | 모두 출력                                           |
-| `'detailed'`        | _none_      | `chunkModules`과 `chunkRootModules`을 제외하고 출력 |
-| `'summary'`         | _none_      | webpack 버전, 경고 횟수, 에러 횟수를 출력           |
+
+| Preset              | Alternative | Description                                                    |
+| ------------------- | ----------- | -------------------------------------------------------------- |
+| `'errors-only'`     | _none_      | Only output when errors happen                                 |
+| `'errors-warnings'` | _none_      | Only output errors and warnings happen                         |
+| `'minimal'`         | _none_      | Only output when errors or new compilation happen              |
+| `'none'`            | `false`     | Output nothing                                                 |
+| `'normal'`          | `true`      | Standard output                                                |
+| `'verbose'`         | _none_      | Output everything                                              |
+| `'detailed'`        | _none_      | Output everything except `chunkModules` and `chunkRootModules` |
 
 ## Stats Options
 
-stats 출력에서 보고 싶은 정보를 설정할 수 있습니다.
+It is possible to specify which information you want to see in the stats output.
 
-T> stats 설정 객체의 모든 옵션은 선택 사항입니다.
+T> All of the options in the stats configuration object are optional.
 
 ### `stats.all`
 
-정의되지 않은 경우 stats 옵션의 폴백입니다. 로컬 webpack의 기본값보다 우선시 됩니다.
+A fallback value for stats options when an option is not defined. It has precedence over local webpack defaults.
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    all: undefined,
-  },
+    all: undefined
+  }
 };
 ```
 
@@ -72,14 +74,14 @@ module.exports = {
 
 `boolean = true`
 
-애셋 정보 표시 여부를 `stats`에 알려줍니다. 이 정보를 숨기려면 `stats.assets`을 `false`로 설정하세요.
+Tells `stats` whether to show the asset information. Set `stats.assets` to `false` to hide it.
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    assets: false,
-  },
+    assets: false
+  }
 };
 ```
 
@@ -87,14 +89,14 @@ module.exports = {
 
 `string = 'id'`
 
-주어진 필드를 기준으로 애셋을 정렬하도록 `stats`에 지시합니다. 모든 [정렬 필드](#sorting-fields)는 `stats.assetsSort`의 값으로 사용할 수 있습니다. 값에 `!`접두사를 사용하여 주어진 필드의 정렬 순서를 반대로 할 수 있습니다.
+Tells `stats` to sort the assets by a given field. All of the [sorting fields](#sorting-fields) are allowed to be used as values for `stats.assetsSort`. Use `!` prefix in the value to reverse the sort order by a given field.
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    assetsSort: '!size',
-  },
+    assetsSort: '!size'
+  }
 };
 ```
 
@@ -102,14 +104,14 @@ module.exports = {
 
 `boolean = true`
 
-빌드 날짜 및 빌드 시간 정보를 추가할지 여부를 `stats`에 알려줍니다. 숨기려면 `stats.builtAt`을 `false`로 설정하세요.
+Tells `stats` whether to add the build date and the build time information. Set `stats.builtAt` to `false` to hide it.
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    builtAt: false,
-  },
+    builtAt: false
+  }
 };
 ```
 
@@ -117,14 +119,29 @@ module.exports = {
 
 `boolean = true`
 
-모듈 내부에 애셋에 대한 정보를 추가할지 여부를 `stats`에 알려줍니다. 숨기려면 `stats.moduleAssets`을 `false`로 설정하세요.
+Tells `stats` whether to add information about assets inside modules. Set `stats.moduleAssets` to `false` to hide it.
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    moduleAssets: false,
-  },
+    moduleAssets: false
+  }
+};
+```
+
+### `stats.cached`
+
+`boolean = true`
+
+Tells `stats` whether to add information about the cached modules (not the ones that were built).
+
+```javascript
+module.exports = {
+  //...
+  stats: {
+    cached: false
+  }
 };
 ```
 
@@ -132,14 +149,14 @@ module.exports = {
 
 `number = 15`
 
-표시되어야 하는 애셋의 수를 `stats`에 알려줍니다. 그룹인 경우 이 크기에 맞게 축소됩니다.
+Tells `stats` how many items of assets should be displayed (groups will be collapsed to fit this space).
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    assetsSpace: 15,
-  },
+    assetsSpace: 15
+  }
 };
 ```
 
@@ -147,14 +164,14 @@ module.exports = {
 
 `number = 15`
 
-표시되어야 하는 모듈의 수를 `stats`에 알려줍니다. 그룹인 경우 이 크기에 맞게 축소됩니다.
+Tells `stats` how many items of modules should be displayed (groups will be collapsed to fit this space).
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    modulesSpace: 15,
-  },
+    modulesSpace: 15
+  }
 };
 ```
 
@@ -162,14 +179,14 @@ module.exports = {
 
 `number = 10`
 
-표시되어야 하는 청크 모듈의 수를 `stats`에 알려줍니다. 그룹인 경우 이 크기에 맞게 축소됩니다.
+Tells `stats` how many items of chunk modules should be displayed (groups will be collapsed to fit this space).
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    chunkModulesSpace: 15,
-  },
+    chunkModulesSpace: 15
+  }
 };
 ```
 
@@ -177,33 +194,29 @@ module.exports = {
 
 `number = 10`
 
-표시되어야 하는 중첩된 모듈의 수를 `stats`에 알려줍니다. 그룹인 경우 이 크기에 맞게 축소됩니다.
+Tells `stats` how many items of nested modules should be displayed (groups will be collapsed to fit this space).
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    nestedModulesSpace: 15,
-  },
+    nestedModulesSpace: 15
+  }
 };
 ```
-
-### `stats.cached`
-
-`stats.cachedModules`의 오래된 버전입니다.
 
 ### `stats.cachedModules`
 
 `boolean = true`
 
-빌드되지 않고 캐시 된 모듈에 대한 정보를 추가할지 여부를 `stats`에 알려줍니다.
+Tells `stats` whether to add information about cached (not built) modules.
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    cachedModules: false,
-  },
+    cachedModules: false
+  }
 };
 ```
 
@@ -211,14 +224,14 @@ module.exports = {
 
 `boolean = true`
 
-런타임 모듈에 대한 정보를 추가할지 여부를 `stats`에 알려줍니다.
+Tells `stats` whether to add information about runtime modules.
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    runtimeModules: false,
-  },
+    runtimeModules: false
+  }
 };
 ```
 
@@ -226,14 +239,14 @@ module.exports = {
 
 `boolean`
 
-청크의 다른 모듈에 종속된 청크 모듈을 표시할지 여부를 `stats`에 알려줍니다.
+Tells `stats` whether to show chunk modules that are dependencies of other modules of the chunk.
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    dependentModules: false,
-  },
+    dependentModules: false
+  }
 };
 ```
 
@@ -241,14 +254,14 @@ module.exports = {
 
 `boolean`
 
-애셋이 청크와 어떻게 관련되어 있는지에 따라 애셋을 그룹화할지 여부를 `stats`에 알려줍니다.
+Tells `stats` whether to group assets by how their are related to chunks.
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    groupAssetsByChunk: false,
-  },
+    groupAssetsByChunk: false
+  }
 };
 ```
 
@@ -256,14 +269,14 @@ module.exports = {
 
 `boolean`
 
-상태(방출, 방출을 위한 비교 또는 캐시)별로 애셋을 그룹화할지 여부를 `stats`에 알려줍니다.
+Tells `stats` whether to group assets by their status (emitted, compared for emit or cached).
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    groupAssetsByEmitStatus: false,
-  },
+    groupAssetsByEmitStatus: false
+  }
 };
 ```
 
@@ -271,14 +284,14 @@ module.exports = {
 
 `boolean`
 
-애셋 정보(불변, 개발, hotModuleReplacement 등)별로 애셋을 그룹화할지 여부를 `stats`에 알려줍니다.
+Tells `stats` whether to group assets by their asset info (immutable, development, hotModuleReplacement, etc).
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    groupAssetsByInfo: false,
-  },
+    groupAssetsByInfo: false
+  }
 };
 ```
 
@@ -286,14 +299,14 @@ module.exports = {
 
 `boolean`
 
-속성(에러, 경고, 애셋, 선택적, 고아(orphan) 또는 종속)별로 모듈을 그룹화할지 여부를 `stats`에 알려줍니다.
+Tells `stats` whether to group modules by their attributes (errors, warnings, assets, optional, orphan, or dependent).
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    groupModulesByAttributes: false,
-  },
+    groupModulesByAttributes: false
+  }
 };
 ```
 
@@ -301,14 +314,14 @@ module.exports = {
 
 `boolean = true`
 
-캐시 된 애셋에 대한 정보를 추가할지 여부를 `stats`에 알려줍니다. `stats.cachedAssets`을 `false`로 설정하면 `stats`에 생성된 파일이 아닌 내보낸 파일만 표시됩니다.
+Tells `stats` whether to add information about the cached assets. Setting `stats.cachedAssets` to `false` will tell `stats` to only show the emitted files (not the ones that were built).
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    cachedAssets: false,
-  },
+    cachedAssets: false
+  }
 };
 ```
 
@@ -316,14 +329,14 @@ module.exports = {
 
 `boolean = true`
 
-children에 대한 정보를 추가할지 여부를 `stats`에 알려줍니다.
+Tells `stats` whether to add information about the children.
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    children: false,
-  },
+    children: false
+  }
 };
 ```
 
@@ -331,14 +344,14 @@ module.exports = {
 
 `boolean = true`
 
-청크에 대한 정보를 추가할지 여부를 `stats`에 알려줍니다. `stats.chunks`를 `false`로 설정하면 출력이 상세하게 표시되지 않습니다.
+Tells `stats` whether to add information about the chunk. Setting `stats.chunks` to `false` results in a less verbose output.
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    chunks: false,
-  },
+    chunks: false
+  }
 };
 ```
 
@@ -346,14 +359,14 @@ module.exports = {
 
 `boolean = true`
 
-`namedChunkGroups`에 대한 정보를 추가할지 여부를 `stats`에 알려줍니다.
+Tells `stats` whether to add information about the `namedChunkGroups`.
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    chunkGroups: false,
-  },
+    chunkGroups: false
+  }
 };
 ```
 
@@ -361,14 +374,14 @@ module.exports = {
 
 `boolean = true`
 
-빌드된 모듈에 대한 정보를 청크에 대한 정보에 추가할지 여부를 `stats`에 알려줍니다.
+Tells `stats` whether to add information about the built modules to information about the chunk.
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    chunkModules: false,
-  },
+    chunkModules: false
+  }
 };
 ```
 
@@ -376,14 +389,14 @@ module.exports = {
 
 `boolean = true`
 
-청크 및 청크 병합의 출처에 대한 정보를 추가할지 여부를 `stats`에 알려줍니다.
+Tells `stats` whether to add information about the origins of chunks and chunk merging.
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    chunkOrigins: false,
-  },
+    chunkOrigins: false
+  }
 };
 ```
 
@@ -391,14 +404,14 @@ module.exports = {
 
 `string = 'id'`
 
-주어진 필드를 기준으로 청크를 정렬하도록 `stats`에 지시합니다. 모든 [정렬 필드](#sorting-fields)는 `stats.chunksSort`의 값으로 사용할 수 있습니다. 값에 `!`접두사를 사용하여 주어진 필드의 정렬 순서를 반대로 할 수 있습니다.
+Tells `stats` to sort the chunks by a given field. All of the [sorting fields](#sorting-fields) are allowed to be used as values for `stats.chunksSort`. Use `!` prefix in the value to reverse the sort order by a given field.
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    chunksSort: 'name',
-  },
+    chunksSort: 'name'
+  }
 };
 ```
 
@@ -406,14 +419,14 @@ module.exports = {
 
 `string = '../src/'`
 
-요청 정보를 단축하기 위한 컨텍스트 디렉터리를 설정합니다.
+Sets the context directory for shortening the request information.
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    context: '../src/components/',
-  },
+    context: '../src/components/'
+  }
 };
 ```
 
@@ -421,24 +434,24 @@ module.exports = {
 
 `boolean = false` `object`
 
-다른 색상으로 출력할지 여부를 `stats`에 알려줍니다.
+Tells `stats` whether to output in the different colors.
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    colors: true,
-  },
+    colors: true
+  }
 };
 ```
 
-CLI 플래그로도 사용할 수 있습니다.
+ It is also available as a CLI flag:
 
 ```bash
 webpack-cli --colors
 ```
 
-[ANSI 이스케이프 시퀀스](https://en.wikipedia.org/wiki/ANSI_escape_code)를 사용하여 자신만의 터미널 출력 색상을 지정할 수 있습니다.
+ You can specify your own terminal output colors using [ANSI escape sequences](https://en.wikipedia.org/wiki/ANSI_escape_code)
 
 ```js
 module.exports = {
@@ -453,14 +466,14 @@ module.exports = {
 
 `boolean = false`
 
-각 모듈의 엔트리 포인트로부터의 거리를 표시할지 여부를 `stats`에 알려줍니다.
+Tells `stats` whether to display the distance from the entry point for each module.
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    depth: true,
-  },
+    depth: true
+  }
 };
 ```
 
@@ -468,31 +481,31 @@ module.exports = {
 
 `boolean = true` `string = 'auto'`
 
-대응하는 번들과 함께 엔트리 포인트를 표시할지 여부를 `stats`에 알려줍니다.
+Tells `stats` whether to display the entry points with the corresponding bundles.
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    entrypoints: false,
-  },
+    entrypoints: false
+  }
 };
 ```
 
-`stats.entrypoints`가 `'auto'`로 설정되면 webpack은 stats 출력에 엔트리 포인트를 표시할지 여부를 자동으로 결정합니다.
+When `stats.entrypoints` is set to  `'auto'`, webpack will decide automatically whether to display the entry points in the stats output.
 
 ### `stats.env`
 
 `boolean = false`
 
-`--env`정보를 표시할지 여부를 `stats`에 알려줍니다.
+Tells `stats` whether to display the `--env` information.
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    env: true,
-  },
+    env: true
+  }
 };
 ```
 
@@ -500,14 +513,14 @@ module.exports = {
 
 `boolean = false`
 
-`고아(orphan)`모듈을 숨길 지 여부를 `stats`에 알려줍니다. 어느 청크에도 포함되지 않는 모듈은 `고아(orphan)`입니다. 고아(orphan) 모듈은 기본적으로 `stats`에서 숨겨져 있습니다.
+Tells `stats` whether to hide `orphan` modules. A module is an `orphan` if it is not included in any chunk. Orphan modules are hidden by default in `stats`.
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    orphanModules: true,
-  },
+    orphanModules: true
+  }
 };
 ```
 
@@ -515,29 +528,29 @@ module.exports = {
 
 `boolean = true`
 
-에러를 표시할지 여부를 `stats`에 알려줍니다.
+Tells `stats` whether to display the errors.
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    errors: false,
-  },
+    errors: false
+  }
 };
 ```
 
 ### `stats.errorDetails`
 
-`boolean` `string = "auto"`
+`boolean = true`
 
-에러에 세부 정보를 추가할지 여부를 `stats`에 알려줍니다. 기본값은 `'auto'`이며 에러가 2개 이하일 때 세부 정보를 표시합니다.
+Tells `stats` whether to add the details to the errors.
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    errorDetails: false,
-  },
+    errorDetails: false
+  }
 };
 ```
 
@@ -545,14 +558,14 @@ module.exports = {
 
 `boolean = true`
 
-에러 스택 추적을 표시할지 여부를 `stats`에 알려줍니다.
+Tells `stats` whether to show stack trace of errors.
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    errorStack: false,
-  },
+    errorStack: false
+  }
 };
 ```
 
@@ -560,7 +573,7 @@ module.exports = {
 
 `array = []: string | RegExp | function (assetName) => boolean` `string` `RegExp` `function (assetName) => boolean`
 
-일치하는 애셋 정보를 제외하도록 `stats`에 지시합니다. 이것은 `string`, `RegExp`, 애셋 이름을 인수로 받고 `boolean`을 반환하는 `function`로 수행할 수 있습니다. `stats.excludeAssets`는 위 요소를 원소로 가지는 `배열`일 수 있습니다.
+Tells `stats` to exclude the matching assets information. This can be done with a `string`, a `RegExp`, a `function` that is getting the assets name as an argument and returns a `boolean`. `stats.excludeAssets` can be an `array` of any of the above.
 
 ```javascript
 module.exports = {
@@ -569,9 +582,9 @@ module.exports = {
     excludeAssets: [
       'filter',
       /filter/,
-      (assetName) => assetName.contains('moduleA'),
-    ],
-  },
+      (assetName) => assetName.contains('moduleA')
+    ]
+  }
 };
 ```
 
@@ -579,44 +592,48 @@ module.exports = {
 
 `array = []: string | RegExp | function (assetName) => boolean` `string` `RegExp` `function (assetName) => boolean` `boolean: false`
 
-일치하는 모듈 정보를 제외하도록 `stats`에 지시합니다. 이는 `string`, `RegExp`, 모듈의 소스를 인자로 받고 `boolean`을 반환하는 `function`로 수행할 수 있습니다. `stats.excludeModules`는 위 요소를 원소로 가지는 `배열`일 수 있습니다. `stats.excludeModules`은 `stats.exclude`와 [병합](https://github.com/webpack/webpack/blob/master/lib/Stats.js#L215)됩니다.
+Tells `stats` to exclude the matching modules information. This can be done with a `string`, a `RegExp`, a `function` that is getting the module's source as an argument and returns a `boolean`. `stats.excludeModules` can be an `array` of any of the above. `stats.excludeModules`'s configuration [is merged](https://github.com/webpack/webpack/blob/master/lib/Stats.js#L215) with the `stats.exclude`'s configuration value.
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    excludeModules: ['filter', /filter/, (moduleSource) => true],
-  },
+    excludeModules: [
+      'filter',
+      /filter/,
+      (moduleSource) => true
+    ]
+  }
 };
 ```
 
-`stats.excludeModules`을 `false`로 설정하면 제외 동작이 비활성화됩니다.
+Setting `stats.excludeModules` to `false` will disable the exclude behaviour.
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    excludeModules: false,
-  },
+    excludeModules: false
+  }
 };
 ```
 
 ### `stats.exclude`
 
-[`stats.excludeModules`](#statsexcludemodules)을 참고하세요.
+See [`stats.excludeModules`](#statsexcludemodules).
 
 ### `stats.hash`
 
 `boolean = true`
 
-컴파일의 해시에 대한 정보를 추가할지 여부를 `stats`에 알려줍니다.
+Tells `stats` whether to add information about the hash of the compilation.
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    hash: false,
-  },
+    hash: false
+  }
 };
 ```
 
@@ -624,21 +641,21 @@ module.exports = {
 
 `string = 'info': 'none' | 'error' | 'warn' | 'info' | 'log' | 'verbose'` `boolean`
 
-로깅 출력을 추가할지 여부를 `stats`에 알려줍니다.
+Tells `stats` whether to add logging output.
 
-- `'none'`, `false` - 로깅 비활성화
-- `'error'` - 에러
-- `'warn'` - 에러와 경고
-- `'info'` - 에러, 경고, 정보성 메세지
-- `'log'`, `true` - 에러, 경고, 정보성 메세지, 로그 메세지, 그룹, 초기화. 접힌 그룹은 접힌 상태로 표시됩니다.
-- `'verbose'` - 디버그 및 추적을 제외한 모든 것을 기록합니다. 접힌 그룹은 펼쳐진 상태로 표시됩니다.
+- `'none'`, `false` - disable logging
+- `'error'` - errors only
+- `'warn'` - errors and warnings only
+- `'info'` - errors, warnings, and info messages
+- `'log'`, `true` - errors, warnings, info messages, log messages, groups, clears. Collapsed groups are displayed in a collapsed state.
+- `'verbose'` - log everything except debug and trace. Collapsed groups are displayed in expanded state.
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    logging: 'verbose',
-  },
+    logging: 'verbose'
+  }
 };
 ```
 
@@ -646,7 +663,7 @@ module.exports = {
 
 `array = []: string | RegExp | function (name) => boolean` `string` `RegExp` `function (name) => boolean`
 
-플러그인 또는 로더와 같은 지정된 로거의 디버그 정보를 포함하도록 `stats`에 지시합니다. [`stats.logging`](#statslogging)이 `false`로 설정되면 `stats.loggingDebug` 옵션이 무시됩니다.
+Tells `stats` to include the debug information of the specified loggers such as Plugins or Loaders. When [`stats.logging`](#statslogging) is set to `false`, `stats.loggingDebug` option is ignored.
 
 ```javascript
 module.exports = {
@@ -655,10 +672,10 @@ module.exports = {
     loggingDebug: [
       'MyPlugin',
       /MyPlugin/,
-      /webpack/, // 코어 로깅을 얻기 위해서
-      (name) => name.contains('MyPlugin'),
-    ],
-  },
+      /webpack/, // To get core logging
+      (name) => name.contains('MyPlugin')
+    ]
+  }
 };
 ```
 
@@ -666,14 +683,15 @@ module.exports = {
 
 `boolean = true`
 
-에러, 경고 및 추적에 대한 로깅 출력에서 스택 추적을 활성화합니다. 추적을 숨기려면 `stats.loggingTrace`를 설정하세요.
+Enable stack traces in the logging output for errors, warnings and traces. Set `stats.loggingTrace` to hide the trace.
+
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    loggingTrace: false,
-  },
+    loggingTrace: false
+  }
 };
 ```
 
@@ -681,14 +699,14 @@ module.exports = {
 
 `boolean = true`
 
-빌드된 모듈에 대한 정보를 추가할지 여부를 `stats`에 알려줍니다.
+Tells `stats` whether to add information about the built modules.
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    modules: false,
-  },
+    modules: false
+  }
 };
 ```
 
@@ -696,14 +714,14 @@ module.exports = {
 
 `string = 'id'`
 
-주어진 필드를 기준으로 모듈을 정렬하도록 `stats`에 지시합니다. 모든 [정렬 필드](#sorting-fields)는 `stats.modulesSort`의 값으로 사용할 수 있습니다. 값에 `!`접두사를 사용하여 주어진 필드의 정렬 순서를 반대로 할 수 있습니다.
+Tells `stats` to sort the modules by a given field. All of the [sorting fields](#sorting-fields) are allowed to be used as values for `stats.modulesSort`. Use `!` prefix in the value to reverse the sort order by a given field.
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    modulesSort: 'size',
-  },
+    modulesSort: 'size'
+  }
 };
 ```
 
@@ -711,14 +729,14 @@ module.exports = {
 
 `boolean = true`
 
-종속성과 경고/에러의 출처를 표시하도록 `stats`에 지시합니다. `stats.moduleTrace`는 webpack 2.5.0부터 사용할 수 있습니다.
+Tells `stats` to show dependencies and the origin of warnings/errors. `stats.moduleTrace` is available since webpack 2.5.0.
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    moduleTrace: false,
-  },
+    moduleTrace: false
+  }
 };
 ```
 
@@ -726,14 +744,14 @@ module.exports = {
 
 `boolean = true`
 
-`stats`에 `outputPath`를 표시하도록 지시합니다.
+Tells `stats` to show the `outputPath`.
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    outputPath: false,
-  },
+    outputPath: false
+  }
 };
 ```
 
@@ -741,14 +759,14 @@ module.exports = {
 
 `boolean = true`
 
-파일 크기가 [`performance.maxAssetSize`](/configuration/performance/#performancemaxassetsize)를 초과할 때 성능 힌트를 표시하도록 `stats`에 지시합니다.
+Tells `stats` to show performance hint when the file size exceeds [`performance.maxAssetSize`](/configuration/performance/#performancemaxassetsize).
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    performance: false,
-  },
+    performance: false
+  }
 };
 ```
 
@@ -756,31 +774,31 @@ module.exports = {
 
 `string` `boolean: false`
 
-표시되는 정보 유형에 대해 [프리셋](/configuration/stats/#stats-presets)을 설정합니다. [stats 동작 확장](/configuration/stats/#extending-stats-behaviours)에 유용합니다.
+Sets the [preset](/configuration/stats/#stats-presets) for the type of information that gets displayed. It is useful for [extending stats behaviours](/configuration/stats/#extending-stats-behaviours).
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    preset: 'minimal',
-  },
+    preset: 'minimal'
+  }
 };
 ```
 
-`stats.preset`의 값을 `false`로 설정하면 webpack이 `'none'` [stats 프리셋](/configuration/stats/#stats-presets)을 사용하도록 지시합니다.
+Setting value of `stats.preset` to `false` tells webpack to use `'none'` [stats preset](/configuration/stats/#stats-presets).
 
 ### `stats.providedExports`
 
 `boolean = false`
 
-모듈의 export를 표시하도록 `stats`에 지시합니다.
+Tells `stats` to show the exports of the modules.
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    providedExports: true,
-  },
+    providedExports: true
+  }
 };
 ```
 
@@ -788,14 +806,14 @@ module.exports = {
 
 `boolean = true`
 
-에러 횟수를 추가합니다.
+Add errors count.
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    errorsCount: false,
-  },
+    errorsCount: false
+  }
 };
 ```
 
@@ -803,14 +821,14 @@ module.exports = {
 
 `boolean = true`
 
-경고 횟수를 추가합니다.
+Add warnings count.
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    warningsCount: false,
-  },
+    warningsCount: false
+  }
 };
 ```
 
@@ -818,14 +836,14 @@ module.exports = {
 
 `boolean = true`
 
-`publicPath`를 표시하도록 `stats`에 지시합니다.
+Tells `stats` to show the `publicPath`.
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    publicPath: false,
-  },
+    publicPath: false
+  }
 };
 ```
 
@@ -833,14 +851,14 @@ module.exports = {
 
 `boolean = true`
 
-모듈이 포함된 이유에 대한 정보를 추가하도록 `stats`에 지시합니다.
+Tells `stats` to add information about the reasons of why modules are included.
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    reasons: false,
-  },
+    reasons: false
+  }
 };
 ```
 
@@ -848,14 +866,14 @@ module.exports = {
 
 `boolean = false`
 
-애셋의 소스맵 같이 다른 애셋과 관련된 애셋에 대한 정보를 추가할지 여부를 `stats`에 알려줍니다.
+Tells `stats` whether to add information about assets that are related to other assets (like SourceMaps for assets).
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    relatedAssets: true,
-  },
+    relatedAssets: true
+  }
 };
 ```
 
@@ -863,14 +881,14 @@ module.exports = {
 
 `boolean = false`
 
-`stats`에 모듈의 소스 코드를 추가하도록 지시합니다.
+Tells `stats` to add the source code of modules.
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    source: true,
-  },
+    source: true
+  }
 };
 ```
 
@@ -878,29 +896,14 @@ module.exports = {
 
 `boolean = true`
 
-`stats`에 타이밍 정보를 추가하도록 지시합니다.
+Tells `stats` to add the timing information.
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    timings: false,
-  },
-};
-```
-
-### `stats.ids`
-
-`boolean = false`
-
-`stats`에 모듈과 청크의 id를 추가하도록 지시합니다.
-
-```javascript
-module.exports = {
-  //...
-  stats: {
-    ids: true,
-  },
+    timings: false
+  }
 };
 ```
 
@@ -908,14 +911,14 @@ module.exports = {
 
 `boolean = false`
 
-모듈의 어떤 export가 사용되는지 표시할지 여부를 `stats`에 지시합니다.
+Tells `stats` whether to show which exports of a module are used.
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    usedExports: true,
-  },
+    usedExports: true
+  }
 };
 ```
 
@@ -923,14 +926,14 @@ module.exports = {
 
 `boolean = true`
 
-사용된 webpack 버전에 대한 정보를 추가하도록 `stats`에 지시합니다.
+Tells `stats` to add information about the webpack version used.
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    version: false,
-  },
+    version: false
+  }
 };
 ```
 
@@ -938,14 +941,14 @@ module.exports = {
 
 `boolean = true`
 
-청크 그룹에 보조 애셋을 표시합니다.
+Display auxiliary assets in chunk groups.
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    chunkGroupAuxiliary: false,
-  },
+    chunkGroupAuxiliary: false
+  }
 };
 ```
 
@@ -953,14 +956,14 @@ module.exports = {
 
 `boolean = true`
 
-프리페치, 프리로드 된 청크 및 애셋 같은 청크 그룹의 하위 항목을 표시합니다.
+Display children of the chunk groups (e.g. prefetched, preloaded chunks and assets).
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    chunkGroupChildren: false,
-  },
+    chunkGroupChildren: false
+  }
 };
 ```
 
@@ -968,14 +971,14 @@ module.exports = {
 
 `number`
 
-청크 그룹에 표시되는 애셋의 제한.
+Limit of assets displayed in chunk groups.
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    chunkGroupMaxAssets: 5,
-  },
+    chunkGroupMaxAssets: 5
+  }
 };
 ```
 
@@ -983,14 +986,14 @@ module.exports = {
 
 `boolean = true`
 
-경고를 추가하도록 `stats`에 지시합니다.
+Tells `stats` to add warnings.
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    warnings: false,
-  },
+    warnings: false
+  }
 };
 ```
 
@@ -998,54 +1001,59 @@ module.exports = {
 
 `array = []: string | RegExp | function (warning) => boolean` `string` `RegExp` `function (warning) => boolean`
 
-주어진 필터와 일치하는 경고를 제외하도록 `stats`에 지시합니다. 이것은 `string`, `RegExp`, 인자로 경고를 받고 `boolean`을 반환하는 `function`으로 수행할 수 있습니다. `stats.warningsFilter`는 위 요소를 원소로 가지는 `배열`일 수 있습니다.
+Tells `stats` to exclude the warnings that are matching given filters. This can be done with a `string`, a `RegExp`, a `function` that is getting a warning as an argument and returns a `boolean`. `stats.warningsFilter` can be an `array` of any of the above.
 
 ```javascript
 module.exports = {
   //...
   stats: {
-    warningsFilter: ['filter', /filter/, (warning) => true],
-  },
+    warningsFilter: [
+      'filter',
+      /filter/,
+      (warning) => true
+    ]
+  }
 };
 ```
 
-W> `stats.warningsFilter`는 지원이 중단되어 대신 [`ignoreWarnings`](/configuration/other-options/#ignorewarnings)이 사용됩니다.
+
+W> `stats.warningsFilter` is deprecated in favor of [`ignoreWarnings`](/configuration/other-options/#ignorewarnings).
 
 ### `stats.chunkRelations`
 
 `boolean = false`
 
-`stats`에 청크의 부모, 자식 및 형제를 표시하도록 지시합니다.
+Tells `stats` to display chunk parents, children and siblings.
 
 ### Sorting fields
 
-`assetsSort`, `chunksSort` 및 `modulesSort`의 경우 항목을 정렬할 수 있는 몇 가지 필드가 있습니다.
+For `assetsSort`, `chunksSort` and `modulesSort` there are several possible fields that you can sort items by:
 
-- `'id'`는 항목의 id
-- `'name'` - 가져올 때 설정된 항목의 이름
-- `'size'` - 바이트 단위의 항목 크기
-- `'chunks'` - 항목이 생성된 청크(예를 들어, 하나의 청크에 여러 개의 하위 청크가 있는 경우 하위 청크는 기본 청크에 따라 함께 그룹화 됨)
-- `'errors'` - 항목의 에러 발생량
-- `'warnings'` - 항목의 경고 발생량
-- `'failed'` - 항목 컴파일 실패 여부
-- `'cacheable'` - 항목 캐시 가능 여부
-- `'built'` - 애셋 빌드 여부
-- `'prefetched'` - 애셋 프리페치 여부
-- `'optional'` - 애셋 선택 사항 여부
-- `'identifier'` - 항목의 식별자
-- `'index'` - 항목의 처리 인덱스
+- `'id'` is the item's id;
+- `'name'` - a item's name that was assigned to it upon importing;
+- `'size'` - a size of item in bytes;
+- `'chunks'` - what chunks the item originates from (for example, if there are multiple subchunks for one chunk - the subchunks will be grouped together according to their main chunk);
+- `'errors'` - amount of errors in items;
+- `'warnings'` - amount of warnings in items;
+- `'failed'` - whether the item has failed compilation;
+- `'cacheable'` - whether the item is cacheable;
+- `'built'` - whether the asset has been built;
+- `'prefetched'` - whether the asset will be prefetched;
+- `'optional'` - whether the asset is optional;
+- `'identifier'` - identifier of the item;
+- `'index'` - item's processing index;
 - `'index2'`
 - `'profile'`
-- `'issuer'` - issuer의 식별자
-- `'issuerId'` - issuer의 id
-- `'issuerName'` - issuer의 이름
-- `'issuerPath'` - 전체 issuer 객체. 이 필드를 기준으로 정렬 할 필요는 없습니다.
+- `'issuer'` - an identifier of the issuer;
+- `'issuerId'` - an id of the issuer;
+- `'issuerName'` - a name of the issuer;
+- `'issuerPath'` - a full issuer object. There's no real need to sort by this field;
 
 ### Extending stats behaviours
 
-`'minimal'`같은 미리 정의된 동작 중 하나를 사용하지만 하나 이상의 규칙을 재정의하는 경우, 원하는 `stats.preset`을 지정하고 사용자 지정 또는 추가 규칙을 추가하면 됩니다.
+If you want to use one of the pre-defined behaviours e.g. `'minimal'` but still override one or more of the rules: specify the desired `stats.preset` and add the customized or additional rules afterwards.
 
-**webpack.config.js**
+__webpack.config.js__
 
 ```javascript
 module.exports = {
@@ -1053,7 +1061,7 @@ module.exports = {
   stats: {
     preset: 'minimal',
     moduleTrace: true,
-    errorDetails: true,
-  },
+    errorDetails: true
+  }
 };
 ```

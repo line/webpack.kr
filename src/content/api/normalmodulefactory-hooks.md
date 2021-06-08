@@ -11,18 +11,19 @@ The `NormalModuleFactory` module is used by the `Compiler` to generate modules. 
 The `NormalModuleFactory` class extends `Tapable` and provides the following
 lifecycle hooks. They can be tapped the same way as compiler hooks:
 
-```js
+``` js
 NormalModuleFactory.hooks.someHook.tap(/* ... */);
 ```
 
 NormaleModuleFactory creates `Parser` and `Generator` instances which can be accessed by HookMaps. Identifier must be passed to tap into these:
 
-```js
+``` js
 NormalModuleFactory.hooks.someHook.for('identifier').tap(/* ... */);
 ```
 
 As with the `compiler`, `tapAsync` and `tapPromise` may also be available
 depending on the type of hook.
+
 
 ### beforeResolve
 
@@ -32,6 +33,7 @@ Called when a new dependency request is encountered. A dependency can be ignored
 
 - Callback Parameters: `ResolveData`
 
+
 ### factorize
 
 `AsyncSeriesBailHook`
@@ -39,6 +41,7 @@ Called when a new dependency request is encountered. A dependency can be ignored
 Called before initiating resolve. It should return `undefined` to proceed.
 
 - Callback Parameters: `resolveData`
+
 
 ### resolve
 
@@ -48,6 +51,7 @@ Called before the request is resolved. A dependency can be ignored by returning 
 
 - Callback Parameters: `resolveData`
 
+
 ### resolveForScheme
 
 `AsyncSeriesBailHook`
@@ -55,6 +59,7 @@ Called before the request is resolved. A dependency can be ignored by returning 
 Called before a request with scheme (URI) is resolved.
 
 - Callback Parameters: `resolveData`
+
 
 ### afterResolve
 
@@ -64,6 +69,7 @@ Called after the request is resolved.
 
 - Callback Parameters: `resolveData`
 
+
 ### createModule
 
 `AsyncSeriesBailHook`
@@ -72,6 +78,7 @@ Called before a `NormalModule` instance is created.
 
 - Callback Parameters: `createData` `resolveData`
 
+
 ### module
 
 `SyncWaterfallHook`
@@ -79,6 +86,7 @@ Called before a `NormalModule` instance is created.
 Called after a `NormalModule` instance is created.
 
 - Callback Parameters: `module` `createData` `resolveData`
+
 
 ### createParser
 
@@ -90,6 +98,7 @@ Called before a `Parser` instance is created. `parserOptions` is options in [mod
 
 - Callback Parameters: `parserOptions`
 
+
 ### parser
 
 `HookMap<SyncHook>`
@@ -100,7 +109,7 @@ Fired after a `Parser` instance is created.
 
 - Callback Parameters: `parser` `parserOptions`
 
-Possible default identifiers:
+Possible default identifiers: 
 
 1. `javascript/auto`
 2. `javascript/dynamic`
@@ -109,6 +118,7 @@ Possible default identifiers:
 5. `webassembly/sync`
 6. `webassembly/async`
 7. `asset`
+
 
 ### createGenerator
 
@@ -119,6 +129,7 @@ Called before a `Generator` instance is created. `generatorOptions` is options i
 - Hook Parameters: `identifier`
 
 - Callback Parameters: `generatorOptions`
+
 
 ### generator
 

@@ -8,42 +8,42 @@ contributors:
   - EugeneHlushko
   - byzyk
 related:
-  - title: JavaScript Module Systems Showdown
-    url: https://auth0.com/blog/javascript-module-systems-showdown/
+   - title: JavaScript Module Systems Showdown
+     url: https://auth0.com/blog/javascript-module-systems-showdown/
 ---
 
-[모듈형 프로그래밍(modular programmming)](https://en.wikipedia.org/wiki/Modular_programming)에서 개발자는 _모듈_이라는 개별 기능으로 프로그램을 나눕니다.
+In [modular programming](https://en.wikipedia.org/wiki/Modular_programming), developers break programs up into discrete chunks of functionality called a _module_.
 
-각 모듈은 전체 프로그램보다 영향 범위가 좁기 때문에 검증과 디버깅 및 테스트가 간단합니다.
-잘 작성된 _모듈은_ 견고한 추상화와 캡슐화의 경계를 만들므로 각 모듈은 전체 애플리케이션에서 일관성 있는 설계와 명확한 목적을 가질 수 있습니다.
+Each module has a smaller surface area than a full program, making verification, debugging, and testing trivial.
+Well-written _modules_ provide solid abstractions and encapsulation boundaries, so that each module has a coherent design and a clear purpose within the overall application.
 
-Node.js는 거의 시작부터 모듈형 프로그래밍을 지원했습니다.
-하지만 웹에서는 _모듈의_ 지원이 느리게 정착해왔습니다.
-웹에서 모듈형 JavaScript를 지원하는 여러 도구가 존재하며 다양한 이점과 제한이 있습니다.
-webpack은 이러한 시스템에서 얻은 교훈을 바탕으로 제작되어 프로젝트의 모든 파일에 _모듈의_ 개념을 사용합니다.
+Node.js has supported modular programming almost since its inception.
+On the web, however, support for _modules_ has been slow to arrive.
+Multiple tools exist that support modular JavaScript on the web, with a variety of benefits and limitations.
+webpack builds on lessons learned from these systems and applies the concept of _modules_ to any file in your project.
 
 ## What is a webpack Module
 
-[Node.js 모듈](https://nodejs.org/api/modules.html)과 달리 webpack _모듈은_ 다양한 방식으로 _의존성을_ 표현할 수 있습니다. 몇 가지 예는 다음과 같습니다.
+In contrast to [Node.js modules](https://nodejs.org/api/modules.html), webpack _modules_ can express their _dependencies_ in a variety of ways. A few examples are:
 
-- [ES2015 `import`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import) 문
-- [CommonJS](http://www.commonjs.org/specs/modules/1.0/) `require()` 문
-- [AMD](https://github.com/amdjs/amdjs-api/blob/master/AMD.md) `define` 과 `require` 문
-- css/sass/less 파일 내의 [`@import` 문](https://developer.mozilla.org/en-US/docs/Web/CSS/@import).
-- 스타일 시트 `url(...)` 의 이미지 URL 또는 HTML `<img src=...>` 파일
+- An [ES2015 `import`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import) statement
+- A [CommonJS](http://www.commonjs.org/specs/modules/1.0/) `require()` statement
+- An [AMD](https://github.com/amdjs/amdjs-api/blob/master/AMD.md) `define` and `require` statement
+- An [`@import` statement](https://developer.mozilla.org/en-US/docs/Web/CSS/@import) inside of a css/sass/less file.
+- An image url in a stylesheet `url(...)` or HTML `<img src=...>` file.
 
 ## Supported Module Types
 
-webpack은 기본적으로 다음 유형의 모듈을 지원합니다.
+webpack supports to following module types natively:
 
-- [ECMAScript 모듈](/guides/ecma-script-modules)
-- CommonJS 모듈
-- AMD 모듈
+- [ECMAScript modules](/guides/ecma-script-modules)
+- CommonJS modules
+- AMD modules
 - [Assets](/guides/asset-modules)
-- WebAssembly 모듈
+- WebAssembly modules
 
-그 밖에도 webpack은 여러 언어로 작성된 모듈과 _로더_를 통한 다양한 전처리기를 지원합니다. _로더는_ webpack에서 네이티브가 아닌 _모듈을_ **어떻게** 처리하고 이러한 _의존성을_ _번들에_ 포함할지 정의합니다.
-webpack 커뮤니티에서는 다음과 같이 널리 사용되는 다양한 언어와 언어 프로세서를 위한 _로더를_ 제작했습니다.
+In addition to that webpack supports modules written in a variety of languages and preprocessors via _loaders_. _Loaders_ describe to webpack __how__ to process non-native _modules_ and include these _dependencies_ into your _bundles_.
+The webpack community has built _loaders_ for a wide variety of popular languages and language processors, including:
 
 - [CoffeeScript](http://coffeescript.org)
 - [TypeScript](https://www.typescriptlang.org)
@@ -53,6 +53,6 @@ webpack 커뮤니티에서는 다음과 같이 널리 사용되는 다양한 언
 - [Stylus](http://stylus-lang.com)
 - [Elm](https://elm-lang.org/)
 
-그 외 다른 많은 것들을 지원합니다! 종합하면, webpack은 커스터마이징을 위한 강력하고 풍부한 API를 제공하여 **어떤 환경에서도** webpack을 사용할 수 있도록 하는 동시에, 개발과 테스트 및 프로덕션 작업 흐름을 **유연하게** 유지하도록 합니다.
+And many others! Overall, webpack provides a powerful and rich API for customization that allows one to use webpack for __any stack__, while staying __non-opinionated__ about your development, testing, and production workflows.
 
-전체 목록은 [**로더 목록**](/loaders) 또는 [**로더 직접 작성하기(write your own)**](/api/loaders)를 참고하세요.
+For a full list, see [__the list of loaders__](/loaders) or [__write your own__](/api/loaders).

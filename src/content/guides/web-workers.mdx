@@ -5,7 +5,7 @@ contributors:
   - chenxsan
 ---
 
-webpack 5부터는, [`worker-loader`](https://github.com/webpack-contrib/worker-loader) 없이 [Web Workers를](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers) 사용할 수 있습니다.
+As of webpack 5, you can use [Web Workers](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers) without [`worker-loader`](https://github.com/webpack-contrib/worker-loader).
 
 ## Syntax
 
@@ -13,7 +13,7 @@ webpack 5부터는, [`worker-loader`](https://github.com/webpack-contrib/worker-
 new Worker(new URL('./worker.js', import.meta.url));
 ```
 
-이 구문은 번들러 없이 코드를 실행할 수 있도록 선택되었으며, 브라우저의 기본 ECMAScript 모듈에서도 사용할 수 있습니다.
+The syntax was chosen to allow running code without bundler, it is also available in native ECMAScript modules in the browser.
 
 ## Example
 
@@ -39,15 +39,3 @@ self.onmessage = ({ data: { question } }) => {
   });
 };
 ```
-
-## Node.js
-
-비슷한 구문이 12.17.0 이상의 Node.js에서 지원됩니다.
-
-```js
-import { Worker } from 'worker_threads';
-
-new Worker(new URL('./worker.js', import.meta.url));
-```
-
-이 구문은 ESM에서만 사용할 수 있습니다. CommonJS 구문의 `Worker`는 webpack 이나 Node.js 모두 지원되지 않습니다.

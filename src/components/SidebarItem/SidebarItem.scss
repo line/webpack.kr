@@ -23,13 +23,10 @@
 
   &__title {
     flex: 1 1 auto;
-    color: getColor(elephant);
+    font-weight: 600;
+    color: getColor(dove-grey);
     max-width: 85%;
     @include control-overflow;
-    &.active {
-      font-weight: 600;
-      color: #333;
-    }
   }
 
   &__anchors {
@@ -76,7 +73,7 @@
     }
 
     a {
-      color: getColor(elephant);
+      color: getColor(emperor);
 
       &:hover {
         color: getColor(denim);

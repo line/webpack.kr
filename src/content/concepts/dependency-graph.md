@@ -11,9 +11,9 @@ related:
     url: https://medium.com/webpack/webpack-http-2-7083ec3f3ce6
 ---
 
-하나의 파일이 다른 파일에 의존할 때마다, webpack은 이것을 _의존성으로_ 취급합니다. 이를 통해 webpack은 이미지 또는 웹 폰트와 같은 코드가 아닌 애셋을 가져와, 애플리케이션에 _의존성으로_ 제공할 수 있습니다.
+Any time one file depends on another, webpack treats this as a _dependency_. This allows webpack to take non-code assets, such as images or web fonts, and also provide them as _dependencies_ for your application.
 
-webpack은 애플리케이션을 처리할 때, 커맨드 라인 또는 설정 파일에 정의 된 모듈 목록에서 시작합니다.
-[_엔트리 포인트_](/concepts/entry-points/)에서 시작하여, webpack은 애플리케이션에서 필요한 모든 모듈을 포함하는 _디펜던시 그래프를_ 재귀적으로 빌드한 다음, 모든 모듈을 브라우저에 의해 로드 되는 작은 수(보통 하나)의 _번들로_ 묶습니다.
+When webpack processes your application, it starts from a list of modules defined on the command line or in its configuration file.
+Starting from these [_entry points_](/concepts/entry-points/), webpack recursively builds a _dependency graph_ that includes every module your application needs, then bundles all of those modules into a small number of _bundles_ - often, just one - to be loaded by the browser.
 
-T> 애플리케이션 번들링은 브라우저가 새 요청을 시작하는 동안 앱이 기다려야 하는 횟수를 최소화하므로 _HTTP/1.1_ 클라이언트에 특히 강력합니다. _HTTP/2의_ 경우, [코드 스플리팅](/guides/code-splitting/)을 사용하여 좋은 결과를 얻을 수도 있습니다.
+T> Bundling your application is especially powerful for _HTTP/1.1_ clients, as it minimizes the number of times your app has to wait while the browser starts a new request. For _HTTP/2_, you can also use [Code Splitting](/guides/code-splitting/) to achieve best results.

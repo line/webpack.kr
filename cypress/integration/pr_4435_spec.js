@@ -1,7 +1,7 @@
 // set scrollBehavior to false
 // because we don't want cypress to scroll itself
 describe('Open page in new tab', { scrollBehavior: false }, () => {
-  it('should not scroll to top when right clicked', () => {
+  it('should not scroll to top', () => {
     cy.visit('/concepts/plugins/', {
       onBeforeLoad: (win) => {
         cy.stub(win, 'scrollTo');
@@ -17,7 +17,6 @@ describe('Open page in new tab', { scrollBehavior: false }, () => {
     // we click the menu
     cy.get(selector).click();
     cy.window().then((win) => {
-      // we don't know whether user has scrolled the page or not although no pathname changed
       expect(win.scrollTo).to.be.calledTwice;
     });
 
@@ -40,7 +39,7 @@ describe('Open page in new tab', { scrollBehavior: false }, () => {
       });
     }
 
-    // we click the menu again, scroll to top again
+    // we click the menu again
     cy.get(selector).click();
     cy.window().then((win) => {
       expect(win.scrollTo).to.be.calledThrice;

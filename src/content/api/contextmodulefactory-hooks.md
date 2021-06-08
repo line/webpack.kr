@@ -11,12 +11,13 @@ The `ContextModuleFactory` module is used by the `Compiler` to generate dependen
 The `ContextModuleFactory` class extends `Tapable` and provides the following
 lifecycle hooks. They can be tapped the same way as compiler hooks:
 
-```js
+``` js
 ContextModuleFactory.hooks.someHook.tap(/* ... */);
 ```
 
 As with the `compiler`, `tapAsync` and `tapPromise` may also be available
 depending on the type of hook.
+
 
 ### beforeResolve
 
@@ -26,6 +27,7 @@ Called before resolving the requested directory. The request can be ignored by r
 
 - Callback Parameters: `data`
 
+
 ### afterResolve
 
 `AsyncSeriesWaterfallHook`
@@ -34,6 +36,7 @@ Called after the requested directory resolved.
 
 - Callback Parameters: `data`
 
+
 ### contextModuleFiles
 
 `SyncWaterfallHook`
@@ -41,6 +44,7 @@ Called after the requested directory resolved.
 Called after directory contents are read. On recursive mode, calls for each sub-directory as well. Callback parameter is an array of all file and folder names in each directory.
 
 - Callback Parameters: `fileNames`
+
 
 ### alternativeRequests
 
