@@ -9,22 +9,21 @@ contributors:
   - aholzner
 ---
 
-T> This guide extends on code examples found in the [Output Management](/guides/output-management) guide.
+T> 이 가이드는 [Output Management](/guides/output-management) 가이드에 있는 코드 예제에 대해 설명합니다.
 
-Progressive Web Applications (or PWAs) are web apps that deliver an experience similar to native applications. There are many things that can contribute to that. Of these, the most significant is the ability for an app to be able to function when __offline__. This is achieved through the use of a web technology called [Service Workers](https://developers.google.com/web/fundamentals/primers/service-workers/).
+프로그레시브 웹 애플리케이션(또는 PWA)은 네이티브 애플리케이션과 유사한 경험을 제공하는 웹 앱입니다. PWA에 기여할 수 있는 많은 것들이 있습니다. 이 중에서 가장 중요한 것은 **오프라인** 일 때 앱이 작동할 수 있는 기능입니다. 이는 [Service Workers](https://developers.google.com/web/fundamentals/primers/service-workers/)라는 웹 기술을 사용하여 이루어집니다.
 
-This section will focus on adding an offline experience to our app. We'll achieve this using a Google project called [Workbox](https://github.com/GoogleChrome/workbox) which provides tools that help make offline support for web apps easier to setup.
-
+이 섹션에서는 앱에 오프라인 경험을 추가하는 데 중점을 둡니다. 웹 앱에 대한 오프라인 지원을 보다 쉽게 설정하는 데 도움이 될 도구를 제공하는 [Workbox](https://github.com/GoogleChrome/workbox)라는 Google 프로젝트를 사용하여 이 작업을 수행합니다.
 
 ## We Don't Work Offline Now
 
-So far, we've been viewing the output by going directly to the local file system. Typically though, a real user accesses a web app over a network; their browser talking to a __server__ which will serve up the required assets (e.g. `.html`, `.js`, and `.css` files).
+지금까지 로컬 파일 시스템으로 직접 이동하여 출력을 확인했습니다. 일반적으로 실제 사용자는 네트워크를 통해 웹 앱에 접근합니다. 브라우저는 `.html`, `.js`, 그리고 `.css` 파일같은 필요한 애셋을 제공할 **서버와** 통신합니다.
 
-So let's test what the current experience is like using a simple server. Let's use the [http-server](https://www.npmjs.com/package/http-server) package: `npm install http-server --save-dev`. We'll also amend the `scripts` section of our `package.json` to add in a `start` script:
+간단한 서버를 사용하여 테스트해 보겠습니다. `npm install http-server --save-dev` 커맨드로 [http-server](https://www.npmjs.com/package/http-server) 패키지를 설치하여 사용해 보겠습니다. 또한 `package.json`의 `scripts` 섹션을 수정하여 `start` 스크립트를 추가하겠습니다.
 
-__package.json__
+**package.json**
 
-``` diff
+```diff
 {
   ...
   "scripts": {
@@ -36,11 +35,11 @@ __package.json__
 }
 ```
 
-Note: [webpack DevServer](/configuration/dev-server/) writes in-memory by default. We'll need to enable [writeToDisk](/configuration/dev-server/#devserverwritetodisk-) option in order for http-server to be able to serve files from `./dist` directory.
+참고: [webpack DevServer](/configuration/dev-server/)는 기본적으로 인-메모리를 사용합니다. http-server가 `./dist` 디렉터리 파일을 제공하도록 하려면 [writeToDisk](/configuration/dev-server/#devserverwritetodisk-) 옵션을 활성화해야 합니다.
 
-If you haven't previously done so, run the command `npm run build` to build your project. Then run the command `npm start`. This should produce the following output:
+`npm run build` 커맨드를 실행하여 프로젝트를 빌드합니다. 그런 다음 `npm start` 커맨드를 실행합니다. 그러면 다음과 같이 출력됩니다.
 
-``` bash
+```bash
 > http-server dist
 
 Starting up http-server, serving dist
@@ -51,25 +50,23 @@ Available on:
 Hit CTRL-C to stop the server
 ```
 
-If you open your browser to `http://localhost:8080` (i.e. `http://127.0.0.1`) you should see your webpack application being served from the `dist` directory. If you stop the server and refresh, the webpack application is no longer available.
+만약 브라우저를 `http://localhost:8080`로 연다면 `dist` 디렉터리에서 제공되는 webpack 애플리케이션을 볼 수 있습니다. 서버를 중지하고 새로 고침하면 webpack 애플리케이션을 더 이상 사용할 수 없습니다.
 
-This is what we aim to change. Once we reach the end of this module we should be able to stop the server, hit refresh and still see our application.
-
+이것이 변경하고자 하는 것입니다. 이 문서의 끝에서는 이제 서버를 중지하고, 새로 고침을 눌러도 애플리케이션을 계속 볼 수 있습니다.
 
 ## Adding Workbox
 
-Let's add the Workbox webpack plugin and adjust the `webpack.config.js` file:
+Workbox webpack 플러그인을 추가하고 `webpack.config.js`파일을 수정해 보겠습니다.
 
-``` bash
+```bash
 npm install workbox-webpack-plugin --save-dev
 ```
 
-__webpack.config.js__
+**webpack.config.js**
 
-``` diff
+```diff
   const path = require('path');
   const HtmlWebpackPlugin = require('html-webpack-plugin');
-  const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 + const WorkboxPlugin = require('workbox-webpack-plugin');
 
   module.exports = {
@@ -78,15 +75,13 @@ __webpack.config.js__
       print: './src/print.js',
     },
     plugins: [
-      // new CleanWebpackPlugin(['dist/*']) for < v2 versions of CleanWebpackPlugin
-      new CleanWebpackPlugin(),
       new HtmlWebpackPlugin({
 -       title: 'Output Management',
 +       title: 'Progressive Web Application',
       }),
 +     new WorkboxPlugin.GenerateSW({
-+       // these options encourage the ServiceWorkers to get in there fast
-+       // and not allow any straggling "old" SWs to hang around
++       // 이 옵션은 ServiceWorkers가 빠르게 도달하도록 장려합니다
++       // 그리고 "오래된" SW가 돌아다니는 것을 허용하지 않습니다
 +       clientsClaim: true,
 +       skipWaiting: true,
 +     }),
@@ -94,13 +89,14 @@ __webpack.config.js__
     output: {
       filename: '[name].bundle.js',
       path: path.resolve(__dirname, 'dist'),
+      clean: true,
     },
   };
 ```
 
-With that in place, let's see what happens when we do an `npm run build`:
+이제 `npm run build`를 수행할 때 어떤 일이 발생하는지 살펴보겠습니다.
 
-``` bash
+```bash
 ...
                   Asset       Size  Chunks                    Chunk Names
           app.bundle.js     545 kB    0, 1  [emitted]  [big]  app
@@ -111,18 +107,17 @@ precache-manifest.b5ca1c555e832d6fbf9462efd29d27eb.js  268 bytes          [emitt
 ...
 ```
 
-As you can see, we now have 2 extra files being generated; `service-worker.js` and the more verbose `precache-manifest.b5ca1c555e832d6fbf9462efd29d27eb.js`. `service-worker.js` is the Service Worker file and `precache-manifest.b5ca1c555e832d6fbf9462efd29d27eb.js` is a file that `service-worker.js` requires so it can run. Your own generated files will likely be different; but you should have a `service-worker.js` file there.
+보다시피 `service-worker.js`와 `precache-manifest.b5ca1c555e832d6fbf9462efd29d27eb.js`라는 2개의 추가 파일이 생성됩니다. `service-worker.js`는 서비스 워커 파일이고 `precache-manifest.b5ca1c555e832d6fbf9462efd29d27eb.js`는 `service-worker.js`가 실행되기 위해 필요한 파일입니다. 사용자가 생성한 파일은 다를 수 있습니다. 하지만 `service-worker.js` 파일은 있어야 합니다.
 
-So we're now at the happy point of having produced a Service Worker. What's next?
-
+이제 서비스 워커를 만들었습니다. 다음 단계는 무엇일까요?
 
 ## Registering Our Service Worker
 
-Let's allow our Service Worker to come out and play by registering it. We'll do that by adding the registration code below:
+서비스 워커를 등록하여 실행 할 수 있도록 합시다. 아래의 등록 코드를 추가하면 됩니다.
 
-__index.js__
+**index.js**
 
-``` diff
+```diff
   import _ from 'lodash';
   import printMe from './print.js';
 
@@ -137,15 +132,15 @@ __index.js__
 + }
 ```
 
-Once more `npm run build` to build a version of the app including the registration code. Then serve it with `npm start`. Navigate to `http://localhost:8080` and take a look at the console. Somewhere in there you should see:
+한 번 더 `npm run build`를 통해 등록 코드를 포함한 앱 버전을 빌드합니다. 그런 다음 `npm start`를 실행합니다. `http://localhost:8080`로 이동하여 콘솔을 살펴보세요. 어딘가에 다음 내용이 표시됩니다.
 
-``` bash
+```bash
 SW registered
 ```
 
-Now to test it. Stop your server and refresh your page. If your browser supports Service Workers then you should still be looking at your application. However, it has been served up by your Service Worker and __not__ by the server.
+이제 테스트해 보겠습니다. 서버를 중지하고 페이지를 새로 고침 합니다. 브라우저가 서비스 워커를 지원하는 경우 애플리케이션을 계속해서 확인할 수 있습니다. 하지만 서비스 워커가 서비스를 제공하는 것이지 서버가 **제공하는 것은 아닙니다.**
 
 
 ## Conclusion
 
-You have built an offline app using the Workbox project. You've started the journey of turning your web app into a PWA. You may now want to think about taking things further. A good resource to help you with that can be found [here](https://developers.google.com/web/progressive-web-apps/).
+Workbox 프로젝트를 사용하여 오프라인 앱을 빌드했습니다. 웹 앱을 PWA로 전환하는 여정을 시작했습니다. 이제 더 나아가는 것에 대해 생각할 수 있습니다. 도움이 되는 유용한 리소스는 [여기](https://developers.google.com/web/progressive-web-apps/)에서 찾을 수 있습니다.

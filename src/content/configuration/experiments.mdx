@@ -1,0 +1,121 @@
+---
+title: Experiments
+sort: 19
+contributors:
+  - EugeneHlushko
+  - wizardofhogwarts
+  - chenxsan
+  - anshumanv
+---
+
+## `experiments`
+
+`boolean: false`
+
+사용자가 실험적 기능을 활성화하고 시험해 볼 수 있는 권한을 부여하기 위해 `experiments` 옵션이 webpack 5에 도입되었습니다.
+
+W> 실험적 기능은 시멘틱 버저닝을 완화하고 주요 변경 사항을 포함할 수 있으므로, webpack의 버전을 마이너 버전으로 수정해야 합니다. 예. `webpack: ~5.4.3` 대신 `webpack: ^5.4.3`을 사용하거나 `experiments`를 사용할 때 잠금 파일의 사용.
+
+사용 가능한 옵션은 다음과 같습니다.
+
+- [`executeModule`](#experimentsexecutemodule): 빌드 시 플러그인 및 로더에 대한 모듈 그래프에서 모듈 실행을 활성화합니다.
+- `syncWebAssembly`: webpack 4에서와 같이 이전 웹 어셈블리를 지원합니다.
+- `asyncWebAssembly`: [업데이트된 사양](https://github.com/WebAssembly/esm-integration)에 따라 새로운 웹 어셈블리를 지원하여, 웹 어셈블리 모듈을 비동기 모듈로 만듭니다.
+- `topLevelAwait`: [Top Level Await Stage 3 제안](https://github.com/tc39/proposal-top-level-await)을 지원하여, 최상위에서 `await` 사용 시 모듈을 비동기 모듈로 만듭니다.
+- `outputModule`: [`output.module`](/configuration/output/#outputmodule) 설정 옵션 사용을 활성화하고 `true`로 설정합니다. `output.libraryTarget`을 `'module'`로 사용하고 이를`'module'`로 설정합니다.
+- `layers`: 모듈 및 청크 레이어를 활성화합니다.
+- [`lazyCompilation`](#experimentslazycompilation): 엔트리 포인트와 동적 `import`는 사용 중 일 때만 컴파일합니다.
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  //...
+  experiments: {
+    executeModule: true,
+    outputModule: true,
+    syncWebAssembly: true,
+    topLevelAwait: true,
+    asyncWebAssembly: true,
+    layers: true,
+    lazyCompilation: true,
+  },
+};
+```
+
+### experiments.executeModule
+
+빌드 시 플러그인 및 로더에 대한 모듈 그래프에서 모듈 실행을 활성화하여 코드 또는 기타 애셋을 생성합니다.
+
+- Type: `boolean`
+- Available: 5.32.0+
+- Example:
+
+  ```js
+  module.exports = {
+    // …
+    experiments: {
+      executeModule: true,
+    },
+  };
+  ```
+
+### experiments.lazyCompilation
+
+엔트리 포인트와 동적 `import`는 사용 중일 때만 컴파일하세요. Web 또는 Node.js에 사용할 수 있습니다.
+
+- Type
+  - `boolean`
+  - `object`
+    ```ts
+    {
+      // 커스텀 백엔드 정의
+      backend?: ((
+        compiler: webpack.Compiler,
+        client: string,
+        callback: (err?: Error, api?: any) => void
+      ) => void)
+      | ((
+          compiler: webpack.Compiler,
+          client: string
+        ) => Promise<any>)
+      client?: string,
+      entries?: boolean,
+      imports?: boolean,
+      test?: RegExp | string | ((module: import("../lib/Module")) => boolean)
+    }
+    ```
+    - `client`: 커스텀 클라이언트의 경로, 기본값은 `webpack/hot/lazy-compilation-{node|web}.js`입니다.
+    - `backend`: 백엔드를 커스터마이즈 합니다. 기본값은 `webpack/lib/hmr/lazyCompilationBackend`입니다.
+    - `entries`: 엔트리에 대한 지연 컴파일을 활성화합니다.
+    - `imports` <Badge text = '5.20.0 +'/> : 동적 import에 대해 지연 컴파일을 사용합니다.
+    - `test` <Badge text='5.20.0+' />: 어떤 import 모듈을 지연 컴파일할지 지정합니다.
+- Available: 5.17.0+
+- Example 1:
+  ```js
+  module.exports = {
+    // …
+    experiments: {
+      lazyCompilation: true,
+    },
+  };
+  ```
+- Example 2:
+
+  ```js
+  module.exports = {
+    // …
+    experiments: {
+      lazyCompilation: {
+        // 동적 import에 대한 지연 컴파일 비활성화
+        imports: false,
+
+        // 엔트리에 대한 지연 컴파일 비활성화
+        entries: false,
+
+        // moduleB를 지연 컴파일하지 마세요
+        test: (module) => !/moduleB/.test(module.nameForCondition()),
+      },
+    },
+  };
+  ```

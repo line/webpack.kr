@@ -19,34 +19,32 @@ contributors:
   - jamesgeorge007
 ---
 
-These options change how modules are resolved. webpack provides reasonable defaults, but it is possible to change the resolving in detail. Have a look at [Module Resolution](/concepts/module-resolution) for more explanation of how the resolver works.
-
+이 옵션은 모듈을 해석하는 방식을 변경 할 수 있습니다. webpack은 알맞은 기본값을 제공하지만, 상세하게 해석 방식을 변경할 수 있습니다. 리졸버의 동작 방식에 대한 자세한 설명은 [Module Resolution](/concepts/module-resolution)을 참고하세요.
 
 ## `resolve`
 
 `object`
 
-Configure how modules are resolved. For example, when calling `import 'lodash'` in ES2015, the `resolve` options can change where webpack goes to look for `'lodash'` (see [`modules`](#resolvemodules)).
+모듈 해석에 대한 설정. 예를 들어 ES2015에서 `import 'lodash'`를 호출할 때,  `resolve` 옵션은 webpack이 `'lodash'`를 찾는 위치를 변경할 수 있습니다. ([`modules`](#resolvemodules)를 참고하세요).
 
-__webpack.config.js__
+**webpack.config.js**
 
 ```js
 module.exports = {
   //...
   resolve: {
     // configuration options
-  }
+  },
 };
 ```
-
 
 ### `resolve.alias`
 
 `object`
 
-Create aliases to `import` or `require` certain modules more easily. For example, to alias a bunch of commonly used `src/` folders:
+`import`나 `require`로 간단히 특정 모듈의 별칭을 만들 수 있습니다. 예를 들어, 일반적으로 사용되는 `src/` 폴더의 별칭을 지정할 수 있습니다.
 
-__webpack.config.js__
+**webpack.config.js**
 
 ```js
 const path = require('path');
@@ -56,27 +54,27 @@ module.exports = {
   resolve: {
     alias: {
       Utilities: path.resolve(__dirname, 'src/utilities/'),
-      Templates: path.resolve(__dirname, 'src/templates/')
-    }
-  }
+      Templates: path.resolve(__dirname, 'src/templates/'),
+    },
+  },
 };
 ```
 
-Now, instead of using relative paths when importing like so:
+이제 상대 경로를 사용하는 대신 다음과 같이 사용할 수 있습니다.
 
 ```js
 import Utility from '../../utilities/utility';
 ```
 
-you can use the alias:
+별칭을 사용할 수 있습니다.
 
 ```js
 import Utility from 'Utilities/utility';
 ```
 
-A trailing `$` can also be added to the given object's keys to signify an exact match:
+뒤에 `$`를 객체의 키에 추가하여 정확하게 일치하도록 할 수 있습니다.
 
-__webpack.config.js__
+**webpack.config.js**
 
 ```js
 const path = require('path');
@@ -85,59 +83,62 @@ module.exports = {
   //...
   resolve: {
     alias: {
-      xyz$: path.resolve(__dirname, 'path/to/file.js')
-    }
-  }
+      xyz$: path.resolve(__dirname, 'path/to/file.js'),
+    },
+  },
 };
 ```
 
-which would yield these results:
+결과는 다음과 같습니다.
 
 ```js
-import Test1 from 'xyz'; // Exact match, so path/to/file.js is resolved and imported
-import Test2 from 'xyz/file.js'; // Not an exact match, normal resolution takes place
+import Test1 from 'xyz'; // 정확한 매칭이므로 path/to/file.js로 해석되어 가져옵니다.
+import Test2 from 'xyz/file.js'; // 정확한 매칭이 아니고 일반적인 방식으로 가져옵니다.
 ```
 
-The following table explains other cases:
+다음 표는 다른 사례들을 보여줍니다.
 
-| `alias:`                            | `import 'xyz'`                        | `import 'xyz/file.js'`              |
-| ----------------------------------- | ------------------------------------- | ----------------------------------- |
-| `{}`                                | `/abc/node_modules/xyz/index.js`      | `/abc/node_modules/xyz/file.js`     |
-| `{ xyz: '/abc/path/to/file.js' }`   | `/abc/path/to/file.js`                | error                               |
-| `{ xyz$: '/abc/path/to/file.js' }`  | `/abc/path/to/file.js`                | `/abc/node_modules/xyz/file.js`     |
-| `{ xyz: './dir/file.js' }`          | `/abc/dir/file.js`                    | error                               |
-| `{ xyz$: './dir/file.js' }`         | `/abc/dir/file.js`                    | `/abc/node_modules/xyz/file.js`     |
-| `{ xyz: '/some/dir' }`              | `/some/dir/index.js`                  | `/some/dir/file.js`                 |
-| `{ xyz$: '/some/dir' }`             | `/some/dir/index.js`                  | `/abc/node_modules/xyz/file.js`     |
-| `{ xyz: './dir' }`                  | `/abc/dir/index.js`                   | `/abc/dir/file.js`                  |
-| `{ xyz: 'modu' }`                   | `/abc/node_modules/modu/index.js`     | `/abc/node_modules/modu/file.js`    |
-| `{ xyz$: 'modu' }`                  | `/abc/node_modules/modu/index.js`     | `/abc/node_modules/xyz/file.js`     |
-| `{ xyz: 'modu/some/file.js' }`      | `/abc/node_modules/modu/some/file.js` | error                               |
-| `{ xyz: 'modu/dir' }`               | `/abc/node_modules/modu/dir/index.js` | `/abc/node_modules/modu/dir/file.js`|
-| `{ xyz$: 'modu/dir' }`              | `/abc/node_modules/modu/dir/index.js` | `/abc/node_modules/xyz/file.js`     |
+| `alias:`                           | `import 'xyz'`                        | `import 'xyz/file.js'`               |
+| ---------------------------------- | ------------------------------------- | ------------------------------------ |
+| `{}`                               | `/abc/node_modules/xyz/index.js`      | `/abc/node_modules/xyz/file.js`      |
+| `{ xyz: '/abc/path/to/file.js' }`  | `/abc/path/to/file.js`                | error                                |
+| `{ xyz$: '/abc/path/to/file.js' }` | `/abc/path/to/file.js`                | `/abc/node_modules/xyz/file.js`      |
+| `{ xyz: './dir/file.js' }`         | `/abc/dir/file.js`                    | error                                |
+| `{ xyz$: './dir/file.js' }`        | `/abc/dir/file.js`                    | `/abc/node_modules/xyz/file.js`      |
+| `{ xyz: '/some/dir' }`             | `/some/dir/index.js`                  | `/some/dir/file.js`                  |
+| `{ xyz$: '/some/dir' }`            | `/some/dir/index.js`                  | `/abc/node_modules/xyz/file.js`      |
+| `{ xyz: './dir' }`                 | `/abc/dir/index.js`                   | `/abc/dir/file.js`                   |
+| `{ xyz: 'modu' }`                  | `/abc/node_modules/modu/index.js`     | `/abc/node_modules/modu/file.js`     |
+| `{ xyz$: 'modu' }`                 | `/abc/node_modules/modu/index.js`     | `/abc/node_modules/xyz/file.js`      |
+| `{ xyz: 'modu/some/file.js' }`     | `/abc/node_modules/modu/some/file.js` | error                                |
+| `{ xyz: 'modu/dir' }`              | `/abc/node_modules/modu/dir/index.js` | `/abc/node_modules/modu/dir/file.js` |
+| `{ xyz$: 'modu/dir' }`             | `/abc/node_modules/modu/dir/index.js` | `/abc/node_modules/xyz/file.js`      |
 
-`index.js` may resolve to another file if defined in the `package.json`.
+`index.js`가 `package.json`에 정의되어 있으면 다른 파일로 해석될 수 있습니다.
 
-`/abc/node_modules` may resolve in `/node_modules` too.
+`/abc/node_modules`는 `/node_modules`로 해석될 수 있습니다.
 
-W> `resolve.alias` takes precedence over other module resolutions.
+W> `resolve.alias`는 다른 모듈보다 우선하여 해석됩니다.
 
-W> [`null-loader`](https://github.com/webpack-contrib/null-loader) is deprecated in webpack 5. use `alias: { xyz$: false }` or absolute path `alias: {[path.resolve(__dirname, './path/to/module')]: false }`
+W> [`null-loader`](https://github.com/webpack-contrib/null-loader)는 webpack 5에서 더 이상 사용되지 않습니다. `alias: { xyz$: false }`나 절대경로 `alias: {[path.resolve(__dirname, './path/to/module')]: false }`를 사용하세요.
 
-W> `[string]` values are supported since webpack 5.
+W> webpack 5에서부터 `[string]`을 지원합니다.
 
 ```js
 module.exports = {
   //...
   resolve: {
     alias: {
-      _: [path.resolve(__dirname, 'src/utilities/'), path.resolve(__dirname, 'src/templates/')]
-    }
-  }
+      _: [
+        path.resolve(__dirname, 'src/utilities/'),
+        path.resolve(__dirname, 'src/templates/'),
+      ],
+    },
+  },
 };
 ```
 
-Setting `resolve.alias` to `false` will tell webpack to ignore a module.
+`resolve.alias`를 `false`로 설정하면 webpack은 모듈을 무시합니다.
 
 ```js
 module.exports = {
@@ -146,8 +147,8 @@ module.exports = {
     alias: {
       'ignored-module': false,
       './ignored-module': false,
-    }
-  }
+    },
+  },
 };
 ```
 
@@ -155,144 +156,145 @@ module.exports = {
 
 `[string]: ['browser']`
 
-Specify a field, such as `browser`, to be parsed according to [this specification](https://github.com/defunctzombie/package-browser-field-spec).
+예를 들면 `browser` 같이 [구문](https://github.com/defunctzombie/package-browser-field-spec)을 분석할 필드를 지정합니다.
 
-__webpack.config.js__
+**webpack.config.js**
 
 ```js
 module.exports = {
   //...
   resolve: {
-    aliasFields: ['browser']
-  }
+    aliasFields: ['browser'],
+  },
 };
 ```
-
 
 ### `resolve.cacheWithContext`
 
 `boolean` (since webpack 3.1.0)
 
-If unsafe cache is enabled, includes `request.context` in the cache key. This option is taken into account by the [`enhanced-resolve`](https://github.com/webpack/enhanced-resolve/) module. Since webpack 3.1.0 context in resolve caching is ignored when resolve or resolveLoader plugins are provided. This addresses a performance regression.
-
+안전하지 않은 캐시가 활성화되었을 경우에는 캐시키에 `request.context`를 포함합니다. 이 옵션은 [`enhanced-resolve`](https://github.com/webpack/enhanced-resolve/) 모듈에서 고려됩니다. webpack 3.1.0 이후로 resolve 또는 resolveLoader 플러그인이 제공되면 캐싱을 해석하는 컨텍스트가 무시됩니다. 이것은 성능 문제를 해결합니다.
 
 ### `resolve.descriptionFiles`
 
 `[string] = ['package.json']`
 
-The JSON files to use for descriptions.
+설명에 사용할 JSON 파일입니다.
 
-__webpack.config.js__
+**webpack.config.js**
 
 ```js
 module.exports = {
   //...
   resolve: {
-    descriptionFiles: ['package.json']
-  }
+    descriptionFiles: ['package.json'],
+  },
 };
 ```
-
 
 ### `resolve.enforceExtension`
 
 `boolean = false`
 
-If `true`, it will not allow extension-less files. So by default `require('./foo')` works if `./foo` has a `.js` extension, but with this enabled only `require('./foo.js')` will work.
+`true`이면, 확장자가 없는 파일을 허용하지 않습니다. 기본적으로 `require('./foo')`는 `./foo`가 `.js` 확장자를 가지고 있으면 동작하지만, 이 기능을 사용하면 `require('./foo.js')`만 동작합니다.
 
-__webpack.config.js__
+**webpack.config.js**
 
 ```js
 module.exports = {
   //...
   resolve: {
-    enforceExtension: false
-  }
+    enforceExtension: false,
+  },
 };
 ```
-
 
 ### `resolve.enforceModuleExtension`
 
 `boolean = false`
 
-W> Removed in webpack 5
+W> webpack 5에서 삭제됨
 
-Tells webpack whether to require to use an extension for modules (e.g. loaders).
+예를 들어 로더와 같은 모듈에 대한 확장자를 사용하는지 여부를 webpack에 알려줍니다.
 
-__webpack.config.js__
-
-```js
-module.exports = {
-  //...
-  resolve: {
-    enforceModuleExtension: false
-  }
-};
-```
-
-
-### `resolve.extensions`
-
-`[string] = ['.wasm', '.mjs', '.js', '.json']`
-
-Attempt to resolve these extensions in order.
-
-W> If multiple files share the same name but have different extensions, webpack will resolve the one with the extension listed first in the array and skip the rest.
-
-__webpack.config.js__
+**webpack.config.js**
 
 ```js
 module.exports = {
   //...
   resolve: {
-    extensions: ['.wasm', '.mjs', '.js', '.json']
-  }
+    enforceModuleExtension: false,
+  },
 };
 ```
 
-which is what enables users to leave off the extension when importing:
+### resolve.extensions
+
+`[string] = ['.js', '.json', '.wasm']`
+
+이러한 확장자를 순서대로 해석합니다. 여러 파일에서 이름이 동일하지만 다른 확장자를 가진 경우, webpack은 배열의 앞에서부터 파일을 해석하고 남은 것은 해석하지 않습니다.
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  //...
+  resolve: {
+    extensions: ['.js', '.json', '.wasm'],
+  },
+};
+```
+
+이는 사용자가 import 할 때 확장자를 생략 할 수 있도록 합니다.
 
 ```js
 import File from '../path/to/file';
 ```
 
-W> Using this will __override the default array__, meaning that webpack will no longer try to resolve modules using the default extensions.
+위와 같이 `resolve.extensions`를 사용하면 **기본 배열을 재정의** 할 수 있으며, 이는 webpack이 더 이상 기본 확장자를 사용하여 모듈을 해석하지 않습니다. 하지만 `'...'` 을 이용하여 기본 확장자에 접근 할 수 있습니다.
 
+```js
+module.exports = {
+  //...
+  resolve: {
+    extensions: ['.ts', '...'],
+  },
+};
+```
 
 ### `resolve.mainFields`
 
 `[string]`
 
-When importing from an npm package, e.g. `import * as D3 from 'd3'`, this option will determine which fields in its `package.json` are checked. The default values will vary based upon the [`target`](/concepts/targets) specified in your webpack configuration.
+`import * as D3 from 'd3'`와 같이 npm 패키지를 가져올 때 이 옵션은 `package.json`의 어떤 필드를 검사할 지 결정합니다. 기본값은 webpack 설정에 지정된 [`target`](/concepts/targets)에 따라 달라집니다.
 
-When the `target` property is set to `webworker`, `web`, or left unspecified:
+`target` 속성을 `webworker`, `web`이나 설정하지 않은 경우는 다음과 같습니다.
 
-__webpack.config.js__
-
-```js
-module.exports = {
-  //...
-  resolve: {
-    mainFields: ['browser', 'module', 'main']
-  }
-};
-```
-
-For any other target (including `node`):
-
-__webpack.config.js__
+**webpack.config.js**
 
 ```js
 module.exports = {
   //...
   resolve: {
-    mainFields: ['module', 'main']
-  }
+    mainFields: ['browser', 'module', 'main'],
+  },
 };
 ```
 
-For example, consider an arbitrary library called `upstream` with a `package.json` that contains the following fields:
+다른 target의 경우(`node`포함)
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  //...
+  resolve: {
+    mainFields: ['module', 'main'],
+  },
+};
+```
+
+예를 들어 다음 필드가 포함된 `package.json`에 있는 `upstream`이라는 임의의 라이브러리를 고려해보세요.
 
 ```json
 {
@@ -301,71 +303,68 @@ For example, consider an arbitrary library called `upstream` with a `package.jso
 }
 ```
 
-When we `import * as Upstream from 'upstream'` this will actually resolve to the file in the `browser` property. The `browser` property takes precedence because it's the first item in `mainFields`. Meanwhile, a Node.js application bundled by webpack will first try to resolve using the file in the `module` field.
-
+`import * as Upstream from 'upstream'`을 실행하면 실제로 `browser` 속성의 파일로 해석됩니다. `browser` 속성은 `mainFields`의 첫번째 항목이기 때문에 우선하여 해석합니다. 한편, webpack에 의해 번들된 Node.js 애플리케이션은 먼저 `module` 필드의 파일을 사용하여 해석하려고 시도합니다.
 
 ### `resolve.mainFiles`
 
 `[string] = ['index']`
 
-The filename to be used while resolving directories.
+디렉터리를 해석하는 동안 사용할 파일 이름입니다.
 
-__webpack.config.js__
+**webpack.config.js**
 
 ```js
 module.exports = {
   //...
   resolve: {
-    mainFiles: ['index']
-  }
+    mainFiles: ['index'],
+  },
 };
 ```
-
 
 ### `resolve.exportsFields`
 
 `[string] = ['exports']`
 
-Fields in package.json that are used for resolving module requests. See [package-exports guideline](/guides/package-exports/) for more information.
+요청된 모듈을 해석하는데 사용되는 package.json 필드입니다. 자세한 내용은 [package-exports guideline](/guides/package-exports/)를 참고하세요.
 
-__webpack.config.js__
+**webpack.config.js**
 
 ```js
 module.exports = {
   //...
   resolve: {
-    exportsFields: ['exports', 'myCompanyExports']
-  }
+    exportsFields: ['exports', 'myCompanyExports'],
+  },
 };
 ```
-
 
 ### `resolve.modules`
 
 `[string] = ['node_modules']`
 
-Tell webpack what directories should be searched when resolving modules.
+모듈을 해석할 때 검색할 디렉터리를 webpack에 알려줍니다.
 
-Absolute and relative paths can both be used, but be aware that they will behave a bit differently.
+절대 경로와 상대 경로를 모두 사용하지만, 약간 다르게 동작 할 수 있습니다.
 
-A relative path will be scanned similarly to how Node scans for `node_modules`, by looking through the current directory as well as its ancestors (i.e. `./node_modules`, `../node_modules`, and on).
+상대 경로는 Node가 현재 디렉터리와 상위 디렉터리를 통해 `node_modules`를 검색하는 방법과 유사하게 검색됩니다.
 
-With an absolute path, it will only search in the given directory.
+절대 경로는 오직 주어진 디렉터리에서만 검색합니다.
 
-__webpack.config.js__
+**webpack.config.js**
 
 ```js
 module.exports = {
   //...
   resolve: {
-    modules: ['node_modules']
-  }
+    modules: ['node_modules'],
+  },
 };
 ```
 
-If you want to add a directory to search in that takes precedence over `node_modules/`:
+`node_modules/`보다 우선으로 검색할 디렉터리를 추가하는 것은 다음과 같습니다.
 
-__webpack.config.js__
+**webpack.config.js**
 
 ```js
 const path = require('path');
@@ -373,90 +372,85 @@ const path = require('path');
 module.exports = {
   //...
   resolve: {
-    modules: [path.resolve(__dirname, 'src'), 'node_modules']
-  }
+    modules: [path.resolve(__dirname, 'src'), 'node_modules'],
+  },
 };
 ```
-
 
 ### `resolve.unsafeCache`
 
 `RegExp` `[RegExp]` `boolean: true`
 
-Enable aggressive, but __unsafe__, caching of modules. Passing `true` will cache everything.
+공격적이지만 **안전하지 않은** 모듈 캐싱을 활성화합니다. `true`로 설정하면 모든 것이 캐싱 됩니다.
 
-__webpack.config.js__
-
-```js
-module.exports = {
-  //...
-  resolve: {
-    unsafeCache: true
-  }
-};
-```
-
-A regular expression, or an array of regular expressions, can be used to test file paths and only cache certain modules. For example, to only cache utilities:
-
-__webpack.config.js__
+**webpack.config.js**
 
 ```js
 module.exports = {
   //...
   resolve: {
-    unsafeCache: /src\/utilities/
-  }
+    unsafeCache: true,
+  },
 };
 ```
 
-W> Changes to cached paths may cause failure in rare cases.
+단일 혹은 배열을 이용한 정규식을 사용하여 파일 경로를 테스트하고 특정 모듈만 캐시 할 수 있습니다. 예를 들어 utilities만 캐시 하려면 다음을 참고하세요.
 
+**webpack.config.js**
+
+```js
+module.exports = {
+  //...
+  resolve: {
+    unsafeCache: /src\/utilities/,
+  },
+};
+```
+
+W> 캐시된 경로를 변경하는 것은 간혹 실패의 원인이 될 수 있습니다.
 
 ### `resolve.plugins`
 
 [`[Plugin]`](/plugins/)
 
-A list of additional resolve plugins which should be applied. It allows plugins such as [`DirectoryNamedWebpackPlugin`](https://www.npmjs.com/package/directory-named-webpack-plugin).
+추가로 해석할 플러그인 리스트를 적용해야 합니다. [`DirectoryNamedWebpackPlugin`](https://www.npmjs.com/package/directory-named-webpack-plugin)과 같은 플러그인을 허용합니다.
 
-__webpack.config.js__
+**webpack.config.js**
 
 ```js
 module.exports = {
   //...
   resolve: {
-    plugins: [
-      new DirectoryNamedWebpackPlugin()
-    ]
-  }
+    plugins: [new DirectoryNamedWebpackPlugin()],
+  },
 };
 ```
-
 
 ### `resolve.preferRelative`
 
 `boolean`
 
-When enabled, webpack would prefer to resolve module requests as relative requests instead of using modules from `node_modules` directories.
+이 옵션을 활성화하면, webpack은 `node_modules` 디렉터리의 모듈을 사용하는 대신 상대적인 요청으로 해석하려 합니다.
 
-__webpack.config.js__
+**webpack.config.js**
 
 ```js
 module.exports = {
   //...
   resolve: {
-    preferRelative: true
-  }
+    preferRelative: true,
+  },
 };
 ```
 
-__src/index.js__
+**src/index.js**
 
 ```js
-// let's say `src/logo.svg` exists
-import logo1 from 'logo.svg'; // this is viable when `preferRelative` enabled
-import logo2 from './logo.svg'; // otherwise you can only use relative path to resolve logo.svg
+// `src/logo.svg`가 존재한다고 가정해 보세요.
+import logo1 from 'logo.svg'; // 이것은 `preferRelative`가 활성화되었을 때 가능합니다
+import logo2 from './logo.svg'; // 그렇지 않으면 상대 경로만 사용하여 logo.svg를 해석할 수 있습니다
 
-// `preferRelative` is enabled by default for `new URL()` case
+// `preferRelative` 는 `new URL()` 경우 기본으로 활성화됩니다.
 const b = new URL('module/path', import.meta.url);
 const a = new URL('./module/path', import.meta.url);
 ```
@@ -465,18 +459,18 @@ const a = new URL('./module/path', import.meta.url);
 
 `boolean`
 
-<Badge text='5.13.0+' />
+<Badge text="5.13.0+" />
 
-Prefer absolute paths to [`resolve.roots`](#resolveroots) when resolving.
+해석할 때 [`resolve.roots`](#resolveroots)보다 절대 경로를 선호합니다.
 
-__wepack.config.js__
+**wepack.config.js**
 
 ```js
 module.exports = {
   //...
   resolve: {
-    preferAbsolute: true
-  }
+    preferAbsolute: true,
+  },
 };
 ```
 
@@ -484,39 +478,38 @@ module.exports = {
 
 `boolean = true`
 
-Whether to resolve symlinks to their symlinked location.
+심볼릭 링크를 심볼릭 링크된 위치로 해석할지 여부입니다.
 
-When enabled, symlinked resources are resolved to their _real_ path, not their symlinked location. Note that this may cause module resolution to fail when using tools that symlink packages (like `npm link`).
+활성화되면 심볼릭 링크된 리소스는 심볼릭 링크된 위치가 아닌 _실제_ 경로에서 해석합니다. `npm link`와 같이 패키지를 심볼릭 링크하는 툴로 사용할 때, 모듈 해석이 실패할 수 있습니다.
 
-__webpack.config.js__
+**webpack.config.js**
 
 ```js
 module.exports = {
   //...
   resolve: {
-    symlinks: true
-  }
+    symlinks: true,
+  },
 };
 ```
-
 
 ### `resolve.cachePredicate`
 
 `function(module) => boolean`
 
-A function which decides whether a request should be cached or not. An object is passed to the function with `path` and `request` properties. It must return a boolean.
+요청을 캐시할 지 여부를 결정하는 함수입니다. 객체는 `path`와 `request` 속성을 사용하여 함수로 전달합니다. 반드시 boolean을 반환해야 합니다.
 
-__webpack.config.js__
+**webpack.config.js**
 
 ```js
 module.exports = {
   //...
   resolve: {
     cachePredicate: (module) => {
-      // additional logic
+      // 추가 로직
       return true;
-    }
-  }
+    },
+  },
 };
 ```
 
@@ -524,16 +517,16 @@ module.exports = {
 
 `[string, RegExp]`
 
-A list of resolve restrictions to restrict the paths that a request can be resolved on.
+요청을 해석할 수 있는 경로를 제한하는 해석 제한 목록입니다.
 
-__webpack.config.js__
+**webpack.config.js**
 
 ```js
 module.exports = {
   //...
   resolve: {
-    restrictions: [/\.(sass|scss|css)$/]
-  }
+    restrictions: [/\.(sass|scss|css)$/],
+  },
 };
 ```
 
@@ -541,17 +534,17 @@ module.exports = {
 
 `[string]`
 
-A list of directories where requests of server-relative URLs (starting with '/') are resolved, defaults to [`context` configuration option](/configuration/entry-context/#context). On non-Windows systems these requests are resolved as an absolute path first.
+서버 관련 URL('/'로 시작하는) 요청이 해석된 디렉터리의 목록으로, [설정 옵션은 `context`](/configuration/entry-context/#context)가 기본값입니다. Window가 아닌 시스템에서 이런 요청은 절대 경로로 먼저 해석합니다.
 
-__webpack.config.js__
+**webpack.config.js**
 
 ```js
 const fixtures = path.resolve(__dirname, 'fixtures');
 module.exports = {
   //...
   resolve: {
-    roots: [__dirname, fixtures]
-  }
+    roots: [__dirname, fixtures],
+  },
 };
 ```
 
@@ -559,16 +552,16 @@ module.exports = {
 
 `[string]`
 
-Fields from `package.json` which are used to provide the internal requests of a package (requests starting with `#` are considered internal).
+패키지의 내부 요청에 사용되는 `package.json` 필드입니다. (`#`으로 시작하는 요청은 내부로 간주됩니다).
 
-__webpack.config.js__
+**webpack.config.js**
 
 ```js
 module.exports = {
   //...
   resolve: {
-    importsFields: ['browser', 'module', 'main']
-  }
+    importsFields: ['browser', 'module', 'main'],
+  },
 };
 ```
 
@@ -576,29 +569,54 @@ module.exports = {
 
 `boolean`
 
-Redirect module requests when normal resolving fails.
+정상적인 해석이 실패하면 모듈 요청이 리다이렉션 됩니다.
 
-__webpack.config.js__
+**webpack.config.js**
 
 ```js
 module.exports = {
   //...
   resolve: {
     fallback: {
-      xyz: path.resolve(__dirname, 'path/to/file.js')
-    }
-  }
+      xyz: path.resolve(__dirname, 'path/to/file.js'),
+    },
+  },
 };
 ```
 
+### resolve.byDependency
+
+모듈 요청의 유형별로 해석 옵션이 설정됩니다.
+
+- Type: `[type: string]: ResolveOptions`
+- Example:
+  ```js
+  module.exports = {
+    // ...
+    resolve: {
+      byDependency: {
+        // ...
+        esm: {
+          mainFields: ['browser', 'module'],
+        },
+        commonjs: {
+          aliasFields: ['browser'],
+        },
+        url: {
+          preferRelative: true,
+        },
+      },
+    },
+  };
+  ```
 
 ## `resolveLoader`
 
 `object { modules [string] = ['node_modules'], extensions [string] = ['.js', '.json'], mainFields [string] = ['loader', 'main']}`
 
-This set of options is identical to the `resolve` property set above, but is used only to resolve webpack's [loader](/concepts/loaders) packages.
+이 옵션들은 위에 설정된 `resolve` 속성과 동일하지만, webpack의 [loader](/concepts/loaders) 패키지를 해석하는데만 사용됩니다.
 
-__webpack.config.js__
+**webpack.config.js**
 
 ```js
 module.exports = {
@@ -606,29 +624,28 @@ module.exports = {
   resolveLoader: {
     modules: ['node_modules'],
     extensions: ['.js', '.json'],
-    mainFields: ['loader', 'main']
-  }
+    mainFields: ['loader', 'main'],
+  },
 };
 ```
 
-T> Note that you can use alias here and other features familiar from resolve. For example `{ txt: 'raw-loader' }` would shim `txt!templates/demo.txt` to use `raw-loader`.
-
+T> 여기서 별칭을 사용할 수 있으며 해석을 위한 익숙한 다른 기능도 사용할 수 있습니다. 예를 들어 `{ txt: 'raw-loader' }`는 `raw-loader`를 사용하기 위해 `txt!templates/demo.txt`를 shim 합니다.
 
 ### `resolveLoader.moduleExtensions`
 
 `[string]`
 
-W> Removed in webpack 5
+W> webpack 5에서 삭제됨
 
-The extensions/suffixes that are used when resolving loaders. Since version two, we [strongly recommend](/migrate/3/#automatic--loader-module-name-extension-removed) using the full name, e.g. `example-loader`, as much as possible for clarity. However, if you really wanted to exclude the `-loader` bit, i.e. just use `example`, you can use this option to do so:
+로더를 해석할 때 사용되는 확장자/접미사입니다. 버전 2부터는 전체 이름을 사용하는 것을 [강력하게 추천](/migrate/3/#automatic--loader-module-name-extension-removed) 합니다. e.g. `example-loader`, 명확하게 하기 위해 가능한 많이 사용합니다 . 그러나 `-loader` 비트를 제외하려는 경우(즉, `example`만 사용), 이 옵션을 사용하여 다음을 할 수 있습니다.
 
-__webpack.config.js__
+**webpack.config.js**
 
 ```js
 module.exports = {
   //...
   resolveLoader: {
-    moduleExtensions: ['-loader']
-  }
+    moduleExtensions: ['-loader'],
+  },
 };
 ```

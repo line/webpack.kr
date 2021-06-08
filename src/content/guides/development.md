@@ -14,23 +14,23 @@ contributors:
   - trivikr
   - aholzner
   - chenxsan
+  - maxloh
 ---
 
-T> This guide extends on code examples found in the [Output Management](/guides/output-management) guide.
+T> 이 가이드는 [출력 관리](/guides/output-management) 가이드에 있는 코드 예제를 확장합니다.
 
-If you've been following the guides, you should have a solid understanding of some of the webpack basics. Before we continue, let's look into setting up a development environment to make our lives a little easier.
+가이드를 차례대로 따라왔다면, webpack 기본 사양 중 일부를 확실히 이해하고 있을 것입니다. 계속하기 전 우리의 삶을 좀 더 편안하게 만들 개발 환경 설정을 살펴보겠습니다.
 
-W> The tools in this guide are __only meant for development__, please __avoid__ using them in production!
+W> 이 가이드의 도구는 **오직 개발을 위한 것입니다**, 프로덕션에서 사용하는 것을 **피하세요!**
 
-Let's start by setting [`mode` to `'development'`](/configuration/mode/#mode-development) and `title` to `'Development'`.
+먼저 [`mode`를 `'development'`로](/configuration/mode/#mode-development) 설정하고 `title`을 `'Development'`로 설정해보겠습니다.
 
-__webpack.config.js__
+**webpack.config.js**
 
-``` diff
+```diff
  const path = require('path');
  const HtmlWebpackPlugin = require('html-webpack-plugin');
- const { CleanWebpackPlugin } = require('clean-webpack-plugin');
- 
+
  module.exports = {
 +  mode: 'development',
    entry: {
@@ -38,7 +38,6 @@ __webpack.config.js__
      print: './src/print.js',
    },
    plugins: [
-     new CleanWebpackPlugin(),
      new HtmlWebpackPlugin({
 -      title: 'Output Management',
 +      title: 'Development',
@@ -47,27 +46,27 @@ __webpack.config.js__
    output: {
      filename: '[name].bundle.js',
      path: path.resolve(__dirname, 'dist'),
+     clean: true,
    },
  };
 ```
 
 ## Using source maps
 
-When webpack bundles your source code, it can become difficult to track down errors and warnings to their original location. For example, if you bundle three source files (`a.js`, `b.js`, and `c.js`) into one bundle (`bundle.js`) and one of the source files contains an error, the stack trace will simply point to `bundle.js`. This isn't always helpful as you probably want to know exactly which source file the error came from.
+webpack이 소스 코드를 번들로 묶을 때, 오류와 경고의 원래 위치를 추적하기 어려울 수 있습니다. 예를 들어, 세 개의 소스 파일(`a.js`, `b.js`, 그리고 `c.js`)을 하나의 번들로 묶고 하나의 소스 파일이 오류가 있는 경우, 스택 추적은 단순히 `bundle.js`를 가리킵니다. 오류가 발생한 소스 파일을 정확히 알고 싶기 때문에 항상 도움이 되는 것은 아닙니다.
 
-In order to make it easier to track down errors and warnings, JavaScript offers [source maps](http://blog.teamtreehouse.com/introduction-source-maps), which map your compiled code back to your original source code. If an error originates from `b.js`, the source map will tell you exactly that.
+오류와 경고를 쉽게 추적할 수 있도록, JavaScript는 컴파일된 코드를 원래 소스로 매핑하는 [소스맵](http://blog.teamtreehouse.com/introduction-source-maps)을 제공합니다. `b.js`에서 오류가 발생한 경우, 소스맵에서 정확히 알려줍니다.
 
-There are a lot of [different options](/configuration/devtool) available when it comes to source maps. Be sure to check them out so you can configure them to your needs.
+소스맵과 관련하여 사용할 수 있는 [다른 옵션](/configuration/devtool)이 많이 있습니다. 필요에 따라 설정할 수 있도록 확인하세요.
 
-For this guide, let's use the `inline-source-map` option, which is good for illustrative purposes (though not for production):
+이 가이드에서는, 프로덕션에는 적합하지 않지만 설명 목적으로 유용한 `inline-source-map` 옵션을 사용하겠습니다.
 
-__webpack.config.js__
+**webpack.config.js**
 
-``` diff
+```diff
  const path = require('path');
  const HtmlWebpackPlugin = require('html-webpack-plugin');
- const { CleanWebpackPlugin } = require('clean-webpack-plugin');
- 
+
  module.exports = {
    mode: 'development',
    entry: {
@@ -76,7 +75,6 @@ __webpack.config.js__
    },
 +  devtool: 'inline-source-map',
    plugins: [
-     new CleanWebpackPlugin(),
      new HtmlWebpackPlugin({
        title: 'Development',
      }),
@@ -84,24 +82,25 @@ __webpack.config.js__
    output: {
      filename: '[name].bundle.js',
      path: path.resolve(__dirname, 'dist'),
+     clean: true,
    },
  };
 ```
 
-Now let's make sure we have something to debug, so let's create an error in our `print.js` file:
+이제 디버깅할 내용이 있는지 확인하고, `print.js` 파일에 오류를 생성해 보겠습니다.
 
-__src/print.js__
+**src/print.js**
 
-``` diff
+```diff
  export default function printMe() {
 -  console.log('I get called from print.js!');
 +  cosnole.log('I get called from print.js!');
  }
 ```
 
-Run an `npm run build`, it should compile to something like this:
+`npm run build`를 실행하면, 다음과 같이 컴파일됩니다.
 
-``` bash
+```bash
 ...
 [webpack-cli] Compilation finished
 asset index.bundle.js 1.38 MiB [emitted] (name: index)
@@ -115,40 +114,38 @@ cacheable modules 530 KiB
 webpack 5.4.0 compiled successfully in 706 ms
 ```
 
-Now open the resulting `index.html` file in your browser. Click the button and look in your console where the error is displayed. The error should say something like this:
+이제 브라우저에서 `index.html` 파일을 엽니다. 버튼을 클릭하고, 오류가 표시된 콘솔을 확인합니다. 오류는 다음과 같이 표시되어야 합니다.
 
- ``` bash
- Uncaught ReferenceError: cosnole is not defined
-    at HTMLButtonElement.printMe (print.js:2)
- ```
+```bash
+Uncaught ReferenceError: cosnole is not defined
+   at HTMLButtonElement.printMe (print.js:2)
+```
 
-We can see that the error also contains a reference to the file (`print.js`) and line number (2) where the error occurred. This is great because now we know exactly where to look in order to fix the issue.
-
+오류에서 오류가 발생 한 파일(`print.js`)과 줄 번호(2)에 대한 참조도 포함되어 있음을 알 수 있습니다. 이제 문제를 해결하기 위해 어디를 봐야 하는지 정확히 알 수 있습니다.
 
 ## Choosing a Development Tool
 
-W> Some text editors have a "safe write" function that might interfere with some of the following tools. Read [Adjusting Your Text Editor](#adjusting-your-text-editor) for a solution to these issues.
+W> 일부 텍스트 편집기에는 다음 도구 중 일부를 방해할 수 있는 "안전한 쓰기" 기능이 있습니다. 이런 문제에 대한 해결책은 [텍스트 편집기 조정](#adjusting-your-text-editor)을 참고하십시오.
 
-It quickly becomes a hassle to manually run `npm run build` every time you want to compile your code.
+코드를 컴파일할 때마다 `npm run build`를 수동으로 실행하는 것은 번거롭습니다.
 
-There are a couple of different options available in webpack that help you automatically compile your code whenever it changes:
+webpack에는 코드가 변경될 때마다 자동으로 컴파일하는 데 도움이 되는 몇 가지 옵션이 있습니다.
 
- 1. webpack's [Watch Mode](/configuration/watch/#watch)
+ 1. webpack의 [watch 모드](/configuration/watch/#watch)
  2. [webpack-dev-server](https://github.com/webpack/webpack-dev-server)
  3. [webpack-dev-middleware](https://github.com/webpack/webpack-dev-middleware)
 
-In most cases, you probably would want to use `webpack-dev-server`, but let's explore all of the above options.
-
+대부분의 경우, `webpack-dev-server`를 사용하고 싶겠지만, 위의 모든 옵션을 살펴보겠습니다.
 
 ### Using Watch Mode
 
-You can instruct webpack to "watch" all files within your dependency graph for changes. If one of these files is updated, the code will be recompiled so you don't have to run the full build manually.
+webpack이 디펜던시 그래프 내의 모든 파일에서의 변경사항을 "감시"하도록 지시할 수 있습니다. 이런 파일 중 하나가 업데이트되면, 코드가 다시 컴파일되므로 전체 빌드를 수동으로 실행할 필요가 없습니다.
 
-Let's add an npm script that will start webpack's Watch Mode:
+webpack의 watch 모드를 시작하는 npm 스크립트를 추가해 보겠습니다.
 
-__package.json__
+**package.json**
 
-``` diff
+```diff
  {
    "name": "webpack-demo",
    "version": "1.0.0",
@@ -163,7 +160,6 @@ __package.json__
    "author": "",
    "license": "ISC",
    "devDependencies": {
-     "clean-webpack-plugin": "^3.0.0",
      "html-webpack-plugin": "^4.5.0",
      "webpack": "^5.4.0",
      "webpack-cli": "^4.2.0"
@@ -174,72 +170,40 @@ __package.json__
  }
 ```
 
-Tell `CleanWebpackPlugin` that we don't want to remove the `index.html` file after the incremental build triggered by watch. We do this with the [`cleanStaleWebpackAssets` option](https://github.com/johnagan/clean-webpack-plugin#options-and-defaults-optional):
+커멘드 라인에서 `npm run watch`를 실행하고 webpack이 코드를 컴파일하는 방법을 확인하세요.
+스크립트가 현재 파일을 감시하고 있기 때문에 커멘드 라인을 종료하지 않은 것을 확인할 수 있습니다.
 
-__webpack.config.js__
+이제, webpack이 파일을 감시하는 동안, 앞에서 소개한 오류를 제거해 보겠습니다.
 
-``` diff
- const path = require('path');
- const HtmlWebpackPlugin = require('html-webpack-plugin');
- const { CleanWebpackPlugin } = require('clean-webpack-plugin');
- 
- module.exports = {
-   mode: 'development',
-   entry: {
-     index: './src/index.js',
-     print: './src/print.js',
-   },
-   devtool: 'inline-source-map',
-   plugins: [
--    new CleanWebpackPlugin(),
-+    new CleanWebpackPlugin({ cleanStaleWebpackAssets: false }),
-     new HtmlWebpackPlugin({
-       title: 'Development',
-     }),
-   ],
-   output: {
-     filename: '[name].bundle.js',
-     path: path.resolve(__dirname, 'dist'),
-   },
- };
-```
+**src/print.js**
 
-Now run `npm run watch` from the command line and see how webpack compiles your code.
-You can see that it doesn't exit the command line because the script is currently watching your files.
-
-Now, while webpack is watching your files, let's remove the error we introduced earlier:
-
-__src/print.js__
-
-``` diff
+```diff
  export default function printMe() {
 -  cosnole.log('I get called from print.js!');
 +  console.log('I get called from print.js!');
  }
 ```
 
-Now save your file and check the terminal window. You should see that webpack automatically recompiles the changed module!
+이제 파일을 저장하고 터미널 창을 확인하십시오. webpack이 변경된 모듈을 자동으로 재컴파일하는 것을 볼 수 있습니다!
 
-The only downside is that you have to refresh your browser in order to see the changes. It would be much nicer if that would happen automatically as well, so let's try `webpack-dev-server` which will do exactly that.
-
+유일한 단점은 변경사항을 확인하려면 브라우저를 새로 고침해야 한다는 것입니다. 이것이 자동으로 된다면 더 좋을 것이므로, `webpack-dev-server`를 사용해 봅시다.
 
 ### Using webpack-dev-server
 
-The `webpack-dev-server` provides you with a simple web server and the ability to use live reloading. Let's set it up:
+`webpack-dev-server`는 간단한 웹 서버와 실시간 다시 로딩 기능을 제공합니다. 설정해보겠습니다.
 
-``` bash
+```bash
 npm install --save-dev webpack-dev-server
 ```
 
-Change your configuration file to tell the dev server where to look for files:
+설정 파일을 변경하여 개발 서버에 파일을 찾을 위치를 알려줍니다.
 
-__webpack.config.js__
+**webpack.config.js**
 
-``` diff
+```diff
  const path = require('path');
  const HtmlWebpackPlugin = require('html-webpack-plugin');
- const { CleanWebpackPlugin } = require('clean-webpack-plugin');
- 
+
  module.exports = {
    mode: 'development',
    entry: {
@@ -251,7 +215,6 @@ __webpack.config.js__
 +    contentBase: './dist',
 +  },
    plugins: [
-     new CleanWebpackPlugin({ cleanStaleWebpackAssets: false }),
      new HtmlWebpackPlugin({
        title: 'Development',
      }),
@@ -259,19 +222,22 @@ __webpack.config.js__
    output: {
      filename: '[name].bundle.js',
      path: path.resolve(__dirname, 'dist'),
+     clean: true,
    },
  };
 ```
 
-This tells `webpack-dev-server` to serve the files from the `dist` directory on `localhost:8080`.
+이것은 `webpack-dev-server`에게 `dist` 디렉터리의 파일을 `localhost:8080`에서 제공하도록 합니다.
 
-W> webpack-dev-server doesn't write any output files after compiling. Instead, it keeps bundle files in memory and serves them as if they were real files mounted at the server's root path. If your page expects to find the bundle files on a different path, you can change this with the [`publicPath`](/configuration/dev-server/#devserverpublicpath-) option in the dev server's configuration.
+T> `webpack-dev-server`는 [`output.path`](/configuration/output/#outputpath)에 정의된 디렉터리에서 번들된 파일을 제공합니다. 예를 들면, 파일은 `http://[devServer.host]:[devServer.port]/[output.publicPath]/[output.filename]` 주소로 사용할 수 있습니다.
 
-Let's add a script to easily run the dev server as well:
+W> webpack-dev-server는 컴파일 후 출력 파일을 작성하지 않습니다. 대신 번들 파일을 메모리에 보관하고 서버의 루트 경로에 마운트 된 실제 파일인 것처럼 제공합니다. 페이지가 다른 경로에서 번들 파일을 찾을 것으로 예상하는 경우 개발 서버 설정에서 [`publicPath`](/configuration/dev-server/#devserverpublicpath-) 옵션을 사용하여 변경할 수 있습니다.
 
-__package.json__
+개발 서버를 쉽게 실행할 수 있는 스크립트를 추가해보겠습니다.
 
-``` diff
+**package.json**
+
+```diff
  {
    "name": "webpack-demo",
    "version": "1.0.0",
@@ -287,7 +253,6 @@ __package.json__
    "author": "",
    "license": "ISC",
    "devDependencies": {
-     "clean-webpack-plugin": "^3.0.0",
      "html-webpack-plugin": "^4.5.0",
      "webpack": "^5.4.0",
      "webpack-cli": "^4.2.0",
@@ -299,32 +264,30 @@ __package.json__
  }
 ```
 
-Now we can run `npm start` from the command line and we will see our browser automatically loading up our page. If you now change any of the source files and save them, the web server will automatically reload after the code has been compiled. Give it a try!
+이제 커멘드 라인에서 `npm start`를 실행할 수 있으며 브라우저가 자동으로 페이지를 로드하는 것을 볼 수 있습니다. 이제 소스 파일을 변경하고 저장하면, 코드가 컴파일된 후 웹 서버가 자동으로 다시 로드됩니다. 시도해 보세요!
 
-The `webpack-dev-server` comes with many configurable options. Head over to the [documentation](/configuration/dev-server) to learn more.
+`webpack-dev-server`에는 설정 가능한 많은 옵션이 있습니다. 자세한 내용은 [문서](/configuration/dev-server)를 참고하세요.
 
-T> Now that your server is working, you might want to give [Hot Module Replacement](/guides/hot-module-replacement) a try!
-
+T> 이제 서버가 작동 중이므로, [Hot module replacement](/guides/hot-module-replacement)를 사용해보세요!
 
 ### Using webpack-dev-middleware
 
-`webpack-dev-middleware` is a wrapper that will emit files processed by webpack to a server. This is used in `webpack-dev-server` internally, however it's available as a separate package to allow more custom setups if desired. We'll take a look at an example that combines `webpack-dev-middleware` with an express server.
+`webpack-dev-middleware`는 webpack에서 처리한 파일을 서버로 내보내는 래퍼 입니다. 이것은 내부적으로 `webpack-dev-server`에서 사용되지만, 사용자가 원하는 경우 더 많은 설정을 허용하기 위해 별도의 패키지로 사용할 수 있습니다. `webpack-dev-middleware`와 express 서버를 결합한 예를 살펴보겠습니다.
 
-Let's install `express` and `webpack-dev-middleware` so we can get started:
+시작하기 전에 `express`와 `webpack-dev-middleware`를 설치하겠습니다.
 
-``` bash
+```bash
 npm install --save-dev express webpack-dev-middleware
 ```
 
-Now we need to make some adjustments to our webpack configuration file in order to make sure the middleware will function correctly:
+이제 미들웨어가 올바르게 작동하는지 확인하기 위해 webpack의 설정 파일을 약간 수정해야 합니다.
 
-__webpack.config.js__
+**webpack.config.js**
 
-``` diff
+```diff
  const path = require('path');
  const HtmlWebpackPlugin = require('html-webpack-plugin');
- const { CleanWebpackPlugin } = require('clean-webpack-plugin');
- 
+
  module.exports = {
    mode: 'development',
    entry: {
@@ -336,7 +299,6 @@ __webpack.config.js__
      contentBase: './dist',
    },
    plugins: [
-     new CleanWebpackPlugin({ cleanStaleWebpackAssets: false }),
      new HtmlWebpackPlugin({
        title: 'Development',
      }),
@@ -344,16 +306,17 @@ __webpack.config.js__
    output: {
      filename: '[name].bundle.js',
      path: path.resolve(__dirname, 'dist'),
+     clean: true,
 +    publicPath: '/',
    },
  };
 ```
 
-The `publicPath` will be used within our server script as well in order to make sure files are served correctly on `http://localhost:3000`. We'll specify the port number later. The next step is setting up our custom `express` server:
+`http://localhost:3000`에서 파일이 올바르게 제공되는지 확인하기 위해 `publicPath`가 서버 스크립트 내에서도 사용됩니다. 나중에 포트 번호를 지정합니다. 다음 단계는 커스텀 `express` 서버를 설정하는 것입니다.
 
-__project__
+**project**
 
-``` diff
+```diff
   webpack-demo
   |- package.json
   |- webpack.config.js
@@ -365,7 +328,7 @@ __project__
   |- /node_modules
 ```
 
-__server.js__
+**server.js**
 
 ```javascript
 const express = require('express');
@@ -376,25 +339,25 @@ const app = express();
 const config = require('./webpack.config.js');
 const compiler = webpack(config);
 
-// Tell express to use the webpack-dev-middleware and use the webpack.config.js
-// configuration file as a base.
+// express에서 webpack-dev-middleware와 webpack.config.js를 사용하도록 설정하세요.
+// 기본 설정 파일
 app.use(
   webpackDevMiddleware(compiler, {
     publicPath: config.output.publicPath,
   })
 );
 
-// Serve the files on port 3000.
+// 포트 3000에서 파일 제공
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!\n');
 });
 ```
 
-Now add an npm script to make it a little easier to run the server:
+이제 서버를 좀 더 쉽게 실행할 수 있도록 npm 스크립트를 추가합니다.
 
-__package.json__
+**package.json**
 
-``` diff
+```diff
  {
    "name": "webpack-demo",
    "version": "1.0.0",
@@ -411,7 +374,6 @@ __package.json__
    "author": "",
    "license": "ISC",
    "devDependencies": {
-     "clean-webpack-plugin": "^3.0.0",
      "express": "^4.17.1",
      "html-webpack-plugin": "^4.5.0",
      "webpack": "^5.4.0",
@@ -425,9 +387,9 @@ __package.json__
  }
 ```
 
-Now in your terminal run `npm run server`, it should give you an output similar to this:
+이제 터미널에서 `npm run server`를 실행하면, 다음과 유사한 출력이 표시됩니다.
 
-``` bash
+```bash
 Example app listening on port 3000!
 ...
 <i> [webpack-dev-middleware] asset index.bundle.js 1.38 MiB [emitted] (name: index)
@@ -447,22 +409,21 @@ Example app listening on port 3000!
 <i> [webpack-dev-middleware] Compiled successfully.
 ```
 
-Now fire up your browser and go to `http://localhost:3000`. You should see your webpack app running and functioning!
+이제 브라우저를 실행하고 `http://localhost:3000`로 이동합니다. webpack 앱이 실행하고 작동하는 것을 확인할 수 있습니다!
 
-T> If you would like to know more about how Hot Module Replacement works, we recommend you read the [Hot Module Replacement](/guides/hot-module-replacement/) guide.
-
+T> Hot Module Replacement 방식에 대해 자세히 알고 싶다면, [Hot Module Replacement](/guides/hot-module-replacement/) 가이드를 읽어보세요.
 
 ## Adjusting Your Text Editor
 
-When using automatic compilation of your code, you could run into issues when saving your files. Some editors have a "safe write" feature that can potentially interfere with recompilation.
+코드 자동 컴파일을 사용하면, 파일을 저장할 때 문제가 발생할 수 있습니다. 일부 편집기에는 잠재적으로 재컴파일을 방해할 수 있는 "안전한 쓰기" 기능이 있습니다.
 
-To disable this feature in some common editors, see the list below:
+일부 일반 편집기에서 이 기능을 비활성화하려면, 아래 목록을 참고하십시오.
 
-- __Sublime Text 3__: Add `atomic_save: 'false'` to your user preferences.
-- __JetBrains IDEs (e.g. WebStorm)__: Uncheck "Use safe write" in `Preferences > Appearance & Behavior > System Settings`.
-- __Vim__: Add `:set backupcopy=yes` to your settings.
+- **Sublime Text 3**: 사용자 환경 설정에 `atomic_save: 'false'`를 추가하십시오.
+- **JetBrains IDEs (e.g. WebStorm)**: `Preferences > Appearance & Behavior > System Settings`에서 "Use safe write" 선택을 해제하십시오.
+- **Vim**: 설정에 `:set backupcopy=yes`를 추가하십시오.
 
 
 ## Conclusion
 
-Now that you've learned how to automatically compile your code and run a simple development server, you can check out the next guide, which will cover [Code Splitting](/guides/code-splitting/).
+이제 자동으로 코드를 컴파일하고 간단한 개발 서버를 실행하는 방법을 배웠으므로, [코드 스플리팅](/guides/code-splitting/)을 다룰 다음 가이드로 넘어가 볼까요?

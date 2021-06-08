@@ -28,25 +28,24 @@ related:
     url: /api/hot-module-replacement
 ---
 
-T> This guide extends on code examples found in the [Development](/guides/development) guide.
+T> 이 가이드는 [개발 가이드](/guides/development)에 있는 코드 예제를 확장합니다.
 
-Hot Module Replacement (or HMR) is one of the most useful features offered by webpack. It allows all kinds of modules to be updated at runtime without the need for a full refresh. This page focuses on __implementation__ while the [concepts page](/concepts/hot-module-replacement) gives more details on how it works and why it's useful.
+Hot Module Replacement(또는 HMR)는 webpack에서 제공하는 가장 유용한 기능 중 하나입니다. 모든 종류의 모듈을 새로고침 할 필요 없이 런타임에 업데이트 할 수 있습니다. 이 페이지는 **구현에** 초점을 맞추고 [개념 페이지](/concepts/hot-module-replacement)는 작동 원리와 왜 유용한지에 대한 자세한 내용을 제공합니다.
 
-W> __HMR__ is not intended for use in production, meaning it should only be used in development. See the [building for production guide](/guides/production) for more information.
+W> __HMR__은 프로덕션용이 아니므로 개발용으로만 사용해야 합니다. 자세한 내용은 [프로덕션 구축 가이드](/guides/production)를 참고하세요.
 
 
 ## Enabling HMR
 
-This feature is great for productivity. All we need to do is update our [webpack-dev-server](https://github.com/webpack/webpack-dev-server) configuration, and use webpack's built-in HMR plugin. We'll also remove the entry point for `print.js` as it will now be consumed by the `index.js` module.
+이 기능은 생산성에 많은 도움을 줍니다. [webpack-dev-server](https://github.com/webpack/webpack-dev-server) 설정을 업데이트하고 webpack의 내장 HMR 플러그인을 사용하면 됩니다. `index.js` 모듈에서 사용될 것이므로 `print.js`의 엔트리 포인트도 제거합니다.
 
-T> If you took the route of using `webpack-dev-middleware` instead of `webpack-dev-server`, please use the [`webpack-hot-middleware`](https://github.com/webpack-contrib/webpack-hot-middleware) package to enable HMR on your custom server or application.
+T> `webpack-dev-server` 대신 `webpack-dev-middleware`를 사용한다면 [`webpack-hot-middleware`](https://github.com/webpack-contrib/webpack-hot-middleware) 패키지를 사용하여 커스텀 서버 또는 애플리케이션에서 HMR을 활성화하세요.
 
-__webpack.config.js__
+**webpack.config.js**
 
-``` diff
+```diff
   const path = require('path');
   const HtmlWebpackPlugin = require('html-webpack-plugin');
-  const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
   module.exports = {
     entry: {
@@ -59,8 +58,6 @@ __webpack.config.js__
 +     hot: true,
     },
     plugins: [
-      // new CleanWebpackPlugin(['dist/*']) for < v2 versions of CleanWebpackPlugin
-      new CleanWebpackPlugin(),
       new HtmlWebpackPlugin({
         title: 'Hot Module Replacement',
       }),
@@ -68,17 +65,18 @@ __webpack.config.js__
     output: {
       filename: '[name].bundle.js',
       path: path.resolve(__dirname, 'dist'),
+      clean: true,
     },
   };
 ```
 
-T> You can use the CLI to modify the [webpack-dev-server](https://github.com/webpack/webpack-dev-server) configuration with the following command: `webpack serve --hot=only`.
+T> CLI를 사용하여 `webpack serve --hot = only` 명령어로 [webpack-dev-server](https://github.com/webpack/webpack-dev-server) 구성을 수정할 수 있습니다.
 
-Now let's update the `index.js` file so that when a change inside `print.js` is detected we tell webpack to accept the updated module.
+이제 `index.js` 파일을 업데이트하여 `print.js` 내부의 변경이 감지되면 webpack에서 업데이트된 모듈을 수락하도록 지시합니다.
 
-__index.js__
+**index.js**
 
-``` diff
+```diff
   import _ from 'lodash';
   import printMe from './print.js';
 
@@ -106,20 +104,20 @@ __index.js__
 + }
 ```
 
-Start changing the `console.log` statement in `print.js`, and you should see the following output in the browser console (don't worry about that `button.onclick = printMe` output for now, we will also update that part later).
+`print.js`에서 `console.log` 문을 변경하면 브라우저 콘솔에 다음과 같은 출력이 표시됩니다. (당분간 `button.onclick = printMe` 출력에 대해 걱정하지 마세요. 나중에 해당 부분을 변경할 것입니다.)
 
-__print.js__
+**print.js**
 
-``` diff
+```diff
   export default function printMe() {
 -   console.log('I get called from print.js!');
 +   console.log('Updating print.js...');
   }
 ```
 
-__console__
+**console**
 
-``` diff
+```diff
 [HMR] Waiting for update signal from WDS...
 main.js:4395 [WDS] Hot Module Replacement enabled.
 + 2main.js:4395 [WDS] App updated. Recompiling...
@@ -131,18 +129,17 @@ main.js:4395 [WDS] Hot Module Replacement enabled.
 + main.js:4330 [HMR]  - 20
 ```
 
-
 ## Via the Node.js API
 
-When using Webpack Dev Server with the Node.js API, don't put the dev server options on the webpack configuration object. Instead, pass them as a second parameter upon creation. For example:
+Node.js API와 함께 Webpack Dev Server를 사용하는 경우 webpack 설정 객체에 dev 서버 옵션을 추가하지 마십시오. 대신 생성 시 두 번째 매개 변수로 전달하십시오. 예를 들어 보겠습니다.
 
 `new WebpackDevServer(compiler, options)`
 
-To enable HMR, you also need to modify your webpack configuration object to include the HMR entry points. The `webpack-dev-server` package includes a method called `addDevServerEntrypoints` which you can use to do this. Here's a small example of how that might look:
+HMR을 활성화하려면 HMR 엔트리 포인트를 포함하도록 webpack 설정 객체도 수정해야 합니다. `webpack-dev-server` 패키지에는 이를 수행하는 데 사용할 수 있는 `addDevServerEntrypoints`라는 메서드가 포함되어 있습니다. 다음은 그 모습에 대한 간단한 예시입니다.
 
-__dev-server.js__
+**dev-server.js**
 
-``` javascript
+```javascript
 const webpackDevServer = require('webpack-dev-server');
 const webpack = require('webpack');
 
@@ -162,20 +159,19 @@ server.listen(5000, 'localhost', () => {
 });
 ```
 
-T> If you're [using `webpack-dev-middleware`](/guides/development/#using-webpack-dev-middleware), check out the [`webpack-hot-middleware`](https://github.com/webpack-contrib/webpack-hot-middleware) package to enable HMR on your custom dev server.
-
+T> [`webpack-dev-middleware` 사용](/guides/development/#using-webpack-dev-middleware)의 경우 [`webpack-hot-middleware`](https://github.com/webpack-contrib/webpack-hot-middleware) 패키지를 사용하여 커스텀 개발 서버에서 HMR을 활성화합니다.
 
 ## Gotchas
 
-Hot Module Replacement can be tricky. To show this, let's go back to our working example. If you go ahead and click the button on the example page, you will realize the console is printing the old `printMe` function.
+Hot Module Replacement는 까다로울 수 있습니다. 이를 보여주기 위해 작업 예제로 돌아갑시다. 계속해서 예제 페이지의 버튼을 클릭하면 콘솔이 이전 `printMe` 함수를 인쇄하고 있음을 알 수 있습니다.
 
-This is happening because the button's `onclick` event handler is still bound to the original `printMe` function.
+이것은 버튼의 `onclick` 이벤트 핸들러가 여전히 원래의 `printMe` 함수에 바인딩 되어 있기 때문에 발생합니다.
 
-To make this work with HMR we need to update that binding to the new `printMe` function using `module.hot.accept`:
+HMR에서 이 작업을 수행하려면 `module.hot.accept`를 사용하여 새 `printMe` 함수에 대한 바인딩을 업데이트해야 합니다.
 
-__index.js__
+**index.js**
 
-``` diff
+```diff
   import _ from 'lodash';
   import printMe from './print.js';
 
@@ -186,7 +182,7 @@ __index.js__
     element.innerHTML = _.join(['Hello', 'webpack'], ' ');
 
     btn.innerHTML = 'Click me and check the console!';
-    btn.onclick = printMe;  // onclick event is bind to the original printMe function
+    btn.onclick = printMe;  // onclick 이벤트는 원래 printMe 함수에 바인딩 됩니다.
 
     element.appendChild(btn);
 
@@ -194,7 +190,7 @@ __index.js__
   }
 
 - document.body.appendChild(component());
-+ let element = component(); // Store the element to re-render on print.js changes
++ let element = component(); // print.js 변경 시 다시 렌더링할 요소 저장
 + document.body.appendChild(element);
 
   if (module.hot) {
@@ -202,33 +198,31 @@ __index.js__
       console.log('Accepting the updated printMe module!');
 -     printMe();
 +     document.body.removeChild(element);
-+     element = component(); // Re-render the "component" to update the click handler
++     element = component(); // 클릭 핸들러를 업데이트하려면 "component"를 다시 렌더링하십시오.
 +     document.body.appendChild(element);
     })
   }
 ```
 
-This is just one example, but there are many others that can easily trip people up. Luckily, there are a lot of loaders out there (some of which are mentioned below) that will make hot module replacement much easier.
-
+이것은 하나의 예시일 뿐이지만 사람들이 실수할 수 있는 상황이 많이 있습니다. 운 좋게도 Hot Module Replacement를 훨씬 쉽게 만들어주는 많은 로더가 있습니다. (그중 일부는 아래에 언급됨).
 
 ## HMR with Stylesheets
 
-Hot Module Replacement with CSS is actually fairly straightforward with the help of the `style-loader`. This loader uses `module.hot.accept` behind the scenes to patch `<style>` tags when CSS dependencies are updated.
+CSS Hot Module Replacement는 실제로 `style-loader`의 도움으로 상당히 간단합니다. 이 로더는 CSS 의존성이 업데이트될 때 `<style>`태그를 패치하기 위해 백그라운드에서 `module.hot.accept`를 사용합니다.
 
-First let's install both loaders with the following command:
+먼저 다음 명령으로 두 로더를 모두 설치해 보겠습니다.
 
 ```bash
 npm install --save-dev style-loader css-loader
 ```
 
-Now let's update the configuration file to make use of the loader.
+이제 로더를 사용하도록 설정 파일을 업데이트 하겠습니다.
 
-__webpack.config.js__
+**webpack.config.js**
 
 ```diff
   const path = require('path');
   const HtmlWebpackPlugin = require('html-webpack-plugin');
-  const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
   module.exports = {
     entry: {
@@ -248,8 +242,6 @@ __webpack.config.js__
 +     ],
 +   },
     plugins: [
-      // new CleanWebpackPlugin(['dist/*']) for < v2 versions of CleanWebpackPlugin
-      new CleanWebpackPlugin(),
       new HtmlWebpackPlugin({
         title: 'Hot Module Replacement',
       }),
@@ -257,15 +249,16 @@ __webpack.config.js__
     output: {
       filename: '[name].bundle.js',
       path: path.resolve(__dirname, 'dist'),
+      clean: true,
     },
   };
 ```
 
-Hot loading stylesheets is as easy as importing them into a module:
+스타일 시트 핫 로딩은 모듈로 가져오는 것만큼 쉽습니다.
 
-__project__
+**project**
 
-``` diff
+```diff
   webpack-demo
   | - package.json
   | - webpack.config.js
@@ -277,17 +270,17 @@ __project__
 +   | - styles.css
 ```
 
-__styles.css__
+**styles.css**
 
-``` css
+```css
 body {
   background: blue;
 }
 ```
 
-__index.js__
+**index.js**
 
-``` diff
+```diff
   import _ from 'lodash';
   import printMe from './print.js';
 + import './styles.css';
@@ -299,7 +292,7 @@ __index.js__
     element.innerHTML = _.join(['Hello', 'webpack'], ' ');
 
     btn.innerHTML = 'Click me and check the console!';
-    btn.onclick = printMe;  // onclick event is bind to the original printMe function
+    btn.onclick = printMe;  // onclick 이벤트는 원래 printMe 함수에 바인딩 됩니다.
 
     element.appendChild(btn);
 
@@ -313,33 +306,32 @@ __index.js__
     module.hot.accept('./print.js', function() {
       console.log('Accepting the updated printMe module!');
       document.body.removeChild(element);
-      element = component(); // Re-render the "component" to update the click handler
+      element = component(); // 클릭 핸들러를 업데이트하려면 "component"를 다시 렌더링하십시오.
       document.body.appendChild(element);
     })
   }
 
 ```
 
-Change the style on `body` to `background: red;` and you should immediately see the page's background color change without a full refresh.
+`body`의 스타일을 `background : red;`로 변경하면 새로고침 없이도 페이지의 배경색이 변경되는 것을 즉시 확인할 수 있습니다.
 
-__styles.css__
+**styles.css**
 
-``` diff
+```diff
   body {
 -   background: blue;
 +   background: red;
   }
 ```
 
-
 ## Other Code and Frameworks
 
-There are many other loaders and examples out in the community to make HMR interact smoothly with a variety of frameworks and libraries...
+HMR이 다양한 프레임워크 및 라이브러리와 원활하게 상호 작용할 수 있도록 커뮤니티에는 다른 많은 로더와 예제가 있습니다.
 
-- [React Hot Loader](https://github.com/gaearon/react-hot-loader): Tweak react components in real time.
-- [Vue Loader](https://github.com/vuejs/vue-loader): This loader supports HMR for vue components out of the box.
-- [Elm Hot webpack Loader](https://github.com/klazuka/elm-hot-webpack-loader): Supports HMR for the Elm programming language.
-- [Angular HMR](https://github.com/gdi2290/angular-hmr): No loader necessary! A simple change to your main NgModule file is all that's required to have full control over the HMR APIs.
-- [Svelte Loader](https://github.com/sveltejs/svelte-loader): This loader supports HMR for Svelte components out of the box.
+- [React Hot Loader](https://github.com/gaearon/react-hot-loader): 실시간으로 React 컴포넌트를 조정
+- [Vue Loader](https://github.com/vuejs/vue-loader): Vue 캄포넌트에 대한 HMR을 즉시 지원하는 로더
+- [Elm Hot webpack Loader](https://github.com/klazuka/elm-hot-webpack-loader): Elm 프로그래밍 언어에 대한 HMR 지원
+- [Angular HMR](https://github.com/gdi2290/angular-hmr): 로더가 필요 없습니다! 기본 NgModule 파일을 간단히 변경하면 HMR API를 완전히 제어 할 수 있습니다.
+- [Svelte Loader](https://github.com/sveltejs/svelte-loader): Svelte 컴포넌트에 대한 HMR을 즉시 지원하는 로더
 
-T> If you know of any other loaders or plugins that help with or enhance HMR, please submit a pull request to add them to this list!
+T> HMR을 돕거나 향상시키는 다른 로더나 플러그인을 알고 있다면 pull request를 제출하여 이 목록에 추가해주세요!

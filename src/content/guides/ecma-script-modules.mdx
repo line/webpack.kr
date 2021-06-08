@@ -1,0 +1,90 @@
+---
+title: ECMAScript Modules
+sort: 19
+contributors:
+  - sokra
+related:
+  - title: ECMAScript Modules in Node.js
+    url: https://nodejs.org/api/esm.html
+---
+
+ECMAScript 모듈(ESM)은 웹에서 모듈을 사용하기 위한 [사양](https://tc39.github.io/ecma262/#sec-modules)입니다.
+모든 최신 브라우저와 권장하는 웹 모듈 코드 작성법에서 지원됩니다.
+
+webpack은 ECMAScript 모듈을 최적화하기 위한 처리를 지원했습니다.
+
+## Exporting
+
+`export` 키워드를 사용하면 ESM 항목을 다른 모듈에 노출할 수 있습니다.
+
+```js
+export const CONSTANT = 42;
+
+export let variable = 42;
+// 오직 읽는 값만 노출됩니다.
+// 외부에서 변수를 수정할 수 없습니다.
+
+export function fun() {
+  console.log('fun');
+}
+
+export class C extends Super {
+  method() {
+    console.log('method');
+  }
+}
+
+let a, b, other;
+export { a, b, other as c };
+
+export default 1 + 2 + 3 + more();
+```
+
+## Importing
+
+`import` 키워드를 사용하면 다른 모듈에 대한 참조를 ESM으로 가져올 수 있습니다.
+
+```js
+import { CONSTANT, variable } from './module.js';
+// 다른 모듈에 export하기 위해 "bindings"를 가져옵니다.
+// 바인딩은 활성상태입니다. 값은 복사되지 않습니다.
+// 대신 "변수"에 접근하면 현재 값을 얻습니다.
+// 가져온 모듈에서
+
+import * as module from './module.js';
+module.fun();
+// 모든 export를 가지는 "네임스페이스 객체"를 가져옵니다.
+
+import theDefaultValue from './module.js';
+// "기본" export를 가져오는 단축입니다.
+```
+
+## Flagging modules as ESM
+
+기본적으로 webpack은 파일이 ESM인지 또는 다른 모듈 시스템인지 자동으로 감지합니다.
+
+Node.js는 `package.json`의 속성을 사용하여 파일의 모듈 유형을 명시적으로 설정하는 방법을 확립했습니다.
+package.json에서 `"type": "module"`을 설정하면 package.json 아래의 모든 파일이 ECMAScript 모듈이 됩니다.
+`"type": "commonjs"`를 설정하면 CommonJS 모듈이 됩니다.
+
+```json
+{
+  "type": "module"
+}
+```
+
+또한, 파일은 `.mjs` 또는 `.cjs` 확장자를 사용해서 모듈 유형을 설정할 수 있습니다. `.mjs`는 ESM이 되도록 강제하고, `.cjs`는 CommonJS가 되도록 강제합니다.
+
+DataURIs에서 `text/javascript` 또는 `application/javascript` mime 유형을 사용하면 모듈 유형도 ESM으로 강제로 적용됩니다.
+
+모듈 형식뿐 아니라 모듈 플래그를 ESM으로 지정하는 것은 로직 해석, interop 로직 및 모듈에서 사용 가능한 심볼에 영향을 줍니다.
+
+ESM의 import는 더 엄격하게 해석됩니다. 상대적 요청에는 파일 이름과 파일 확장자가 포함되어야 합니다.
+
+T> import "lodash" 같이 패키지에 대한 요청은 여전히 지원됩니다.
+
+ESM이 아닌 경우는 "기본" export만 가져올 수 있습니다. 명명된 export를 사용할 수 없습니다.
+
+`require`, `module`, `exports`, `__filename`, `__dirname` 같은 CommonJs 구문을 사용할 수 없습니다.
+
+T> HMR은 [`module.hot`](/api/module-variables/#modulehot-webpack-specific) 대신 [`import.meta.webpackHot`](/api/module-variables/#importmetawebpackhot)과 함께 사용할 수 있습니다.

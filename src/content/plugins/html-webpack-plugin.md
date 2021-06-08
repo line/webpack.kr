@@ -7,21 +7,18 @@ contributors:
   - EugeneHlushko
 ---
 
-The [`HtmlWebpackPlugin`](https://github.com/jantimon/html-webpack-plugin) simplifies creation of HTML files to serve your webpack bundles. This is especially useful for webpack bundles that include a hash in the filename which changes every compilation. You can either let the plugin generate an HTML file for you, supply your own template using [lodash templates](https://lodash.com/docs#template), or use your own [loader](/loaders).
-
+[`HtmlWebpackPlugin`](https://github.com/jantimon/html-webpack-plugin)은 webpack 번들을 제공하는 HTML 파일 생성을 단순화합니다. 이 플러그인은 매번 컴파일에 변경되는 해시로 된 파일 이름을 가진 webpack 번들에 특히 유용합니다. 플러그인이 HTML 파일을 생성하도록 하거나 [lodash 템플릿](https://lodash.com/docs#template)을 사용하여 나만의 템플릿을 제공하거나 나만의 [로더](/loaders)를 사용할 수 있습니다.
 
 ## Installation
 
-``` bash
+```bash
 npm install --save-dev html-webpack-plugin
 ```
 
-
 ## Basic Usage
 
-The plugin will generate an HTML5 file for you that includes all your webpack
-bundles in the body using `script` tags. Just add the plugin to your webpack
-configuration as follows:
+플러그인은 `script` 태그를 사용하여 body에 모든 webpack 번들을 포함하는 HTML5 파일을 생성합니다.
+적용은 아래와 같이 webpack에 플러그인을 추가하기만 하면 됩니다.
 
 ```javascript
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -31,19 +28,19 @@ module.exports = {
   entry: 'index.js',
   output: {
     path: path.resolve(__dirname, './dist'),
-    filename: 'index_bundle.js'
+    filename: 'index_bundle.js',
   },
-  plugins: [new HtmlWebpackPlugin()]
+  plugins: [new HtmlWebpackPlugin()],
 };
 ```
 
-This will generate a file `dist/index.html` containing the following:
+그러면 아래의 내용을 포함하는 `dist/index.html` 파일이 생성됩니다.
 
 ```html
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>webpack App</title>
   </head>
   <body>
@@ -52,16 +49,14 @@ This will generate a file `dist/index.html` containing the following:
 </html>
 ```
 
-If you have multiple webpack entry points, they will all be included with `<script>` tags in the generated HTML.
+Webpack 엔트리 포인트가 여러 개인 경우, 생성된 HTML에 모두 `<script>` 태그로 포함됩니다.
 
-If you have any CSS assets in webpack's output (for example, CSS extracted with the [MiniCssExtractPlugin](/plugins/mini-css-extract-plugin/)) then these will be included with `<link>` tags in the `<head>` element of generated HTML.
-
+만약 webpack 출력에 CSS 애셋이 있다면([MiniCssExtractPlugin](/plugins/mini-css-extract-plugin/)으로 추출된 CSS 와 같이) 이들은 생성된 HTML 파일의 `<head>` 요소 안에 `<link>` 태그로 포함됩니다.
 
 ## Configuration
 
-For all configuration options, please see the [plugin documentation](https://github.com/jantimon/html-webpack-plugin#options).
-
+모든 설정 옵션은 [plugin 문서](https://github.com/jantimon/html-webpack-plugin#options)를 참고하세요.
 
 ## Third party addons
 
-The plugin supports addons. For a list see the [documentation](https://github.com/jantimon/html-webpack-plugin#plugins).
+플러그인은 추가 기능을 지원합니다. 목록은 [해당 문서](https://github.com/jantimon/html-webpack-plugin#plugins)를 참고하세요.

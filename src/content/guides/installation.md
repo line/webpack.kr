@@ -10,37 +10,35 @@ contributors:
   - chenxsan
 ---
 
-This guide goes through the various methods used to install webpack.
-
+이 가이드에서는 webpack을 설치하는 데 사용되는 다양한 방법에 대해 설명합니다.
 
 ## Prerequisites
 
-Before we begin, make sure you have a fresh version of [Node.js](https://nodejs.org/en/) installed. The current Long Term Support (LTS) release is an ideal starting point. You may run into a variety of issues with the older versions as they may be missing functionality webpack and/or its related packages require.
-
+시작하기 전에, [Node.js가](https://nodejs.org/en/) 최신 버전으로 설치되어 있는지 확인하세요. 현재 장기 지원 버전(LTS)은 이상적인 시작점입니다. 이전 버전에서는 webpack 혹은 관련 패키지에 필요한 기능이 누락되어 있을 수 있기 때문에 다양한 문제가 발생할 수 있습니다.
 
 ## Local Installation
 
-The latest webpack release is:
+최신 webpack 릴리스는 다음과 같습니다.
 
 [![GitHub release](https://img.shields.io/npm/v/webpack.svg?label=webpack&style=flat-square&maxAge=3600)](https://github.com/webpack/webpack/releases)
 
-To install the latest release or a specific version, run one of the following commands:
+최신 릴리스 또는 특정 버전을 설치하려면 다음 명령 중 하나를 실행하세요.
 
-``` bash
+```bash
 npm install --save-dev webpack
-# or specific version
+# 또는 특정 버전
 npm install --save-dev webpack@<version>
 ```
 
-T> Whether to use `--save-dev` or not depends on your use cases. Say you're using webpack only for bundling, then it's suggested that you install it with `--save-dev` option since you're not going to include webpack in your production build. Otherwise you can ignore `--save-dev`.
+T> `--save-dev`의 사용 여부는 사례에 따라 다릅니다. webpack을 번들링을 위해서만 사용한다고 가정하면, 프로덕션 빌드에 webpack을 포함하지 않을 것이므로 `--save-dev` 옵션으로 설치하는 것이 좋습니다. 그렇지 않으면  `--save-dev` 를 무시할 수 있습니다.
 
-If you're using webpack v4 or later, you'll also need to install the [CLI](/api/cli/).
+webpack v4 이상을 사용하는 경우 [CLI](/api/cli/)도 설치해야 합니다.
 
-``` bash
+```bash
 npm install --save-dev webpack-cli
 ```
 
-Installing locally is what we recommend for most projects. This makes it easier to upgrade projects individually when breaking changes are introduced. Typically webpack is run via one or more [npm scripts](https://docs.npmjs.com/misc/scripts) which will look for a webpack installation in your local `node_modules` directory:
+대부분의 프로젝트에서는 로컬 설치를 권장합니다. 이를 통해 주요 변경사항이 있을 때 개별적으로 프로젝트를 쉽게 업그레이드 할 수 있습니다. 일반적으로 webpack은 하나 이상의 [npm scripts](https://docs.npmjs.com/misc/scripts)를 통해 실행되며 이 스크립트는 로컬의 `node_modules` 디렉터리에 설치된 webpack을 찾습니다.
 
 ```json
 "scripts": {
@@ -48,28 +46,27 @@ Installing locally is what we recommend for most projects. This makes it easier 
 }
 ```
 
-T> To run the local installation of webpack you can access its binary version as `node_modules/.bin/webpack`. Alternatively, if you are using npm v5.2.0 or greater, you can run `npx webpack` to do it.
-
+T> webpack의 로컬 설치를 실행하려면, 바이너리 버전인 `node_modules/.bin/webpack`으로 접근할 수 있습니다. 또는 npm v5.2.0이나 이상 버전을 사용하는 경우 `npx webpack`을 실행하여 이 작업을 수행할 수 있습니다.
 
 ## Global Installation
 
-The following NPM installation will make `webpack` available globally:
+다음과 같이 NPM을 설치하면 webpack을 전역적으로 사용할 수 있습니다.
 
-``` bash
+```bash
 npm install --global webpack
 ```
 
-W> Note that this is __not a recommended practice__. Installing globally locks you down to a specific version of webpack and could fail in projects that use a different version.
+W> 이것을 **권장하지 않는다는 것을** 기억하세요. 전역으로 설치하면 특정 버전의 webpack만 사용할 수 있고 다른 버전을 사용할 경우 실패할 수 있습니다.
 
 
 ## Bleeding Edge
 
-If you are enthusiastic about using the latest that webpack has to offer, you can install beta versions or even directly from the webpack repository using the following commands:
+webpack이 제공하는 최신 버전을 사용하는 데 관심이 있다면 다음 명령을 사용하여 베타 버전을 설치하거나 webpack 저장소에서 직접 설치해 볼 수 있습니다.
 
-``` bash
+```bash
 npm install --save-dev webpack@next
-# or a specific tag/branch
+# 또는 특정 tagname/branchname
 npm install --save-dev webpack/webpack#<tagname/branchname>
 ```
 
-W> Take caution when installing these bleeding edge releases! They may still contain bugs and therefore should not be used in production.
+W> 이러한 최신 릴리스를 설치할 때 주의하세요! 여전히 버그가 있을 수 있기 때문에 프로덕션에 사용하면 안됩니다.

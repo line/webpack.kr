@@ -10,65 +10,60 @@ contributors:
   - skipjack
 ---
 
-Hot Module Replacement (HMR) exchanges, adds, or removes [modules](/concepts/modules/) while an application is running, without a full reload. This can significantly speed up development in a few ways:
+Hot Module Replacement(HMR)는 [모듈](/concepts/modules/) 전체를 다시 로드하지 않고 애플리케이션이 실행되는 동안 교환, 추가 또는 제거합니다. 다음과 같은 몇 가지 방법으로 개발 속도를 크게 높일 수 있습니다.
 
-- Retain application state which is lost during a full reload.
-- Save valuable development time by only updating what's changed.
-- Instantly update the browser when modifications are made to CSS/JS in the source code, which is almost comparable to changing styles directly in the browser's dev tools.
-
+- 전체 다시 로드 중에 손실되는 애플리케이션의 상태를 유지합니다.
+- 변경된 사항만 갱신하여 귀중한 개발 시간을 절약하세요.
+- 소스 코드에서 CSS/JS를 수정하면 브라우저에서 즉시 업데이트합니다. 이는 브라우저의 개발자 도구에서 직접 스타일을 변경하는 것과 거의 비슷합니다.
 
 ## How It Works
 
-Let's go through some different viewpoints to understand exactly how HMR works...
+HMR이 어떻게 작동하는지 정확히 이해하기 위해 몇 가지 다른 관점을 살펴보겠습니다.
 
 ### In the Application
 
-The following steps allow modules to be swapped in and out of an application:
+다음 단계를 통해 애플리케이션에서 모듈을 교체할 수 있습니다.
 
-1. The application asks the HMR runtime to check for updates.
-2. The runtime asynchronously downloads the updates and notifies the application.
-3. The application then asks the runtime to apply the updates.
-4. The runtime synchronously applies the updates.
+1. 애플리케이션은 HMR 런타임에 업데이트된 내용이 있는지 확인하도록 요청합니다.
+2. 런타임에서 업데이트된 내용을 비동기적으로 다운로드받고 애플리케이션에 알립니다.
+3. 그런 다음 애플리케이션은 런타임에 업데이트를 요청합니다.
+4. 런타임은 업데이트를 동기적으로 적용합니다.
 
-You can set up HMR so that this process happens automatically, or you can choose to require user interaction for updates to occur.
-
+이 프로세스가 자동으로 발생하도록 HMR을 설정하거나 업데이트가 발생하기 위해 사용자 상호 작용을 요구하도록 선택할 수 있습니다.
 
 ### In the Compiler
 
-In addition to normal assets, the compiler needs to emit an "update" to allow updating from the previous version to the new version. The "update" consists of two parts:
+일반 애셋 외에도 컴파일러는 이전 버전에서 새 버전으로 업데이트할 수 있도록 "업데이트"를 내보내야 합니다. "업데이트"는 두 부분으로 구성됩니다.
 
-1. The updated [manifest](/concepts/manifest) (JSON)
-2. One or more updated chunks (JavaScript)
+1. 업데이트된 [매니페스트](/concepts/manifest) (JSON)
+2. 하나 이상의 업데이트 된 청크 (JavaScript)
 
-The manifest contains the new compilation hash and a list of all updated chunks. Each of these chunks contains the new code for all updated modules (or a flag indicating that the module was removed).
+매니페스트에는 새 컴파일 해시와 업데이트된 모든 청크 목록이 포함됩니다. 각 청크에는 업데이트된 모든 모듈에 대한 새 코드(또는 모듈이 제거되었음을 나타내는 플래그)가 포함됩니다.
 
-The compiler ensures that module IDs and chunk IDs are consistent between these builds. It typically stores these IDs in memory (e.g. with [webpack-dev-server](/configuration/dev-server/)), but it's also possible to store them in a JSON file.
-
+컴파일러는 빌드 간에 모듈 ID와 청크 ID가 일치하는지 확인합니다. 일반적으로 이러한 ID를 메모리에 저장하지만 (예: [webpack-dev-server](/configuration/dev-server/) 사용) JSON 파일에 저장할 수도 있습니다.
 
 ### In a Module
 
-HMR is an opt-in feature that only affects modules containing HMR code. One example would be patching styling through the [`style-loader`](https://github.com/webpack-contrib/style-loader). In order for patching to work, the `style-loader` implements the HMR interface; when it receives an update through HMR, it replaces the old styles with the new ones.
+HMR은 HMR 코드가 포함된 모듈에만 영향을 미치는 선택적인 기능입니다. 한 가지 예는 [`style-loader`](https://github.com/webpack-contrib/style-loader)를 통해 스타일을 가져오는 것입니다. 패치가 작동하기 위해 `style-loader`는 HMR 인터페이스를 구현합니다. HMR을 통해 업데이트를 받으면 이전 스타일을 새 스타일로 대체합니다.
 
-Similarly, when implementing the HMR interface in a module, you can describe what should happen when the module is updated. However, in most cases, it's not mandatory to write HMR code in every module. If a module has no HMR handlers, the update bubbles up. This means that a single handler can update a complete module tree. If a single module from the tree is updated, the entire set of dependencies is reloaded.
+마찬가지로 모듈에서 HMR 인터페이스를 구현할 때 모듈이 업데이트될 때 어떤 일이 발생해야 하는지 설명할 수 있습니다. 그러나 대부분의 경우 모든 모듈에서 HMR 코드를 작성해야 하는 것은 아닙니다. 모듈에 HMR 핸들러가 없으면 업데이트가 버블링됩니다. 이는 단일 핸들러가 전체 모듈 트리를 업데이트 할 수 있음을 의미합니다. 트리의 단일 모듈이 업데이트되면 전체 종속성 집합이 다시 로드됩니다.
 
-See the [HMR API page](/api/hot-module-replacement) for details on the `module.hot` interface.
-
+`module.hot` 인터페이스에 대한 자세한 내용은 [HMR API 페이지](/api/hot-module-replacement)를 참고하세요.
 
 ### In the Runtime
 
-Here things get a bit more technical... if you're not interested in the internals, feel free to jump to the [HMR API page](/api/hot-module-replacement) or [HMR guide](/guides/hot-module-replacement).
+여기에서는 조금 더 기술적인 내용을 다룹니다. 내부 동작에 관심이 없다면 [HMR API 페이지](/api/hot-module-replacement) 또는 [HMR 가이드](/guides/hot-module-replacement)로 이동하세요.
 
-For the module system runtime, additional code is emitted to track module `parents` and `children`. On the management side, the runtime supports two methods: `check` and `apply`.
+모듈 시스템 런타임의 경우 `부모` 및 `자식` 모듈을 추적하기 위해 추가 코드가 생성됩니다. 관리적인 측면에서 런타임은 `check` 그리고 `apply` 두 가지 방법을 지원합니다.
 
-A `check` makes an HTTP request to the update manifest. If this request fails, there is no update available. If it succeeds, the list of updated chunks is compared to the list of currently loaded chunks. For each loaded chunk, the corresponding update chunk is downloaded. All module updates are stored in the runtime. When all update chunks have been downloaded and are ready to be applied, the runtime switches into the `ready` state.
+`check`는 업데이트 매니페스트에 HTTP 요청을 합니다. 요청이 실패하면 가능한 업데이트가 없음을 의미합니다. 성공하면 업데이트된 청크 목록과 현재 로드된 청크 목록을 비교합니다. 로드된 각 청크에 해당하는 업데이트 청크가 다운로드됩니다. 모든 모듈 업데이트는 런타임에 저장됩니다. 모든 업데이트 청크가 다운로드되고 적용할 준비가 되면 런타임이 `ready` 상태로 전환됩니다.
 
-The `apply` method flags all updated modules as invalid. For each invalid module, there needs to be an update handler in the module or in its parent(s). Otherwise, the invalid flag bubbles up and invalidates parent(s) as well. Each bubble continues until the app's entry point or a module with an update handler is reached (whichever comes first). If it bubbles up from an entry point, the process fails.
+`apply`는 업데이트된 모든 모듈을 유효하지 않은 것으로 표시합니다. 유효하지 않은 각 모듈에 대해 해당 모듈 또는 상위 모듈에 업데이트 핸들러가 있어야 합니다. 그렇지 않으면 잘못된 플래그가 버블링되고 부모도 무효가 됩니다. 앱의 엔트리 포인트나 업데이트 핸들러가 있는 모듈에 도달할 때까지(둘 중 먼저 오는 쪽) 계속 버블링됩니다. 엔트리 포인트에서 버블링이 발생하면 프로세스가 실패합니다.
 
-Afterwards, all invalid modules are disposed (via the dispose handler) and unloaded. The current hash is then updated and all `accept` handlers are called. The runtime switches back to the `idle` state and everything continues as normal.
-
+그 후 모든 유효하지 않은 모듈이 (폐기 처리기를 통해) 폐기되고 언로드됩니다. 그런 다음 현재 해시가 업데이트되고 모든 `accept` 핸들러가 호출됩니다. 런타임은 `idle` 상태로 다시 전환되고 모든 것이 정상적으로 계속됩니다.
 
 ## Get Started
 
-HMR can be used in development as a LiveReload replacement. [webpack-dev-server](/configuration/dev-server/) supports a `hot` mode in which it tries to update with HMR before trying to reload the whole page. See the [Hot Module Replacement guide](/guides/hot-module-replacement) for details.
+HMR은 Live Reload의 대체품으로 개발에 사용할 수 있습니다. [webpack-dev-server](/configuration/dev-server/)는 전체 페이지를 다시 로드하기 전에 HMR로 업데이트를 시도하는 `hot` 모드를 지원합니다. 자세한 내용은 [Hot Module Replacement 가이드](/guides/hot-module-replacement)를 참고하세요.
 
-T> As with many other features, webpack's power lies in its customizability. There are _many_ ways of configuring HMR depending on the needs of a particular project. However, for most purposes, `webpack-dev-server` is a good fit and will allow you to get started with HMR quickly.
+T> 다른 많은 기능과 마찬가지로 webpack은 커스터마이즈 할 수 있다는 점에서 강점이 있습니다. 특정 프로젝트의 필요에 따라 HMR을 구성하는 방법은 _많이_ 있습니다. 그러나 대부분은 `webpack-dev-server`가 적합하며 HMR을 빠르게 시작할 수 있습니다.

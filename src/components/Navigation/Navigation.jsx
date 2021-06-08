@@ -42,27 +42,29 @@ export default class Navigation extends Component {
       <Banner
         onSearch={onSearch}
         blockName="navigation"
-        logo={ <Logo light={ true } /> }
-        url={ pathname }
+        logo={<Logo light={true} />}
+        url={pathname}
         items={[
           ...links,
           {
             title: 'GitHub Repository',
             url: 'https://github.com/webpack/webpack',
             className: 'navigation__item--icon',
-            content: <GithubIcon aria-hidden="true" fill="#fff" width={16} />
+            content: <GithubIcon aria-hidden="true" fill="#fff" width={16} />,
           },
           {
             title: 'webpack on Twitter',
             url: 'https://twitter.com/webpack',
             className: 'navigation__item--icon',
-            content: <TwitterIcon aria-hidden="true" fill="#fff" width={16} />
+            content: <TwitterIcon aria-hidden="true" fill="#fff" width={16} />,
           },
           {
             title: 'webpack on Stack Overflow',
             url: 'https://stackoverflow.com/questions/tagged/webpack',
             className: 'navigation__item--icon',
-            content: <StackOverflowIcon aria-hidden="true" fill="#fff" width={16} />
+            content: (
+              <StackOverflowIcon aria-hidden="true" fill="#fff" width={16} />
+            ),
           },
           {
             className: 'navigation__item--icon',
@@ -70,10 +72,22 @@ export default class Navigation extends Component {
               <Dropdown
                 className="navigation__languages"
                 items={[
-                  { title: 'English', url: 'https://webpack.js.org/' },
-                  { lang: 'zh', title: '中文', url: 'https://webpack.docschina.org/' }
-                ]} />
-            )
+                  {
+                    title: 'English',
+                    url: 'https://webpack.js.org/',
+                  },
+                  {
+                    lang: 'zh',
+                    title: '中文',
+                    url: 'https://webpack.docschina.org/',
+                  },
+                  { lang: 'ko',
+                    title: '한국어',
+                    url: 'https://webpack.kr/' 
+                  },
+                ]}
+              />
+            ),
           },
           {
             className: 'navigation__item--icon',
@@ -91,8 +105,9 @@ export default class Navigation extends Component {
             ),
           },
         ]}
-        link={ Link }
-        onMenuClick={ toggleSidebar } />
+        link={Link}
+        onMenuClick={toggleSidebar}
+      />
     );
   }
 
@@ -101,8 +116,8 @@ export default class Navigation extends Component {
       const DocSearch = require('docsearch.js');
 
       DocSearch({
-        apiKey: 'fac401d1a5f68bc41f01fb6261661490',
-        indexName: 'webpack-js-org',
+        apiKey: '8535036d0982242833e1380d8649b88c',
+        indexName: 'webpack_korea',
         inputSelector: '.navigation-search__input'
       });
     }

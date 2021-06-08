@@ -1,0 +1,112 @@
+---
+title: Configuration Types
+sort: 3
+contributors:
+  - sokra
+  - skipjack
+  - kbariotis
+  - simon04
+  - fadysamirsadek
+  - byzyk
+  - EugeneHlushko
+  - dhurlburtusa
+  - anshumanv
+  - thorn0
+---
+
+단일 설정 객체를 export 하는 것 외에도 다른 요구 사항을 처리하는 몇 가지 방법이 더 있습니다.
+
+## Exporting a Function
+
+`webpack.config.js`에서 [개발환경](/guides/development)과 [프로덕션 환경](/guides/production)을 명확히 해야 합니다. 이를 수행하는 방법에는 여러 가지가 있습니다. 한 가지 옵션은 객체를 내보내는 대신 webpack 설정에서 함수를 내보내는 것입니다. 이 함수는 두 개의 인수로 호출됩니다.
+
+- 첫 번째 파라미터는 environment입니다. 구문 예제는 [CLI 문서의 environment 옵션](/api/cli/#environment-options)을 참고하세요.
+- 두 번째 파라미터인 `argv`는 옵션 map 입니다. [`output-path`](/api/cli/#flags), [`mode`](/api/cli/#flags)와 같은 키를 사용하여 webpack에 전달되는 옵션을 나타냅니다.
+
+```diff
+-module.exports = {
++module.exports = function(env, argv) {
++  return {
++    mode: env.production ? 'production' : 'development',
++    devtool: env.production ? 'source-map' : 'eval',
+     plugins: [
+       new TerserPlugin({
+         terserOptions: {
++          compress: argv.mode === 'production' // `--mode production`이 통과 된 경우에만
+         }
+       })
+     ]
++  };
+};
+```
+
+## Exporting a Promise
+
+webpack은 설정 파일에서 export 한 함수를 실행하고 Promise가 반환될 때까지 기다립니다. 설정에서 사용되는 변수를 비동기적으로 로드해야 할 때 편리합니다.
+
+T> 여러 개의 promise를 `Promise.all([/* Your promises */])`로 묶어서 export 할 수 있습니다.
+
+```js
+module.exports = () => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve({
+        entry: './app.js',
+        /* ... */
+      });
+    }, 5000);
+  });
+};
+```
+
+W> `Promise` 반환은 CLI를 통해 webpack을 사용할 때만 동작합니다. [`webpack()`](/api/node/#webpack)은 객체가 필요합니다.
+
+## Exporting multiple configurations
+
+단일 설정 객체 또는 함수를 export 하는 대신, 여러 개의 설정을 export 할 수 있습니다(여러 개의 함수는 webpack 3.1.0부터 지원). webpack을 실행할 때, 모든 설정이 빌드됩니다. 예를 들어, AMD나 CommonJS 같은 여러 개의 [target](/configuration/output/#outputlibrarytarget)을 위한 [라이브러리 빌드](/guides/author-libraries) 시 유용합니다.
+
+```js
+module.exports = [
+  {
+    output: {
+      filename: './dist-amd.js',
+      libraryTarget: 'amd',
+    },
+    name: 'amd',
+    entry: './app.js',
+    mode: 'production',
+  },
+  {
+    output: {
+      filename: './dist-commonjs.js',
+      libraryTarget: 'commonjs',
+    },
+    name: 'commonjs',
+    entry: './app.js',
+    mode: 'production',
+  },
+];
+```
+
+T> 이름을 [`--config-name`](/api/cli/#config-name) 플래그에 전달하면 webpack은 특정한 설정만 빌드합니다.
+
+### parallelism
+
+여러 설정을 export하는 경우 설정 배열과 `parallelism` 옵션을 사용하여 병렬로 컴파일 할 최대 컴파일러 수를 지정할 수 있습니다.
+
+- 타입: `number`
+- 지원 버전: 5.22.0+
+
+**webpack.config.js**
+
+```javascript
+module.exports = [
+  {
+    //config-1
+  },
+  {
+    //config-2
+  },
+];
+module.exports.parallelism = 1;
+```

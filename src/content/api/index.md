@@ -5,55 +5,50 @@ contributors:
   - tbroadley
 ---
 
-A variety of interfaces are available to customize the compilation process.
-Some features overlap between interfaces, e.g. a configuration option may be
-available via a CLI flag, while others exist only through a single interface.
-The following high-level information should get you started.
-
+컴파일 절차를 커스터마이즈 하기 위해 다양한 인터페이스를 사용할 수 있습니다.
+인터페이스 간에 겹치는 기능도 존재합니다.
+예를 들면, 구성 옵션은 CLI 플래그를 통해 사용할 수 있지만 다른 옵션은 단일 인터페이스를 통해서만 존재합니다.
+아래의 정보가 시작하는 데 도움을 줄 것입니다.
 
 ## CLI
 
-The Command Line Interface (CLI) to configure and interact with your build. It
-is especially useful in the case of early prototyping and profiling. For the
-most part, the CLI is simply used to kick off the process using a configuration
-file and a few flags (e.g. `--env`).
+명령 줄 인터페이스(CLI)는 빌드를 구성하고 상호작용하는 데 사용됩니다.
+특히 초기 프로토타이핑이나 프로파일링의 경우 유용합니다.
+대부분의 경우 CLI는 설정 파일과 `--env` 같은 몇 가지 플래그를 사용하여 프로세스를 시작하는 데 사용됩니다.
 
-[Learn more about the CLI!](/api/cli)
 
+[CLI에 대해 더 알아보세요!](/api/cli)
 
 ## Module
 
-When processing modules with webpack, it is important to understand the
-different module syntaxes – specifically the [methods](/api/module-methods)
-and [variables](/api/module-variables) – that are supported.
+webpack을 사용하여 모듈을 처리할 때 [메서드](/api/module-methods)나 [변수](/api/module-variables)같이 다양한 지원되는 모듈 구문을 이해하는 것이 중요합니다.
 
-[Learn more about modules!](/api/module-methods)
 
+
+[모듈에 대해 더 알아보세요!](/api/module-methods)
 
 ## Node
 
-While most users can get away with just using the CLI along with a
-configuration file, more fine-grained control of the compilation can be
-achieved via the Node interface. This includes passing multiple configurations,
-programmatically running or watching, and collecting stats.
+대부분의 사용자는 설정 파일과 CLI를 함께 사용하는 것만으로도 충분하지만, Node 인터페이스를 통해 컴파일을 보다 세밀하게 제어할 수 있습니다.
+여기에는 다중 설정 전달과 프로그래밍 방식으로 실행 또는 감시, 통계 수집이 포함됩니다.
 
-[Learn more about the Node API!](/api/node)
 
+
+[Node API에 대해 더 알아보세요!](/api/node)
 
 ## Loaders
 
-Loaders are transformations that are applied to the source code of a module.
-They are written as functions that accept source code as a parameter and return
-a new version of that code with transformations applied.
+로더는 모듈의 소스 코드에 적용되는 변환입니다.
+소스 코드를 매개 변수로 받고 변환이 적용된 해당 코드의 새 버전을 반환하는 함수로 작성됩니다.
 
-[Learn more about loaders!](/api/loaders)
 
+[로더에 대해 더 알아보세요!](/api/loaders)
 
 ## Plugins
 
-The plugin interface allows users to tap directly into the compilation process.
-Plugins can register handlers on lifecycle hooks that run at different points
-throughout a compilation. When each hook is executed, the plugin will have full
-access to the current state of the compilation.
+플러그인 인터페이스를 통해 컴파일 프로세스에 직접 접근할 수 있습니다.
+플러그인은 컴파일 동안 서로 다른 지점에서 실행되는 수명주기 훅에 핸들러를 등록할 수 있습니다.
+각각의 훅이 실행될 때 플러그인은 현재 컴파일 상태에 대한 모든 액세스 권한을 갖습니다.
 
-[Learn more about plugins!](/api/plugins)
+
+[플러그인에 대해 더 알아보세요!](/api/plugins)

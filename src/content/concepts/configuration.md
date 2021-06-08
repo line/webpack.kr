@@ -8,55 +8,55 @@ contributors:
   - byzyk
 ---
 
-You may have noticed that few webpack configurations look exactly alike. This is because __webpack's configuration file is a JavaScript file that exports a webpack [configuration](/configuration/).__ This configuration is then processed by webpack based upon its defined properties.
+webpack 설정이 정확히 동일한 경우는 거의 없습니다. 이것은 **webpack의 설정 파일이 webpack [설정](/configuration/)을 내보내는 JavaScript 파일이기 때문입니다.** 설정은 정의된 속성에 따라 webpack에서 처리됩니다.
 
-Because it's a standard Node.js CommonJS module, you __can do the following__:
+webpack은 표준 Node.js CommonJS 모듈이므로, **다음과 같은 작업을 할 수 있습니다.**
 
-- import other files via `require(...)`
-- use utilities on npm via `require(...)`
-- use JavaScript control flow expressions, e.g. the `?:` operator
-- use constants or variables for often used values
-- write and execute functions to generate a part of the configuration
+- `require(...)`를 통해 다른 파일 가져오기
+- `require(...)`를 통해 npm 유틸리티 사용하기
+- `?:` 연산자 같은 JavaScript 제어 흐름 표현식 사용하기
+- 자주 사용되는 값에 상수 또는 변수 사용하기
+- 설정 일부를 만들어 내는 함수 작성 및 실행하기
 
-Use these features when appropriate.
+상황에 따라 적절한 기능을 사용하세요.
 
-While they are technically feasible, __the following practices should be avoided__:
+기술적으로는 가능하지만, **아래 방법의 사용은 피해야 합니다.**
 
-- Access CLI arguments, when using the webpack CLI (instead write your own CLI, or [use `--env`](/configuration/configuration-types/))
-- Export non-deterministic values (calling webpack twice should result in the same output files)
-- Write long configurations (instead split the configuration into multiple files)
+- webpack CLI를 사용할 때 자체 CLI를 작성하거나 [`--env`](/configuration/configuration-types/)를 사용하는 대신, CLI 인자에 접근하기
+- 결정되지 않은 값을 내보내기 (webpack을 두 번 호출하면 동일한 출력 파일이 생성됩니다)
+- 긴 설정 작성하기 (대신 설정을 여러 파일로 분할)
 
-T> The most important part to take away from this document is that there are many different ways to format and style your webpack configuration. The key is to stick with something consistent that you and your team can understand and maintain.
+T> 이 문서에서 가장 중요한 부분은 webpack 설정을 형식화하고 스타일을 지정하는 다양한 방법이 있다는 것입니다. 핵심은 이해하고 유지보수할 수 있는 방식을 선택하여 일관된 형식을 유지하는 것입니다.
 
-The examples below describe how webpack's configuration can be both expressive and configurable because _it is code_:
+아래의 예제는 webpack 설정이 __코드이기__ 때문에 표현적이면서 설정 가능하다는 것을 설명합니다.
 
 ## Simple Configuration
 
-__webpack.config.js__
+**webpack.config.js**
 
 ```javascript
-var path = require('path');
+const path = require('path');
 
 module.exports = {
   mode: 'development',
   entry: './foo.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'foo.bundle.js'
-  }
+    filename: 'foo.bundle.js',
+  },
 };
 ```
 
-_See_: [Configuration section](/configuration/) for all supported configuration options
+지원하는 모든 설정 옵션에 대해서는 [설정 섹션](/configuration/)을 _봐주세요._
 
 ## Multiple Targets
 
-Along with exporting a single configuration as an object, [function](/configuration/configuration-types/#exporting-a-function) or [Promise](/configuration/configuration-types/#exporting-a-promise), you can export multiple configurations.
+단일 설정을 객체, [함수](/configuration/configuration-types/#exporting-a-function) 또는 [promise](/configuration/configuration-types/#exporting-a-promise)로 export 하는 것과 함께, 다중 설정을 export 할 수 있습니다.
 
-_See_: [Exporting multiple configurations](/configuration/configuration-types/#exporting-multiple-configurations)
+[다중 설정 내보내기](/configuration/configuration-types/#exporting-multiple-configurations)를 _봐주세요._
 
 ## Using other Configuration Languages
 
-webpack accepts configuration files written in multiple programming and data languages.
+webpack은 다양한 프로그래밍 및 데이터 언어로 작성된 설정 파일을 허용합니다.
 
-_See_: [Configuration Languages](/configuration/configuration-languages/)
+[설정 언어](/configuration/configuration-languages/)를 _봐주세요._

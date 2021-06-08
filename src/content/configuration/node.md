@@ -12,17 +12,17 @@ contributors:
   - chenxsan
 ---
 
-The following Node.js options configure whether to polyfill or mock certain [Node.js globals](https://nodejs.org/docs/latest/api/globals.html).
+다음의 Node.js 옵션은 특정 [Node.js globals](https://nodejs.org/docs/latest/api/globals.html)을 폴리필할지 mock할지 설정합니다.
 
-This feature is provided by webpack's internal [`NodeStuffPlugin`](https://github.com/webpack/webpack/blob/master/lib/NodeStuffPlugin.js) plugin.
+이 기능은 webpack 내부 [`NodeStuffPlugin`](https://github.com/webpack/webpack/blob/master/lib/NodeStuffPlugin.js) 플러그인에서 제공합니다.
 
-W> As of webpack 5, You can configure only `global`, `__filename` or `__dirname` under `node` option. If you're looking for how to polyfill `fs` alike in Node.js under webpack 5, please check [resolve.fallback](/configuration/resolve/#resolvefallback) for help.
+W> webpack5 부터, `node` 옵션에서 `global`, `__filename` 또는 `__dirname`만 설정할 수 있습니다. webpack5의 Node.js에서 `fs`를 폴리필할 방법을 찾고 있다면 [resolve.fallback](/configuration/resolve/#resolvefallback)를 참고하세요.
 
 ## `node`
 
 `boolean: false` `object`
 
-__webpack.config.js__
+**webpack.config.js**
 
 ```javascript
 module.exports = {
@@ -31,44 +31,43 @@ module.exports = {
     global: false,
     __filename: false,
     __dirname: false,
-  }
+  },
 };
 ```
 
-Since webpack 3.0.0, the `node` option may be set to `false` to completely turn off the `NodeStuffPlugin` plugin.
+webpack 3.0.0부터, `node` 옵션을 `false`로 설정하여 `NodeStuffPlugin` 플러그인을 완전히 끌 수 있습니다.
 
 ## `node.global`
 
 `boolean`
 
-T> If you are using a module which needs global variables in it, use `ProvidePlugin` instead of `global`.
+T> 전역변수가 필요한 모듈을 사용하는 경우 `global` 대신 `ProvidePlugin`을 사용하세요.
 
-See [the Node.js documentation](https://nodejs.org/api/globals.html#globals_global) for the exact behavior of this object.
+이 객체의 정확한 동작은 [Node.js 문서](https://nodejs.org/api/globals.html#globals_global)를 참고하세요.
 
-Options:
+옵션:
 
-- `true`: Provide a polyfill.
-- `false`: Provide nothing. Code that expects this object may crash with a `ReferenceError`.
+- `true`: 폴리필 제공.
+- `false`: 아무것도 제공하지 않습니다. 이 객체를 예상하는 코드는 `ReferenceError`가 발생할 수 있습니다.
 
 ## `node.__filename`
 
 `boolean` `string: 'mock' | 'eval-only'`
 
-Options:
+옵션:
 
-- `true`: The filename of the __input__ file relative to the [`context` option](/configuration/entry-context/#context).
-- `false`: Webpack won't touch your `__filename` code, which means you have the regular Node.js `__filename` behavior. The filename of the __output__ file when run in a Node.js environment.
-- `'mock'`: The fixed value `'/index.js'`.
+- `true`: [`context` 옵션](/configuration/entry-context/#context)에 상대적인 **입력** 파일의 dirname.
+- `false`: Webpack은 `__filename` 코드를 건드리지 않습니다. 즉 일반적인 Node.js `__filename` 동작이 있음을 의미합니다. Node.js 환경에서 실행할 때 **출력** 파일 이름입니다.
+- `'mock'`: 고정값 `'/index.js'`.
 - `'eval-only'`
-
 
 ## `node.__dirname`
 
 `boolean` `string: 'mock' | 'eval-only'`
 
-Options:
+옵션:
 
-- `true`: The dirname of the __input__ file relative to the [`context` option](/configuration/entry-context/#context).
-- `false`:  Webpack won't touch your `__dirname` code, which means you have the regular Node.js `__dirname` behavior. The dirname of the __output__ file when run in a Node.js environment.
-- `'mock'`: The fixed value `'/'`.
+- `true`: [`context` 옵션](/configuration/entry-context/#context)에 상대적인 **입력** 파일의 dirname.
+- `false`: Webpack은 `__dirname` 코드를 건드리지 않습니다. 즉 일반적인 Node.js `__dirname` 동작이 있음을 의미합니다. Node.js 환경에서 실행할 때 **출력** 파일 이름입니다.
+- `'mock'`: 고정값 `'/'`.
 - `'eval-only'`

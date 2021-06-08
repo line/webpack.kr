@@ -8,11 +8,11 @@ contributors:
   - wizardofhogwarts
 ---
 
-If you have a more advanced project and use [Vagrant](https://www.vagrantup.com/) to run your development environment in a Virtual Machine, you'll often want to also run webpack in the VM.
+[Vagrant를](https://www.vagrantup.com/) 사용하여 가상 머신에서 개발 환경을 실행하는 경우, 가상 머신에서도 webpack을 실행하고 싶을 수 있습니다.
 
 ## Configuring the Project
 
-To start, make sure that the `Vagrantfile` has a static IP;
+시작하려면, `Vagrantfile`에 고정 IP가 있는지 확인하세요.
 
 ```ruby
 Vagrant.configure("2") do |config|
@@ -20,13 +20,13 @@ Vagrant.configure("2") do |config|
 end
 ```
 
-Next, install `webpack` and `webpack-dev-server` in your project;
+다음으로, 프로젝트에 `webpack`과 `webpack-dev-server`를 설치하세요.
 
 ```bash
 npm install --save-dev webpack webpack-dev-server
 ```
 
-Make sure to have a `webpack.config.js` file. If you haven't already, use this as a minimal example to get started:
+`webpack.config.js` 파일이 있는지 확인하세요. 만약 파일이 없다면 다음을 최소한의 예제로 사용해 시작하세요.
 
 ```js
 module.exports = {
@@ -35,10 +35,10 @@ module.exports = {
 };
 ```
 
-And create an `index.html` file. The script tag should point to your bundle. If `output.filename` is not specified in the config, this will be `bundle.js`.
+그리고 `index.html` 파일을 만듭니다. 스크립트 태그는 번들을 가리켜야 합니다. `output.filename`이 지정되어 있지 않다면, `bundle.js`가 됩니다.
 
 ```html
-<!doctype html>
+<!DOCTYPE html>
 <html>
   <head>
     <script src="/bundle.js" charset="utf-8"></script>
@@ -49,30 +49,30 @@ And create an `index.html` file. The script tag should point to your bundle. If 
 </html>
 ```
 
-Note that you also need to create an `app.js` file.
+`app.js` 파일도 만들어야 합니다.
 
 ## Running the Server
 
-Now, let's run the server:
+이제, 서버를 실행하세요.
 
 ```bash
 webpack serve --host 0.0.0.0 --public 10.10.10.61:8080 --watch-poll
 ```
 
-By default, the server will only be accessible from localhost. We'll be accessing it from our host PC, so we need to change `--host` to allow this.
+기본적으로, 서버는 로컬 호스트에서만 접근할 수 있습니다. 호스트 PC에서 접근할 것이므로, 이를 허용하려면  `--host`를 변경해야 합니다.
 
-`webpack-dev-server` will include a script in your bundle that connects to a WebSocket to reload when a change in any of your files occurs.
-The `--public` flag makes sure the script knows where to look for the WebSocket. The server will use port `8080` by default, so we should also specify that here.
+`webpack-dev-server`는 파일이 변경될 때 다시 로드하기 위해 WebSocket에 연결하는 스크립트를 번들에 포함합니다.
+`--public` 플래그는 스크립트가 WebSocket을 찾을 위치를 알고 있는지 확인합니다. 서버는 기본적으로 `8080` 포트를 사용하므로, 여기에서도 지정해야 합니다.
 
-`--watch-poll` makes sure that webpack can detect changes in your files. By default, webpack listens to events triggered by the filesystem, but VirtualBox has many problems with this.
+`--watch-poll`은 webpack이 파일의 변경을 감지할 수 있도록 합니다. 기본적으로, webpack은 파일 시스템에 의해 트리거되는 이벤트를 수신하지만, VirtualBox에는 이와 관련된 많은 문제가 있습니다.
 
-The server should be accessible on `http://10.10.10.61:8080` now. If you make a change in `app.js`, it should live reload.
+서버는 이제 `http://10.10.10.61:8080`에서 접근할 수 있습니다. `app.js`를 변경하면 실시간으로 다시 로드됩니다.
 
 ## Advanced Usage with nginx
 
-To mimic a more production-like environment, it is also possible to proxy the `webpack-dev-server` with nginx.
+좀 더 생산적인 환경을 모방하기 위해, nginx로 `webpack-dev-server`를 프록시 할 수도 있습니다.
 
-In your nginx configuration file, add the following:
+nginx 설정 파일에 다음을 추가하십시오.
 
 ```nginx
 server {
@@ -91,16 +91,16 @@ server {
 }
 ```
 
-The `proxy_set_header` lines are important, because they allow the WebSockets to work correctly.
+`proxy_set_header` 줄은 WebSocket이 올바르게 작동하도록 허용하기 때문에 중요합니다.
 
-The command to start `webpack-dev-server` can then be changed to this:
+`webpack-dev-server`를 시작하는 명령을 다음과 같이 변경할 수 있습니다.
 
 ```bash
 webpack serve --public 10.10.10.61 --watch-poll
 ```
 
-This makes the server only accessible on `127.0.0.1`, which is fine because nginx takes care of making it available on your host PC.
+이렇게 하면, `127.0.0.1`에서만 서버에 접근할 수 있으며, nginx가 호스트 PC에서 사용할 수 있도록 처리하므로 괜찮습니다.
 
 ## Conclusion
 
-We made the Vagrant box accessible from a static IP, and then made `webpack-dev-server` publicly accessible so it is reachable from a browser. We then tackled a common problem that VirtualBox doesn't send out filesystem events, causing the server to not reload on file changes.
+고정 IP에서 Vagrant box에 접근할 수 있도록 만든 다음, `webpack-dev-server`를 공개적으로 접근할 수 있도록 하여 브라우저에서 접근할 수 있도록 했습니다. VirtualBox가 파일 시스템 이벤트를 보내지 않아 서버가 파일 변경 시 다시 로드되지 않는 일반적인 문제를 해결했습니다.

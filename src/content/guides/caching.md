@@ -18,22 +18,21 @@ related:
     url: https://github.com/webpack/webpack.js.org/issues/652
 ---
 
-T> The examples in this guide stem from [getting started](/guides/getting-started), [output management](/guides/output-management) and [code splitting](/guides/code-splitting).
+T> [시작하기](/guides/getting-started), [출력 관리](/guides/output-management), [코드 스플릿팅](/guides/code-splitting)의 예시를 사용합니다.
 
-So we're using webpack to bundle our modular application which yields a deployable `/dist` directory. Once the contents of `/dist` have been deployed to a server, clients (typically browsers) will hit that server to grab the site and its assets. The last step can be time consuming, which is why browsers use a technique called [caching](https://en.wikipedia.org/wiki/Cache_(computing)). This allows sites to load faster with less unnecessary network traffic. However, it can also cause headaches when you need new code to be picked up.
+우리는 배포 가능한 `/dist`디렉토리를 생성하는 모듈형 애플리케이션을 번들링하기 위해 webpack을 사용하고 있습니다. 일단 서버에 `/dist`의 콘텐츠가 배포되면 클라이언트(일반적으로 브라우저)가 해당 서버에 접근하여 사이트와 애셋을 가져옵니다. 마지막 단계는 시간이 많이 걸릴 수 있기 때문에 브라우저는 [캐싱](https://en.wikipedia.org/wiki/Cache_(computing))이라는 기술을 사용합니다. 이렇게 하면 불필요한 네트워크 트래픽을 줄이면서 사이트를 더 빨리 로드할 수 있습니다. 그러나 새 코드를 불러올 경우에는 어려움을 느낄 수 있습니다.  
 
-This guide focuses on the configuration needed to ensure files produced by webpack compilation can remain cached unless their content has changed.
-
+이 가이드는 webpack 컴파일로 생성 된 파일의 내용이 변경되지 않는 한 캐시된 상태로 유지되도록 하는 데 필요한 설정에 초점을 맞춥니다.
 
 ## Output Filenames
 
-We can use the `output.filename` [substitutions](/configuration/output/#outputfilename) setting to define the names of our output files. webpack provides a method of templating the filenames using bracketed strings called __substitutions__. The `[contenthash]` substitution will add a unique hash based on the content of an asset. When the asset's content changes, `[contenthash]` will change as well.
+`output.filename` [substitutions](/configuration/output/#outputfilename) 설정을 사용하여 출력 파일의 이름을 정의할 수 있습니다. webpack은 **substitutions** 이라고 하는 대괄호 문자열을 사용하여 파일 이름을 템플릿화하는 방법을 제공합니다. `[contenthash]` substitution은 애셋의 콘텐츠에 따라 고유한 해시를 추가합니다. 애셋의 콘텐츠가 변경되면 `[contenthash]`도 변경됩니다.
 
-Let's get our project set up using the example from [getting started](/guides/getting-started) with the `plugins` from [output management](/guides/output-management), so we don't have to deal with maintaining our `index.html` file manually:
+`index.html` 파일을 수동으로 관리할 필요가 없도록 [출력 관리의](/guides/output-management) `플러그인`과 [시작하기의](/guides/getting-started) 예제를 사용하여 프로젝트를 설정해 보겠습니다.
 
-__project__
+**project**
 
-``` diff
+```diff
 webpack-demo
 |- package.json
 |- webpack.config.js
@@ -43,18 +42,15 @@ webpack-demo
 |- /node_modules
 ```
 
-__webpack.config.js__
+**webpack.config.js**
 
-``` diff
+```diff
   const path = require('path');
-  const { CleanWebpackPlugin } = require('clean-webpack-plugin');
   const HtmlWebpackPlugin = require('html-webpack-plugin');
 
   module.exports = {
     entry: './src/index.js',
     plugins: [
-      // new CleanWebpackPlugin(['dist/*']) for < v2 versions of CleanWebpackPlugin
-      new CleanWebpackPlugin(),
       new HtmlWebpackPlugin({
 -       title: 'Output Management',
 +       title: 'Caching',
@@ -64,13 +60,14 @@ __webpack.config.js__
 -     filename: 'bundle.js',
 +     filename: '[name].[contenthash].js',
       path: path.resolve(__dirname, 'dist'),
+      clean: true,
     },
   };
 ```
 
-Running our build script, `npm run build`, with this configuration should produce the following output:
+이 설정으로 빌드 스크립트 `npm run build`를 실행하면, 다음과 같은 출력이 생성됩니다.
 
-``` bash
+```bash
 ...
                        Asset       Size  Chunks                    Chunk Names
 main.7e2c49a622975ebd9b7e.js     544 kB       0  [emitted]  [big]  main
@@ -78,9 +75,9 @@ main.7e2c49a622975ebd9b7e.js     544 kB       0  [emitted]  [big]  main
 ...
 ```
 
-As you can see the bundle's name now reflects its content (via the hash). If we run another build without making any changes, we'd expect that filename to stay the same. However, if we were to run it again, we may find that this is not the case:
+보다시피, 번들의 이름은 해시를 통해 콘텐츠를 반영합니다. 변경하지 않고 다른 빌드를 실행하면 해당 파일 이름이 동일하게 유지될 거라고 생각합니다. 그러나 다시 실행하면 이 경우에는 그렇지 않을 수 있다는 것을 알 수 있습니다.
 
-``` bash
+```bash
 ...
                        Asset       Size  Chunks                    Chunk Names
 main.205199ab45963f6a62ec.js     544 kB       0  [emitted]  [big]  main
@@ -88,26 +85,23 @@ main.205199ab45963f6a62ec.js     544 kB       0  [emitted]  [big]  main
 ...
 ```
 
-This is because webpack includes certain boilerplate, specifically the runtime and manifest, in the entry chunk.
+이것은 webpack이 특정 보일러플레이트, 특히 런타임과 매니페스트를 엔트리 청크에 포함하기 때문입니다.
 
-W> Output may differ depending on your current webpack version. Newer versions may not have all the same issues with hashing as some older versions, but we still recommend the following steps to be safe.
+W> 현재 webpack 버전에 따라 출력이 다를 수 있습니다. 최신 버전에는 일부 이전 버전과 동일한 해싱 문제가 없을 수 있지만, 안전을 위해 다음 단계를 권장합니다.
 
 ## Extracting Boilerplate
 
-As we learned in [code splitting](/guides/code-splitting), the [`SplitChunksPlugin`](/plugins/split-chunks-plugin/) can be used to split modules out into separate bundles. webpack provides an optimization feature to split runtime code into a separate chunk using the [`optimization.runtimeChunk`](/configuration/optimization/#optimizationruntimechunk) option. Set it to `single` to create a single runtime bundle for all chunks:
+[코드 스플릿팅](/guides/code-splitting)에서 배운 것처럼 [`SplitChunksPlugin`](/plugins/split-chunks-plugin/)을 사용하여 모듈을 별도의 번들로 분할 할 수 있습니다. webpack은 [`optimization.runtimeChunk`](/configuration/optimization/#optimizationruntimechunk) 옵션을 사용하여 런타임 코드를 별도의 청크로 분할하는 최적화 기능을 제공합니다. 모든 청크에 대해 단일 런타임 번들을 생성하려면 `single`로 설정합니다.
 
-__webpack.config.js__
+**webpack.config.js**
 
-``` diff
+```diff
   const path = require('path');
-  const { CleanWebpackPlugin } = require('clean-webpack-plugin');
   const HtmlWebpackPlugin = require('html-webpack-plugin');
 
   module.exports = {
     entry: './src/index.js',
     plugins: [
-      // new CleanWebpackPlugin(['dist/*']) for < v2 versions of CleanWebpackPlugin
-      new CleanWebpackPlugin(),
       new HtmlWebpackPlugin({
         title: 'Caching',
       }),
@@ -115,6 +109,7 @@ __webpack.config.js__
     output: {
       filename: '[name].[contenthash].js',
       path: path.resolve(__dirname, 'dist'),
+      clean: true,
     },
 +   optimization: {
 +     runtimeChunk: 'single',
@@ -122,9 +117,9 @@ __webpack.config.js__
   };
 ```
 
-Let's run another build to see the extracted `runtime` bundle:
+추출한 `런타임` 번들을 보기위해 다른 빌드를 실행해 보겠습니다.
 
-``` bash
+```bash
 Hash: 82c9c385607b2150fab2
 Version: webpack 4.12.0
 Time: 3027ms
@@ -138,21 +133,18 @@ runtime.cc17ae2a94ec771e9221.js   1.42 KiB       0  [emitted]  runtime
     + 1 hidden module
 ```
 
-It's also good practice to extract third-party libraries, such as `lodash` or `react`, to a separate `vendor` chunk as they are less likely to change than our local source code. This step will allow clients to request even less from the server to stay up to date.
-This can be done by using the [`cacheGroups`](/plugins/split-chunks-plugin/#splitchunkscachegroups) option of the [`SplitChunksPlugin`](/plugins/split-chunks-plugin/) demonstrated in [Example 2 of SplitChunksPlugin](/plugins/split-chunks-plugin/#split-chunks-example-2). Lets add `optimization.splitChunks` with `cacheGroups` with next params and build:
+`lodash` 또는 `react`와 같은 타사 라이브러리는 로컬 소스 코드보다 변경 될 가능성이 적기 때문에 별도의 `vendor` 청크로 추출하는 것도 좋은 방법입니다. 이 단계를 통해 클라이언트는 최신 상태를 유지하기 위해 서버에 더 적은 요청을 할 수 있습니다.
+이는 [Example 2 of SplitChunksPlugin](/plugins/split-chunks-plugin/#split-chunks-example-2)에 표시된 [`SplitChunksPlugin`](/plugins/split-chunks-plugin/)의 [`cacheGroups`](/plugins/split-chunks-plugin/#splitchunkscachegroups) 옵션을 사용하여 수행할 수 있습니다. `cacheGroups`과 함께   `optimization.splitChunks`를 추가하고 다음 파라미터를 사용하여 빌드합니다.
 
-__webpack.config.js__
+**webpack.config.js**
 
-``` diff
+```diff
   const path = require('path');
-  const { CleanWebpackPlugin } = require('clean-webpack-plugin');
   const HtmlWebpackPlugin = require('html-webpack-plugin');
 
   module.exports = {
     entry: './src/index.js',
     plugins: [
-      // new CleanWebpackPlugin(['dist/*']) for < v2 versions of CleanWebpackPlugin
-      new CleanWebpackPlugin(),
       new HtmlWebpackPlugin({
         title: 'Caching',
       }),
@@ -160,6 +152,7 @@ __webpack.config.js__
     output: {
       filename: '[name].[contenthash].js',
       path: path.resolve(__dirname, 'dist'),
+      clean: true,
     },
     optimization: {
       runtimeChunk: 'single',
@@ -176,9 +169,9 @@ __webpack.config.js__
   };
 ```
 
-Let's run another build to see our new `vendor` bundle:
+새로운 `vendor`번들을 확인하기 위해 다른 빌드를 실행해 보겠습니다.
 
-``` bash
+```bash
 ...
                           Asset       Size  Chunks             Chunk Names
 runtime.cc17ae2a94ec771e9221.js   1.42 KiB       0  [emitted]  runtime
@@ -188,15 +181,15 @@ vendors.a42c3ca0d742766d7a28.js   69.4 KiB       1  [emitted]  vendors
 ...
 ```
 
-We can now see that our `main` bundle does not contain `vendor` code from `node_modules` directory and is down in size to `240 bytes`!
+이제 `main` 번들에 `node_modules` 디렉토리의 `vendor` 코드가 포함되어 있지 않고 크기가 `240 bytes`로 줄어든 것을 볼 수 있습니다!
 
 ## Module Identifiers
 
-Let's add another module, `print.js`, to our project:
+프로젝트에 다른 모듈`print.js`를 추가해 보겠습니다.
 
-__project__
+**프로젝트**
 
-``` diff
+```diff
 webpack-demo
 |- package.json
 |- webpack.config.js
@@ -207,17 +200,17 @@ webpack-demo
 |- /node_modules
 ```
 
-__print.js__
+**print.js**
 
-``` diff
+```diff
 + export default function print(text) {
 +   console.log(text);
 + };
 ```
 
-__src/index.js__
+**src/index.js**
 
-``` diff
+```diff
   import _ from 'lodash';
 + import Print from './print';
 
@@ -234,9 +227,9 @@ __src/index.js__
   document.body.appendChild(component());
 ```
 
-Running another build, we would expect only our `main` bundle's hash to change, however...
+다른 빌드를 실행하면 `main` 번들의 해시만 변경 될 것으로 예상합니다, 하지만...
 
-``` bash
+```bash
 ...
                            Asset       Size  Chunks                    Chunk Names
   runtime.1400d5af64fc1b7b3a45.js    5.85 kB      0  [emitted]         runtime
@@ -246,26 +239,23 @@ Running another build, we would expect only our `main` bundle's hash to change, 
 ...
 ```
 
-... we can see that all three have. This is because each [`module.id`](/api/module-variables/#moduleid-commonjs) is incremented based on resolving order by default. Meaning when the order of resolving is changed, the IDs will be changed as well. So, to recap:
+... 세가지 모두가 변경 된 것을 볼 수 있습니다. 이는 각 [`module.id`](/api/module-variables/#moduleid-commonjs)가 기본적으로 해석 순서에 따라 증가하기 때문입니다. 해석 순서가 변경되면 ID도 변경됩니다. 그래서 요약하자면:
 
-- The `main` bundle changed because of its new content.
-- The `vendor` bundle changed because its `module.id` was changed.
-- And, the `runtime` bundle changed because it now contains a reference to a new module.
+- 새로운 콘텐츠로 인해 `main` 번들이 변경되었습니다.
+- `module.id`가 바뀌어 `vendor` 번들이 변경되었습니다.
+- 그리고, `runtime` 번들은 이제 새로운 모듈에 대한 참조를 포함하기 때문에 변경되었습니다.
 
-The first and last are expected, it's the `vendor` hash we want to fix. Let's use [`optimization.moduleIds`](/configuration/optimization/#optimizationmoduleids) with `'deterministic'` option:
+첫번째와 마지막은 우리가 고치고 싶은 `vendor` 해시입니다. `'deterministic'`옵션과 함께 [`optimization.moduleIds`](/configuration/optimization/#optimizationmoduleids)를 사용하겠습니다.
 
-__webpack.config.js__
+**webpack.config.js**
 
-``` diff
+```diff
   const path = require('path');
-  const { CleanWebpackPlugin } = require('clean-webpack-plugin');
   const HtmlWebpackPlugin = require('html-webpack-plugin');
 
   module.exports = {
     entry: './src/index.js',
     plugins: [
-      // new CleanWebpackPlugin(['dist/*']) for < v2 versions of CleanWebpackPlugin
-      new CleanWebpackPlugin(),
       new HtmlWebpackPlugin({
         title: 'Caching',
       }),
@@ -273,6 +263,7 @@ __webpack.config.js__
     output: {
       filename: '[name].[contenthash].js',
       path: path.resolve(__dirname, 'dist'),
+      clean: true,
     },
     optimization: {
 +     moduleIds: 'deterministic',
@@ -290,9 +281,9 @@ __webpack.config.js__
   };
 ```
 
-Now, despite any new local dependencies, our `vendor` hash should stay consistent between builds:
+이제 새로운 로컬 의존성에도 불구하고 `vendor`해시는 빌드간에 일관성을 유지해야합니다.
 
-``` bash
+```bash
 ...
                           Asset       Size  Chunks             Chunk Names
    main.216e852f60c8829c2289.js  340 bytes       0  [emitted]  main
@@ -303,11 +294,11 @@ Entrypoint main = runtime.725a1a51ede5ae0cfde0.js vendors.55e79e5927a639d21a1b.j
 ...
 ```
 
-And let's modify our `src/index.js` to temporarily remove that extra dependency:
+그리고 `src/index.js`를 수정하여 추가 의존성을 일시적으로 제거해 보겠습니다.
 
-__src/index.js__
+**src/index.js**
 
-``` diff
+```diff
   import _ from 'lodash';
 - import Print from './print';
 + // import Print from './print';
@@ -326,9 +317,9 @@ __src/index.js__
   document.body.appendChild(component());
 ```
 
-And finally run our build again:
+마지막으로 빌드를 다시 실행합니다.
 
-``` bash
+```bash
 ...
                           Asset       Size  Chunks             Chunk Names
    main.ad717f2466ce655fff5c.js  274 bytes       0  [emitted]  main
@@ -339,9 +330,8 @@ Entrypoint main = runtime.725a1a51ede5ae0cfde0.js vendors.55e79e5927a639d21a1b.j
 ...
 ```
 
-We can see that both builds yielded `55e79e5927a639d21a1b` in the `vendor` bundle's filename.
-
+두 빌드 모두 `55e79e5927a639d21a1b`를 vendor 번들 파일 이름으로 표시한 것을 알 수 있습니다.
 
 ## Conclusion
 
-Caching can be complicated, but the benefit to application or site users makes it worth the effort. See the _Further Reading_ section below to learn more.
+캐싱은 복잡할 수 있지만, 애플리케이션이나 사이트 사용자에게 주는 이점으로 그만한 가치가 있습니다. 자세한 내용은 아래의 _추가 자료_ 섹션을 참고하세요.

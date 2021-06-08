@@ -14,32 +14,32 @@ contributors:
   - chenxsan
 ---
 
-webpack has a rich plugin interface. Most of the features within webpack itself use this plugin interface. This makes webpack __flexible__.
+webpack에는 많은 플러그인 인터페이스가 있습니다. webpack 자체에 있는 대부분의 기능은 플러그인 인터페이스를 사용합니다. 이런점이 webpack을 **유연하게** 만듭니다.
 
-Name                                                     | Description
--------------------------------------------------------- | -----------
-[`BannerPlugin`](/plugins/banner-plugin)                 | Add a banner to the top of each generated chunk
-[`CommonsChunkPlugin`](/plugins/commons-chunk-plugin)    | Extract common modules shared between chunks
-[`CompressionWebpackPlugin`](/plugins/compression-webpack-plugin) | Prepare compressed versions of assets to serve them with Content-Encoding
-[`ContextReplacementPlugin`](/plugins/context-replacement-plugin) | Override the inferred context of a `require` expression
-[`CopyWebpackPlugin`](/plugins/copy-webpack-plugin) | Copies individual files or entire directories to the build directory
-[`DefinePlugin`](/plugins/define-plugin)           | Allow global constants configured at compile time
-[`DllPlugin`](/plugins/dll-plugin)                 | Split bundles in order to drastically improve build time
-[`EnvironmentPlugin`](/plugins/environment-plugin) | Shorthand for using the [`DefinePlugin`](/plugins/define-plugin) on `process.env` keys
-[`EslintWebpackPlugin`](/plugins/eslint-webpack-plugin) | A ESLint plugin for webpack
-[`HotModuleReplacementPlugin`](/plugins/hot-module-replacement-plugin) | Enable Hot Module Replacement (HMR)
-[`HtmlWebpackPlugin`](/plugins/html-webpack-plugin)          | Easily create HTML files to serve your bundles
-[`IgnorePlugin`](/plugins/ignore-plugin)                     | Exclude certain modules from bundles
-[`LimitChunkCountPlugin`](/plugins/limit-chunk-count-plugin) | Set min/max limits for chunking to better control chunking
-[`MinChunkSizePlugin`](/plugins/min-chunk-size-plugin)       | Keep chunk size above the specified limit
-[`MiniCssExtractPlugin`](/plugins/mini-css-extract-plugin)       | creates a CSS file per JS file which requires CSS
-[`NoEmitOnErrorsPlugin`](/configuration/optimization/#optimizationemitonerrors)  | Skip the emitting phase when there are compilation errors
-[`NormalModuleReplacementPlugin`](/plugins/normal-module-replacement-plugin) | Replace resource(s) that matches a regexp
-[`NpmInstallWebpackPlugin`](/plugins/npm-install-webpack-plugin) | Auto-install missing dependencies during development
-[`ProgressPlugin`](/plugins/progress-plugin)                     | Report compilation progress
-[`ProvidePlugin`](/plugins/provide-plugin)                       | Use modules without having to use import/require
-[`SourceMapDevToolPlugin`](/plugins/source-map-dev-tool-plugin)  | Enables a more fine grained control of source maps
-[`EvalSourceMapDevToolPlugin`](/plugins/eval-source-map-dev-tool-plugin)  | Enables a more fine grained control of eval source maps
-[`TerserPlugin`](/plugins/terser-webpack-plugin/)                | Uses Terser to minify the JS in your project
+이름                                                     | 설명                                                                                    |
+-------------------------------------------------------- |-------------------------------------------------------------------------------------- |
+[`BannerPlugin`](/plugins/banner-plugin)                 | 생성된 청크의 상단에 배너 추가                                                               |
+[`CommonsChunkPlugin`](/plugins/commons-chunk-plugin)    | 청크 간에 공유되는 공통 모듈 추출                                                             |
+[`CompressionWebpackPlugin`](/plugins/compression-webpack-plugin) | Content-Encoding으로 제공할 압축된 버전의 애셋 준비                                  |
+[`ContextReplacementPlugin`](/plugins/context-replacement-plugin) | `require` 표현식의 유추된 컨텍스트 재정의                                            |
+[`CopyWebpackPlugin`](/plugins/copy-webpack-plugin) | 개별 파일 또는 전체 디렉터리를 빌드 디렉터리에 복사                                                     |
+[`DefinePlugin`](/plugins/define-plugin)           | 컴파일 타임에 전역 변수 선언                                                                        |
+[`DllPlugin`](/plugins/dll-plugin)                 | 빌드 시간을 단축시키기 위해 번들 분할                                                                |
+[`EnvironmentPlugin`](/plugins/environment-plugin) | `process.env` 키에서 [`DefinePlugin`](/plugins/define-plugin)을 사용하는 약어                                |
+[`EslintWebpackPlugin`](/plugins/eslint-webpack-plugin) | webpack을 위한 ESLint 플러그인                                |
+[`HotModuleReplacementPlugin`](/plugins/hot-module-replacement-plugin) | Hot Module Replacement (HMR) 활성화                                |
+[`HtmlWebpackPlugin`](/plugins/html-webpack-plugin)          | 번들을 제공하기 위한 HTML 파일을 쉽게 생성                                |
+[`IgnorePlugin`](/plugins/ignore-plugin)                     | 번들에서 특정 모듈 제외                                |
+[`LimitChunkCountPlugin`](/plugins/limit-chunk-count-plugin) | 청킹을 더 잘 제어하기 위한 청킹의 최소/최대 제한 설정                                |
+[`MinChunkSizePlugin`](/plugins/min-chunk-size-plugin)       | 청크 크기를 지정한 제한 이상으로 유지                                |
+[`MiniCssExtractPlugin`](/plugins/mini-css-extract-plugin)       | CSS파일을 필요로하는 JS파일만 CSS파일을 생성                                |
+[`NoEmitOnErrorsPlugin`](/configuration/optimization/#optimizationemitonerrors)  | 컴파일 오류가 있는 경우 방출 단계를 건너뜀                                |
+[`NormalModuleReplacementPlugin`](/plugins/normal-module-replacement-plugin) | 정규식과 일치하는 리소스 교체                                |
+[`NpmInstallWebpackPlugin`](/plugins/npm-install-webpack-plugin) | 개발단계에서 누락된 디펜던시 자동 설치                                |
+[`ProgressPlugin`](/plugins/progress-plugin)                     | 컴파일 진행률 보고                                |
+[`ProvidePlugin`](/plugins/provide-plugin)                       | import 또는 require 사용없이 모듈 사용                                |
+[`SourceMapDevToolPlugin`](/plugins/source-map-dev-tool-plugin)  | 소스맵을 세밀하게 제어                                |
+[`EvalSourceMapDevToolPlugin`](/plugins/eval-source-map-dev-tool-plugin)  | eval 소스맵을 세밀하게 제어                                |
+[`TerserPlugin`](/plugins/terser-webpack-plugin/)                | Terser를 사용하여 JS 압축                                |
 
-For more third-party plugins, see the list from [awesome-webpack](https://github.com/webpack-contrib/awesome-webpack#webpack-plugins).
+더 많은 써드 파티 플러그인을 찾고 싶다면, [awesome-webpack](https://github.com/webpack-contrib/awesome-webpack#webpack-plugins)을 참고하세요.
