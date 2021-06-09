@@ -5,7 +5,7 @@
 
 ## 기여 방법
 ### 번역 방법
-* 중복된 작업을 막기위해 번역할 페이지를 [체크](https://github.com/line/webpack.kr/issues/1)하고 ID를 적어둡니다.
+* 중복된 작업을 막기위해 번역할 페이지를 [체크](https://github.com/line/webpack.kr/issues/7)하고 ID를 적어둡니다.
 * [Issue](https://github.com/line/webpack.kr/issues)를 생성하고 번역할 페이지의 정보를 작성합니다.
 
 ### 번역 규칙
