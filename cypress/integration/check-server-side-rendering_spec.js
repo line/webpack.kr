@@ -23,7 +23,7 @@ describe('server side rendered page', () => {
     cy.get('head meta[name="description"]').should(
       'have.attr',
       'content',
-      'webpack is a module bundler. Its main purpose is to bundle JavaScript files for usage in a browser, yet it is also capable of transforming, bundling, or packaging just about any resource or asset.'
+      '웹팩은 모듈 번들러입니다. 주요 목적은 브라우저에서 사용할 수 있도록 JavaScript 파일을 번들로 묶는 것이지만, 리소스나 애셋을 변환하고 번들링 또는 패키징할 수도 있습니다.'
     );
   });
 
@@ -32,6 +32,6 @@ describe('server side rendered page', () => {
     cy.title().should('eq', 'webpack');
 
     cy.visit('/guides/getting-started/');
-    cy.title().should('eq', 'Getting Started | webpack');
+    cy.title().should('eq', 'Getting Started | 웹팩');
   });
 });
