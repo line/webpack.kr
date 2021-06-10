@@ -18,6 +18,8 @@ contributors:
   - bigdawggi
   - anshumanv
   - textbook
+translators:
+  - keipark
 ---
 
 기본적으로 webpack은 설정 파일을 사용할 필요가 없습니다. webpack은 프로젝트의 엔트리 포인트를 `src/index.js`으로 가정하고, 프로덕션을 위해 압축하고 최적화된 결과를 `dist/main.js`로 내보냅니다.
@@ -46,7 +48,7 @@ T> webpack을 처음 사용하시나요? 시작하려면 webpack의 [핵심 개�
 
 W> 이 설정에서는 Node의 내장 [path module](https://nodejs.org/api/path.html)을 사용하고 앞에 [\_\_dirname](https://nodejs.org/docs/latest/api/globals.html#globals_dirname) 전역을 추가합니다. 이를 통해 운영 체제 간의 파일 경로 문제를 방지하고 상대 경로를 예상대로 작동하도록 합니다. POSIX와 Windows 경로에 대한 자세한 내용은 [이 섹션](https://nodejs.org/api/path.html#path_windows_vs_posix)을 참조하세요.
 
-W> 많은 배열 설정에서` "..."`를 통해 기본값을 참조할 수 있습니다. 
+W> 많은 배열 설정에서` "..."`를 통해 기본값을 참조할 수 있습니다.
 
 **webpack.config.js**
 
@@ -86,7 +88,7 @@ module.exports = {
     }
   </entry>
   // ./src 를 기본으로 함
-  // 애플리케이션이 여기에서 실행되며 
+  // 애플리케이션이 여기에서 실행되며
   // webpack이 번들링을 시작
   <link "/configuration/output">
     <default>
@@ -99,7 +101,7 @@ module.exports = {
         path: path.resolve(__dirname, "dist"), // string (기본값)
       </default>
     </path>
-    // 모든 출력 파일의 대상 디렉터리는 
+    // 모든 출력 파일의 대상 디렉터리는
     // 반드시 절대 경로 여야함 (Node.js의 path 모듈을 사용)
     <filename "/configuration/output/#outputfilename">
       <default>
@@ -122,7 +124,7 @@ module.exports = {
       <default>
         library: { // 이전 구문도 제공 가능 (클릭하여 보기)
       </default>
-      // 이전 구문 
+      // 이전 구문
       library: "MyLibrary", // string,
       libraryTarget: "umd", // = library.type
       auxiliaryComment: "comment", // = library.auxiliaryComment
@@ -130,10 +132,10 @@ module.exports = {
     </library>
       <libraryType "/configuration/output/#outputlibrarytype">
         <default>
-          type: "umd", // universal module definition 
+          type: "umd", // universal module definition
         </default>
         type: "umd2", // universal module definition (but optional externals will use globals)
-        type: "commonjs-module", // module.exports로 export됨 
+        type: "commonjs-module", // module.exports로 export됨
         type: "commonjs2", // "commonjs-module"의 예전 이름
         type: "commonjs", // exports의 프로퍼티로 내보내짐
         type: "amd", // AMD define() 메서드로 정의됨
@@ -226,7 +228,7 @@ module.exports = {
       strictModuleExceptionHandling: true, // boolean
       // 모듈 평가의 오류를 올바르게 처리하지만 성능 비용이 발생
       devtoolNamespace: "MyLibrary", // string
-      // devtools의 소스 이름에서 접두사는 
+      // devtools의 소스 이름에서 접두사는
       // 기본적으로 output.uniqueName
       environment: {
         // 환경에 대한 속성
@@ -268,7 +270,7 @@ module.exports = {
       hotUpdateMainFilename: "[fullhash].hot-update.json", // string
       // HMR 매니페스트의 파일 이름 템플릿
       hotUpdateChunkFilename: "[id].[fullhash].hot-update.js", // string
-      // HMR 청크의 파일 이름 템플릿 
+      // HMR 청크의 파일 이름 템플릿
       hotUpdateGlobal: "hmrUpdateFunction", // string
       // 핫 업데이트 청크를 로드하는데 사용되는 전역 변수의 이름
       sourcePrefix: "\t", // string
@@ -304,7 +306,7 @@ module.exports = {
         // - test에서 파일 이름을 찾을때만 RegExp 사용
         // - 전체 경로와 일치하도록 include 및 exclude에서 절대 경로 배열을 사용
         // - exclude 보다는 include를 사용
-        // 각 조건은 조건 배열인 
+        // 각 조건은 조건 배열인
         // "and", "or" 또는 "not" 속성이 있는 객체도 받을 수 있음
         issuer: /\.css$/,
         issuer: path.resolve(__dirname, "app"),
@@ -327,7 +329,7 @@ module.exports = {
           dependency: "wasm", // WebAssembly imports section
           dependency: "url", // new URL(), url() 및 유사
           dependency: "worker", // new Worker() 및 유사
-          dependency: "loader", // 로더의 this.loadModule 
+          dependency: "loader", // 로더의 this.loadModule
           // 디펜던시 타입과 일치
           descriptionData: { type: "module" },
           // package.json의 정보와 일치
@@ -494,7 +496,7 @@ module.exports = {
       unsafeCache: true,
       unsafeCache: {},
       // 해석된 요청에 대해 unsafe 캐싱을 활성화
-      // 유효성 검사가 없으므로 안전하지 않지만 
+      // 유효성 검사가 없으므로 안전하지 않지만
       // 성능이 크게 향상됨
       plugins: [
         // ...
@@ -530,7 +532,7 @@ module.exports = {
       // 캐싱 요청을 선택하는 predicate 함수
       cacheWithContext: false, // (기본값)
       // 캐시 키에 컨텍스트 정보 포함
-      // 이 정보에 따라 
+      // 이 정보에 따라
       // 사용자 정의 플러그인이 해석 될 때 true로 설정필요
       useSyncFileSystemCalls: false, // (기본값)
       // 비동기 fs 호출 대신 동기화 fs 호출 사용
@@ -558,7 +560,7 @@ module.exports = {
       devtool: "source-map", // enum
     </default>
     devtool: "inline-source-map", // 소스맵을 원본 파일에 인라인으로 추가
-    devtool: "hidden-source-map", // 원본 파일을 참조하지 않는 소스맵 
+    devtool: "hidden-source-map", // 원본 파일을 참조하지 않는 소스맵
     devtool: "eval-source-map", // 소스맵을 모듈 별로 인라인으로 추가
     devtool: "cheap-source-map", // 모듈 매핑이 없는 소스맵의 cheap-variant 버전
     devtool: "cheap-module-source-map", // 모듈 매핑이 있는 소스맵의 cheap-variant 버전
@@ -593,8 +595,8 @@ module.exports = {
     target: ["web", "es2020"],
     target: false, // 플러그인을 통한 사용자 지정 타겟
   </target>
-  // 번들이 실행되는 환경은 
-  // 청크 로딩 동작, 사용 가능한 외부 모듈 및 
+  // 번들이 실행되는 환경은
+  // 청크 로딩 동작, 사용 가능한 외부 모듈 및
   // 생성 된 코드 스타일을 변경함
   <externals "/configuration/externals">
     <default>
@@ -808,10 +810,10 @@ module.exports = {
       groupModulesByExtension: true
       // 확장자별로 모듈 그룹화
       groupModulesByAttributes: true
-      // 오류/경고/애셋이 있거나 선택 사항인 경우 등, 
+      // 오류/경고/애셋이 있거나 선택 사항인 경우 등,
       // 속성별로 모듈을 그룹화
       groupModulesByCacheStatus: true,
-      // 빌드, 코드 생성 또는 일반적으로 캐시 가능 여부에 따라 
+      // 빌드, 코드 생성 또는 일반적으로 캐시 가능 여부에 따라
       // 모듈을 그룹화
       depth: true,
       // 모듈 그래프에 깊이 표시
@@ -877,7 +879,7 @@ module.exports = {
     compress: true, // gzip 압축 활성화
     historyApiFallback: true, // 404일때 index.html을 표시하려면 true, 복수의 경로를 적용하려면 객체
     hot: true, // hot module replacement. HotModuleReplacementPlugin에 따라 다름
-    https: false, // self-signed의 경우 true, 인증 기관의 경우 객체 
+    https: false, // self-signed의 경우 true, 인증 기관의 경우 객체
     noInfo: true, // hot reload에 대해서만 오류 및 경고
     // ...
   },
@@ -916,7 +918,7 @@ module.exports = {
       emitOnErrors: true,
       // 빌드 오류가 있어도 출력 파일을 내보냄
       flagIncludedChunks: true,
-      // 이미 로드된 청크에 완전히 포함된 경우 
+      // 이미 로드된 청크에 완전히 포함된 경우
       // 청크를 다운로드하지 않음
       innerGraph: true,
       // 심볼 사이에 모듈 없이 참조를 결정
@@ -929,12 +931,12 @@ module.exports = {
       providedExports: true,
       // 모듈에 의해 노출되는 export 결정
       usedExports: true,
-      // 모듈에서 사용하는 export를 확인하고 
+      // 모듈에서 사용하는 export를 확인하고
       // 사용하지 않는 항목을 제거
       realContentHash: true,
       // 콘텐츠를 기반으로 애셋에 대한 콘텐츠 해시를 계산
       removeAvailableModules: true,
-      // 추가 패스를 실행하여 
+      // 추가 패스를 실행하여
       // 이미 부모 청크에 있는 모듈을 확인하고 제거
       removeEmptyChunks: true,
       // 비어있는 청크 제거
@@ -947,7 +949,7 @@ module.exports = {
     splitChunks: {
       cacheGroups: {
         "my-name": {
-          // 특정 캐싱 동작으로 
+          // 특정 캐싱 동작으로
           // 모듈 그룹 정의
           test: /\.sass$/,
           type: "css/mini-extract",
@@ -1011,12 +1013,12 @@ module.exports = {
         minSize: 20000,
         // 모듈 크기는 이 임계 값보다 커야함
         minRemainingSize: 20000,
-        // 모듈이 단일 청크에서 제거 될 때 
+        // 모듈이 단일 청크에서 제거 될 때
         // 남아있는 모듈의 크기는
         // 이 임계 값보다 커야함
         maxAsyncRequests: 30,
         maxInitialRequests: 30,
-        // 단일 온 디맨드 로딩 요청된 엔트리 포인트에 대한 병렬 요청 수가 
+        // 단일 온 디맨드 로딩 요청된 엔트리 포인트에 대한 병렬 요청 수가
         // 임계 값 이상이어야 함
       </advancedSelectors>
 
@@ -1027,14 +1029,14 @@ module.exports = {
         maxAsyncSize: 200000,
         maxInitialSize: 100000,
         maxSize: 200000,
-        // 새 청크의 모듈 크기가 
+        // 새 청크의 모듈 크기가
         // 이 임계 값보다 크면 분할
         filename: "[contenthash].js",
         // 새 청크에 다른 파일 이름 지정
         name: false, // false | string | (module, chunks, key) => string
-        // 기존 이름을 사용할 때 
+        // 기존 이름을 사용할 때
         // 새 청크에 다른 이름을 지정하면 청크를 병합
-        // non-splitChunks 청크는 
+        // non-splitChunks 청크는
         // 선택된 모든 모듈의 부모 또는 형제 청크일 때만 선택 가능
         hidePathInfo: true,
         // "maxSize"를 통해 분할할 때 경로 정보 숨기기
@@ -1128,7 +1130,7 @@ module.exports = {
     bail: true, //boolean
     // 허용하는 대신 첫 번째 오류에서 실패
     dependencies: ["name"],
-    // 설정 배열을 사용하는 경우 다른 설정을 참조하는 데 사용할 수 있으며 
+    // 설정 배열을 사용하는 경우 다른 설정을 참조하는 데 사용할 수 있으며
     // 초기 빌드에서 이 설정이 다른 설정 다음에 실행되도록 함
   </advancedBuild>
 }

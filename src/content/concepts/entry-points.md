@@ -11,10 +11,11 @@ contributors:
   - chenxsan
   - adyjs
   - anshumanv
+translators:
+  - choilim
 ---
 
 [시작하기](/guides/getting-started/#using-a-configuration)에서 언급한 바와 같이, webpack 설정에서 `entry` 속성을 정의하는 방법은 여러 가지가 있습니다. `entry` 속성을 설정 **할 수 있는** 방법과 유용한 이유를 설명하겠습니다.
-
 
 ## Single Entry (Shorthand) Syntax
 
@@ -75,7 +76,6 @@ module.exports = {
 T> **"확장 가능한 webpack 설정"은** 재사용 가능하고 설정의 다른 부분과 결합할 수 있는 것입니다. 이것은 환경, 빌드 대상, 런타임 별로 관심사를 구분하는데 사용되는 인기 있는 기술입니다. 그런 다음 [webpack-merge](https://github.com/survivejs/webpack-merge)와 같은 특수 도구를 사용하여 병합됩니다.
 
 T> 플러그인에 의해 생성된 엔트리 포인트만 있는 경우 빈 객체 `{}`를 `entry`에 전달할 수 있습니다.
-
 
 ### EntryDescription object
 

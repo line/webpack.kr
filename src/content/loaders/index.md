@@ -10,6 +10,8 @@ contributors:
   - snitin315
   - anshumanv
   - jamesgeorge007
+translators:
+  - choilim
 ---
 
 webpack의 [loaders](/concepts/loaders)를 사용하면 파일을 전처리 할 수 있습니다. 이렇게 하면 JavaScript를 넘어 모든 정적 리소스를 번들링할 수 있습니다. Node.js를 사용하여 자신만의 로더를 쉽게 작성할 수 있습니다.

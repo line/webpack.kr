@@ -6,6 +6,8 @@ contributors:
   - EugeneHlushko
   - chenxsan
   - amirsaeed671
+translators:
+  - keipark
 ---
 
 > 이 섹션은 webpack의 내부 요소를 설명하며 플러그인 개발자에게 유용할 수 있습니다.
@@ -70,7 +72,7 @@ module.exports = {
 청크는 두 가지 형태로 제공됩니다.
 
 - `초기 청크`는 엔트리 포인트의 메인 청크입니다. 이 청크는 엔트리 포인트에서 명시된 모든 모듈과 의존성을 포함합니다.
-- `비초기 청크`는 지연 로드될 수 있는 청크입니다. [동적 import](/guides/code-splitting/#dynamic-imports) 또는  [SplitChunksPlugin](/plugins/split-chunks-plugin/) 사용 중에 나타날 수 있습니다.
+- `비초기 청크`는 지연 로드될 수 있는 청크입니다. [동적 import](/guides/code-splitting/#dynamic-imports) 또는 [SplitChunksPlugin](/plugins/split-chunks-plugin/) 사용 중에 나타날 수 있습니다.
 
 각 청크에는 해당하는 **애셋이** 있습니다. 애셋은 번들링의 결과로 출력된 파일입니다.
 
@@ -129,7 +131,7 @@ import(
 
 출력 파일의 이름은 설정의 두 필드에 영향을 받습니다.
 
-- [`output.filename`](/configuration/output/#outputfilename) -  `초기` 청크 파일에서 사용합니다.
+- [`output.filename`](/configuration/output/#outputfilename) - `초기` 청크 파일에서 사용합니다.
 - [`output.chunkFilename`](/configuration/output/#outputchunkfilename) - `비초기` 청크 파일에서 사용합니다.
 - 경우에 따라서 청크를 `초기`와 `비초기`로 사용합니다. 이 때는 `output.filename`을 사용합니다.
 

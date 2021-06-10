@@ -7,6 +7,8 @@ contributors:
   - byzyk
   - madhavarshney
   - EugeneHlushko
+translators:
+  - dkstyle
 ---
 
 이 옵션을 사용하면 webpack이 정해진 파일 제한을 초과하는 애셋과 엔트리 포인트에 대해 알릴 방법을 제어 할 수 있습니다.

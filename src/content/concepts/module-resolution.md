@@ -7,6 +7,8 @@ contributors:
   - byzyk
   - EugeneHlushko
   - wizardofhogwarts
+translators:
+  - YukJiSoo
 ---
 
 리졸버는 절대 경로로 모듈을 찾는 데 도움이 되는 라이브러리입니다.

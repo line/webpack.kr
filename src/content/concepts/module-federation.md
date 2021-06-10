@@ -7,6 +7,8 @@ contributors:
   - EugeneHlushko
   - jamesgeorge007
   - ScriptedAlchemy
+translators:
+  - choilim
 related:
   - title: 'Webpack 5 Module Federation: A game-changer in JavaScript architecture'
     url: https://medium.com/swlh/webpack-5-module-federation-a-game-changer-to-javascript-architecture-bcdd30e02669
@@ -114,20 +116,20 @@ __webpack_override__({
 - webpack이 지원하는 모든 모듈 유형을 노출하고 사용할 수 있어야 합니다.
 - 청크 로드는 필요한 모든 것을 병렬 로드 해야 합니다(웹: 서버까지 한번의 라운드트립).
 - 소비자에서 컨테이너까지 제어.
-    - 오버라이딩 모듈은 단방향 작업입니다.
-    - 형제 컨테이너는 서로의 모듈을 오버라이드 할 수 없습니다.
+  - 오버라이딩 모듈은 단방향 작업입니다.
+  - 형제 컨테이너는 서로의 모듈을 오버라이드 할 수 없습니다.
 - 환경에 의존하지 않습니다.
-    - 웹, Node.js, 등에서 사용 가능합니다.
+  - 웹, Node.js, 등에서 사용 가능합니다.
 - 공유의 상대 및 절대 요청
-    - 사용하지 않더라도 항상 제공됩니다.
-    - 상대 경로를 `config.context`에서 확인할 수 있습니다.
-    - 기본적으로 `requiredVersion`을 사용하지 않습니다.
+  - 사용하지 않더라도 항상 제공됩니다.
+  - 상대 경로를 `config.context`에서 확인할 수 있습니다.
+  - 기본적으로 `requiredVersion`을 사용하지 않습니다.
 - 공유 모듈 요청
-    - 사용할 때만 제공됩니다.
-    - 빌드에서 사용된 모든 동일 모듈 요청과 일치합니다.
-    - 일치하는 모든 모듈을 제공합니다.
-    - 그래프의 이 위치에 있는 package.json에서 `requiredVersion`을 추출합니다.
-    - 중첩된 node_module이 있는 경우 여러 다른 버전을 제공하고 사용할 수 있습니다.
+  - 사용할 때만 제공됩니다.
+  - 빌드에서 사용된 모든 동일 모듈 요청과 일치합니다.
+  - 일치하는 모든 모듈을 제공합니다.
+  - 그래프의 이 위치에 있는 package.json에서 `requiredVersion`을 추출합니다.
+  - 중첩된 node_module이 있는 경우 여러 다른 버전을 제공하고 사용할 수 있습니다.
 - 공유된 후행에 `/` 가 있는 모듈 요청은 이 접두사의 모든 모듈 요청과 일치합니다.
 
 ## Use cases

@@ -19,6 +19,8 @@ contributors:
   - Jalitha
   - muhmushtaha
   - chenxsan
+translators:
+  - YukJiSoo
 ---
 
 **webpack은** 모던 JavaScript 애플리케이션을 위한 _정적 모듈 번들러_ 입니다. webpack이 애플리케이션을 처리할 때, 내부적으로는 프로젝트에 필요한 모든 모듈을 매핑하고 하나 이상의 _번들을_ 생성하는 [디펜던시 그래프](/concepts/dependency-graph/)를 만듭니다.
@@ -92,7 +94,7 @@ W> 모든 유형의 모듈(예: `.css`)을 `import` 하는 기능은 webpack의 
 
 상위 수준에서 **로더는** webpack 설정에 두 가지 속성을 가집니다.
 
-1. 변한이 필요한 파일(들)을 식별하는  `test` 속성
+1. 변한이 필요한 파일(들)을 식별하는 `test` 속성
 2. 변환을 수행하는데 사용되는 로더를 가리키는 `use` 속성
 
 **webpack.config.js**
@@ -110,7 +112,7 @@ module.exports = {
 };
 ```
 
-위 설정에서는 `test`와 `use`라는 두 가지 필수 속성을 가진 하나의 모듈을 위해  `rules` 속성을 정의했습니다. 이는 webpack의 컴파일러에 다음과 같이 말합니다.
+위 설정에서는 `test`와 `use`라는 두 가지 필수 속성을 가진 하나의 모듈을 위해 `rules` 속성을 정의했습니다. 이는 webpack의 컴파일러에 다음과 같이 말합니다.
 
 > "이봐 webpack 컴파일러, `require ()`/`import` 문 내에서 '.txt' 파일로 확인되는 경로를 발견하면 번들에 추가하기 전에 `raw-loader`를 **사용하여** 변환해."
 

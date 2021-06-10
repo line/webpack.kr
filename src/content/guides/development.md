@@ -15,6 +15,8 @@ contributors:
   - aholzner
   - chenxsan
   - maxloh
+translators:
+  - choilim
 ---
 
 T> 이 가이드는 [출력 관리](/guides/output-management) 가이드에 있는 코드 예제를 확장합니다.
@@ -131,9 +133,9 @@ W> 일부 텍스트 편집기에는 다음 도구 중 일부를 방해할 수 �
 
 webpack에는 코드가 변경될 때마다 자동으로 컴파일하는 데 도움이 되는 몇 가지 옵션이 있습니다.
 
- 1. webpack의 [watch 모드](/configuration/watch/#watch)
- 2. [webpack-dev-server](https://github.com/webpack/webpack-dev-server)
- 3. [webpack-dev-middleware](https://github.com/webpack/webpack-dev-middleware)
+1.  webpack의 [watch 모드](/configuration/watch/#watch)
+2.  [webpack-dev-server](https://github.com/webpack/webpack-dev-server)
+3.  [webpack-dev-middleware](https://github.com/webpack/webpack-dev-middleware)
 
 대부분의 경우, `webpack-dev-server`를 사용하고 싶겠지만, 위의 모든 옵션을 살펴보겠습니다.
 
@@ -422,7 +424,6 @@ T> Hot Module Replacement 방식에 대해 자세히 알고 싶다면, [Hot Modu
 - **Sublime Text 3**: 사용자 환경 설정에 `atomic_save: 'false'`를 추가하십시오.
 - **JetBrains IDEs (e.g. WebStorm)**: `Preferences > Appearance & Behavior > System Settings`에서 "Use safe write" 선택을 해제하십시오.
 - **Vim**: 설정에 `:set backupcopy=yes`를 추가하십시오.
-
 
 ## Conclusion
 

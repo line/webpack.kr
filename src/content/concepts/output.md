@@ -7,6 +7,8 @@ contributors:
   - rouzbeh84
   - byzyk
   - EugeneHlushko
+translators:
+  - limong
 ---
 
 `output` 옵션을 설정하여 컴파일된 파일을 디스크에 쓰는 방법을 webpack에 알려줍니다. 여러 `진입`점이 있을 수 있지만 하나의 `출력` 설정만 지정된다는 점에 주의하세요.

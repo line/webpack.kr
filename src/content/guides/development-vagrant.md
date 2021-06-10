@@ -6,6 +6,8 @@ contributors:
   - chrisVillanueva
   - byzyk
   - wizardofhogwarts
+translators:
+  - choilim
 ---
 
 [Vagrant를](https://www.vagrantup.com/) 사용하여 가상 머신에서 개발 환경을 실행하는 경우, 가상 머신에서도 webpack을 실행하고 싶을 수 있습니다.
@@ -59,7 +61,7 @@ module.exports = {
 webpack serve --host 0.0.0.0 --public 10.10.10.61:8080 --watch-poll
 ```
 
-기본적으로, 서버는 로컬 호스트에서만 접근할 수 있습니다. 호스트 PC에서 접근할 것이므로, 이를 허용하려면  `--host`를 변경해야 합니다.
+기본적으로, 서버는 로컬 호스트에서만 접근할 수 있습니다. 호스트 PC에서 접근할 것이므로, 이를 허용하려면 `--host`를 변경해야 합니다.
 
 `webpack-dev-server`는 파일이 변경될 때 다시 로드하기 위해 WebSocket에 연결하는 스크립트를 번들에 포함합니다.
 `--public` 플래그는 스크립트가 WebSocket을 찾을 위치를 알고 있는지 확인합니다. 서버는 기본적으로 `8080` 포트를 사용하므로, 여기에서도 지정해야 합니다.

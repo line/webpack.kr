@@ -12,6 +12,8 @@ contributors:
   - AnayaDesign
   - chenxsan
   - wizardofhogwarts
+translators:
+  - YukJiSoo
 ---
 
 애플리케이션 외에도 JavaScript 라이브러리를 번들링 할 때도 webpack을 사용할 수 있습니다. 아래의 가이드는 번들링 전략을 간소화하려는 라이브러리 작성자를 위한 것입니다.

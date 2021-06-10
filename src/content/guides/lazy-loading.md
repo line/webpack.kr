@@ -8,6 +8,8 @@ contributors:
   - byzyk
   - EugeneHlushko
   - AnayaDesign
+translators:
+  - dkstyle
 related:
   - title: Lazy Loading ES2015 Modules in the Browser
     url: https://dzone.com/articles/lazy-loading-es2015-modules-in-the-browser
