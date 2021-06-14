@@ -37,6 +37,7 @@ webpack에는 많은 플러그인 인터페이스가 있습니다. webpack 자�
 | [`MiniCssExtractPlugin`](/plugins/mini-css-extract-plugin)                      | CSS파일을 필요로하는 JS파일만 CSS파일을 생성                                  |
 | [`NoEmitOnErrorsPlugin`](/configuration/optimization/#optimizationemitonerrors) | 컴파일 오류가 있는 경우 방출 단계를 건너뜀                                    |
 | [`NormalModuleReplacementPlugin`](/plugins/normal-module-replacement-plugin)    | 정규식과 일치하는 리소스 교체                                                 |
+| [`NpmInstallWebpackPlugin`](/plugins/install-webpack-plugin)                    | 개발단계에서 누락된 디펜던시 자동 설치                                        |
 | [`ProgressPlugin`](/plugins/progress-plugin)                                    | 컴파일 진행률 보고                                                            |
 | [`ProvidePlugin`](/plugins/provide-plugin)                                      | import 또는 require 사용없이 모듈 사용                                        |
 | [`SourceMapDevToolPlugin`](/plugins/source-map-dev-tool-plugin)                 | 소스맵을 세밀하게 제어                                                        |
