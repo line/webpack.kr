@@ -1,1 +1,0 @@
-sort glossary.txt -o glossary.txt
