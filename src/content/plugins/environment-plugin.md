@@ -7,7 +7,7 @@ contributors:
   - byzyk
 ---
 
-`EnvironmentPlugin` 을 사용해 [`process.env`](https://nodejs.org/api/process.html#process_process_env) 키에 [`DefinePlugin`](/plugins/define-plugin)을 간단히 적용할 수 있습니다.
+`EnvironmentPlugin`을 사용해 [`process.env`](https://nodejs.org/api/process.html#process_process_env) 키에 [`DefinePlugin`](/plugins/define-plugin)을 간단히 적용할 수 있습니다.
 
 ## Usage
 
@@ -30,27 +30,27 @@ T> 환경변수를 정의하지 않으면"`EnvironmentPlugin` - `${key}` environ
 
 ## Usage with default values
 
-대안적으로, `EnvironmentPlugin`은 키에 기본값을 매핑한 객체를 지원합니다. 키가 `process.env`에 정의되지 않은 경우에는 기본값을 사용합니다.
+또는, `EnvironmentPlugin`은 키에 기본값을 매핑한 객체를 지원합니다. 키가 `process.env`에 정의되지 않은 경우에는 기본값을 사용합니다.
 
 ```javascript
 new webpack.EnvironmentPlugin({
-  NODE_ENV: 'development', // process.env.NODE_ENV 가 정의되지 않은 경우 'development'를 사용하세요.
+  NODE_ENV: 'development', // process.env.NODE_ENV가 정의되지 않은 경우 'development'를 사용하세요.
   DEBUG: false,
 });
 ```
 
 W> `process.env`의 모든 변수는 문자열이어야 합니다.
 
-T> [`DefinePlugin`](/plugins/define-plugin)과 달리 `EnvironmentPlugin`에 의해서 기본값에 `JSON.stringify` 가 적용됩니다.
+T> [`DefinePlugin`](/plugins/define-plugin)과 달리 `EnvironmentPlugin`에 의해서 기본값에 `JSON.stringify`가 적용됩니다.
 
-T> 기본값이 `null` 인 경우와 `undefined` 인 경우는 다르게 동작합니다.
-변수가 번들링 시점에 _제공되어야 한다면_ `undefined`를 사용하고, 선택 사항이라면 `null` 을 사용합니다.
+T> 기본값이 `null`인 경우와 `undefined`인 경우는 다르게 동작합니다.
+변수가 번들링 시점에 _제공되어야 한다면_ `undefined`를 사용하고, 선택 사항이라면 `null`을 사용합니다.
 
 W> 만약 환경변수가 번들링 시점에 발견되지 않는다면 기본값이 제공되지 않습니다. 이때 웹팩은 경고 대신 오류를 띄웁니다.
 
 **Example:**
 
-지금까지 구성해온 `EnvironmentPlugin` 설정을 테스트 파일 `entry.js` 에 적용했을 때, 어떻게 동작하는지 알아봅시다.
+지금까지 구성해온 `EnvironmentPlugin`설정을 테스트 파일 `entry.js`에 적용했을 때 어떻게 동작하는지 알아봅시다.
 
 ```javascript
 if (process.env.NODE_ENV === 'production') {
@@ -74,7 +74,7 @@ if (false) {
 }
 ```
 
-`DEBUG=false webpack` 을 실행하면 다음과 같습니다.
+`DEBUG=false webpack`을 실행하면 다음과 같습니다.
 
 ```javascript
 if ('development' === 'production') {
@@ -89,7 +89,7 @@ if ('false') {
 
 ## Use Case: Git Version
 
-다음과 같은 `EnvironmentPlugin` 설정은 저장소의 마지막 커밋에 따른 `process.env.GIT_VERSION` (예시 "v5.4.0-2-g25139f57f") 과 `process.env.GIT_AUTHOR_DATE` (예시 "2020-11-04T12:25:16+01:00") 를 제공합니다.
+다음과 같은 `EnvironmentPlugin` 설정은 저장소의 마지막 커밋에 따른 `process.env.GIT_VERSION` (예시 "v5.4.0-2-g25139f57f")과 `process.env.GIT_AUTHOR_DATE` (예시 "2020-11-04T12:25:16+01:00")를 제공합니다.
 
 ```javascript
 const child_process = require('child_process');
@@ -105,7 +105,7 @@ new webpack.EnvironmentPlugin({
 
 ## `DotenvPlugin`
 
-써드 파티 [`DotenvPlugin`](https://github.com/mrsteele/dotenv-webpack) (`dotenv-webpack`) 를 사용해 [dotenv 변수](https://www.npmjs.com/package/dotenv)를 사용할 수 있습니다.
+써드 파티 [`DotenvPlugin`](https://github.com/mrsteele/dotenv-webpack) (`dotenv-webpack`)을 사용해 [dotenv 변수](https://www.npmjs.com/package/dotenv)를 사용할 수 있습니다.
 
 ```bash
 // .env
