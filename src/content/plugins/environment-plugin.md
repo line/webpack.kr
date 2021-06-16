@@ -26,7 +26,7 @@ new webpack.DefinePlugin({
 });
 ```
 
-T> 환경변수를 정의하지 않으면 "`EnvironmentPlugin` - `${key}` environment variable is undefined" 오류가 발생합니다.
+T> 환경 변수를 정의하지 않으면 "`EnvironmentPlugin` - `${key}` environment variable is undefined" 오류가 발생합니다.
 
 ## Usage with default values
 
@@ -43,10 +43,9 @@ W> `process.env`의 모든 변수는 문자열이어야 합니다.
 
 T> [`DefinePlugin`](/plugins/define-plugin)과 달리 `EnvironmentPlugin`에 의해서 기본값에 `JSON.stringify`가 적용됩니다.
 
-T> 기본값이 `null`인 경우와 `undefined`인 경우는 다르게 동작합니다.
-변수가 번들링 시점에 _제공되어야 한다면_ `undefined`를 사용하고, 선택 사항이라면 `null`을 사용합니다.
+T> 기본값이 `null`인 경우와 `undefined`인 경우는 다르게 동작합니다. 변수가 번들링 시점에 _제공되어야 한다면_ `undefined`를 사용하고, 선택 사항이라면 `null`을 사용합니다.
 
-W> 만약 환경변수가 번들링 시점에 발견되지 않는다면 기본값이 제공되지 않습니다. 이때 웹팩은 경고 대신 오류를 띄웁니다.
+W> 만약 환경 변수가 번들링 시점에 발견되지 않는다면 기본값이 제공되지 않습니다. 이때 webpack은 경고 대신 오류를 띄웁니다.
 
 **Example:**
 
