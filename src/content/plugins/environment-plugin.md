@@ -26,7 +26,7 @@ new webpack.DefinePlugin({
 });
 ```
 
-T> 환경변수를 정의하지 않으면"`EnvironmentPlugin` - `${key}` environment variable is undefined" 오류가 발생합니다.
+T> 환경변수를 정의하지 않으면 "`EnvironmentPlugin` - `${key}` environment variable is undefined" 오류가 발생합니다.
 
 ## Usage with default values
 
