@@ -50,7 +50,7 @@ W> 만약 환경변수가 번들링 시점에 발견되지 않는다면 기본�
 
 **Example:**
 
-지금까지 구성해온 `EnvironmentPlugin`설정을 테스트 파일 `entry.js`에 적용했을 때 어떻게 동작하는지 알아봅시다.
+지금까지 구성해온 `EnvironmentPlugin` 설정을 테스트 파일 `entry.js`에 적용했을 때 어떻게 동작하는지 알아봅시다.
 
 ```javascript
 if (process.env.NODE_ENV === 'production') {
