@@ -11,6 +11,8 @@ contributors:
   - byzyk
   - EugeneHlushko
   - smelukov
+translators:
+  - limong
 ---
 
 webpack은 다양한 환경과 _target을_ 컴파일합니다. `target`이 무엇인지 자세히 이해하고 싶다면 [target의 개념에 대한 페이지](/concepts/targets/)를 읽어보세요.
@@ -25,19 +27,19 @@ webpack은 다양한 환경과 _target을_ 컴파일합니다. `target`이 무�
 
 다음의 문자열은 [`WebpackOptionsApply`](https://github.com/webpack/webpack/blob/master/lib/WebpackOptionsApply.js)를 통해서 지원됩니다.
 
-| Option                     | Description                                                                                                                                                                                                                                                                                          |
-| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `async-node[[X].Y]`        | Node.js와 유사한 환경에서 사용할 수 있도록 컴파일합니다 (`fs`와 `vm`을 사용하여 청크를 비동기식으로 로드합니다.) |
-| `electron[[X].Y]-main`     | 메인 프로세스를 위해 [Electron](https://electronjs.org/)으로 컴파일합니다. |
-| `electron[[X].Y]-renderer` | 렌더러 프로세스를 위해 [Electron](https://electronjs.org/)으로 컴파일하여 `JsonpTemplatePlugin`, 브라우저 환경을 위한 `FunctionModulePlugin`, CommonJS와 Electron의 내장 모듈을 위한 `NodeTargetPlugin` 및 `ExternalsPlugin`을 사용하여 대상을 제공합니다. |
+| Option                     | Description                                                                                                                                                                                                                                                                                   |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `async-node[[X].Y]`        | Node.js와 유사한 환경에서 사용할 수 있도록 컴파일합니다 (`fs`와 `vm`을 사용하여 청크를 비동기식으로 로드합니다.)                                                                                                                                                                              |
+| `electron[[X].Y]-main`     | 메인 프로세스를 위해 [Electron](https://electronjs.org/)으로 컴파일합니다.                                                                                                                                                                                                                    |
+| `electron[[X].Y]-renderer` | 렌더러 프로세스를 위해 [Electron](https://electronjs.org/)으로 컴파일하여 `JsonpTemplatePlugin`, 브라우저 환경을 위한 `FunctionModulePlugin`, CommonJS와 Electron의 내장 모듈을 위한 `NodeTargetPlugin` 및 `ExternalsPlugin`을 사용하여 대상을 제공합니다.                                    |
 | `electron[[X].Y]-preload`  | 렌더러 프로세스를 위해 [Electron](https://electronjs.org/)으로 컴파일하여 `asyncChunkLoading`을 `true`로 설정한 `NodeTemplatePlugin`, 브라우저 환경을 위한`FunctionModulePlugin`, `NodeTargetPlugin`, CommonJS 및 Electron의 내장 모듈을 위한 `ExternalsPlugin`을 사용하여 대상을 제공합니다. |
-| `node[[X].Y]`              | Node.js와 유사한 환경에서 사용할 수 있도록 컴파일 합니다. (Node.js `require`를 사용하여 청크를 로드합니다.) |
-| `node-webkit[[X].Y]`       | WebKit에서 사용하기 위해 컴파일하고 청크를 로드하기 위해 JSONP를 사용합니다. 내장된 Node.js 모듈 및 (실험적으로) [`nw.gui`](http://docs.nwjs.io/en/latest/)를 가져올 수 있습니다. |
-| `nwjs[[X].Y]`              | `node-webkit`과 동일합니다. |
-| `web`                      | 브라우저와 동일한 환경에서 사용하기 위하여 컴파일합니다. **(기본값)** |
-| `webworker`                | 웹 워커로 컴파일합니다. |
-| `esX`                      | 지정된 ECMAScript 버전으로 컴파일합니다. 예: es5, es2020 |
-| `browserslist`             | browserslist-config에서 **(browserslist config를 사용할 수 있는 경우 기본값)** 플랫폼과 ES 기능을 추론합니다. |
+| `node[[X].Y]`              | Node.js와 유사한 환경에서 사용할 수 있도록 컴파일 합니다. (Node.js `require`를 사용하여 청크를 로드합니다.)                                                                                                                                                                                   |
+| `node-webkit[[X].Y]`       | WebKit에서 사용하기 위해 컴파일하고 청크를 로드하기 위해 JSONP를 사용합니다. 내장된 Node.js 모듈 및 (실험적으로) [`nw.gui`](http://docs.nwjs.io/en/latest/)를 가져올 수 있습니다.                                                                                                             |
+| `nwjs[[X].Y]`              | `node-webkit`과 동일합니다.                                                                                                                                                                                                                                                                   |
+| `web`                      | 브라우저와 동일한 환경에서 사용하기 위하여 컴파일합니다. **(기본값)**                                                                                                                                                                                                                         |
+| `webworker`                | 웹 워커로 컴파일합니다.                                                                                                                                                                                                                                                                       |
+| `esX`                      | 지정된 ECMAScript 버전으로 컴파일합니다. 예: es5, es2020                                                                                                                                                                                                                                      |
+| `browserslist`             | browserslist-config에서 **(browserslist config를 사용할 수 있는 경우 기본값)** 플랫폼과 ES 기능을 추론합니다.                                                                                                                                                                                 |
 
 예를 들어, `target`을 `"electron-main"`으로 설정하면, webpack은 electron의 여러 변수를 추가합니다.
 

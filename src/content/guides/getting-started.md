@@ -24,6 +24,8 @@ contributors:
   - wizardofhogwarts
   - myshov
   - anshumanv
+translators:
+  - limong
 ---
 
 webpack은 JavsScript 모듈을 컴파일할 때 사용됩니다. [설치하면](/guides/installation), [CLI](/api/cli) 또는 [API](/api/node)로 webpack과 상호 작용할 수 있습니다. 아직 webpack이 익숙하지 않은 경우 [핵심 개념](/concepts)과 [비교 내용](/comparison)을 통해 커뮤니티의 다른 도구보다 왜 webpack을 사용해야 할지 알아보세요.
@@ -174,7 +176,7 @@ T> 프로덕션 번들에 번들로 제공될 패키지를 설치할 때 `npm in
  document.body.appendChild(component());
 ```
 
-이제 스크립트로 번들링 할 것이므로 `index.html`을 업데이트해야 합니다. 현재 `import`한 lodash `<script>`를 삭제하고 원래의 `./src` 파일 대신 다른  `<script>` 태그로 번들을 로드하도록 수정합니다.
+이제 스크립트로 번들링 할 것이므로 `index.html`을 업데이트해야 합니다. 현재 `import`한 lodash `<script>`를 삭제하고 원래의 `./src` 파일 대신 다른 `<script>` 태그로 번들을 로드하도록 수정합니다.
 
 **dist/index.html**
 
@@ -315,7 +317,7 @@ cacheable modules 530 KiB
 webpack 5.4.0 compiled successfully in 1940 ms
 ```
 
-T> 사용자 지정 파라미터는 `npm run build` 명령과 파라미터 사이에 두 개의 대시(예.  `npm run build -- --color`)를 추가하여 webpack에 전달할 수 있습니다.
+T> 사용자 지정 파라미터는 `npm run build` 명령과 파라미터 사이에 두 개의 대시(예. `npm run build -- --color`)를 추가하여 webpack에 전달할 수 있습니다.
 
 ## Conclusion
 

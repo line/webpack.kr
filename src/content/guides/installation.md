@@ -8,6 +8,8 @@ contributors:
   - EugeneHlushko
   - sibiraj-s
   - chenxsan
+translators:
+  - dkstyle
 ---
 
 이 가이드에서는 webpack을 설치하는 데 사용되는 다양한 방법에 대해 설명합니다.
@@ -30,7 +32,7 @@ npm install --save-dev webpack
 npm install --save-dev webpack@<version>
 ```
 
-T> `--save-dev`의 사용 여부는 사례에 따라 다릅니다. webpack을 번들링을 위해서만 사용한다고 가정하면, 프로덕션 빌드에 webpack을 포함하지 않을 것이므로 `--save-dev` 옵션으로 설치하는 것이 좋습니다. 그렇지 않으면  `--save-dev` 를 무시할 수 있습니다.
+T> `--save-dev`의 사용 여부는 사례에 따라 다릅니다. webpack을 번들링을 위해서만 사용한다고 가정하면, 프로덕션 빌드에 webpack을 포함하지 않을 것이므로 `--save-dev` 옵션으로 설치하는 것이 좋습니다. 그렇지 않으면 `--save-dev` 를 무시할 수 있습니다.
 
 webpack v4 이상을 사용하는 경우 [CLI](/api/cli/)도 설치해야 합니다.
 
@@ -57,7 +59,6 @@ npm install --global webpack
 ```
 
 W> 이것을 **권장하지 않는다는 것을** 기억하세요. 전역으로 설치하면 특정 버전의 webpack만 사용할 수 있고 다른 버전을 사용할 경우 실패할 수 있습니다.
-
 
 ## Bleeding Edge
 

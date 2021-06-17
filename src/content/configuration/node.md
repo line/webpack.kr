@@ -10,6 +10,8 @@ contributors:
   - EugeneHlushko
   - anikethsaha
   - chenxsan
+translators:
+  - choilim
 ---
 
 다음의 Node.js 옵션은 특정 [Node.js globals](https://nodejs.org/docs/latest/api/globals.html)을 폴리필할지 mock할지 설정합니다.

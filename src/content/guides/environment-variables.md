@@ -8,6 +8,8 @@ contributors:
   - legalcodes
   - byzyk
   - jceipek
+translators:
+  - dkstyle
 ---
 
 `webpack.config.js`에서 [development와](/guides/development) [production의](/guides/production) 빌드를 명확하게 구분하기 위해 환경 변수를 사용할 수 있습니다.

@@ -23,6 +23,8 @@ contributors:
   - aholzner
   - EugeneHlushko
   - snitin315
+translators:
+  - limong
 ---
 
 이 가이드에서 프로덕션 사이트나 애플리케이션을 구축하기 위한 유틸리티와 좋은 사례들에 대해서 자세히 알아보겠습니다.
@@ -170,7 +172,7 @@ T> 기술적으로 `NODE_ENV`는 Node.js가 실행 중인 스크립트가 참고
 
 **src/index.js**
 
-``` diff
+```diff
   import { cube } from './math.js';
 +
 + if (process.env.NODE_ENV !== 'production') {

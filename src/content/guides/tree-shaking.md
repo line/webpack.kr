@@ -17,6 +17,8 @@ contributors:
   - AnayaDesign
   - torifat
   - rahul3v
+translators:
+  - limong
 related:
   - title: Debugging Optimization Bailouts
     url: https://webpack.js.org/plugins/module-concatenation-plugin/#debugging-optimization-bailouts
@@ -106,7 +108,7 @@ module.exports = {
   document.body.appendChild(component());
 ```
 
-우리는 `src/math.js` 모듈에서 **`square` 메소드를 `가져오지` 않았습니다**.  이 함수는 "사용하지 않는 코드"로 알려져 있고, 사용하지 않아 삭제되어야 하는 `export`를 의미합니다. 이제 npm 스크립트인 `npm run build`를 실행하여 출력된 번들을 살펴보겠습니다.
+우리는 `src/math.js` 모듈에서 **`square` 메소드를 `가져오지` 않았습니다**. 이 함수는 "사용하지 않는 코드"로 알려져 있고, 사용하지 않아 삭제되어야 하는 `export`를 의미합니다. 이제 npm 스크립트인 `npm run build`를 실행하여 출력된 번들을 살펴보겠습니다.
 
 **dist/bundle.js (around lines 90 - 100)**
 
@@ -171,7 +173,7 @@ T> 가져온 파일은 tree shaking의 대상이 됩니다. 즉, 프로젝트에
 
 [`sideEffects`](/configuration/optimization/#optimizationsideeffects)와 [`usedExports`](/configuration/optimization/#optimizationusedexports)(트리 쉐이킹으로 알려져 있음)의 최적화는 두 가지 다른 점이 있습니다.
 
-__`sideEffects`는__ 전체 모듈 및 파일, 전체 하위 트리를 건너뛸 수 있기 때문에 **훨씬 더 효율적입니다.**
+**`sideEffects`는** 전체 모듈 및 파일, 전체 하위 트리를 건너뛸 수 있기 때문에 **훨씬 더 효율적입니다.**
 
 `usedExports`는 [terser](https://github.com/terser-js/terser)를 사용하여 문장에서 사이드 이펙트를 감지합니다. 이것은 JavaScript에서 어려운 작업이며 간단한 `sideEffects` 플래그만큼 효과적이지 않습니다. 또한 사이드 이펙트를 확인해야 하는 명세가 있기 때문에 하위트리 및 의존성을 무시할 수 없습니다. export 기능은 잘 동작하지만, React의 Higher Order Components(HOC)는 이와 관련된 문제가 있습니다.
 
@@ -350,7 +352,7 @@ T> `--optimize-minimize` 플래그를 사용하여 `TerserPlugin`도 활성화 �
 
 `dist/bundle.js`에서 다른 점을 찾았나요? 정확하게 전체 번들이 최소화되고 난독화 되었지만, 자세히 보면 포함되어 있던 `square` 함수가 없으며 난독화 된 `cube` 함수 (`function r(e){return e*e*e}n.a=r`)를 볼 수 있습니다. 최소화와 tree shaking으로 번들은 이제 몇 바이트 더 작아졌습니다! 위의 임의로 만든 예제에서는 큰 변화를 느끼지 못하겠지만 tree shaking은 복잡한 의존성 트리가 있는 커다란 애플리케이션에서 작업할 때 번들의 크기를 많이 줄일 수 있습니다.
 
-T> [`ModuleConcatenationPlugin`](/plugins/module-concatenation-plugin/)은 tree shaking이 동작하기 위해 필요합니다. `mode: 'production'`에 의해 추가됩니다. 만약 사용하지 않는다면,  [`ModuleConcatenationPlugin`](/plugins/module-concatenation-plugin/)을 수동으로 추가해야 합니다.
+T> [`ModuleConcatenationPlugin`](/plugins/module-concatenation-plugin/)은 tree shaking이 동작하기 위해 필요합니다. `mode: 'production'`에 의해 추가됩니다. 만약 사용하지 않는다면, [`ModuleConcatenationPlugin`](/plugins/module-concatenation-plugin/)을 수동으로 추가해야 합니다.
 
 ## Conclusion
 
@@ -358,8 +360,8 @@ T> [`ModuleConcatenationPlugin`](/plugins/module-concatenation-plugin/)은 tree 
 
 - ES2015 모듈 구문을 사용해야 하는 것을 배웠습니다. (예: `import`와 `export`)
 - 컴파일러가 ES2015 모듈 구문을 CommonJS 모듈로 변환하지 않도록 해야 합니다. (이것은 인기 있는 Babel preset @babel/preset-env의 기본 동작입니다. 자세한 내용은 [documentation](https://babeljs.io/docs/en/babel-preset-env#modules)를 참고하세요.)
-- `package.json` 파일에  `"sideEffects"` 속성을 추가하세요.
-- 최소화와 tree shaking을 포함한 [다양한 최적화를](/configuration/mode/#usage) 사용하려면  [`production`](/configuration/mode/#mode-production) `mode` 설정 옵션을 사용하세요.
+- `package.json` 파일에 `"sideEffects"` 속성을 추가하세요.
+- 최소화와 tree shaking을 포함한 [다양한 최적화를](/configuration/mode/#usage) 사용하려면 [`production`](/configuration/mode/#mode-production) `mode` 설정 옵션을 사용하세요.
 
 애플리케이션을 나무와 같이 생각할 수 있습니다. 실제로 사용되는 소스 코드와 라이브러리는 나무의 살아있는 잎과 같은 녹색을 나타냅니다. 사용하지 않는 코드는 가을에 바싹 마른 나무의 죽은 잎사귀처럼 갈색입니다. 낙엽을 없애기 위해서 나무를 흔들어서 낙엽을 떨어 뜨려야 합니다.
 

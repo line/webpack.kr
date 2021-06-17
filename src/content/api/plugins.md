@@ -9,6 +9,8 @@ contributors:
   - byzyk
   - EugeneHlushko
   - wizardofhogwarts
+translators:
+  - Eunbin-Kim
 ---
 
 플러그인은 webpack 생태계의 핵심 요소이며

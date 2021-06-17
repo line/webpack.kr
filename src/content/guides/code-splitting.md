@@ -32,6 +32,8 @@ contributors:
   - smelukov
   - chenxsan
   - Adarah
+translators:
+  - keipark
 related:
   - title: <link rel=”prefetch/preload”> in webpack
     url: https://medium.com/webpack/link-rel-prefetch-preload-in-webpack-51a52358f84c
@@ -50,7 +52,6 @@ T> 이 가이드는 [Getting Started](/guides/getting-started)에 제공된 예�
 - **Entry Points**: [`entry`](/configuration/entry-context) 설정을 사용하여 코드를 수동으로 분할합니다.
 - **Prevent Duplication**: [Entry dependencies](/configuration/entry-context/#dependencies) 또는 [`SplitChunksPlugin`](/plugins/split-chunks-plugin/)을 사용하여 중복 청크를 제거하고 청크를 분할합니다.
 - **Dynamic Imports**: 모듈 내에서 인라인 함수 호출을 통해 코드를 분할합니다.
-
 
 ## Entry Points
 
@@ -428,7 +429,7 @@ T> `webpackPreload`를 잘못 사용하면 실제로 성능이 저하 될 수 �
 
 - [webpack-chart](https://alexkuz.github.io/webpack-chart/): webpack 통계를 위한 인터렉티브 원형 차트.
 - [webpack-visualizer](https://chrisbateman.github.io/webpack-visualizer/): 번들을 시각화하고 분석하여 어떤 모듈이 공간을 차지하고 있고 어떤 모듈이 중복될 수 있는지 확인합니다.
-- [webpack-bundle-analyzer](https://github.com/webpack-contrib/webpack-bundle-analyzer):  확대/축소 가능한 편리한 인터렉티브 트리 맵으로 번들 콘텐츠를 표현하는 플러그인 및 CLI 유틸리티입니다.
+- [webpack-bundle-analyzer](https://github.com/webpack-contrib/webpack-bundle-analyzer): 확대/축소 가능한 편리한 인터렉티브 트리 맵으로 번들 콘텐츠를 표현하는 플러그인 및 CLI 유틸리티입니다.
 - [webpack bundle optimize helper](https://webpack.jakoblind.no/optimize): 이 도구는 번들을 분석하고 번들 크기를 줄이기 위한 실용적인 개선 사항을 제공합니다.
 - [bundle-stats](https://github.com/bundle-stats/bundle-stats): 번들 보고서(번들 크기, 애셋, 모듈)를 생성하고 서로 다른 빌드 간의 결과를 비교합니다.
 

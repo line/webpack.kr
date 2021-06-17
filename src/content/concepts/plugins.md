@@ -9,6 +9,8 @@ contributors:
   - MisterDev
   - byzyk
   - chenxsan
+translators:
+  - limong
 ---
 
 **플러그인은** webpack의 [기본](https://github.com/webpack/tapable)입니다. webpack 자체는 webpack 설정에서 사용하는 것과 **동일한 플러그인 시스템으로** 구축되어 있습니다.

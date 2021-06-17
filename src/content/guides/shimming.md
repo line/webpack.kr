@@ -16,6 +16,8 @@ contributors:
   - wizardofhogwarts
   - snitin315
   - chenxsan
+translators:
+  - YukJiSoo
 related:
   - title: Reward modern browser users script
     url: https://hackernoon.com/10-things-i-learned-making-the-fastest-site-in-the-world-18a0e1cdf4a7#c665

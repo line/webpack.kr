@@ -7,6 +7,8 @@ contributors:
   - chenxsan
   - anshumanv
   - spence-s
+translators:
+  - keipark
 related:
   - title: webpack 5 - Asset Modules
     url: https://dev.to/smelukov/webpack-5-asset-modules-2o3h

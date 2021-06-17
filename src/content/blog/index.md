@@ -3,6 +3,8 @@ title: Blog
 sort: -1
 contributors:
   - sokra
+translators:
+  - dkstyle
 ---
 
 새로운 소식은 여기에서 읽어보세요.
