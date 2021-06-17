@@ -27,13 +27,16 @@ export default function PageLinks({ page = {} }) {
         </span>
       ) : null}
 
-      {/* Prevent to display Edit button in webpack-kr site */}
-      {/* <a className="page-links__link" href={ editLink }>
+      <a className="page-links__link" href={editLink}>
         Edit Document
         <EditIcon className="page-links__icon" width={12} fill="#1a6bac" />
       </a>
-      <span className="page-links__gap">|</span> */}
-      <button className="page-links__link page-links__print as-link" onClick={_handlePrintClick} title="Print this page">
+      <span className="page-links__gap">|</span>
+      <button
+        className="page-links__link page-links__print as-link"
+        onClick={_handlePrintClick}
+        title="Print this page"
+      >
         Print Document
         <img src={icon} alt="" />
       </button>

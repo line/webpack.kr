@@ -32,8 +32,7 @@ T> 이 가이드는 [개발 가이드](/guides/development)에 있는 코드 예
 
 Hot Module Replacement(또는 HMR)는 webpack에서 제공하는 가장 유용한 기능 중 하나입니다. 모든 종류의 모듈을 새로고침 할 필요 없이 런타임에 업데이트 할 수 있습니다. 이 페이지는 **구현에** 초점을 맞추고 [개념 페이지](/concepts/hot-module-replacement)는 작동 원리와 왜 유용한지에 대한 자세한 내용을 제공합니다.
 
-W> __HMR__은 프로덕션용이 아니므로 개발용으로만 사용해야 합니다. 자세한 내용은 [프로덕션 구축 가이드](/guides/production)를 참고하세요.
-
+W> **HMR**은 프로덕션용이 아니므로 개발용으로만 사용해야 합니다. 자세한 내용은 [프로덕션 구축 가이드](/guides/production)를 참고하세요.
 
 ## Enabling HMR
 

@@ -28,9 +28,9 @@ webpack은 표준 Node.js CommonJS 모듈이므로, **다음과 같은 작업을
 
 T> 이 문서에서 가장 중요한 부분은 webpack 설정을 형식화하고 스타일을 지정하는 다양한 방법이 있다는 것입니다. 핵심은 이해하고 유지보수할 수 있는 방식을 선택하여 일관된 형식을 유지하는 것입니다.
 
-아래의 예제는 webpack 설정이 __코드이기__ 때문에 표현적이면서 설정 가능하다는 것을 설명합니다.
+아래의 예제는 webpack 설정이 **코드이기** 때문에 표현적이면서 설정 가능하다는 것을 설명합니다.
 
-## Simple Configuration
+## Introductory Configuration
 
 **webpack.config.js**
 

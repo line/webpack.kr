@@ -30,7 +30,6 @@ export default function bar() {
 </div>
 </div>
 
-
 ## 번들해 보세요
 
 <div class="splash__wrap">
