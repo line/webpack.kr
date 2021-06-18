@@ -17,6 +17,8 @@ contributors:
   - snitin315
   - u01jmg3
   - grrizzly
+translators:
+  - YukJiSoo
 ---
 
 `object` `string`

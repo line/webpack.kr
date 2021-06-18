@@ -8,6 +8,8 @@ contributors:
   - srilman
   - byzyk
   - EugeneHlushko
+translators:
+  - limong
 ---
 
 JavaScript는 서버와 클라이언트 모두 작성이 가능하기 때문에 webpack은 webpack [설정](/configuration)에서 다수의 배포 _대상을_ 제공합니다.

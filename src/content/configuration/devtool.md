@@ -10,6 +10,8 @@ contributors:
   - wizardofhogwarts
   - anikethsaha
   - snitin315
+translators:
+  - keipark
 related:
   - title: Enabling Source Maps
     url: https://survivejs.com/webpack/developing-with-webpack/enabling-sourcemaps/

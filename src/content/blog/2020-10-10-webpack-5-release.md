@@ -55,7 +55,7 @@ The biggest "Thank You" goes to [trivago](https://tech.trivago.com/opensource) w
 Sadly they are unable to continue their sponsorship this year, as they have been hit hard by Covid-19.
 I hope some other company steps up and follows these (gigantic) footsteps.
 
-Thanks to [all the sponsors](/#sponsors).
+Thanks to [all the sponsors](https://webpack.js.org/#sponsors).
 
 ## General direction
 

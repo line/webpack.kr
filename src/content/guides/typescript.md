@@ -7,6 +7,8 @@ contributors:
   - mtrivera
   - byzyk
   - EugeneHlushko
+translators:
+  - dkstyle
 ---
 
 T> 이 가이드는 [_시작하기_](/guides/getting-started/) 가이드에서 파생했습니다.
@@ -52,7 +54,7 @@ JSX를 지원하도록 간단하게 설정하고 TypeScript를 ES5로 컴파일 
     "target": "es5",
     "jsx": "react",
     "allowJs": true,
-    "moduleResolution": "node",
+    "moduleResolution": "node"
   }
 }
 ```

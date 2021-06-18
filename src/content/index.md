@@ -3,7 +3,7 @@ title: webpack
 sort: -1
 ---
 
-## 코드를 작성해 보세요
+<div class="index-sub-title">코드를 작성해 보세요</div>
 
 <div class="splash__wrap">
 <div class="splash__left">
@@ -30,7 +30,7 @@ export default function bar() {
 </div>
 </div>
 
-## 번들해 보세요
+<div class="index-sub-title">번들해 보세요</div>
 
 <div class="splash__wrap">
 <div class="splash__left">
@@ -73,6 +73,6 @@ module.exports = {
 
 그다음 커멘드 라인에서 `webpack` 명령어를 실행해 `bundle.js`를 생성하세요.
 
-## 멋지지 않나요? 좀 더 알아보세요!
+<div class="index-sub-title">멋지지 않나요? 좀 더 알아보세요!</div>
 
 **가이드를** 따라 빠르게 **[시작해](/guides/getting-started)** 보거나, **[Concepts](/concepts)에서** webpack의 핵심 개념을 자세히 알아보세요.

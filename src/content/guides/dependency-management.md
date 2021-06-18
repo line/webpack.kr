@@ -7,6 +7,8 @@ contributors:
   - sokra
   - byzyk
   - AnayaDesign
+translators:
+  - choilim
 ---
 
 > es6 modules

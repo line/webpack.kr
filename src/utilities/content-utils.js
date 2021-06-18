@@ -82,7 +82,7 @@ export const getPageTitle = (tree, path) => {
     if (path.includes('/printable')) {
       return '인쇄 가능한 페이지 | 웹팩';
     }
-    if (path === '/') return page.title ?? '웹팩';
+    if (path === '/') return page.title || '웹팩';
     return `${page.title} | 웹팩`;
   }
 };

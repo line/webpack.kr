@@ -8,6 +8,8 @@ contributors:
   - GRardB
   - rouzbeh84
   - skipjack
+translators:
+  - YukJiSoo
 ---
 
 Hot Module Replacement(HMR)는 [모듈](/concepts/modules/) 전체를 다시 로드하지 않고 애플리케이션이 실행되는 동안 교환, 추가 또는 제거합니다. 다음과 같은 몇 가지 방법으로 개발 속도를 크게 높일 수 있습니다.

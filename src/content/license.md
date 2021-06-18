@@ -4,6 +4,8 @@ sort: 5
 contributors:
   - EugeneHlushko
   - pranshuchittora
+translators:
+  - dkstyle
 ---
 
 ## webpack

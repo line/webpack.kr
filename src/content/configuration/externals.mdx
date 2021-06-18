@@ -18,9 +18,11 @@ contributors:
   - pranshuchittora
   - kinetifex
   - anshumanv
+translators:
+  - choilim
 ---
 
-`externals` 옵션은 출력 번들에서 의존성을 제외하는 방법을 제공합니다. 대신, 생성된 번들은 소비자(모든 최종 사용자 애플리케이션)의 환경에 존재하기 위해 해당 의존성에 의존합니다. 이 기능은 일반적으로 __라이브러리 개발자에게__ 가장 유용하지만, 이것을 위한 다양한 애플리케이션이 있습니다.
+`externals` 옵션은 출력 번들에서 의존성을 제외하는 방법을 제공합니다. 대신, 생성된 번들은 소비자(모든 최종 사용자 애플리케이션)의 환경에 존재하기 위해 해당 의존성에 의존합니다. 이 기능은 일반적으로 **라이브러리 개발자에게** 가장 유용하지만, 이것을 위한 다양한 애플리케이션이 있습니다.
 
 ## `externals`
 
@@ -128,7 +130,7 @@ module.exports = {
       commonjs: 'lodash',
       amd: 'lodash',
       root: '_', // 전역 변수를 나타냅니다.
-    }
+    },
   },
 
   // 또는
@@ -153,10 +155,10 @@ webpack에서 외부화하려는 동작을 제어하기 위해 자체 함수를 
 함수가 받을 수 있는 인수는 다음과 같습니다.
 
 - `ctx` (`object`): 파일 세부 정보를 포함하는 객체입니다.
-    - `ctx.context` (`string`): import를 포함하는 파일의 디렉터리입니다.
-    - `ctx.request` (`string`): 요청 중인 import 경로입니다.
-    - `ctx.contextInfo` (`string`): issuer(예. 레이어)에 대한 정보를 포함합니다.
-    - `ctx.getResolve` <Badge text='5.15.0+' />: 현재 리졸브 옵션으로 리졸브 함수 가져오기.
+  - `ctx.context` (`string`): import를 포함하는 파일의 디렉터리입니다.
+  - `ctx.request` (`string`): 요청 중인 import 경로입니다.
+  - `ctx.contextInfo` (`string`): issuer(예. 레이어)에 대한 정보를 포함합니다.
+  - `ctx.getResolve` <Badge text='5.15.0+' />: 현재 리졸브 옵션으로 리졸브 함수 가져오기.
 - `callback` (`function (err, result, type)`): 모듈을 외부화하는 방법을 나타내는 데 사용되는 콜백 함수입니다.
 
 콜백 함수는 세 가지 인수를 사용합니다.
@@ -323,7 +325,7 @@ module.exports = {
 
 `string = 'var'`
 
-기본 외부 유형을 지정합니다. `amd`, `umd`, `system` 그리고 `jsonp` external은 **[`output.libraryTarget`](/configuration/output/#outputlibrarytarget)이** 동일한 값으로 설정되는 것에 의존합니다. 예. `amd` 라이브러리 내에서만  `amd` external을 사용할 수 있습니다.
+기본 외부 유형을 지정합니다. `amd`, `umd`, `system` 그리고 `jsonp` external은 **[`output.libraryTarget`](/configuration/output/#outputlibrarytarget)이** 동일한 값으로 설정되는 것에 의존합니다. 예. `amd` 라이브러리 내에서만 `amd` external을 사용할 수 있습니다.
 
 지원 유형:
 
@@ -380,7 +382,7 @@ module.exports = {
 module.exports = {
   externals: {
     packageName: 'global@http://example.com/script.js', // 여기엔 프로퍼티가 없습니다
-  }
+  },
 };
 ```
 
@@ -445,15 +447,15 @@ T> `output.chunkLoadTimeout`, `output.crossOriginLoading` 및 `output.scriptType
 
 W> 이전 webpack 버전에서는, [`target`](/configuration/target/) 을 사용하여 다음 기능을 수행했습니다.
 
-| Option             | Description                                                                                                                                                                                                     | Input Type |
-| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
-| `electron`         | `electron`, `ipc` 또는 `shell`과 같은 main 및 preload 컨텍스트에서 공통 일렉트론 내장 모듈을 외부로 취급하고, 사용 시 `require()`를 통해 로드합니다.                                                       | boolean    |
-| `electronMain`     | `app`, `ipc-main` 또는 `shell`과 같은 같은 주 컨텍스트에서 일렉트론 내장 모듈을 외부로 취급하고, 사용 시 `require()`를 통해 로드합니다.                                                                      | boolean    |
-| `electronPreload`  | `web-frame`, `ipc-renderer` 또는 `shell`과 같은 사전 로드 컨텍스트에서 일렉트론 내장 모듈을 외부로 취급하고, 사용 시 require()를 통해 로드합니다.                                                            | boolean    |
-| `electronRenderer` | `web-frame`, `ipc-renderer` 또는 `shell`과 같은 렌더러 컨텍스트에서 일렉토론 내장 모듈을 외부로 취급하고, 사용 시 `require()`를 통해 로드합니다.                                                         | boolean    |
-| `node`             | `fs`, `path` 또는 `vm`과 같은 node.js 내장 모듈을 외부 모듈로 취급하고, 사용 시 `require()`를 통해 로드합니다.                                                                                                  | boolean    |
-| `nwjs`             | `NW.js` 레거시 `nw.gui` 모듈을 외부 모듈로 취급하고, 사용 시 `require()`를 통해 로드합니다.                                                                                                                       | boolean    |
-| `web`              | `http(s)://...` 그리고 `std:...`에 대한 참조를 외부로 취급하고, 사용 시 `import`를 통해 로드합니다**(청크의 다른 코드보다 먼저 외부가 실행되므로 실행 순서가 변경됩니다)**.  | boolean    |
+| Option             | Description                                                                                                                                                                            | Input Type |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| `electron`         | `electron`, `ipc` 또는 `shell`과 같은 main 및 preload 컨텍스트에서 공통 일렉트론 내장 모듈을 외부로 취급하고, 사용 시 `require()`를 통해 로드합니다.                                   | boolean    |
+| `electronMain`     | `app`, `ipc-main` 또는 `shell`과 같은 같은 주 컨텍스트에서 일렉트론 내장 모듈을 외부로 취급하고, 사용 시 `require()`를 통해 로드합니다.                                                | boolean    |
+| `electronPreload`  | `web-frame`, `ipc-renderer` 또는 `shell`과 같은 사전 로드 컨텍스트에서 일렉트론 내장 모듈을 외부로 취급하고, 사용 시 require()를 통해 로드합니다.                                      | boolean    |
+| `electronRenderer` | `web-frame`, `ipc-renderer` 또는 `shell`과 같은 렌더러 컨텍스트에서 일렉토론 내장 모듈을 외부로 취급하고, 사용 시 `require()`를 통해 로드합니다.                                       | boolean    |
+| `node`             | `fs`, `path` 또는 `vm`과 같은 node.js 내장 모듈을 외부 모듈로 취급하고, 사용 시 `require()`를 통해 로드합니다.                                                                         | boolean    |
+| `nwjs`             | `NW.js` 레거시 `nw.gui` 모듈을 외부 모듈로 취급하고, 사용 시 `require()`를 통해 로드합니다.                                                                                            | boolean    |
+| `web`              | `http(s)://...` 그리고 `std:...`에 대한 참조를 외부로 취급하고, 사용 시 `import`를 통해 로드합니다**(청크의 다른 코드보다 먼저 외부가 실행되므로 실행 순서가 변경됩니다)**.            | boolean    |
 | `webAsync`         | `http(s)://...` 그리고 `std:...`에 대한 참조를 외부로 취급하고, 사용 시 `async import()`를 통해 로드합니다**(이 유형의 외부 모듈은 `async` 모듈이며, 실행에 다양한 영향을 미칩니다)**. | boolean    |
 
 **Example**

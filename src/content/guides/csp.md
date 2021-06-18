@@ -6,6 +6,8 @@ contributors:
   - probablyup
   - wizardofhogwarts
   - koto
+translators:
+  - dkstyle
 related:
   - title: Nonce purpose explained
     url: https://stackoverflow.com/questions/42922784/what-s-the-purpose-of-the-html-nonce-attribute-for-script-and-style-elements

@@ -7,6 +7,8 @@ contributors:
   - EugeneHlushko
   - benschac
   - aholzner
+translators:
+  - choilim
 ---
 
 T> 이 가이드는 [Output Management](/guides/output-management) 가이드에 있는 코드 예제에 대해 설명합니다.
@@ -139,7 +141,6 @@ SW registered
 ```
 
 이제 테스트해 보겠습니다. 서버를 중지하고 페이지를 새로 고침 합니다. 브라우저가 서비스 워커를 지원하는 경우 애플리케이션을 계속해서 확인할 수 있습니다. 하지만 서비스 워커가 서비스를 제공하는 것이지 서버가 **제공하는 것은 아닙니다.**
-
 
 ## Conclusion
 

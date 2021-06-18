@@ -20,7 +20,8 @@ contributors:
   - dhruvdutt
   - wizardofhogwarts
   - aholzner
-
+translators:
+  - YukJiSoo
 related:
   - title: Concepts - Hot Module Replacement
     url: /concepts/hot-module-replacement

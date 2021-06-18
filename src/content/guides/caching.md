@@ -13,6 +13,8 @@ contributors:
   - EugeneHlushko
   - AnayaDesign
   - aholzner
+translators:
+  - dkstyle
 related:
   - title: Issue 652
     url: https://github.com/webpack/webpack.js.org/issues/652
@@ -20,7 +22,7 @@ related:
 
 T> [시작하기](/guides/getting-started), [출력 관리](/guides/output-management), [코드 스플릿팅](/guides/code-splitting)의 예시를 사용합니다.
 
-우리는 배포 가능한 `/dist`디렉토리를 생성하는 모듈형 애플리케이션을 번들링하기 위해 webpack을 사용하고 있습니다. 일단 서버에 `/dist`의 콘텐츠가 배포되면 클라이언트(일반적으로 브라우저)가 해당 서버에 접근하여 사이트와 애셋을 가져옵니다. 마지막 단계는 시간이 많이 걸릴 수 있기 때문에 브라우저는 [캐싱](https://en.wikipedia.org/wiki/Cache_(computing))이라는 기술을 사용합니다. 이렇게 하면 불필요한 네트워크 트래픽을 줄이면서 사이트를 더 빨리 로드할 수 있습니다. 그러나 새 코드를 불러올 경우에는 어려움을 느낄 수 있습니다.  
+우리는 배포 가능한 `/dist`디렉토리를 생성하는 모듈형 애플리케이션을 번들링하기 위해 webpack을 사용하고 있습니다. 일단 서버에 `/dist`의 콘텐츠가 배포되면 클라이언트(일반적으로 브라우저)가 해당 서버에 접근하여 사이트와 애셋을 가져옵니다. 마지막 단계는 시간이 많이 걸릴 수 있기 때문에 브라우저는 [캐싱](<https://en.wikipedia.org/wiki/Cache_(computing)>)이라는 기술을 사용합니다. 이렇게 하면 불필요한 네트워크 트래픽을 줄이면서 사이트를 더 빨리 로드할 수 있습니다. 그러나 새 코드를 불러올 경우에는 어려움을 느낄 수 있습니다.
 
 이 가이드는 webpack 컴파일로 생성 된 파일의 내용이 변경되지 않는 한 캐시된 상태로 유지되도록 하는 데 필요한 설정에 초점을 맞춥니다.
 
@@ -134,7 +136,7 @@ runtime.cc17ae2a94ec771e9221.js   1.42 KiB       0  [emitted]  runtime
 ```
 
 `lodash` 또는 `react`와 같은 타사 라이브러리는 로컬 소스 코드보다 변경 될 가능성이 적기 때문에 별도의 `vendor` 청크로 추출하는 것도 좋은 방법입니다. 이 단계를 통해 클라이언트는 최신 상태를 유지하기 위해 서버에 더 적은 요청을 할 수 있습니다.
-이는 [Example 2 of SplitChunksPlugin](/plugins/split-chunks-plugin/#split-chunks-example-2)에 표시된 [`SplitChunksPlugin`](/plugins/split-chunks-plugin/)의 [`cacheGroups`](/plugins/split-chunks-plugin/#splitchunkscachegroups) 옵션을 사용하여 수행할 수 있습니다. `cacheGroups`과 함께   `optimization.splitChunks`를 추가하고 다음 파라미터를 사용하여 빌드합니다.
+이는 [Example 2 of SplitChunksPlugin](/plugins/split-chunks-plugin/#split-chunks-example-2)에 표시된 [`SplitChunksPlugin`](/plugins/split-chunks-plugin/)의 [`cacheGroups`](/plugins/split-chunks-plugin/#splitchunkscachegroups) 옵션을 사용하여 수행할 수 있습니다. `cacheGroups`과 함께 `optimization.splitChunks`를 추가하고 다음 파라미터를 사용하여 빌드합니다.
 
 **webpack.config.js**
 

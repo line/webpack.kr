@@ -14,6 +14,8 @@ contributors:
   - pixel-ray
   - chenxsan
   - Roberto14
+translators:
+  - keipark
 related:
   - title: 'webpack 4: Code Splitting, chunk graph and the splitChunks optimization'
     url: https://medium.com/webpack/webpack-4-code-splitting-chunk-graph-and-the-splitchunks-optimization-be739a861366
@@ -169,7 +171,7 @@ module.exports = {
 };
 ```
 
-W> webpack [CLI](/api/cli/)를 사용한다면, 이 플러그인이 활성화되어있는 동안 webpack 프로세스가 오류 코드와 함께 종료되지 않습니다. CLI를 사용할 때 webpack이 "실패"하게 하려면 [`bail` 옵션](/api/cli/#advanced-options)을 확인하세요. 
+W> webpack [CLI](/api/cli/)를 사용한다면, 이 플러그인이 활성화되어있는 동안 webpack 프로세스가 오류 코드와 함께 종료되지 않습니다. CLI를 사용할 때 webpack이 "실패"하게 하려면 [`bail` 옵션](/api/cli/#advanced-options)을 확인하세요.
 
 ## `optimization.moduleIds`
 
@@ -179,12 +181,12 @@ W> webpack [CLI](/api/cli/)를 사용한다면, 이 플러그인이 활성화되
 
 다음 문자열 값이 지원됩니다.
 
-| 옵션             | 설명                                                   |
-| --------------- | ----------------------------------------------------- |
-| `natural`       | 사용 순서에 따른 숫자 ID입니다.                             |
-| `named`         | 디버깅을 위한 식별 가능한 ID입니다.                          |
-| `deterministic` | 모듈 이름을 작은 숫자 값으로 해시합니다.                       |
-| `size`          | 최소 초기 다운로드 크기에 초점을 맞춘 숫자 ID입니다.             |
+| 옵션            | 설명                                                 |
+| --------------- | ---------------------------------------------------- |
+| `natural`       | 사용 순서에 따른 숫자 ID입니다.                      |
+| `named`         | 디버깅을 위한 식별 가능한 ID입니다.                  |
+| `deterministic` | 모듈 이름을 작은 숫자 값으로 해시합니다.             |
+| `size`          | 최소 초기 다운로드 크기에 초점을 맞춘 숫자 ID입니다. |
 
 **webpack.config.js**
 
@@ -230,13 +232,13 @@ W> `moduleIds: total-size`는 webpack 5에서 제거되었습니다.
 
 다음 문자열 값이 지원됩니다.
 
-| 옵션            | 설명                                                                                                                           |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `'natural'`       | 사용 순서에 따른 숫자 ID입니다.                                                                                                        |
-| `'named'`         | 디버깅을 위한 식별 가능한 ID입니다.                                                                                                    |
+| 옵션              | 설명                                                                                                           |
+| ----------------- | -------------------------------------------------------------------------------------------------------------- |
+| `'natural'`       | 사용 순서에 따른 숫자 ID입니다.                                                                                |
+| `'named'`         | 디버깅을 위한 식별 가능한 ID입니다.                                                                            |
 | `'deterministic'` | 컴파일 간에 변경되지 않는 짧은 숫자 ID입니다. 장기 캐싱에 유용합니다. 프로덕션 모드에서 기본으로 활성화됩니다. |
-| `'size'`          | 최소 초기 다운로드 크기에 초점을 맞춘 숫자 ID입니다.                                                                                 |
-| `'total-size'`    | 최소 전체 다운로드 크기에 초점을 맞춘 숫자 ID입니다.                                                                                   |
+| `'size'`          | 최소 초기 다운로드 크기에 초점을 맞춘 숫자 ID입니다.                                                           |
+| `'total-size'`    | 최소 전체 다운로드 크기에 초점을 맞춘 숫자 ID입니다.                                                           |
 
 **webpack.config.js**
 
@@ -399,7 +401,7 @@ module.exports = {
 
 `boolean = true` `string: 'global'`
 
-각 모듈에서 사용된 export를 확인합니다. 이는 [`optimization.providedExports`](#optimizationoccurrenceorder)에 의존합니다. `optimization.usedExports`에 의해 수집된 정보는 다른 최적화 또는 코드 생성에 사용됩니다. 즉, 사용하지 않은 export는 생성되지 않으며, 모든 사용이 호환되는 경우 export 이름이 단일 식별자로 변경됩니다.
+각 모듈에서 사용된 export를 확인합니다. 이는 [`optimization.providedExports`](#optimizationprovidedexports)에 의존합니다. `optimization.usedExports`에 의해 수집된 정보는 다른 최적화 또는 코드 생성에 사용됩니다. 즉, 사용하지 않은 export는 생성되지 않으며, 모든 사용이 호환되는 경우 export 이름이 단일 식별자로 변경됩니다.
 최소화 도구로 데드 코드 제거 시 이로 인해 사용하지 않은 export를 제거 할 수 있습니다.
 
 **webpack.config.js**
@@ -517,12 +519,12 @@ module.exports = {
 
 다음 값이 지원됩니다.
 
-| 옵션            | 설명                                                                                                          |
-| ----------------- | -------------------------------------------------------------------------------------------------------------------- |
-| `'size'`          | 짧은 이름(보통 단일 문자). 최소 다운로드 사이즈에 초점을 맞춥니다.                                              |
-| `'deterministic'` | 짧은 이름(보통 두 개의 문자). export를 추가하거나 제거할 때도 변경되지 않습니다. 장기 캐싱에 유용합니다.  |
-| `true`            | `'deterministic'`과 동일합니다.                                                                                            |
-| `false`           | 원래 이름을 유지합니다. 가독성과 디버깅에 유용합니다                                                             |
+| 옵션              | 설명                                                                                                     |
+| ----------------- | -------------------------------------------------------------------------------------------------------- |
+| `'size'`          | 짧은 이름(보통 단일 문자). 최소 다운로드 사이즈에 초점을 맞춥니다.                                       |
+| `'deterministic'` | 짧은 이름(보통 두 개의 문자). export를 추가하거나 제거할 때도 변경되지 않습니다. 장기 캐싱에 유용합니다. |
+| `true`            | `'deterministic'`과 동일합니다.                                                                          |
+| `false`           | 원래 이름을 유지합니다. 가독성과 디버깅에 유용합니다                                                     |
 
 **webpack.config.js**
 

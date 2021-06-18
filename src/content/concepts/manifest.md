@@ -4,6 +4,8 @@ sort: 11
 contributors:
   - skipjack
   - EugeneHlushko
+translators:
+  - YukJiSoo
 related:
   - title: Separating a Manifest
     url: https://survivejs.com/webpack/optimizing/separating-manifest/

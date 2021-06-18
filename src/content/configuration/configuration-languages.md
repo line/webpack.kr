@@ -11,13 +11,15 @@ contributors:
   - byzyk
   - Nek-
   - liyiming22
+translators:
+  - dkstyle
 ---
 
 webpack은 여러 프로그래밍과 데이터 언어로 작성된 설정 파일을 사용할 수 있습니다. 지원되는 파일 확장자 목록은 [node-interpret](https://github.com/gulpjs/interpret) 패키지에서 확인할 수 있습니다. webpack은 [node-interpret](https://github.com/gulpjs/interpret)를 사용하여, 다양한 유형의 설정 파일을 처리할 수 있습니다.
 
 ## TypeScript
 
-[TypeScript](http://www.typescriptlang.org/)에서 webpack 설정을 하기 위해서는, 먼저 필요한 디펜던시, 예를들면 TypeScript와 [DefinitelyTyped](https://definitelytyped.org/)에서 관련있는 타입 정의를 설치해야 합니다. 
+[TypeScript](http://www.typescriptlang.org/)에서 webpack 설정을 하기 위해서는, 먼저 필요한 디펜던시, 예를들면 TypeScript와 [DefinitelyTyped](https://definitelytyped.org/)에서 관련있는 타입 정의를 설치해야 합니다.
 
 ```bash
 npm install --save-dev typescript ts-node @types/node @types/webpack
@@ -47,9 +49,9 @@ const config: webpack.Configuration = {
 export default config;
 ```
 
-위 예시는 TypeScript 2.7 이상 버전의 `tsconfig.json` 파일에서 새로운 `esModuleInterop` 및 `allowSyntheticDefaultImports` 컴파일러 옵션과 함께 사용된다고 가정합니다. 
+위 예시는 TypeScript 2.7 이상 버전의 `tsconfig.json` 파일에서 새로운 `esModuleInterop` 및 `allowSyntheticDefaultImports` 컴파일러 옵션과 함께 사용된다고 가정합니다.
 
-`tsconfig.json` 파일도 확인해야 합니다. 만약 `tsconfig.json`에서 `compilerOptions`의 `모듈`이 `commonjs`라면 설정이 완료되지만, 그렇지 않으면 webpack이 에러와 함께 실패하게 됩니다. 이는 `ts-node`가 `commonjs` 이외의 다른 모듈 구문은 지원하지 않기 때문입니다. 
+`tsconfig.json` 파일도 확인해야 합니다. 만약 `tsconfig.json`에서 `compilerOptions`의 `모듈`이 `commonjs`라면 설정이 완료되지만, 그렇지 않으면 webpack이 에러와 함께 실패하게 됩니다. 이는 `ts-node`가 `commonjs` 이외의 다른 모듈 구문은 지원하지 않기 때문입니다.
 
 이 문제는 두 가지 해결 방법이 있습니다.
 

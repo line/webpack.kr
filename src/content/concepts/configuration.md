@@ -6,6 +6,8 @@ contributors:
   - simon04
   - EugeneHlushko
   - byzyk
+translators:
+  - choilim
 ---
 
 webpack 설정이 정확히 동일한 경우는 거의 없습니다. 이것은 **webpack의 설정 파일이 webpack [설정](/configuration/)을 내보내는 JavaScript 파일이기 때문입니다.** 설정은 정의된 속성에 따라 webpack에서 처리됩니다.

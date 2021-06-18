@@ -3,6 +3,8 @@ title: Advanced entry
 sort: 25
 contributors:
   - EugeneHlushko
+translators:
+  - dkstyle
 ---
 
 ## Multiple file types per entry

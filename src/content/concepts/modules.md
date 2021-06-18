@@ -7,6 +7,8 @@ contributors:
   - rouzbeh84
   - EugeneHlushko
   - byzyk
+translators:
+  - keipark
 related:
   - title: JavaScript Module Systems Showdown
     url: https://auth0.com/blog/javascript-module-systems-showdown/

@@ -4,7 +4,7 @@ import icon from '../../assets/icon-print.svg';
 import EditIcon from '../../styles/icons/edit.svg';
 import PropTypes from 'prop-types';
 
-const baseURL = 'https://github.com/webpack/webpack.js.org/edit/master/';
+const baseURL = 'https://github.com/line/webpack.kr/edit/master/';
 
 PageLinks.propTypes = {
   page: PropTypes.shape({

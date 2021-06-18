@@ -7,6 +7,8 @@ contributors:
   - tashian
   - skipjack
   - AnayaDesign
+translators:
+  - limong
 ---
 
 일반적인 오해를 푸는 것부터 시작하겠습니다. webpack은 [Browserify](http://browserify.org/)나 [Brunch](https://brunch.io/) 같은 모듈 번들러 입니다. [Make](https://www.gnu.org/software/make/) 및 [Grunt](https://gruntjs.com/), [Gulp](https://gulpjs.com/)와 같은 태스크 러너가 아닙니다. 태스크 러너는 프로젝트의 린트, 빌드, 테스트와 같은 일반적인 태스크의 자동화를 처리합니다. 번들러와 비교하면 태스크 러너는 더 높은 수준에 집중합니다. 번들링의 문제는 webpack에 맡겨두고 더 높은 수준의 툴링에 대한 이점을 가질 수 있습니다.

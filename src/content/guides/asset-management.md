@@ -11,13 +11,15 @@ contributors:
   - AnayaDesign
   - wizardofhogwarts
   - astonizer
+translators:
+  - keipark
 ---
 
 처음부터 가이드를 따라왔다면 이제 "Hello webpack"을 표시하는 작은 프로젝트가 생성되었을 것입니다. 이제 이미지와 같은 다른 애셋을 통합하고, 애셋이 어떻게 처리되는지 살펴보겠습니다.
 
 webpack 이전에 프런트엔드 개발자는 [grunt](https://gruntjs.com/)와 [gulp](https://gulpjs.com/) 같은 도구를 사용하여 애셋을 처리하고 `/src` 폴더에서 `/dist` 또는 `/build` 디렉터리로 옮겼습니다. JavaScript 모듈에도 동일한 아이디어가 사용되었지만, webpack과 같은 도구는 모든 의존성을 **동적으로 번들합니다.** ([디펜던시 그래프](/concepts/dependency-graph)로 알려진 것을 생성합니다). 이것이 좋은 이유는 이제 모든 모듈이 **의존성을 명확하게 명시하고** 사용하지 않는 모듈을 번들에서 제외할 수 있기 때문입니다.
 
-webpack의 가장 멋진 기능 중 하나는 JavaScript 외에도 로더 또는 내장 [애셋 모듈](/guides/asset-modules/)이 지원하는 __다른 유형의 파일도 포함__ 할 수 있다는 것입니다. 즉, 위에 나열된 JavaScript의 이점(예: 명시적 의존성)을 웹 사이트 또는 웹 앱을 만드는 데 사용한 모든 것에 적용할 수 있습니다. 이미 설정에 익숙 할 수 있는 CSS부터 시작해 보겠습니다.
+webpack의 가장 멋진 기능 중 하나는 JavaScript 외에도 로더 또는 내장 [애셋 모듈](/guides/asset-modules/)이 지원하는 **다른 유형의 파일도 포함** 할 수 있다는 것입니다. 즉, 위에 나열된 JavaScript의 이점(예: 명시적 의존성)을 웹 사이트 또는 웹 앱을 만드는 데 사용한 모든 것에 적용할 수 있습니다. 이미 설정에 익숙 할 수 있는 CSS부터 시작해 보겠습니다.
 
 ## Setup
 
