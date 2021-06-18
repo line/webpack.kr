@@ -117,7 +117,7 @@ export default function Page(props) {
           </div>
         )}
         {loadTranslators && (
-          <div className="contributors__section">
+          <div className="translators__section">
             <hr />
             <h3>Translators</h3>
             <Translators translators={translators} />
