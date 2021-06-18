@@ -5,6 +5,8 @@ contributors:
   - einarlove
   - rouzbeh84
   - byzyk
+ translators:
+  - moonheekim0118
 ---
 
 `EnvironmentPlugin`을 사용해 [`process.env`](https://nodejs.org/api/process.html#process_process_env) 키에 [`DefinePlugin`](/plugins/define-plugin)을 간단히 적용할 수 있습니다.
