@@ -5,7 +5,7 @@ contributors:
   - einarlove
   - rouzbeh84
   - byzyk
- translators:
+translators:
   - moonheekim0118
 ---
 
