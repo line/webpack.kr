@@ -10,13 +10,10 @@ contributors:
   - chenxsan
 ---
 
-The `parser` instance, found in the `compiler`, is used to parse each module
-being processed by webpack. The `parser` is yet another webpack class that
-extends `tapable` and provides a variety of `tapable` hooks that can be used by
-plugin authors to customize the parsing process.
+`compiler`에 있는, `parser` 인스턴스는, webpack에서 처리 중인 각 모듈을 파싱하는데 사용합니다.
+`parser`는 `tapable`을 확장하고 플러그인 작성자가 파싱 프로세스를 커스터마이징 하는데 사용할 수 있는 다양한 `tapable` 훅을 제공하는 또 다른 webpack 클래스입니다.
 
-The `parser` is found within [NormalModuleFactory](/api/compiler-hooks/#normalmodulefactory) and therefore takes little
-more work to access:
+`parser`는 [NormalModuleFactory](/api/compiler-hooks/#normalmodulefactory)에서 볼 수 있습니다.
 
 ```js
 compiler.hooks.normalModuleFactory.tap('MyPlugin', (factory) => {
@@ -28,19 +25,17 @@ compiler.hooks.normalModuleFactory.tap('MyPlugin', (factory) => {
 });
 ```
 
-As with the `compiler`, `tapAsync` and `tapPromise` may also be available
-depending on the type of hook.
+`compiler`와 마찬가지로, `tapAsync` 그리고 `tapPromise`도 훅 타입에 따라 사용할 수 있습니다.
 
 ## Hooks
 
-The following lifecycle hooks are exposed by the `parser` and can be accessed
-as such:
+다음의 라이프사이클 훅은 다음과 같이 `parser`에 의해 노출되며 접근할 수 있습니다.
 
 ### evaluateTypeof
 
 `SyncBailHook`
 
-Triggered when evaluating an expression consisting in a `typeof` of a free variable
+자유 변수의 `typeof`로 구성된 표현식을 평가할 때 트리거 됩니다.
 
 - Hook Parameters: `identifier`
 - Callback Parameters: `expression`
@@ -54,13 +49,13 @@ parser.hooks.evaluateTypeof
   });
 ```
 
-This will trigger the `evaluateTypeof` hook:
+이것은 `evaluateTypeof` 훅을 트리거 합니다.
 
 ```js
 const a = typeof myIdentifier;
 ```
 
-This won't trigger:
+다음은 트리거 되지 않습니다.
 
 ```js
 const myIdentifier = 0;
@@ -71,12 +66,12 @@ const b = typeof myIdentifier;
 
 `SyncBailHook`
 
-Called when evaluating an expression.
+표현식을 평가할 때 호출됩니다.
 
 - Hook parameters: `expressionType`
 - Callback parameters: `expression`
 
-For example:
+예제입니다.
 
 **index.js**
 
@@ -93,7 +88,7 @@ parser.hooks.evaluate.for('NewExpression').tap('MyPlugin', (expression) => {
 });
 ```
 
-Where the expressions types are:
+표현식 타입은 다음과 같습니다.
 
 - `'ArrowFunctionExpression'`
 - `'AssignmentExpression'`
@@ -120,7 +115,7 @@ Where the expressions types are:
 
 `SyncBailHook`
 
-Called when evaluating an identifier that is a free variable.
+자유 변수인 식별자를 평가할 때 호출됩니다.
 
 - Hook Parameters: `identifier`
 - Callback Parameters: `expression`
@@ -129,7 +124,7 @@ Called when evaluating an identifier that is a free variable.
 
 `SyncBailHook`
 
-Called when evaluating an identifier that is a defined variable.
+정의된 변수 식별자를 평가할 때 호출됩니다.
 
 - Hook Parameters: `identifier`
 - Callback Parameters: `expression`
@@ -138,12 +133,12 @@ Called when evaluating an identifier that is a defined variable.
 
 `SyncBailHook`
 
-Called when evaluating a call to a member function of a successfully evaluated expression.
+성공적으로 평가된 표현식의 멤버 함수에 대한 호출을 평가할 때 호출됩니다.
 
 - Hook Parameters: `identifier`
 - Callback Parameters: `expression` `param`
 
-This expression will trigger the hook:
+이 표현식은 다음의 훅을 트리거 합니다.
 
 **index.js**
 
@@ -166,7 +161,7 @@ parser.hooks.evaluateCallExpressionMember
 
 `SyncBailHook`
 
-General purpose hook that is called for every parsed statement in a code fragment.
+코드 조각에서 파싱된 모든 구문에 대해 호출되는 범용적 훅입니다.
 
 - Callback Parameters: `statement`
 
@@ -176,7 +171,7 @@ parser.hooks.statement.tap('MyPlugin', (statement) => {
 });
 ```
 
-Where the `statement.type` could be:
+`statement.type`은 다음과 같을 수 있습니다.
 
 - `'BlockStatement'`
 - `'VariableDeclaration'`
@@ -204,7 +199,7 @@ Where the `statement.type` could be:
 
 `SyncBailHook`
 
-Called when parsing an if statement. Same as the `statement` hook, but triggered only when `statement.type == 'IfStatement'`.
+if 구문을 파싱할 때 호출됩니다. `statement` 훅과 동일하지만, `statement.type == 'IfStatement'`인 경우에만 트리거 됩니다.
 
 - Callback Parameters: `statement`
 
@@ -212,7 +207,7 @@ Called when parsing an if statement. Same as the `statement` hook, but triggered
 
 `SyncBailHook`
 
-Called when parsing statements with a [label](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/label). Those statements have `statement.type === 'LabeledStatement'`.
+[label](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/label)이 있는 구문을 파싱할 때 호출됩니다. 이러한 구문에는 `statement.type === 'LabeledStatement'`가 있습니다.
 
 - Hook Parameters: `labelName`
 - Callback Parameters: `statement`
@@ -221,11 +216,11 @@ Called when parsing statements with a [label](https://developer.mozilla.org/en-U
 
 `SyncBailHook`
 
-Called for every import statement in a code fragment. The `source` parameter contains the name of the imported file.
+코드 조각의 모든 import 구문에 대해 호출됩니다. `source` 매개변수에는 가져온 파일의 이름이 포함됩니다.
 
 - Callback Parameters: `statement` `source`
 
-The following import statement will trigger the hook once:
+다음의 import 구문은 훅을 한 번 트리거 합니다.
 
 **index.js**
 
@@ -245,11 +240,11 @@ parser.hooks.import.tap('MyPlugin', (statement, source) => {
 
 `SyncBailHook`
 
-Called for every specifier of every `import` statement.
+모든 `import` 구문의 모든 지정자에 대해 호출됩니다.
 
 - Callback Parameters: `statement` `source` `exportName` `identifierName`
 
-The following import statement will trigger the hook twice:
+다음의 import 구문은 훅을 두 번 트리거 합니다.
 
 **index.js**
 
@@ -281,7 +276,7 @@ parser.hooks.importSpecifier.tap(
 
 `SyncBailHook`
 
-Called for every `export` statement in a code fragment.
+코드 조각의 모든 `export` 구문에 대해 호출됩니다.
 
 - Callback Parameters: `statement`
 
@@ -289,7 +284,7 @@ Called for every `export` statement in a code fragment.
 
 `SyncBailHook`
 
-Called for every `export`-import statement eg: `export * from 'otherModule';`.
+모든 `export`-import 구문에 대해 호출됩니다. 예. `export * from 'otherModule';`.
 
 - Callback Parameters: `statement` `source`
 
@@ -297,14 +292,14 @@ Called for every `export`-import statement eg: `export * from 'otherModule';`.
 
 `SyncBailHook`
 
-Called for every `export` statement exporting a declaration.
+선언을 내보내는 모든 `export` 구문에 대해 호출됩니다.
 
 - Callback Parameters: `statement` `declaration`
 
-Those exports will trigger this hook:
+이러한 내보내기는 다음의 훅을 트리거 합니다.
 
 ```js
-export const myVar = 'hello'; // also var, let
+export const myVar = 'hello'; // 또한 var, let
 export function FunctionName() {}
 export class ClassName {}
 ```
@@ -313,7 +308,7 @@ export class ClassName {}
 
 `SyncBailHook`
 
-Called for every `export` statement exporting an expression e.g.`export default expression;`.
+표현식을 내보내는 모든 `export` 구문에 대해 호출됩니다. 예. `export default expression;`.
 
 - Callback Parameters: `statement` `declaration`
 
@@ -321,7 +316,7 @@ Called for every `export` statement exporting an expression e.g.`export default 
 
 `SyncBailHook`
 
-Called for every specifier of every `export` statement.
+모든 `export` 구문의 모든 지정자에 대해 호출됩니다.
 
 - Callback Parameters: `statement` `identifierName` `exportName` `index`
 
@@ -329,7 +324,7 @@ Called for every specifier of every `export` statement.
 
 `SyncBailHook`
 
-Called for every specifier of every `export`-import statement.
+모든 `export`-import 구문의 모든 지정자에 대해 호출됩니다.
 
 - Callback Parameters: `statement` `source` `identifierName` `exportName` `index`
 
@@ -337,7 +332,7 @@ Called for every specifier of every `export`-import statement.
 
 `SyncBailHook`
 
-Called when parsing a variable declaration.
+변수 선언문을 파싱할 때 호출됩니다.
 
 - Callback Parameters: `declaration`
 
@@ -345,7 +340,7 @@ Called when parsing a variable declaration.
 
 `SyncBailHook`
 
-Called when parsing a variable declaration defined using `let`
+`let`을 사용해 정의된 변수 선언문을 파싱할 때 호출됩니다.
 
 - Callback Parameters: `declaration`
 
@@ -353,7 +348,7 @@ Called when parsing a variable declaration defined using `let`
 
 `SyncBailHook`
 
-Called when parsing a variable declaration defined using `const`
+`const`를 사용해 정의된 변수 선언문을 파싱할 때 호출됩니다.
 
 - Callback Parameters: `declaration`
 
@@ -361,7 +356,7 @@ Called when parsing a variable declaration defined using `const`
 
 `SyncBailHook`
 
-Called when parsing a variable declaration defined using `var`
+`var`를 사용해 정의된 변수 선언문을 파싱할 때 호출됩니다.
 
 - Callback Parameters: `declaration`
 
@@ -369,7 +364,7 @@ Called when parsing a variable declaration defined using `var`
 
 `SyncBailHook`
 
-Triggered before renaming an identifier to determine if the renaming is allowed. This is usually used together with the `rename` hook.
+이름 변경이 허용되는지 확인하기 위해 식별자의 이름을 변경하기 전에 트리거 됩니다. 일반적으로 `rename` 훅과 함께 사용됩니다.
 
 - Hook Parameters: `identifier`
 - Callback Parameters: `expression`
@@ -378,7 +373,7 @@ Triggered before renaming an identifier to determine if the renaming is allowed.
 var a = b;
 
 parser.hooks.canRename.for('b').tap('MyPlugin', (expression) => {
-  // returning true allows renaming
+  // true를 반환하면 이름을 변경할 수 있습니다.
   return true;
 });
 ```
@@ -387,7 +382,7 @@ parser.hooks.canRename.for('b').tap('MyPlugin', (expression) => {
 
 `SyncBailHook`
 
-Triggered when renaming to get the new identifier. This hook will be called only if `canRename` returns `true`.
+새 식별자를 가져오기 위해 이름을 바꿀 때 트리거 됩니다. 이 훅은 `canRename`가 `true`를 반환하는 경우에 호출됩니다.
 
 - Hook Parameters: `identifier`
 - Callback Parameters: `expression`
@@ -402,7 +397,7 @@ parser.hooks.rename.for('b').tap('MyPlugin', (expression) => {});
 
 `SyncBailHook`
 
-Called when parsing an `AssignmentExpression` before parsing the assigned expression.
+할당된 표현식을 파싱하기 전에 `AssignmentExpression`을 파싱할 경우에 호출됩니다.
 
 - Hook Parameters: `identifier`
 - Callback Parameters: `expression`
@@ -411,7 +406,7 @@ Called when parsing an `AssignmentExpression` before parsing the assigned expres
 a += b;
 
 parser.hooks.assigned.for('a').tap('MyPlugin', (expression) => {
-  // this is called before parsing b
+  // 이것은 b를 파싱하기 전에 호출됩니다.
 });
 ```
 
@@ -419,7 +414,7 @@ parser.hooks.assigned.for('a').tap('MyPlugin', (expression) => {
 
 `SyncBailHook`
 
-Called when parsing an `AssignmentExpression` before parsing the assign expression.
+할당 표현식을 파싱하기 전에 `AssignmentExpression`을 파싱할 경우에 호출됩니다.
 
 - Hook Parameters: `identifier`
 - Callback Parameters: `expression`
@@ -428,7 +423,7 @@ Called when parsing an `AssignmentExpression` before parsing the assign expressi
 a += b;
 
 parser.hooks.assigned.for('a').tap('MyPlugin', (expression) => {
-  // this is called before parsing a
+  // 이것은 a를 파싱하기 전에 호출됩니다.
 });
 ```
 
@@ -436,7 +431,7 @@ parser.hooks.assigned.for('a').tap('MyPlugin', (expression) => {
 
 `SyncBailHook`
 
-Triggered when parsing the `typeof` of an identifier
+식별자의 `typeof`를 파싱할 때 트리거 됩니다.
 
 - Hook Parameters: `identifier`
 - Callback Parameters: `expression`
@@ -445,7 +440,7 @@ Triggered when parsing the `typeof` of an identifier
 
 `SyncBailHook`
 
-Called when parsing a function call.
+함수 호출을 파싱할 때 호출됩니다.
 
 - Hook Parameters: `identifier`
 - Callback Parameters: `expression`
@@ -460,7 +455,7 @@ parser.hooks.call.for('eval').tap('MyPlugin', (expression) => {});
 
 `SyncBailHook`
 
-Triggered when parsing a call to a member function of an object.
+객체의 멤버 함수에 대한 호출을 파싱할 경우 트리거 됩니다.
 
 - Hook Parameters: `objectIdentifier`
 - Callback Parameters: `expression, properties`
@@ -477,7 +472,7 @@ parser.hooks.callMemberChain
 
 `SyncBailHook`
 
-Invoked when parsing a `new` expression.
+`new` 표현식을 파싱할 때 호출됩니다.
 
 - Hook Parameters: `identifier`
 - Callback Parameters: `expression`
@@ -492,7 +487,7 @@ parser.hooks.new.for('MyClass').tap('MyPlugin', (expression) => {});
 
 `SyncBailHook`
 
-Called when parsing an expression.
+표현식을 파싱할 때 호출됩니다.
 
 - Hook Parameters: `identifier`
 - Callback Parameters: `expression`
@@ -507,7 +502,7 @@ parser.hooks.expression.for('this').tap('MyPlugin', (expression) => {});
 
 `SyncBailHook`
 
-Called when parsing a `ConditionalExpression` e.g. `condition ? a : b`
+`ConditionalExpression`을 파싱할 때 호출됩니다. 예. `condition ? a : b`
 
 - Callback Parameters: `expression`
 
@@ -515,6 +510,6 @@ Called when parsing a `ConditionalExpression` e.g. `condition ? a : b`
 
 `SyncBailHook`
 
-Get access to the abstract syntax tree (AST) of a code fragment
+코드 조각의 추상 구문 트리(AST)에 접근합니다.
 
 - Parameters: `ast` `comments`
