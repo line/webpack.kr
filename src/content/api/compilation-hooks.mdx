@@ -11,32 +11,34 @@ contributors:
   - EugeneHlushko
   - chenxsan
   - jamesgeorge007
+translators:
+  - YukJiSoo
 ---
 
-The `Compilation` module is used by the `Compiler` to create new compilations
-(or builds). A `compilation` instance has access to all modules and their
-dependencies (most of which are circular references). It is the literal
-compilation of all the modules in the dependency graph of an application.
-During the compilation phase, modules are loaded, sealed, optimized, chunked,
-hashed and restored.
+`Compilation` 모듈은 `Compiler`에서 새 컴파일 또는 빌드를 만드는 데
+사용됩니다. `compilation` 객체는 모든 모듈과 해당 모듈의 디펜던시에
+접근할 수 있습니다(대부분 순환 참조). 또한 애플리케이션의 디펜던시 그래프에
+있는 모든 모듈의 리터럴 컴파일입니다.
+컴파일 단계 동안 모듈은 로드, 봉인, 최적화, 청크,
+해시 및 복원됩니다.
 
-The `Compilation` class also extends `Tapable` and provides the following
-lifecycle hooks. They can be tapped the same way as compiler hooks:
+`Compilation` 클래스는 `Tapable`을 확장하고 다음과 같은 생명주기 훅을 제공합니다.
+컴파일러 훅과 같은 방식으로 탭할 수 있습니다.
 
 ```js
 compilation.hooks.someHook.tap(/* ... */);
 ```
 
-As with the `compiler`, `tapAsync` and `tapPromise` may also be available
-depending on the type of hook.
+`compiler`와 마찬가지로 `tapAsync` 및 `tapPromise`도 훅 유형에 따라
+사용할 수 있습니다.
 
 ### `buildModule`
 
 `SyncHook`
 
-Triggered before a module build has started, can be used to modify the module.
+모듈 빌드가 시작되기 전에 트리거되며 모듈을 수정하는 데 사용할 수 있습니다.
 
-- Callback Parameters: `module`
+- 콜백 파라미터: `module`
 
 ```js
 compilation.hooks.buildModule.tap(
@@ -51,316 +53,316 @@ compilation.hooks.buildModule.tap(
 
 `SyncHook`
 
-Fired before rebuilding a module.
+모듈을 다시 빌드하기 전에 시작됩니다.
 
-- Callback Parameters: `module`
+- 콜백 파라미터: `module`
 
 ### `failedModule`
 
 `SyncHook`
 
-Run when a module build has failed.
+모듈 빌드가 실패하면 실행합니다.
 
-- Callback Parameters: `module` `error`
+- 콜백 파라미터: `module` `error`
 
 ### `succeedModule`
 
 `SyncHook`
 
-Executed when a module has been built successfully.
+모듈이 성공적으로 빌드되었을 때 실행됩니다.
 
-- Callback Parameters: `module`
+- 콜백 파라미터: `module`
 
 ### `finishModules`
 
 `AsyncSeriesHook`
 
-Called when all modules have been built without errors.
+모든 모듈이 에러없이 빌드되었을 때 호출됩니다.
 
-- Callback Parameters: `modules`
+- 콜백 파라미터: `modules`
 
 ### `finishRebuildingModule`
 
 `SyncHook`
 
-Executed when a module has been rebuilt, in case of both success or with errors.
+성공하거나 에러가 있는 경우 모듈이 다시 빌드 될 때 실행됩니다.
 
-- Callback Parameters: `module`
+- 콜백 파라미터: `module`
 
 ### `seal`
 
 `SyncHook`
 
-Fired when the compilation stops accepting new modules.
+컴파일이 새로운 모듈을 받는 것이 중지되면 시작됩니다.
 
 ### `unseal`
 
 `SyncHook`
 
-Fired when a compilation begins accepting new modules.
+컴파일이 새로운 모듈을 받기 시작할 때 시작됩니다.
 
 ### `optimizeDependencies`
 
 `SyncBailHook`
 
-Fired at the beginning of dependency optimization.
+디펜던시 최적화가 시작할 때 시작됩니다.
 
-- Callback Parameters: `modules`
+- 콜백 파라미터: `modules`
 
 ### `afterOptimizeDependencies`
 
 `SyncHook`
 
-Fired after the dependency optimization.
+디펜던시 최적화 후 시작됩니다.
 
-- Callback Parameters: `modules`
+- 콜백 파라미터: `modules`
 
 ### `optimize`
 
 `SyncHook`
 
-Triggered at the beginning of the optimization phase.
+최적화 단계가 시작될 때 트리거됩니다.
 
 ### `optimizeModules`
 
 `SyncBailHook`
 
-Called at the beginning of the module optimization phase. A plugin can tap into this hook to perform optimizations on modules.
+모듈 최적화 단계가 시작될 때 호출됩니다. 플러그인은 이 훅을 활용하여 모듈에 대한 최적화를 수행할 수 있습니다.
 
-- Callback Parameters: `modules`
+- 콜백 파라미터: `modules`
 
 ### `afterOptimizeModules`
 
 `SyncHook`
 
-Called after modules optimization has completed.
+모듈 최적화가 완료된 후 호출됩니다.
 
-- Callback Parameters: `modules`
+- 콜백 파라미터: `modules`
 
 ### `optimizeChunks`
 
 `SyncBailHook`
 
-Called at the beginning of the chunk optimization phase. A plugin can tap into this hook to perform optimizations on chunks.
+청크 최적화 단계가 시작될 때 호출됩니다. 플러그인은 이 훅을 활용하여 청크에 대한 최적화를 수행할 수 있습니다.
 
-- Callback Parameters: `chunks`
+- 콜백 파라미터: `chunks`
 
 ### `afterOptimizeChunks`
 
 `SyncHook`
 
-Fired after chunk optimization has completed.
+청크 최적화가 완료된 후 시작됩니다.
 
-- Callback Parameters: `chunks`
+- 콜백 파라미터: `chunks`
 
 ### `optimizeTree`
 
 `AsyncSeriesHook`
 
-Called before optimizing the dependency tree. A plugin can tap into this hook to perform a dependency tree optimization.
+디펜던시 트리를 최적화하기 전에 호출됩니다. 플러그인은 이 훅을 활용하여 디펜던시 트리 최적화를 수행할 수 있습니다.
 
-- Callback Parameters: `chunks` `modules`
+- 콜백 파라미터: `chunks` `modules`
 
 ### `afterOptimizeTree`
 
 `SyncHook`
 
-Called after the dependency tree optimization has completed with success.
+디펜던시 트리 최적화가 성공적으로 완료된 후에 호출됩니다.
 
-- Callback Parameters: `chunks` `modules`
+- 콜백 파라미터: `chunks` `modules`
 
 ### `optimizeChunkModules`
 
 `SyncBailHook`
 
-Called after the tree optimization, at the beginning of the chunk modules optimization. A plugin can tap into this hook to perform optimizations of chunk modules.
+청크 모듈 최적화 시작시 트리 최적화 후에 호출됩니다. 플러그인은 이 훅을 활용하여 청크 모듈의 최적화를 수행할 수 있습니다.
 
-- Callback Parameters: `chunks` `modules`
+- 콜백 파라미터: `chunks` `modules`
 
 ### `afterOptimizeChunkModules`
 
 `SyncHook`
 
-Called after the chunkmodules optimization has completed successfully.
+청크 모듈 최적화가 성공적으로 완료된 후에 호출됩니다.
 
-- Callback Parameters: `chunks` `modules`
+- 콜백 파라미터: `chunks` `modules`
 
 ### `shouldRecord`
 
 `SyncBailHook`
 
-Called to determine whether or not to store records. Returning anything `!== false` will prevent every other "record" hook from being executed ([`record`](#record), [`recordModules`](#recordmodules), [`recordChunks`](#recordchunks) and [`recordHash`](#recordhash)).
+레코드 저장 여부를 결정하기 위해 호출됩니다. `!== false`를 반환하면 다른 모든 "record" 훅이 실행되지 않습니다([`record`](#record), [`recordModules`](#recordmodules), [`recordChunks`](#recordchunks) 그리고 [`recordHash`](#recordhash)).
 
 ### `reviveModules`
 
 `SyncHook`
 
-Restore module information from records.
+레코드에서 모듈 정보를 복원합니다.
 
-- Callback Parameters: `modules` `records`
+- 콜백 파라미터: `modules` `records`
 
 ### `beforeModuleIds`
 
 `SyncHook`
 
-Executed before assigning an `id` to each module.
+각 모듈에 `id`를 할당하기 전에 실행됩니다.
 
-- Callback Parameters: `modules`
+- 콜백 파라미터: `modules`
 
 ### `moduleIds`
 
 `SyncHook`
 
-Called to assign an `id` to each module.
+각 모듈에 `id`를 할당하기 위해 호출됩니다.
 
-- Callback Parameters: `modules`
+- 콜백 파라미터: `modules`
 
 ### `optimizeModuleIds`
 
 `SyncHook`
 
-Called at the beginning of the modules `id` optimization.
+모듈 `id` 최적화 시작시 호출됩니다.
 
-- Callback Parameters: `modules`
+- 콜백 파라미터: `modules`
 
 ### `afterOptimizeModuleIds`
 
 `SyncHook`
 
-Called when the modules `id` optimization phase has completed.
+모듈 `id` 최적화 단계가 완료되면 호출됩니다.
 
-- Callback Parameters: `modules`
+- 콜백 파라미터: `modules`
 
 ### `reviveChunks`
 
 `SyncHook`
 
-Restore chunk information from records.
+레코드에서 청크 정보를 복원합니다.
 
-- Callback Parameters: `chunks` `records`
+- 콜백 파라미터: `chunks` `records`
 
 ### `beforeChunkIds`
 
 `SyncHook`
 
-Executed before assigning an `id` to each chunk.
+각 청크에 `id`를 할당하기 전에 실행됩니다.
 
-- Callback Parameters: `chunks`
+- 콜백 파라미터: `chunks`
 
 ### `chunkIds`
 
 `SyncHook`
 
-Called to assign an `id` to each chunk.
+각 청크에 `id`를 할당하기 위해 호출됩니다.
 
-- Callback Parameters: `chunks`
+- 콜백 파라미터: `chunks`
 
 ### `optimizeChunkIds`
 
 `SyncHook`
 
-Called at the beginning of the chunks `id` optimization phase.
+청크 `id` 최적화 단계 시작시 호출됩니다.
 
-- Callback Parameters: `chunks`
+- 콜백 파라미터: `chunks`
 
 ### `afterOptimizeChunkIds`
 
 `SyncHook`
 
-Triggered after chunk `id` optimization has finished.
+청크 `id` 최적화가 완료된 후에 트리거됩니다.
 
-- Callback Parameters: `chunks`
+- 콜백 파라미터: `chunks`
 
 ### `recordModules`
 
 `SyncHook`
 
-Store module info to the records. This is triggered if [`shouldRecord`](#shouldrecord) returns a truthy value.
+레코드에 모듈 정보를 저장합니다. 이것은 [`shouldRecord`](#shouldrecord)가 참과 같은 값을 반환하는 경우 트리거됩니다.
 
-- Callback Parameters: `modules` `records`
+- 콜백 파라미터: `modules` `records`
 
 ### `recordChunks`
 
 `SyncHook`
 
-Store chunk info to the records. This is only triggered if [`shouldRecord`](#shouldrecord) returns a truthy value.
+청크 정보를 레코드에 저장합니다. 이는 [`shouldRecord`](#shouldrecord)가 참과 같은 값을 반환하는 경우에만 트리거됩니다.
 
-- Callback Parameters: `chunks` `records`
+- 콜백 파라미터: `chunks` `records`
 
 ### `beforeModuleHash`
 
 `SyncHook`
 
-Called before modules are hashed.
+모듈이 해시되기 전에 호출됩니다.
 
 ### `afterModuleHash`
 
 `syncHook`
 
-Called after modules are hashed.
+모듈이 해시 된 후에 호출됩니다.
 
 ### `beforeHash`
 
 `SyncHook`
 
-Called before the compilation is hashed.
+컴파일이 해시되기 전에 호출됩니다.
 
 ### `afterHash`
 
 `SyncHook`
 
-Called after the compilation is hashed.
+컴파일이 해시되기 전에 호출됩니다.
 
 ### `recordHash`
 
 `SyncHook`
 
-Store information about record hash to the `records`. This is only triggered if [`shouldRecord`](#shouldrecord) returns a truthy value.
+레코드 해시에 대한 정보를 `records`에 저장합니다. 이는 [`shouldRecord`](#shouldrecord)가 참과 같은 값을 반환하는 경우에만 트리거됩니다.
 
-- Callback Parameters: `records`
+- 콜백 파라미터: `records`
 
 ### `record`
 
 `SyncHook`
 
-Store information about the `compilation` to the `records`. This is only triggered if [`shouldRecord`](#shouldrecord) returns a truthy value.
+`compilation`에 대한 정보를 `records`에 저장합니다. 이는 [`shouldRecord`](#shouldrecord)가 참과 같은 값을 반환하는 경우에만 트리거됩니다.
 
-- Callback Parameters: `compilation` `records`
+- 콜백 파라미터: `compilation` `records`
 
 ### `beforeModuleAssets`
 
 `SyncHook`
 
-Executed before module assets creation.
+모듈 애셋이 생성되기 전에 실행됩니다.
 
 ### `additionalChunkAssets`
 
 `SyncHook`
 
-W> `additionalChunkAssets` is deprecated (use the [Compilation.hook.processAssets](#processassets) instead and use one of the Compilation.PROCESS_ASSETS_STAGE\_\* as a stage option)
+W> `additionalChunkAssets`은 더이상 지원하지 않습니다. 대신 [Compilation.hook.processAssets](#processassets)을 사용하고 Compilation.PROCESS_ASSETS_STAGE\_\* 중 하나를 스테이지 옵션으로 사용하세요.
 
-Create additional assets for the chunks.
+청크에 대한 추가 애셋을 만듭니다.
 
-- Callback Parameters: `chunks`
+- 콜백 파라미터: `chunks`
 
 ### `shouldGenerateChunkAssets`
 
 `SyncBailHook`
 
-Called to determine whether or not generate chunks assets. Returning anything `!== false` will allow chunk assets generation.
+청크 애셋을 만들지 결정하기 위해 호출됩니다. `!== false`를 반환하면 청크 애셋을 생성합니다.
 
 ### `beforeChunkAssets`
 
 `SyncHook`
 
-Executed before creating the chunks assets.
+청크 애셋을 만들기 전에 실행됩니다.
 
 ### `additionalAssets`
 
 `AsyncSeriesHook`
 
-Create additional assets for the compilation. This hook can be used to download
-an image, for example:
+컴파일을 위한 추가 애셋을 만듭니다.
+이 훅은 이미지를 다운로드하는 데 사용할 수 있습니다. 예를 들면 다음과 같습니다.
 
 ```js
 compilation.hooks.additionalAssets.tapAsync('MyPlugin', (callback) => {
@@ -381,15 +383,15 @@ compilation.hooks.additionalAssets.tapAsync('MyPlugin', (callback) => {
 
 `AsyncSeriesHook`
 
-W> `optimizeChunkAssets` is deprecated (use the [Compilation.hook.processAssets](#processassets) instead and use one of the Compilation.PROCESS_ASSETS_STAGE\_\* as a stage option)
+W> `optimizeChunkAssets`은 더이상 지원하지 않습니다. 대신 [Compilation.hook.processAssets](#processassets)을 사용하고 Compilation.PROCESS_ASSETS_STAGE\_\* 중 하나를 스테이지 옵션으로 사용하세요.
 
-Optimize any chunk assets. The assets are stored in `compilation.assets`. A
-`Chunk` has a property `files` which points to all files created by a chunk.
-Any additional chunk assets are stored in `compilation.additionalChunkAssets`.
+청크 애셋을 최적화하세요. 애셋은 `compilation.assets`에 저장됩니다.
+`Chunk`에는 청크로 생성된 모든 파일을 가리키는 `files` 프로퍼티가 있습니다.
+추가 청크 애셋은 `compilation.additionalChunkAssets`에 저장됩니다.
 
-- Callback Parameters: `chunks`
+- 콜백 파라미터: `chunks`
 
-Here's an example that adds a banner to each chunk.
+다음은 단순히 각 청크에 배너를 추가하는 예시입니다.
 
 ```js
 compilation.hooks.optimizeChunkAssets.tapAsync(
@@ -414,13 +416,14 @@ compilation.hooks.optimizeChunkAssets.tapAsync(
 
 `SyncHook`
 
-W> `afterOptimizeChunkAssets` is deprecated (use the [Compilation.hook.processAssets](#processassets) instead and use one of the Compilation.PROCESS_ASSETS_STAGE\_\* as a stage option)
+W> `afterOptimizeChunkAssets`은 더이상 지원하지 않습니다. 대신 [Compilation.hook.processAssets](#processassets)을 사용하고 Compilation.PROCESS_ASSETS_STAGE\_\* 중 하나를 스테이지 옵션으로 사용하세요.
 
-The chunk assets have been optimized.
+청크 애셋이 최적화된 후에 호출됩니다.
 
-- Callback Parameters: `chunks`
+- 콜백 파라미터: `chunks`
 
 Here's an example plugin from [@boopathi](https://github.com/boopathi) that outputs exactly what went into each chunk.
+다음은 각 청크에 들어간 내용을 정확히 출력하는 [@boopathi](https://github.com/boopathi)의 플러그인 예시입니다.
 
 ```js
 compilation.hooks.afterOptimizeChunkAssets.tap('MyPlugin', (chunks) => {
@@ -438,41 +441,41 @@ compilation.hooks.afterOptimizeChunkAssets.tap('MyPlugin', (chunks) => {
 
 `AsyncSeriesHook`
 
-Optimize all assets stored in `compilation.assets`.
+`compilation.assets`에 저장된 모든 애셋을 최적화합니다.
 
-- Callback Parameters: `assets`
+- 콜백 파라미터: `assets`
 
 ### `afterOptimizeAssets`
 
 `SyncHook`
 
-The assets have been optimized.
+애셋이 최적화된 후에 호출됩니다.
 
-- Callback Parameters: `assets`
+- 콜백 파라미터: `assets`
 
 ### `processAssets`
 
 `AsyncSeriesHook`
 
-Asset processing.
+애셋을 처리합니다.
 
 **Hook parameters:**
 
-- `name: string` — a name of the plugin
-- `stage: Stage` — a stage to tap into (see the [list of supported stages](#list-of-asset-processing-stages) below)
-- `additionalAssets?: true | (assets, [callback]) => (void | Promise<void>)` — a callback for additional assets ([see below](#additional-assets))
+- `name: string` — 플러그인의 이름
+- `stage: Stage` — 활용되는 단계. 아래의 [지원되는 단계 목록](#list-of-asset-processing-stages)을 참고하세요.
+- `additionalAssets?: true | (assets, [callback]) => (void | Promise<void>)` — 추가 애셋을 위한 콜백. [아래를 참고하세요.](#additional-assets)
 
-**Callback parameters:**
+**콜백 파라미터:**
 
-- `assets: { [pathname: string]: Source }` — a plain object, where key is the asset's pathname, and the value is data of the asset represented by the [`Source`](https://github.com/webpack/webpack-sources#source).
+- `assets: { [pathname: string]: Source }` — 키는 애셋의 경로 이름이고 값은 [`Source`](https://github.com/webpack/webpack-sources#source)로 표시되는 애셋의 데이터인 순수 객체입니다.
 
-**Example:**
+**예시**
 
 ```js
 compilation.hooks.processAssets.tap(
   {
     name: 'MyPlugin',
-    stage: Compilation.PROCESS_ASSETS_STAGE_ADDITIONS, // see below for more stages
+    stage: Compilation.PROCESS_ASSETS_STAGE_ADDITIONS, // 더 많은 단계는 아래를 참고하세요.
   },
   (assets) => {
     console.log('List of assets and their sizes:');
@@ -485,11 +488,11 @@ compilation.hooks.processAssets.tap(
 
 #### Additional assets
 
-In addition to `name` and `stage`, you can pass an `additionalAssets` <Badge text='5.8.0+' /> option which accepts either a value of `true` or a callback function that receives `assets` as a first argument:
+`name` 및 `stage` 외에도 `true` 값을 허용하는 `additionalAssets` <Badge text='5.8.0+' /> 옵션 또는 `assets`을 첫 번째 인수로 받는 콜백 함수를 전달할 수 있습니다.
 
-1. `true` — run the provided callback again for assets added later by plugins.
+1. `true` — 나중에 플러그인에 의해 추가된 애셋에 대해 제공된 콜백을 다시 실행하세요.
 
-   In this mode, the callback will be called multiple times: once for assets added prior to the specified stage, and additional times for assets added by plugins later (on this or next stages).
+   이 모드에서 콜백은 지정된 단계 이전에 추가된 애셋에 대해 한 번, 나중에 플러그인에 의해 추가된 애셋에 대해 이 단계 또는 다음 단계에 추가로 여러 번 호출됩니다.
 
    ```js
    compilation.hooks.processAssets.tap(
@@ -499,12 +502,12 @@ In addition to `name` and `stage`, you can pass an `additionalAssets` <Badge tex
        additionalAssets: true,
      },
      (assets) => {
-       // this function will be called multiple times with each bulk of assets
+       // 이 함수는 각각의 에셋에 대해 여러 번 호출됩니다.
      }
    );
    ```
 
-2. `(assets, [callback]) => (void | Promise<void>)` — run the specified callback against assets added by plugins later (on this or next stages). The callback must respect the type of the tap method used (e.g. when used with `tapPromise()`, it should return a promise).
+2. `(assets, [callback]) => (void | Promise<void>)` — 나중에 플러그인에서 추가한 애셋에 대해 이 단계 또는 다음 단계에서 지정된 콜백을 실행합니다. 콜백은 사용 된 탭 방법의 유형을 존중해야합니다. 예를 들면, `tapPromise ()`와 함께 사용하면 프로미스를 반환해야합니다.
 
    ```js
    compilation.hooks.processAssets.tap(
@@ -512,38 +515,38 @@ In addition to `name` and `stage`, you can pass an `additionalAssets` <Badge tex
        name: 'MyPlugin',
        stage: Compilation.PROCESS_ASSETS_STAGE_DEV_TOOLING,
        additionalAssets: (assets) => {
-         // this function potentially could be called multiple times for assets added on later stages
+         // 이 함수는 잠재적으로 이후 단계에서 추가된 애셋에 대해 여러번 호출될 수 있습니다.
        },
      },
      (assets) => {
-       // this function will be called once with assets added by plugins on prior stages
+       // 이 함수는 이전 단계에서 플러그인에 의해 추가된 애셋에 대해 한 번 호출됩니다.
      }
    );
    ```
 
 #### List of asset processing stages
 
-Here's a list of supported stages (in the order of processing):
+다음은 지원되는 단계를 처리 순서대로 나열한 목록입니다.
 
-- `PROCESS_ASSETS_STAGE_ADDITIONAL` — add additional assets to the compilation.
-- `PROCESS_ASSETS_STAGE_PRE_PROCESS` — basic preprocessing of the assets.
-- `PROCESS_ASSETS_STAGE_DERIVED` — derive new assets from the existing assets.
-- `PROCESS_ASSETS_STAGE_ADDITIONS` — add additional sections to the existing assets e.g. banner or initialization code.
-- `PROCESS_ASSETS_STAGE_OPTIMIZE` — optimize existing assets in a general way.
-- `PROCESS_ASSETS_STAGE_OPTIMIZE_COUNT` — optimize the count of existing assets, e.g. by merging them.
-- `PROCESS_ASSETS_STAGE_OPTIMIZE_COMPATIBILITY` — optimize the compatibility of existing assets, e.g. add polyfills or vendor prefixes.
-- `PROCESS_ASSETS_STAGE_OPTIMIZE_SIZE` — optimize the size of existing assets, e.g. by minimizing or omitting whitespace.
-- `PROCESS_ASSETS_STAGE_DEV_TOOLING` — add development tooling to the assets, e.g. by extracting a source map.
-- `PROCESS_ASSETS_STAGE_OPTIMIZE_INLINE` <Badge text='5.8.0+' /> — optimize the numbers of existing assets, e.g. by inlining assets into other assets.
-- `PROCESS_ASSETS_STAGE_SUMMARIZE` — summarize the list of existing assets.
-- `PROCESS_ASSETS_STAGE_OPTIMIZE_HASH` — optimize the hashes of the assets, e.g. by generating real hashes of the asset content.
-- `PROCESS_ASSETS_STAGE_OPTIMIZE_TRANSFER` — optimize the transfer of existing assets, e.g. by preparing a compressed (gzip) file as separate asset.
-- `PROCESS_ASSETS_STAGE_ANALYSE` — analyze the existing assets.
-- `PROCESS_ASSETS_STAGE_REPORT` — creating assets for the reporting purposes.
+- `PROCESS_ASSETS_STAGE_ADDITIONAL` — 컴파일에 추가 애셋을 추가합니다.
+- `PROCESS_ASSETS_STAGE_PRE_PROCESS` — 애셋의 기본 전처리.
+- `PROCESS_ASSETS_STAGE_DERIVED` — 기존 애셋에서 새 애셋을 가져옵니다.
+- `PROCESS_ASSETS_STAGE_ADDITIONS` — 기존 애셋에 배너 또는 초기화 코드 같은 추가 섹션을 추가합니다.
+- `PROCESS_ASSETS_STAGE_OPTIMIZE` — 일반적인 방식으로 기존 애셋을 최적화합니다.
+- `PROCESS_ASSETS_STAGE_OPTIMIZE_COUNT` — 기존 애셋의 수를 최적화합니다(예. 애셋 병합).
+- `PROCESS_ASSETS_STAGE_OPTIMIZE_COMPATIBILITY` — 기존 애셋의 호환성 최적화(예. 폴리필 또는 vendor 접두사 추가).
+- `PROCESS_ASSETS_STAGE_OPTIMIZE_SIZE` — 기존 애셋의 크기 최적화(예. 공백을 최소화하거나 생략).
+- `PROCESS_ASSETS_STAGE_DEV_TOOLING` — 애셋에 개발 도구 추가(예. 소스맵 추출)
+- `PROCESS_ASSETS_STAGE_OPTIMIZE_INLINE` <Badge text='5.8.0+' /> — 기존 애셋 수 최적화(예. 애셋을 다른 애셋에 인라인으로 추가).
+- `PROCESS_ASSETS_STAGE_SUMMARIZE` — 기존 애셋 목록을 요약합니다.
+- `PROCESS_ASSETS_STAGE_OPTIMIZE_HASH` — 애셋의 해시를 최적화합니다(예. 애셋 콘텐츠의 실제 해시를 생성).
+- `PROCESS_ASSETS_STAGE_OPTIMIZE_TRANSFER` — 기존 애셋의 전송 최적화(예. 압축(gzip) 파일을 별도의 애셋으로 준비).
+- `PROCESS_ASSETS_STAGE_ANALYSE` — 기존 애셋을 분석합니다.
+- `PROCESS_ASSETS_STAGE_REPORT` — 리포팅 목적으로 애셋을 생성합니다.
 
 #### Assets info
 
-The "asset info" metadata is not automatically provided for this hook. If needed, you will have to resolve this metadata manually using the compilation instance and the provided asset pathname. This will be improved in a future version of the webpack.
+훅에 "asset info" 메타 데이터가 자동으로 제공되지 않습니다. 필요한 경우 컴파일 인스턴스와 제공된 애셋 경로 이름을 사용하여 이 메타 데이터를 수동으로 해결해야 합니다. 이것은 webpack의 차기 버전에서 개선될 것입니다.
 
 **Example:**
 
@@ -555,7 +558,7 @@ compilation.hooks.processAssets.tap(
   (assets) => {
     Object.entries(assets).forEach(([pathname, source]) => {
       const assetInfo = compilation.assetsInfo.get(pathname);
-      // @todo: do something with "pathname", "source" and "assetInfo"
+      // @todo: "pathname", "source" 및 "assetInfo"를 사용하여 작업해줍니다.
     });
   }
 );
@@ -565,66 +568,66 @@ compilation.hooks.processAssets.tap(
 
 `SyncHook`
 
-Called after the [`processAssets`](#processassets) hook had finished without error.
+[`processAssets`](#processassets) 훅이 에러없이 완료된 후에 호출됩니다.
 
 ### `needAdditionalSeal`
 
 `SyncBailHook`
 
-Called to determine if the compilation needs to be unsealed to include other files.
+다른 파일을 포함하기 위해 컴파일을 봉인 해제해야 하는지 확인하기 위해 호출됩니다.
 
 ### `afterSeal`
 
 `AsyncSeriesHook`
 
-Executed right after `needAdditionalSeal`.
+`needAdditionalSeal` 바로 뒤에 실행됩니다.
 
 ### `chunkHash`
 
 `SyncHook`
 
-Triggered to emit the hash for each chunk.
+각 청크에 대한 해시를 방출하도록 트리거됩니다.
 
-- Callback Parameters: `chunk` `chunkHash`
+- 콜백 파라미터: `chunk` `chunkHash`
 
 ### `moduleAsset`
 
 `SyncHook`
 
-Called when an asset from a module was added to the compilation.
+모듈의 애셋이 컴파일에 추가될 때 호출됩니다.
 
-- Callback Parameters: `module` `filename`
+- 콜백 파라미터: `module` `filename`
 
 ### `chunkAsset`
 
 `SyncHook`
 
-Triggered when an asset from a chunk was added to the compilation.
+청크의 애셋이 컴파일에 추가될 때 트리거됩니다.
 
-- Callback Parameters: `chunk` `filename`
+- 콜백 파라미터: `chunk` `filename`
 
 ### `assetPath`
 
 `SyncWaterfallHook`
 
-Called to determine the path of an asset.
+애셋의 경로를 결정하기 위해 호출됩니다.
 
-- Callback Parameters: `path` `options`
+- 콜백 파라미터: `path` `options`
 
 ### `needAdditionalPass`
 
 `SyncBailHook`
 
-Called to determine if an asset needs to be processed further after being emitted.
+애셋이 방출된 후 추가로 처리되어야 하는지 여부를 판별하기 위해 호출됩니다.
 
 ### `childCompiler`
 
 `SyncHook`
 
-Executed after setting up a child compiler.
+자식 컴파일러를 설정한 후 실행됩니다.
 
-- Callback Parameters: `childCompiler` `compilerName` `compilerIndex`
+- 콜백 파라미터: `childCompiler` `compilerName` `compilerIndex`
 
 ### `normalModuleLoader`
 
-Since webpack v5 `normalModuleLoader` hook was removed. Now to access the loader use `NormalModule.getCompilationHooks(compilation).loader` instead.
+webpack v5 `normalModuleLoader` 훅이 제거되었기 때문에, 이제 로더에 액세스하려면 `NormalModule.getCompilationHooks(compilation).loader`를 사용하세요.
