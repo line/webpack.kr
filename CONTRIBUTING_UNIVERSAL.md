@@ -8,7 +8,7 @@
 
 ### 번역 방법
 
-- 중복된 작업을 막기위해 번역할 페이지를 [체크](https://github.com/line/webpack.kr/issues/7)하고 ID를 적어둡니다.
+- 중복된 작업을 막기위해 번역할 페이지를 [체크](https://github.com/line/webpack.kr/issues/7)하고 Issue Comment 로 ID를 적어주세요.
 - [Issue](https://github.com/line/webpack.kr/issues)를 생성하고 번역할 페이지의 정보를 작성합니다.
 
 ### 번역 규칙
@@ -40,7 +40,7 @@
 - [glossary](https://github.com/line/webpack.kr/wiki/Glossary)가 빠짐없이 적용되었는지 확인합니다.
 - PR 전 [맞춤법 검사기](http://speller.cs.pusan.ac.kr/)를 사용해 틀린 부분을 교정합니다. 리뷰자 역시 맞춤법 검사기를 사용해, 번역자가 맞춤법을 지켜 번역했는지 확인합니다.
 - [로컬 서버 세팅 방법](https://github.com/webpack/webpack.js.org/blob/master/.github/CONTRIBUTING.md)을 참고하여 내가 작성한 내용이 어떻게 반영될 지 확인합니다.
-- [PR 규칙](https://github.com/line/webpack.kr/blob/phase1/.github/PULL_REQUEST_TEMPLATE.md)에 맞춰 PR을 작성합니다.
+- [PR 규칙](https://github.com/line/webpack.kr/blob/kr/.github/PULL_REQUEST_TEMPLATE.md)에 맞춰 PR을 작성합니다.
 
 ## 로컬 서버 세팅
 
