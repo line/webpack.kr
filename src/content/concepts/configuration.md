@@ -32,7 +32,7 @@ T> 이 문서에서 가장 중요한 부분은 webpack 설정을 형식화하고
 
 아래의 예제는 webpack 설정이 **코드이기** 때문에 표현적이면서 설정 가능하다는 것을 설명합니다.
 
-## Simple Configuration
+## Introductory Configuration
 
 **webpack.config.js**
 

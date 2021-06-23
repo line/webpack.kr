@@ -24,6 +24,7 @@ contributors:
   - wizardofhogwarts
   - myshov
   - anshumanv
+  - d3lm
 translators:
   - limong
 ---
@@ -31,6 +32,8 @@ translators:
 webpack은 JavsScript 모듈을 컴파일할 때 사용됩니다. [설치하면](/guides/installation), [CLI](/api/cli) 또는 [API](/api/node)로 webpack과 상호 작용할 수 있습니다. 아직 webpack이 익숙하지 않은 경우 [핵심 개념](/concepts)과 [비교 내용](/comparison)을 통해 커뮤니티의 다른 도구보다 왜 webpack을 사용해야 할지 알아보세요.
 
 W> webpack 5를 실행하기 위한 최소 Node.js 버전은 10.13.0(LTS) 입니다.
+
+<StackBlitzPreview example="getting-started?terminal=" />
 
 ## Basic Setup
 
@@ -112,10 +115,10 @@ T> `package.json`의 내부 동작을 더 알고 싶으면 [npm 문서](https://
    },
    "keywords": [],
    "author": "",
-   "license": "ISC",
+   "license": "MIT",
    "devDependencies": {
-     "webpack": "^5.4.0",
-     "webpack-cli": "^4.2.0"
+     "webpack": "^5.38.1",
+     "webpack-cli": "^4.7.2",
    }
  }
 ```

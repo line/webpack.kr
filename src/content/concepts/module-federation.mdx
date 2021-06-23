@@ -7,6 +7,8 @@ contributors:
   - EugeneHlushko
   - jamesgeorge007
   - ScriptedAlchemy
+  - snitin315
+  - XiaofengXie16
 translators:
   - choilim
 related:
@@ -23,6 +25,11 @@ related:
 여러 개의 개별 빌드가 단일 애플리케이션을 형성해야 합니다. 이러한 개별 빌드는 서로 의존성이 없어서, 개별적으로 개발하고 배포할 수 있습니다.
 
 이것은 종종 Micro-Frontends라고 알려져 있지만, 그것에만 국한되지는 않습니다.
+
+<StackBlitzPreview
+  example="module-federation?terminal="
+  description="Check out this live module federation example on StackBlitz."
+/>
 
 ## Low-level concepts
 
@@ -41,25 +48,6 @@ related:
 
 컨테이너를 중첩할 수 있습니다. 컨테이너는 다른 컨테이너의 모듈을 사용할 수 있습니다. 컨테이너 간의 순환 의존성도 가능합니다.
 
-### Overriding
-
-컨테이너는 선택한 로컬 모듈을 "오버라이딩 가능하다"로 표시할 수 있습니다. 컨테이너 소비자는 컨테이너의 오버라이딩 가능한 모듈 중 하나를 대체할 수 있는 모듈인 "오버라이딩" 모듈을 제공할 수 있습니다. 컨테이너의 모든 모듈은 소비자가 제공할 때 로컬 모듈 대신 대체 모듈을 사용합니다. 소비자가 대체 모듈을 제공하지 않을 때, 컨테이너의 모든 모듈은 로컬 모듈을 사용합니다.
-
-컨테이너는 소비자가 오버라이딩 할 때 다운로드가 필요 없는 방식으로 오버라이딩 가능한 모듈을 관리합니다. 이것은 일반적으로 별도의 청크로 배치하여 발생합니다.
-
-반면에, 대체 모듈 공급자는 비동기 로딩 기능만 제공합니다. 이것은 컨테이너가 필요한 경우만 대체 모듈을 로드 할 수 있습니다. 공급자는 컨테이너에서 요청하지 않을 때 다운로드할 필요가 없는 방식으로 대체 모듈을 관리합니다. 이것은 일반적으로 별도의 청크로 배치하여 발생합니다.
-
-"name"은 컨테이너에서 오버라이딩 가능한 모듈을 식별하는데 사용합니다.
-
-오버라이드는 컨테이너가 모듈을 노출하는 것과 비슷한 방식으로 제공되며, 다음 두 단계로 구분됩니다.
-
-1. 로딩(비동기)
-2. 평가(비동기)
-
-W> 중첩을 사용할 때, 하나의 컨테이너에게 오버라이드를 제공하면 중첩된 컨테이너에 있는 동일한 "name"을 가진 모듈들이 자동으로 오버라이드 됩니다.
-
-컨테이너의 모듈이 로드 되기 전에 오버라이드를 제공해야 합니다. 초기 청크에 사용되는 오버라이딩 가능한 항목은, 오직 promise를 사용하지 않는 동기 모듈 오버라이드에 의해서만 오버라이드 될 수 있습니다. 일단 평가되면, 오버라이딩 가능한 항목은 더 이상 오버라이딩 할 수 없습니다.
-
 ## High-level concepts
 
 각각의 빌드는 컨테이너의 역할을 하며 다른 빌드를 컨테이너로 소비하기도 합니다. 이렇게 하면 각각의 빌드가 해당 컨테이너에서 로드 하여 다른 노출된 모듈에 접근할 수 있습니다.
@@ -70,46 +58,17 @@ W> 중첩을 사용할 때, 하나의 컨테이너에게 오버라이드를 제�
 
 ## Building blocks
 
-### `OverridablesPlugin` (low level)
-
-이 플러그인은 특정 모듈을 "오버라이딩 가능하게" 만듭니다. 로컬 API(`__webpack_override__`)를 사용하면 오버라이드를 제공할 수 있습니다.
-
-**webpack.config.js**
-
-```js
-const OverridablesPlugin = require('webpack/lib/container/OverridablesPlugin');
-module.exports = {
-  plugins: [
-    new OverridablesPlugin([
-      {
-        // OverridablesPlugin으로 오버라이드 가능한 모듈을 정의합니다.
-        test1: './src/test1.js',
-      },
-    ]),
-  ],
-};
-```
-
-**src/index.js**
-
-```js
-__webpack_override__({
-  // 여기서 test1 모듈을 오버라이드 합니다.
-  test1: () => 'I will override test1 module under src',
-});
-```
-
 ### `ContainerPlugin` (low level)
 
-이 플러그인은 지정된 노출 모듈로 추가 컨테이너 엔트리을 만듭니다. 또한 내부적으로 `OverridablesPlugin`을 사용하고 `override` API를 컨테이너 소비자에게 노출합니다.
+이 플러그인은 지정된 노출 모듈로 추가 컨테이너 엔트리를 생성합니다.
 
 ### `ContainerReferencePlugin` (low level)
 
 이 플러그인은 컨테이너에 대한 특정 참조를 외부로 추가하고 컨테이너에서 원격 모듈을 가져올 수 있도록 합니다. 또한 컨테이너의 `override` API를 호출하여 오버라이드를 제공합니다. 로컬 오버라이드 (빌드도 컨테이너인 경우 `__webpack_override__` 또는 `override` API을 통해) 그리고 지정된 오버라이드가 모든 참조된 컨테이너에게 제공됩니다.
 
-### `ModuleFederationPlugin` (low level)
+### `ModuleFederationPlugin` (high level)
 
-이 플러그인은 `ContainerPlugin`과 `ContainerReferencePlugin`을 결합합니다. 오버라이드 및 오버라이드 가능한 항목은 지정된 공유 모듈의 단일 목록으로 결합됩니다.
+[`ModuleFederationPlugin`](/plugins/module-federation-plugin)은 `ContainerPlugin`과 `ContainerReferencePlugin`을 결합합니다.
 
 ## Concept goals
 
