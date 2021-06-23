@@ -334,7 +334,7 @@ new ModuleFederationPlugin({
 
 **`Uncaught Error: Module "./Button" does not exist in container.`**
 
-`"./Button"`은 표시되지 않지만, 오류 메세지는 유사하게 표시됩니다. 이 문제는 일반적으로 webpack beta.16에서 webpack beta.17로 업그레이드 하는 경우에 나타납니다.
+`"./Button"`은 표시되지 않지만, 오류 메시지는 유사하게 표시됩니다. 이 문제는 일반적으로 webpack beta.16에서 webpack beta.17로 업그레이드 하는 경우에 나타납니다.
 
 ModuleFederationPlugin 내에서 다음 위치에서 exposes를 변경합니다.
 
