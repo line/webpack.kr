@@ -15,11 +15,11 @@ translators:
   - 1ilsang
 ---
 
-`CommonsChunkPlugin` 은 여러 엔트리 포인트 간에 공유되는 공통 모듈로 이루어진 별도의 파일(청크라고 합니다)을 만드는 opt-in 기능입니다.
+`CommonsChunkPlugin`은 여러 엔트리 포인트 간에 공유되는 공통 모듈로 이루어진 별도의 파일(청크라고 합니다)을 만드는 opt-in 기능입니다.
 
 W> CommonsChunkPlugin 은 webpack v4(legato)에서 제거되었습니다. 최신 버전에서 청크가 처리되는 방식을 알아보려면 [SplitChunksPlugin](/plugins/split-chunks-plugin/)을 확인하세요.
 
-번들에서 공통 모듈을 분리한 결과로 생성된 청크 파일을 처음에 한 번 로드하고 나중에 사용하기 위해 캐시에 저장할 수 있습니다. 이로 인해 브라우저가 새 페이지를 방문할 때마다 더 큰 번들을 로드하지 않고 캐시에서 공유 코드를 빠르게 제공할 수 있으므로 페이지 속도가 최적화 됩니다.
+번들에서 공통 모듈을 분리한 결과로 생성된 청크 파일을 처음에 한 번 로드하고 나중에 사용하기 위해 캐시에 저장할 수 있습니다. 이로 인해 브라우저가 새 페이지를 방문할 때마다 더 큰 번들을 로드하지 않고 캐시에서 공유 코드를 빠르게 제공할 수 있으므로 페이지 속도가 최적화됩니다.
 
 ```javascript
 new webpack.optimize.CommonsChunkPlugin(options);
@@ -35,13 +35,13 @@ new webpack.optimize.CommonsChunkPlugin(options);
   names: string[],
   // 공통 청크의 청크 이름입니다. 청크의 이름을 전달하여 기존 청크를 선택할 수 있습니다.
   // 문자열 배열로 전달되면 각 청크 이름에 대해 플러그인을 여러 번 호출하는 것과 같습니다.
-  // 생략하고 `options.async` 또는 `options.children`이 설정되면 모든 청크가 사용됩니다. 그렇지 않으면 `options.filename`이 사용됩니다.
-  // 이는 청크 이름으로 사용됩니다.
+  // 생략하면 `options.async` 또는 `options.children`이 설정되고 모든 청크가 사용됩니다.
+  // 그렇지 않으면 청크 이름으로 사용되는 `options.filename`이 사용되게 됩니다.
   // `options.async`를 사용하여 다른 비동기 청크에서 공통 청크를 만들 때 `option.name`을 생략하는 대신 여기에
   // 엔트리 포인트 청크 이름을 지정해야 합니다.
 
   filename: string,
-  // 공통 청크의 파일 이름 템플릿 입니다. `output.filename`과 동일한 플레이스홀더를 포함할 수 있습니다.
+  // 공통 청크의 파일 이름 템플릿입니다. `output.filename`과 동일한 플레이스홀더를 포함할 수 있습니다.
   // 생략하면 원본 파일 이름은 수정되지 않습니다(일반적으로 `output.filename` 혹은 `output.chunkFilename`).
   // 이 옵션은 `options.async`를 사용하는 경우에도 허용되지 않습니다. 자세한 내용은 아래를 참조하세요.
 
@@ -62,10 +62,10 @@ new webpack.optimize.CommonsChunkPlugin(options);
   // `true`이면 공통 청크의 모든 자손이 선택됩니다.
 
   async: boolean|string,
-  // `true`이면 새로운 비동기 공통 청크가 `options.name`의 하위 항목과 `options.chunks`의 형제 항목으로 생성됩니다.
+  // `true`이면 새로운 비동기 공통 청크가 `options.name`의 하위 항목 및 `options.chunks`와 동등한 항목으로 생성됩니다.
   // `options.chunks`와 병렬로 로드됩니다.
-  // `option.filename`을 사용하는 대신 원하는 문자열을 제공해 출력 파일의
-  // 이름을 변경할 수 있습니다.
+  // `option.filename`을 사용하는 대신 `true`가 아닌 원하는 문자열을 제공해
+  // 출력 파일의 이름을 변경할 수 있습니다.
 
   minSize: number,
   // 공통 청크가 생성되기 전 모든 공통 모듈의 최소 사이즈입니다.
@@ -76,7 +76,7 @@ new webpack.optimize.CommonsChunkPlugin(options);
 
 ### Commons chunk for entries
 
-엔트리 포인트간에 공유되는 공통 모듈을 포함하는 추가 청크를 생성합니다.
+엔트리 포인트 간에 공유되는 공통 모듈을 포함하는 추가 청크를 생성합니다.
 
 ```javascript
 new webpack.optimize.CommonsChunkPlugin({
@@ -94,7 +94,7 @@ new webpack.optimize.CommonsChunkPlugin({
 });
 ```
 
-생성된 청크는 엔트리 포인트 전에 로드해야 한다.
+생성된 청크는 엔트리 포인트 전에 로드해야 합니다.
 
 ```html
 <script src="commons.js" charset="utf-8"></script>
@@ -120,7 +120,7 @@ module.exports = {
 
       minChunks: Infinity,
       // (엔트리가 더 많으면 다른 모듈이 vendor 청크로
-      //  들어 가지 않습니다)
+      //  들어가지 않습니다)
     }),
   ],
 };
@@ -246,6 +246,6 @@ new webpack.optimize.CommonsChunkPlugin({
 
 ## More Examples
 
-- [공용 및 Vendor 청크](https://github.com/webpack/webpack/tree/master/examples/common-chunk-and-vendor-chunk)
+- [공통 및 Vendor 청크](https://github.com/webpack/webpack/tree/master/examples/common-chunk-and-vendor-chunk)
 - [다중 공통 청크](https://github.com/webpack/webpack/tree/8b888fedfaeaac6bd39168c0952cc19e6c34280a/examples/multiple-commons-chunks)
 - [공통 청크가 있는 다중 엔트리 포인트](https://github.com/webpack/webpack/tree/8b888fedfaeaac6bd39168c0952cc19e6c34280a/examples/multiple-entry-points-commons-chunk-css-bundle)
