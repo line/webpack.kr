@@ -17,7 +17,7 @@ translators:
 
 `CommonsChunkPlugin`은 여러 엔트리 포인트 간에 공유되는 공통 모듈로 이루어진 별도의 파일(청크라고 합니다)을 만드는 opt-in 기능입니다.
 
-W> CommonsChunkPlugin 은 webpack v4(legato)에서 제거되었습니다. 최신 버전에서 청크가 처리되는 방식을 알아보려면 [SplitChunksPlugin](/plugins/split-chunks-plugin/)을 확인하세요.
+W> CommonsChunkPlugin은 webpack v4(legato)에서 제거되었습니다. 최신 버전에서 청크가 처리되는 방식을 알아보려면 [SplitChunksPlugin](/plugins/split-chunks-plugin/)을 확인하세요.
 
 번들에서 공통 모듈을 분리한 결과로 생성된 청크 파일을 처음에 한 번 로드하고 나중에 사용하기 위해 캐시에 저장할 수 있습니다. 이로 인해 브라우저가 새 페이지를 방문할 때마다 더 큰 번들을 로드하지 않고 캐시에서 공유 코드를 빠르게 제공할 수 있으므로 페이지 속도가 최적화됩니다.
 
@@ -49,7 +49,7 @@ new webpack.optimize.CommonsChunkPlugin(options);
   // 공통 청크로 이동하기 전에 모듈을 포함해야 하는 최소 청크 수입니다.
   // 숫자는 2보다 크거나 같고 청크 수보다 작거나 같아야 합니다.
   // `Infinity`를 전달하면 공통 청크가 생성되지만 모듈은 이동하지 않습니다.
-  // `function`을 제공하여 맞춤 로직을 추가 할 수 있습니다. (기본값은 청크의 수입니다)
+  // `function`을 제공하여 맞춤 로직을 추가 할 수 있습니다.(기본값은 청크의 수입니다)
 
   chunks: string[],
   // 청크 이름으로 소스 청크를 선택합니다. 청크는 공통 청크의 자식이어야 합니다.
@@ -208,7 +208,7 @@ new webpack.optimize.CommonsChunkPlugin({
 new webpack.optimize.CommonsChunkPlugin({
   name: 'vendor',
   minChunks: function (module) {
-    // 이는 vendor 의 import 가 node_modules 디렉터리에 존재한다고 가정합니다.
+    // 이는 vendor의 import가 node_modules 디렉터리에 존재한다고 가정합니다.
     return module.context && module.context.includes('node_modules');
   },
 });
