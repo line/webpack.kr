@@ -185,7 +185,7 @@ new webpack.optimize.CommonsChunkPlugin({
 
 `count` 인수는 `module`이 사용되는 청크 수를 나타냅니다.
 
-이 옵션은 CommonsChunk 알고리즘이 모듈을 이동할 위치를 결정하는 방법을 세밀하게 제어하려는 경우에 유용합니다.
+이 옵션은 CommonsChunk 알고리즘을 통해 모듈을 이동할 위치를 결정하는 방법을 세밀하게 제어하려는 경우에 유용합니다.
 
 ```javascript
 new webpack.optimize.CommonsChunkPlugin({
@@ -200,7 +200,7 @@ new webpack.optimize.CommonsChunkPlugin({
 });
 ```
 
-위에서 볼 수 있듯이 이 예제를 사용하면 함수 내의 모든 조건이 충족되는 경우에만 하나의 라이브러리를 별도의 파일로 이동할 수 있습니다.
+위에서 볼 수 있듯이 이 예제를 사용하면 함수 내의 모든 조건이 충족되는 경우에만, 하나의 라이브러리를 별도의 파일로 이동할 수 있습니다.
 
 이 개념은 암시적 공통 vendor 청크를 얻는데 사용할 수 있습니다.
 
