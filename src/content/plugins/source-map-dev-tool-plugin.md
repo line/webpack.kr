@@ -14,7 +14,7 @@ related:
     url: https://survivejs.com/webpack/building/source-maps/#-sourcemapdevtoolplugin-and-evalsourcemapdevtoolplugin-
 ---
 
-이 플러그인을 사용하면 소스맵 생성을 더욱 세밀하게 제어 할 수 있습니다. 이 플러그인은 [`devtool`](/configuration/devtool)의 설정 옵션을 통해 자동으로 활성화됩니다.
+이 플러그인을 사용하면 소스맵 생성을 더욱더 세밀하게 제어 할 수 있습니다. 이 플러그인은 [`devtool`](/configuration/devtool)의 설정 옵션을 통해 자동으로 활성화됩니다.
 
 ```js
 new webpack.SourceMapDevToolPlugin(options);
