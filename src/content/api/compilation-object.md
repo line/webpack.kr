@@ -9,7 +9,7 @@ contributors:
   - snitin315
 ---
 
-The Compilation object has many methods and hooks available. On this page, we will list the available methods and properties.
+Compilation 객체에는 사용가능한 많은 메서드와 훅이 있습니다. 이 페이지에서는, 사용가능한 메서드와 프로퍼티를 나열합니다.
 
 ## compilation object methods
 
@@ -17,214 +17,214 @@ The Compilation object has many methods and hooks available. On this page, we wi
 
 `function`
 
-Returns Stats object for the current compilation.
+현재 컴파일에 대한 State 객체를 반환합니다.
 
 ### addModule
 
 `function (module, cacheGroup)`
 
-Adds a module to the current compilation.
+현재 컴파일에 모듈을 추가합니다.
 
 Parameters:
 
-- `module` - module to be added
-- `cacheGroup` - `cacheGroup` of the module
+- `module` - 추가 할 모듈.
+- `cacheGroup` - 모듈의 `cacheGroup`.
 
 ### getModule
 
 `function (module)`
 
-Fetches a module from a compilation by its identifier.
+식별자를 통해 컴파일에서 모듈을 가져옵니다.
 
 Parameters:
 
-- `module` - module to be fetched. The identifier is extracted from the module by the compilation using `module.identifier()` method.
+- `module` - 가져올 모듈. 식별자는 `module.identifier()` 메서드를 사용한 컴파일을 통해 모듈에서 추출됩니다.
 
 ### findModule
 
 `function (module)`
 
-Attempts to search for a module by its identifier.
+식별자로 모듈 검색을 시도합니다.
 
 Parameters:
 
-- `module` - module to be searched for. The identifier is extracted from the module by the compilation using `module.identifier()` method.
+- `module` - 검색 할 모듈. 식별자는 `module.identifier()` 메서드를 사용한 컴파일을 통해 모듈에서 추출됩니다.
 
 ### buildModule
 
 `function (module, optional, origin, dependencies)`
 
-Builds the given module.
+주어진 모듈을 빌드합니다.
 
 Parameters:
 
-- `module` - the module to be built.
-- `optional` - optional flag.
-- `origin` - origin module from which this module build was requested.
-- `dependencies` - optional dependencies of the module to be built.
+- `module` - 빌드 할 모듈입.
+- `optional` - 선택적 플래그.
+- `origin` - 모듈 빌드가 요청 된 원본 모듈.
+- `dependencies` - 빌드 할 모듈의 선택적 의존성.
 
 ### processModuleDependencies
 
 `function (module, callback)`
 
-Process the given module dependencies.
+주어진 모듈 의존성을 처리합니다.
 
 Parameters:
 
-- `module` - module to be processed for the dependencies.
-- `callback` - function to be invoked when dependencies of the module had been processed.
+- `module` - 의존성에 대해 처리 할 모듈.
+- `callback` - 모듈의 의존성이 처리되었을 때 호출되는 함수.
 
 ### addEntry
 
 `function (context, entry, name, callback)`
 
-Adds an entry to the compilation.
+컴파일에 엔트리를 추가합니다.
 
 Parameters:
 
-- `context` - context path for entry.
-- `entry` - entry dependency.
-- `name` - the name of entry.
-- `callback` - function to be invoked when addEntry finishes.
+- `context` - 엔트리의 컨텍스트 경로.
+- `entry` - 엔트리 의존성.
+- `name` - 엔트리 이름.
+- `callback` - addEntry가 완료될 때 호출되는 함수.
 
 ### rebuildModule
 
 `function (module, thisCallback)`
 
-Triggers a re-build of the module.
+모듈 재 빌드를 트리거합니다.
 
 Parameters:
 
-- `module` - module to be rebuilt.
-- `thisCallback` - function to be invoked when the module finishes rebuilding.
+- `module` - 재 빌드 할 모듈.
+- `thisCallback` - 모듈이 재 빌드를 마쳤을 때 호출되는 함수.
 
 ### finish
 
 `function (callback)`
 
-Finishes compilation and invokes the given callback.
+컴파일을 완료하고 주어진 콜백을 호출합니다.
 
 Parameters:
 
-- `callback` - function to be invoked when the compilation has been finished.
+- `callback` - 컴파일이 완료되면 호출되는 함수.
 
 ### seal
 
 `function (callback)`
 
-Seals the compilation.
+컴파일을 봉인합니다.
 
 Parameters:
 
-- `callback` - function to be invoked when the compilation has been sealed.
+- `callback` - 컴파일이 봉인되었을 때 호출되는 함수.
 
 ### unseal
 
 `function`
 
-Unseals the compilation.
+컴파일 봉인을 해제합니다.
 
 Parameters:
 
-- `callback` - function to be invoked when the compilation has been unsealed.
+- `callback` - 컴파일 봉인이 해제될 때 호출되는 함수.
 
 ### reportDependencyErrorsAndWarnings
 
 `function (module, blocks)`
 
-Adds errors and warnings of the given module to the compilation errors and warnings.
+컴파일 오류 및 경고에 주어진 모듈의 오류 및 경고를 추가합니다.
 
 Parameters:
 
-- `module` - the module whose errors and warnings are to be reported.
-- `blocks` - a set of dependency blocks to report from.
+- `module` - 오류 및 경고를 보고 할 모듈.
+- `blocks` - 보고 할 의존성 블록 집합.
 
 ### addChunkInGroup
 
 `function (groupOptions, module, loc, request)`
 
-Adds module to an existing chunk group or creates a new one. Returns a `chunkGroup`.
+기존 청크 그룹에 모듈을 추가하거나 새 그룹을 만듭니다. `chunkGroup`을 반환합니다.
 
 Parameters:
 
-- `groupOptions` - options for the chunk group.
-- `module` - a module that references the chunk group.
-- `loc` - the location from which the chunk group is referenced (inside of the module).
-- `request` - the request from which the chunk group is referenced.
+- `groupOptions` - 청크 그룹에 대한 옵션.
+- `module` - 청크 그룹을 참조하는 모듈.
+- `loc` - 청크 그룹이 참조되는 위치(모듈 내부).
+- `request` - 청크 그룹이 참조되는 요청.
 
 ### addChunk
 
 `function (name)`
 
-Creates and adds a new chunk to the `compilation.chunks`. Returns that `chunk`.
+`compilation.chunks`에 새 청크를 만들고 추가합니다. 해당 `chunk`를 반환합니다.
 
 Parameters:
 
-- `name` - the name of the chunk.
+- `name` - 청크 이름.
 
 ### assignDepth
 
 `function (module)`
 
-Assigns `depth` to the given module and its dependency blocks recursively.
+주어진 모듈과 그 의존성 블록에 재귀적으로 `depth`를 할당합니다.
 
 Parameters:
 
-- `module` - the module to assign depth to.
+- `module` - depth를 할당할 모듈.
 
 ### getDependencyReference
 
 `function (module, dependency)`
 
-Returns the reference to the dependency from a given module.
+주어진 모듈에서 의존성에 대한 참조를 반환합니다.
 
 Parameters:
 
-- `module` - the module at question.
-- `dependency` - the dependency to get reference to.
+- `module` - 질문의 모듈.
+- `dependency` - 참조할 종속성.
 
 ### processDependenciesBlocksForChunkGroups
 
 `function (inputChunkGroups)`
 
-Creates the `Chunk` graph from the `Module` graph. The process is done in two phases. Phase one: traverse the module graph and build a basic chunks graph in `chunkDependencies`. Phase two: traverse every possible way through the basic chunk graph and track the available modules. While traversing, `processDependenciesBlocksForChunkGroups` connects chunks with each other and `Blocks` with `Chunks`. It stops traversing when all modules for a chunk are already available and it doesn't connect unneeded chunks.
+`Module` 그래프에서 `Chunk` 그래프를 생성합니다. 이 과정은 두 단계로 이루어집니다. 1단계: 모듈 그래프를 탐색하고 `chunkDependencies`에서 기본 청크 그래프를 빌드합니다. 2단계: 기본 청크 그래프를 통해 가능한 모든 방법을 탐색하고 사용 가능한 모듈을 추적합니다. 탐색하는 동안, `processDependenciesBlocksForChunkGroups`는 청크를 서로 연결하고 `Blocks`는 `Chunks`와 연결합니다. 청크에 대한 모든 모듈이 이미 사용 가능하고 불필요한 청크를 연결하지 않으면 탐색을 중지합니다.
 
 Parameters:
 
-- `inputChunkGroups` - chunk groups that are processed.
+- `inputChunkGroups` - 처리되는 청크 그룹.
 
 ### removeReasonsOfDependencyBlock
 
 `function (module, block)`
 
-Removes relation of the module to the dependency block.
+모듈과 의존성 블록의 관계를 제거합니다.
 
 Parameters:
 
-- `module` - a module relationship to be removed.
-- `block` - dependency block.
+- `module` - 제거할 모듈 관계.
+- `block` - 의존성 블록.
 
 ### patchChunksAfterReasonRemoval
 
 `function (module, chunk)`
 
-Patches ties of module and chunk after removing dependency reasons. Called automatically by `removeReasonsOfDependencyBlock`.
+의존성 이유를 제거한 후 모듈 및 청크의 연결을 패치합니다. `removeReasonsOfDependencyBlock`에 의해 자동으로 호출됩니다.
 
 Parameters:
 
-- `module` - a module to patch tie.
-- `chunk` - a chunk to patch tie.
+- `module` - 패치 할 모듈.
+- `chunk` - 패치 할 청크.
 
 ### removeChunkFromDependencies
 
 `function (block, chunk)`
 
-Removes given chunk from a dependencies block module and chunks after removing dependency reasons. Called automatically by `removeReasonsOfDependencyBlock`.
+의존성 이유를 제거한 후 의존성 블록 모듈 및 청크에서 주어진 청크를 제거합니다. `removeReasonsOfDependencyBlock`에 의해 자동으로 호출됩니다.
 
 Parameters:
 
-- `block` - block tie for `Chunk`.
-- `chunk` - a chunk to remove from dependencies.
+- `block` - `Chunk`의 블록.
+- `chunk` - 의존성에서 제거할 청크.
 
 ### sortItemsWithModuleIds
 
@@ -254,35 +254,35 @@ Parameters:
 
 `function (filename, data)`
 
-Returns the interpolated path.
+삽입된 경로를 반환합니다.
 
 Parameters:
 
-- `filename` - used to get asset path with hash.
-- `data` - data object.
+- `filename` - 해시로 애셋 경로를 얻는 데 사용.
+- `data` - data 객체.
 
 ### getPathWithInfo
 
 `function (filename, data)`
 
-Returns interpolated path and asset information.
+삽입된 경로 및 애셋 정보를 반환합니다.
 
 Parameters:
 
-- `filename` - used to get asset path with hash.
-- `data` - data object.
+- `filename` - 해시로 애셋 경로를 얻는 데 사용.
+- `data` - data 객체.
 
 ### createChildCompiler
 
 `function (name, outputOptions, plugins)`
 
-Allows running another instance of webpack inside of webpack. However, as a child with different settings and configurations applied. It copies all hooks and plugins from the parent (or top-level compiler) and creates a child `Compiler` instance. Returns the created `Compiler`.
+webpack 내에서 webpack의 다른 인스턴스를 실행할 수 있습니다. 그러나, 다른 설정과 구성이 적용된 자식으로서 부모(또는 최상위 컴파일러)에서 모든 훅과 플러그인을 복사하고 자식 `Compiler`인스턴스를 만듭니다. 생성된 `Compiler`를 반환합니다.
 
 Parameters:
 
-- `name` - name for the child `Compiler`.
-- `outputOptions` - output options object.
-- `plugins` - webpack plugins that will be applied.
+- `name` - 자식 `Compiler`의 이름.
+- `outputOptions` - 출력 옵션 객체.
+- `plugins` - 적용 될 webpack 플러그인.
 
 ### checkConstraints
 
@@ -292,25 +292,25 @@ Parameters:
 
 `function (file, source, assetInfo = {})`
 
-W> Available since webpack 4.40.0
+W> webpack 4.40.0 부터 사용 가능
 
 Parameters:
 
-- `file` - file name of the asset
-- `source` - the source of the asset
-- `assetInfo` - additional asset information
+- `file` - 애셋의 파일 이름
+- `source` - 애셋의 소스
+- `assetInfo` - 추가 애셋 정보
 
 ### updateAsset
 
 `function (file, newSourceOrFunction, assetInfoUpdateOrFunction)`
 
-W> Available since webpack 4.40.0
+W> webpack 4.40.0 부터 사용 가능
 
 Parameters:
 
-- `file` - file name of the asset
-- `newSourceOrFunction` - new asset source or function converting old to new
-- `assetInfoUpdateOrFunction` - new asset info or function converting old to new
+- `file` - 애셋의 파일 이름
+- `newSourceOrFunction` - 새 애셋 소스 또는 이전의 것을 새 것으로 변환하는 함수
+- `assetInfoUpdateOrFunction` - 새 애셋 정보 또는 이전의 것을 새 것으로 변환하는 함수
 
 ### deleteAsset
 
@@ -318,22 +318,22 @@ Parameters:
 
 Parameters:
 
-- `file` - file name of the asset
+- `file` - 애셋의 파일 이름
 
 ### getAssets
 
 `function`
 
-W> Available since webpack 4.40.0
+W> webpack 4.40.0 부터 사용 가능
 
-Returns array of all assets under the current compilation.
+현재 컴파일에서 모든 애셋의 배열을 반환합니다.
 
 ### getAsset
 
 `function (name)`
 
-W> Available since webpack 4.40.0
+W> webpack 4.40.0 부터 사용 가능
 
 Parameters:
 
-- `name` - the name of the asset to return
+- `name` - 반환 할 애셋의 이름
