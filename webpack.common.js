@@ -48,10 +48,6 @@ module.exports = ({ ssg = false }) => ({
   module: {
     rules: [
       {
-        test: /react-spring/,
-        sideEffects: true,
-      },
-      {
         test: /\.mdx$/,
         use: [
           'babel-loader',
@@ -144,7 +140,7 @@ module.exports = ({ ssg = false }) => ({
     new webpack.DefinePlugin({
       // https://github.com/algolia/algoliasearch-client-javascript/issues/764
       'process.env.RESET_APP_DATA_TIMER': JSON.stringify(''), // fix for algoliasearch
-      'process.env.PHASE': JSON.stringify(process.env.PHASE)
+      'process.env.PHASE': JSON.stringify(process.env.PHASE),
     }),
   ],
   output: {

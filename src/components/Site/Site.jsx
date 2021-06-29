@@ -56,6 +56,7 @@ const mdxComponents = {
 Site.propTypes = {
   location: PropTypes.shape({
     pathname: PropTypes.string.isRequired,
+    hash: PropTypes.string,
   }),
   import: PropTypes.func,
 };
@@ -235,9 +236,9 @@ function Site(props) {
           <meta name="msapplication-TileColor" content="#465e69" />
         </Helmet>
         <div className="site__header">
-          <NotificationBar />
           <Navigation
             pathname={location.pathname}
+            hash={location.hash}
             toggleSidebar={_toggleSidebar}
             theme={theme}
             switchTheme={switchTheme}
@@ -323,6 +324,7 @@ function Site(props) {
           />
         </Switch>
         <Footer />
+        <NotificationBar />
       </div>
     </MDXProvider>
   );
