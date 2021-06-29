@@ -382,7 +382,7 @@ parser.hooks.canRename.for('b').tap('MyPlugin', (expression) => {
 
 `SyncBailHook`
 
-새 식별자를 가져오기 위해 이름을 바꿀 때 트리거 됩니다. 이 훅은 `canRename`가 `true`를 반환하는 경우에 호출됩니다.
+새 식별자를 가져오기 위해 이름을 바꿀 때 트리거 됩니다. 이 훅은 `canRename`이 `true`를 반환하는 경우에 호출됩니다.
 
 - 훅 매개 변수: `identifier`
 - 콜백 매개 변수: `expression`
