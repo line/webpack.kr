@@ -29,7 +29,7 @@ compiler.hooks.normalModuleFactory.tap('MyPlugin', (factory) => {
 
 ## Hooks
 
-다음의 라이프사이클 훅은 다음과 같이 `parser`에 의해 노출되며 접근할 수 있습니다.
+다음 라이프사이클 훅은 `parser`에 의해 노출되며 접근할 수 있습니다.
 
 ### evaluateTypeof
 
