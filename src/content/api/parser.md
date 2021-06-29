@@ -10,7 +10,7 @@ contributors:
   - chenxsan
 ---
 
-`compiler`에 있는, `parser` 인스턴스는, webpack에서 처리 중인 각 모듈을 파싱하는데 사용합니다.
+`compiler`에 있는, `parser` 인스턴스는, webpack에서 처리 중인 각 모듈을 파싱하는 데 사용합니다.
 `parser`는 `tapable`을 확장하고 플러그인 작성자가 파싱 프로세스를 커스터마이징 하는데 사용할 수 있는 다양한 `tapable` 훅을 제공하는 또 다른 webpack 클래스입니다.
 
 `parser`는 [NormalModuleFactory](/api/compiler-hooks/#normalmodulefactory)에서 볼 수 있습니다.
