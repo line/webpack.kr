@@ -73,7 +73,7 @@ module.exports = function (source) {
 - `logger.groupEnd()`: 로깅 그룹을 종료하기 위해 사용합니다.
 - `logger.groupCollapsed(...)`: 메시지를 함께 그룹화하기 위해 사용합니다. `logger.log`처럼 접힌 채로 표시됩니다. 로깅 수준이 `'verbose'` 나 `'debug'`로 설정된 경우 확장되어 표시됩니다.
 - `logger.status`: 임시 메시지를 작성하고, 새 상태를 설정하고, 이전 메시지를 재정의합니다.
-- `logger.clear()`: 수평라인을 출력합니다. `logger.log`처럼 표시됩니다.
+- `logger.clear()`: 수평 라인을 출력합니다. `logger.log`처럼 표시됩니다.
 - `logger.profile(...)`, `logger.profileEnd(...)`: 프로파일을 캡처하기 위해 사용합니다. 지원되는 경우 `console.profile`에 위임됩니다.
 
 ## Runtime Logger API
