@@ -180,7 +180,7 @@ Compilation 객체에는 사용 가능한 많은 메서드와 훅이 있습니�
 
 파라미터:
 
-- `module` - 질문의 모듈.
+- `module` - 주어진 모듈.
 - `dependency` - 참조할 의존성.
 
 ### processDependenciesBlocksForChunkGroups
