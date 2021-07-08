@@ -5,6 +5,8 @@ contributors:
   - rafaelrinaldi
   - chrisVillanueva
   - gonzoyumo
+translators:
+  - YukJiSoo
 ---
 
 `publicPath` 설정은 다양한 경우에서 유용하게 사용될 수 있습니다. 애플리케이션의 모든 애셋에 대한 기본 경로를 지정할 수 있습니다.

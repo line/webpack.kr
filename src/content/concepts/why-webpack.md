@@ -6,6 +6,8 @@ contributors:
   - montogeek
   - jeremenichelli
   - EugeneHlushko
+translators:
+  - limong
 ---
 
 webpack을 사용해야 하는 이유를 이해하기 위해서 번들러가 사용되기 전에 어떻게 자바스크립트를 사용했었는지 요약해 보겠습니다.

@@ -7,6 +7,7 @@ import { useLocation } from 'react-router-dom';
 import PageLinks from '../PageLinks/PageLinks';
 import Markdown from '../Markdown/Markdown';
 import Contributors from '../Contributors/Contributors';
+import Translators from '../Translators/Translators';
 import { PlaceholderString } from '../Placeholder/Placeholder';
 import { Pre } from '../Configuration/Configuration';
 import AdjacentPages from './AdjacentPages';
@@ -17,6 +18,7 @@ export default function Page(props) {
   const {
     title,
     contributors = [],
+    translators = [],
     related = [],
     previous,
     next,
@@ -62,6 +64,8 @@ export default function Page(props) {
   const loadRelated = contentLoaded && related && related.length !== 0;
   const loadContributors =
     contentLoaded && contributors && contributors.length !== 0;
+  const loadTranslators =
+    contentLoaded && translators && translators.length !== 0;
 
   let contentRender;
 
@@ -112,7 +116,13 @@ export default function Page(props) {
             </ul>
           </div>
         )}
-
+        {loadTranslators && (
+          <div className="translators__section">
+            <hr />
+            <h3>Translators</h3>
+            <Translators translators={translators} />
+          </div>
+        )}
         {loadContributors && (
           <div className="contributors__section">
             <hr />
@@ -127,6 +137,7 @@ export default function Page(props) {
 Page.propTypes = {
   title: PropTypes.string,
   contributors: PropTypes.array,
+  translators: PropTypes.array,
   related: PropTypes.array,
   previous: PropTypes.object,
   next: PropTypes.object,

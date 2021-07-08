@@ -11,6 +11,8 @@ contributors:
   - smelukov
   - anshumanv
   - snitin315
+translators:
+  - choilim
 ---
 
 엔트리 객체는 webpack이 번들 빌드를 시작하는 곳입니다. 컨텍스트는 엔트리 파일을 포함하는 디렉터리에 대한 절대 경로입니다.
@@ -80,8 +82,8 @@ module.exports = {
       dependOn: 'shared',
       chunkLoading: 'jsonp',
       layer: 'name of layer', // 엔트리 포인트에 대한 레이어 설정
-    }
-  }
+    },
+  },
 };
 ```
 

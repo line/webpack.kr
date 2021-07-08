@@ -5,6 +5,8 @@ contributors:
   - skipjack
   - EugeneHlushko
   - benschac
+translators:
+  - dkstyle
 ---
 
 이 섹션에는 webpack이 제공하는 다양한 도구와 기능을 이해하고 마스터하기 위한 가이드가 포함되어 있습니다. 첫 번째는 [시작하기를](/guides/getting-started/) 안내하는 간단한 가이드입니다.

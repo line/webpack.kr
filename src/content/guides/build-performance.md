@@ -8,6 +8,8 @@ contributors:
   - madhavarshney
   - wizardofhogwarts
   - anikethsaha
+translators:
+  - YukJiSoo
 ---
 
 이 가이드에는 빌드/컴파일 성능을 개선하기 위한 몇 가지 유용한 팁이 포함되어 있습니다.
@@ -198,7 +200,6 @@ module.exports = {
 
 ### Node.js Versions 8.9.10-9.11.1
 
-
 Node.js 버전 8.9.10 - 9.11.1의 ES2015 `Map` 및 `Set` 구현에서 [성능 저하](https://github.com/nodejs/node/issues/19769)가 있었습니다. webpack은 이러한 데이터 구조를 자유롭게 사용하므로 이 성능저하는 컴파일 시간에 영향을 줍니다.
 
 이전 및 이후 Node.js 버전은 영향을 받지 않습니다.
@@ -231,7 +232,6 @@ T> `ts-loader` GitHub 저장소에 [전체 예시](https://github.com/TypeStrong
 다음 단계는 _production에서_ 특히 유용합니다.
 
 W> **작은 성능 향상을 위해 애플리케이션의 품질을 희생하지 마세요!** 대부분의 경우 최적화 품질이 빌드 성능보다 더 중요합니다.
-
 
 ### Multiple Compilations
 

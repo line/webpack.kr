@@ -10,7 +10,7 @@ contributors:
   - chenxsan
 ---
 
-`compiler`에 있는, `parser` 인스턴스는, webpack에서 처리 중인 각 모듈을 파싱하는데 사용합니다.
+`compiler`에 있는, `parser` 인스턴스는, webpack에서 처리 중인 각 모듈을 파싱하는 데 사용합니다.
 `parser`는 `tapable`을 확장하고 플러그인 작성자가 파싱 프로세스를 커스터마이징 하는데 사용할 수 있는 다양한 `tapable` 훅을 제공하는 또 다른 webpack 클래스입니다.
 
 `parser`는 [NormalModuleFactory](/api/compiler-hooks/#normalmodulefactory)에서 볼 수 있습니다.
@@ -29,7 +29,7 @@ compiler.hooks.normalModuleFactory.tap('MyPlugin', (factory) => {
 
 ## Hooks
 
-다음의 라이프사이클 훅은 다음과 같이 `parser`에 의해 노출되며 접근할 수 있습니다.
+다음 라이프사이클 훅은 `parser`에 의해 노출되며 접근할 수 있습니다.
 
 ### evaluateTypeof
 
@@ -37,8 +37,8 @@ compiler.hooks.normalModuleFactory.tap('MyPlugin', (factory) => {
 
 자유 변수의 `typeof`로 구성된 표현식을 평가할 때 트리거 됩니다.
 
-- 훅 매개 변수: `identifier`
-- 콜백 매개 변수: `expression`
+- 훅 파라미터: `identifier`
+- 콜백 파라미터: `expression`
 
 ```js
 parser.hooks.evaluateTypeof
@@ -68,8 +68,8 @@ const b = typeof myIdentifier;
 
 표현식을 평가할 때 호출됩니다.
 
-- 훅 매개 변수: `expressionType`
-- 콜백 매개 변수: `expression`
+- 훅 파라미터: `expressionType`
+- 콜백 파라미터: `expression`
 
 예제입니다.
 
@@ -117,8 +117,8 @@ parser.hooks.evaluate.for('NewExpression').tap('MyPlugin', (expression) => {
 
 자유 변수인 식별자를 평가할 때 호출됩니다.
 
-- 훅 매개 변수: `identifier`
-- 콜백 매개 변수: `expression`
+- 훅 파라미터: `identifier`
+- 콜백 파라미터: `expression`
 
 ### evaluateDefinedIdentifier
 
@@ -126,8 +126,8 @@ parser.hooks.evaluate.for('NewExpression').tap('MyPlugin', (expression) => {
 
 정의된 변수 식별자를 평가할 때 호출됩니다.
 
-- 훅 매개 변수: `identifier`
-- 콜백 매개 변수: `expression`
+- 훅 파라미터: `identifier`
+- 콜백 파라미터: `expression`
 
 ### evaluateCallExpressionMember
 
@@ -135,8 +135,8 @@ parser.hooks.evaluate.for('NewExpression').tap('MyPlugin', (expression) => {
 
 성공적으로 평가된 표현식의 멤버 함수에 대한 호출을 평가할 때 호출됩니다.
 
-- 훅 매개 변수: `identifier`
-- 콜백 매개 변수: `expression` `param`
+- 훅 파라미터: `identifier`
+- 콜백 파라미터: `expression` `param`
 
 이 표현식은 다음의 훅을 트리거 합니다.
 
@@ -163,7 +163,7 @@ parser.hooks.evaluateCallExpressionMember
 
 코드 조각에서 파싱된 모든 구문에 대해 호출되는 범용적 훅입니다.
 
-- 콜백 매개 변수: `statement`
+- 콜백 파라미터: `statement`
 
 ```js
 parser.hooks.statement.tap('MyPlugin', (statement) => {
@@ -201,7 +201,7 @@ parser.hooks.statement.tap('MyPlugin', (statement) => {
 
 if 구문을 파싱할 때 호출됩니다. `statement` 훅과 동일하지만, `statement.type == 'IfStatement'`인 경우에만 트리거 됩니다.
 
-- 콜백 매개 변수: `statement`
+- 콜백 파라미터: `statement`
 
 ### label
 
@@ -209,16 +209,16 @@ if 구문을 파싱할 때 호출됩니다. `statement` 훅과 동일하지만, 
 
 [label](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/label)이 있는 구문을 파싱할 때 호출됩니다. 이러한 구문에는 `statement.type === 'LabeledStatement'`가 있습니다.
 
-- 훅 매개 변수: `labelName`
-- 콜백 매개 변수: `statement`
+- 훅 파라미터: `labelName`
+- 콜백 파라미터: `statement`
 
 ### import
 
 `SyncBailHook`
 
-코드 조각의 모든 import 구문에 대해 호출됩니다. `source` 매개변수에는 가져온 파일의 이름이 포함됩니다.
+코드 조각의 모든 import 구문에 대해 호출됩니다. `source` 파라미터에는 가져온 파일의 이름이 포함됩니다.
 
-- 콜백 매개 변수: `statement` `source`
+- 콜백 파라미터: `statement` `source`
 
 다음의 import 구문은 훅을 한 번 트리거 합니다.
 
@@ -242,7 +242,7 @@ parser.hooks.import.tap('MyPlugin', (statement, source) => {
 
 모든 `import` 구문의 모든 지정자에 대해 호출됩니다.
 
-- 콜백 매개 변수: `statement` `source` `exportName` `identifierName`
+- 콜백 파라미터: `statement` `source` `exportName` `identifierName`
 
 다음의 import 구문은 훅을 두 번 트리거 합니다.
 
@@ -278,7 +278,7 @@ parser.hooks.importSpecifier.tap(
 
 코드 조각의 모든 `export` 구문에 대해 호출됩니다.
 
-- 콜백 매개 변수: `statement`
+- 콜백 파라미터: `statement`
 
 ### exportImport
 
@@ -286,7 +286,7 @@ parser.hooks.importSpecifier.tap(
 
 모든 `export`-import 구문에 대해 호출됩니다. 예. `export * from 'otherModule';`.
 
-- 콜백 매개 변수: `statement` `source`
+- 콜백 파라미터: `statement` `source`
 
 ### exportDeclaration
 
@@ -294,7 +294,7 @@ parser.hooks.importSpecifier.tap(
 
 선언을 내보내는 모든 `export` 구문에 대해 호출됩니다.
 
-- 콜백 매개 변수: `statement` `declaration`
+- 콜백 파라미터: `statement` `declaration`
 
 이러한 내보내기는 다음의 훅을 트리거 합니다.
 
@@ -310,7 +310,7 @@ export class ClassName {}
 
 표현식을 내보내는 모든 `export` 구문에 대해 호출됩니다. 예. `export default expression;`.
 
-- 콜백 매개 변수: `statement` `declaration`
+- 콜백 파라미터: `statement` `declaration`
 
 ### exportSpecifier
 
@@ -318,7 +318,7 @@ export class ClassName {}
 
 모든 `export` 구문의 모든 지정자에 대해 호출됩니다.
 
-- 콜백 매개 변수: `statement` `identifierName` `exportName` `index`
+- 콜백 파라미터: `statement` `identifierName` `exportName` `index`
 
 ### exportImportSpecifier
 
@@ -326,7 +326,7 @@ export class ClassName {}
 
 모든 `export`-import 구문의 모든 지정자에 대해 호출됩니다.
 
-- 콜백 매개 변수: `statement` `source` `identifierName` `exportName` `index`
+- 콜백 파라미터: `statement` `source` `identifierName` `exportName` `index`
 
 ### varDeclaration
 
@@ -334,7 +334,7 @@ export class ClassName {}
 
 변수 선언문을 파싱할 때 호출됩니다.
 
-- 콜백 매개 변수: `declaration`
+- 콜백 파라미터: `declaration`
 
 ### varDeclarationLet
 
@@ -342,7 +342,7 @@ export class ClassName {}
 
 `let`을 사용해 정의된 변수 선언문을 파싱할 때 호출됩니다.
 
-- 콜백 매개 변수: `declaration`
+- 콜백 파라미터: `declaration`
 
 ### varDeclarationConst
 
@@ -350,7 +350,7 @@ export class ClassName {}
 
 `const`를 사용해 정의된 변수 선언문을 파싱할 때 호출됩니다.
 
-- 콜백 매개 변수: `declaration`
+- 콜백 파라미터: `declaration`
 
 ### varDeclarationVar
 
@@ -358,7 +358,7 @@ export class ClassName {}
 
 `var`를 사용해 정의된 변수 선언문을 파싱할 때 호출됩니다.
 
-- 콜백 매개 변수: `declaration`
+- 콜백 파라미터: `declaration`
 
 ### canRename
 
@@ -366,8 +366,8 @@ export class ClassName {}
 
 이름 변경이 허용되는지 확인하기 위해 식별자의 이름을 변경하기 전에 트리거 됩니다. 일반적으로 `rename` 훅과 함께 사용됩니다.
 
-- 훅 매개 변수: `identifier`
-- 콜백 매개 변수: `expression`
+- 훅 파라미터: `identifier`
+- 콜백 파라미터: `expression`
 
 ```js
 var a = b;
@@ -382,10 +382,10 @@ parser.hooks.canRename.for('b').tap('MyPlugin', (expression) => {
 
 `SyncBailHook`
 
-새 식별자를 가져오기 위해 이름을 바꿀 때 트리거 됩니다. 이 훅은 `canRename`가 `true`를 반환하는 경우에 호출됩니다.
+새 식별자를 가져오기 위해 이름을 바꿀 때 트리거 됩니다. 이 훅은 `canRename`이 `true`를 반환하는 경우에 호출됩니다.
 
-- 훅 매개 변수: `identifier`
-- 콜백 매개 변수: `expression`
+- 훅 파라미터: `identifier`
+- 콜백 파라미터: `expression`
 
 ```js
 var a = b;
@@ -399,8 +399,8 @@ parser.hooks.rename.for('b').tap('MyPlugin', (expression) => {});
 
 할당된 표현식을 파싱하기 전에 `AssignmentExpression`을 파싱할 경우에 호출됩니다.
 
-- 훅 매개 변수: `identifier`
-- 콜백 매개 변수: `expression`
+- 훅 파라미터: `identifier`
+- 콜백 파라미터: `expression`
 
 ```js
 a += b;
@@ -416,8 +416,8 @@ parser.hooks.assigned.for('a').tap('MyPlugin', (expression) => {
 
 할당 표현식을 파싱하기 전에 `AssignmentExpression`을 파싱할 경우에 호출됩니다.
 
-- 훅 매개 변수: `identifier`
-- 콜백 매개 변수: `expression`
+- 훅 파라미터: `identifier`
+- 콜백 파라미터: `expression`
 
 ```js
 a += b;
@@ -433,8 +433,8 @@ parser.hooks.assigned.for('a').tap('MyPlugin', (expression) => {
 
 식별자의 `typeof`를 파싱할 때 트리거 됩니다.
 
-- 훅 매개 변수: `identifier`
-- 콜백 매개 변수: `expression`
+- 훅 파라미터: `identifier`
+- 콜백 파라미터: `expression`
 
 ### call
 
@@ -442,8 +442,8 @@ parser.hooks.assigned.for('a').tap('MyPlugin', (expression) => {
 
 함수 호출을 파싱할 때 호출됩니다.
 
-- 훅 매개 변수: `identifier`
-- 콜백 매개 변수: `expression`
+- 훅 파라미터: `identifier`
+- 콜백 파라미터: `expression`
 
 ```js
 eval(/* something */);
@@ -457,8 +457,8 @@ parser.hooks.call.for('eval').tap('MyPlugin', (expression) => {});
 
 객체의 멤버 함수에 대한 호출을 파싱할 경우 트리거 됩니다.
 
-- 훅 매개 변수: `objectIdentifier`
-- 콜백 매개 변수: `expression, properties`
+- 훅 파라미터: `objectIdentifier`
+- 콜백 파라미터: `expression, properties`
 
 ```js
 myObj.anyFunc();
@@ -474,8 +474,8 @@ parser.hooks.callMemberChain
 
 `new` 표현식을 파싱할 때 호출됩니다.
 
-- 훅 매개 변수: `identifier`
-- 콜백 매개 변수: `expression`
+- 훅 파라미터: `identifier`
+- 콜백 파라미터: `expression`
 
 ```js
 new MyClass();
@@ -489,8 +489,8 @@ parser.hooks.new.for('MyClass').tap('MyPlugin', (expression) => {});
 
 표현식을 파싱할 때 호출됩니다.
 
-- 훅 매개 변수: `identifier`
-- 콜백 매개 변수: `expression`
+- 훅 파라미터: `identifier`
+- 콜백 파라미터: `expression`
 
 ```js
 const a = this;
@@ -504,7 +504,7 @@ parser.hooks.expression.for('this').tap('MyPlugin', (expression) => {});
 
 `ConditionalExpression`을 파싱할 때 호출됩니다. 예. `condition ? a : b`
 
-- 콜백 매개 변수: `expression`
+- 콜백 파라미터: `expression`
 
 ### program
 
@@ -512,4 +512,4 @@ parser.hooks.expression.for('this').tap('MyPlugin', (expression) => {});
 
 코드 조각의 추상 구문 트리(AST)에 접근합니다.
 
-- 매개 변수: `ast` `comments`
+- 파라미터: `ast` `comments`

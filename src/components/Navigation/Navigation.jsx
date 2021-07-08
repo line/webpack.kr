@@ -81,9 +81,10 @@ export default class Navigation extends Component {
                     title: '中文',
                     url: 'https://webpack.docschina.org/',
                   },
-                  { lang: 'ko',
+                  {
+                    lang: 'ko',
                     title: '한국어',
-                    url: 'https://webpack.kr/' 
+                    url: 'https://webpack.kr/',
                   },
                 ]}
               />
@@ -118,7 +119,7 @@ export default class Navigation extends Component {
       DocSearch({
         apiKey: '8535036d0982242833e1380d8649b88c',
         indexName: 'webpack_korea',
-        inputSelector: '.navigation-search__input'
+        inputSelector: '.navigation-search__input',
       });
     }
   }

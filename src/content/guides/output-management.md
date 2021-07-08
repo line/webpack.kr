@@ -9,6 +9,8 @@ contributors:
   - EugeneHlushko
   - AnayaDesign
   - chenxsan
+translators:
+  - keipark
 ---
 
 T> 이 가이드는 [`Asset Management`](/guides/asset-management) 가이드에 있는 코드 예제를 기준으로 합니다.

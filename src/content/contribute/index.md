@@ -8,6 +8,8 @@ contributors:
   - dhedgecock
   - tbroadley
   - EugeneHlushko
+translators:
+  - keipark
 ---
 
 webpack에 기여하는 사람들은 오픈 소스, 사용자 및 생태계를 사랑합니다. 그리고 가장 중요한 것은 웹을 함께 발전시키는 것입니다. 펀딩의 투명성을 위한 [Open Collective](https://opencollective.com/webpack) 모델으로 컨트리뷰터, 디펜던트 프로젝트, 코어 팀으로부터 지원과 펀딩을 받을 수 있습니다. 기부하려면 아래 버튼을 클릭하세요.

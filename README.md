@@ -4,15 +4,15 @@
   </a>
   <h1>webpack.kr</h1>
 
-Webpack의 가이드, 문서와 모든 것 
+Webpack의 가이드, 문서와 모든 것
 
 </div>
 
 ## History
 
-[webpack.js.org](https://github.com/webpack/webpack.js.org)를 한국어로 번역하였습니다. 
+[webpack.js.org](https://github.com/webpack/webpack.js.org)를 한국어로 번역하였습니다.
 
-원본 README는 [README_upstream.md](README_upstream.md)에서 확인하세요. 
+원본 README는 [README_upstream.md](README_upstream.md)에서 확인하세요.
 
 ## Contributing
 
@@ -22,8 +22,6 @@ Webpack의 가이드, 문서와 모든 것
 
 ## License
 
-모든 내용은 [Creative Commons BY 4.0][license-url] 을 적용합니다. 
-
-
+모든 내용은 [Creative Commons BY 4.0][license-url] 을 적용합니다.
 
 [license-url]: https://creativecommons.org/licenses/by/4.0/

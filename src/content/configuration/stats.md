@@ -17,6 +17,8 @@ contributors:
   - snitin315
   - u01jmg3
   - grrizzly
+translators:
+  - YukJiSoo
 ---
 
 `object` `string`
@@ -629,8 +631,8 @@ module.exports = {
 - `'none'`, `false` - 로깅 비활성화
 - `'error'` - 에러
 - `'warn'` - 에러와 경고
-- `'info'` - 에러, 경고, 정보성 메세지
-- `'log'`, `true` - 에러, 경고, 정보성 메세지, 로그 메세지, 그룹, 초기화. 접힌 그룹은 접힌 상태로 표시됩니다.
+- `'info'` - 에러, 경고, 정보성 메시지
+- `'log'`, `true` - 에러, 경고, 정보성 메시지, 로그 메시지, 그룹, 초기화. 접힌 그룹은 접힌 상태로 표시됩니다.
 - `'verbose'` - 디버그 및 추적을 제외한 모든 것을 기록합니다. 접힌 그룹은 펼쳐진 상태로 표시됩니다.
 
 ```javascript

@@ -6,6 +6,8 @@ contributors:
   - skipjack
   - rouzbeh84
   - byzyk
+translators:
+  - dkstyle
 ---
 
 여기에서 **webpack** 프로젝트 브랜드 지침, 자산 및 라이선스를 찾을 수 있습니다. 더 자세한 내용과 이 작업에 적용되는 [라이선스를](https://github.com/webpack/media/blob/master/LICENSE) 참조하려면, 공식 [미디어 저장소를](https://github.com/webpack/media) 확인하세요. 이미지를 다운로드하려면 이미지를 클릭하세요.

@@ -3,6 +3,8 @@ title: Package exports
 sort: 25
 contributors:
   - sokra
+translators:
+  - keipark
 related:
   - title: Package entry points in Node.js
     url: https://nodejs.org/api/packages.html#packages_package_entry_points
@@ -39,7 +41,7 @@ related:
 }
 ```
 
-| 모듈 요청                             | 결과                                           |
+| 모듈 요청                           | 결과                                             |
 | ----------------------------------- | ------------------------------------------------ |
 | `package`                           | `.../package/main.js`                            |
 | `package/sub/path`                  | `.../package/secondary.js`                       |
@@ -145,22 +147,22 @@ throw new ModuleNotFoundError();
 
 ## Support
 
-| 기능                                    | 지원                                                                       |
-| -------------------------------------- | ---------------------------------------------------------------------------------- |
-| `"."` 속성                              | Node.js, webpack, rollup, esinstall, wmr                                           |
-| 일반 속성                                | Node.js, webpack, rollup, esinstall, wmr                                           |
-| `/`로 끝나는 속성                         | Node.js<sup>(1)</sup>, webpack, rollup, esinstall<sup>(2)</sup>, wmr<sup>(3)</sup> |
-| `*`로 끝나는 속성                         | Node.js, webpack, rollup, esinstall                                                |
-| alternatives                           | Node.js, webpack, rollup, <strike>esinstall</strike><sup>(4)</sup>                 |
-| path에만 축약형 사용                       | Node.js, webpack, rollup, esinstall, wmr                                           |
-| 조건에만 축약형 사용                        | Node.js, webpack, rollup, esinstall, wmr                                           |
-| 조건 구문                                | Node.js, webpack, rollup, esinstall, wmr                                           |
-| 중첩된 조건 구문                           | Node.js, webpack, rollup, wmr<sup>(5)</sup>                                        |
-| 조건 순서                                | Node.js, webpack, rollup, wmr<sup>(6)</sup>                                        |
-| `"default"` 조건                        | Node.js, webpack, rollup, esinstall, wmr                                           |
-| 경로 순서                                | Node.js, webpack, rollup                                                           |
-| 매핑되지 않았을 때 오류                     | Node.js, webpack, rollup, esinstall, wmr<sup>(7)</sup>                             |
-| 조건과 경로를 혼합해서 사용할 때 오류           | Node.js, webpack, rollup                                                           |
+| 기능                                  | 지원                                                                               |
+| ------------------------------------- | ---------------------------------------------------------------------------------- |
+| `"."` 속성                            | Node.js, webpack, rollup, esinstall, wmr                                           |
+| 일반 속성                             | Node.js, webpack, rollup, esinstall, wmr                                           |
+| `/`로 끝나는 속성                     | Node.js<sup>(1)</sup>, webpack, rollup, esinstall<sup>(2)</sup>, wmr<sup>(3)</sup> |
+| `*`로 끝나는 속성                     | Node.js, webpack, rollup, esinstall                                                |
+| alternatives                          | Node.js, webpack, rollup, <strike>esinstall</strike><sup>(4)</sup>                 |
+| path에만 축약형 사용                  | Node.js, webpack, rollup, esinstall, wmr                                           |
+| 조건에만 축약형 사용                  | Node.js, webpack, rollup, esinstall, wmr                                           |
+| 조건 구문                             | Node.js, webpack, rollup, esinstall, wmr                                           |
+| 중첩된 조건 구문                      | Node.js, webpack, rollup, wmr<sup>(5)</sup>                                        |
+| 조건 순서                             | Node.js, webpack, rollup, wmr<sup>(6)</sup>                                        |
+| `"default"` 조건                      | Node.js, webpack, rollup, esinstall, wmr                                           |
+| 경로 순서                             | Node.js, webpack, rollup                                                           |
+| 매핑되지 않았을 때 오류               | Node.js, webpack, rollup, esinstall, wmr<sup>(7)</sup>                             |
+| 조건과 경로를 혼합해서 사용할 때 오류 | Node.js, webpack, rollup                                                           |
 
 (1) Node.js 에서 더 이상 사용되지 않으며 `*`를 사용해야 합니다.
 
@@ -182,22 +184,22 @@ throw new ModuleNotFoundError();
 
 모듈을 참조하는 데 사용되는 구문에 따라 다음 조건 중 하나가 설정됩니다.
 
-| 조건 | 설명                                                             | 지원                                                         |
-| --------- | ----------------------------------------------------------------- | -------------------------------------------------------------------- |
-| `import`  | ESM 또는 유사한 구문에서 요청이 발생합니다.                      | Node.js, webpack, rollup, esinstall<sup>(1)</sup>, wmr<sup>(1)</sup> |
-| `require` | CommonJs/AMD 또는 유사한 구문에서 요청이 발생합니다.            | Node.js, webpack, rollup, esinstall<sup>(1)</sup>, wmr<sup>(1)</sup> |
-| `style`   | 스타일시트 참조에서 요청이 발생합니다.                    |
-| `sass`    | sass 스타일시트 참조에서 요청이 발생합니다.               |
-| `asset`   | 애셋 참조에서 요청이 발생합니다.                         |
+| 조건      | 설명                                                         | 지원                                                                 |
+| --------- | ------------------------------------------------------------ | -------------------------------------------------------------------- |
+| `import`  | ESM 또는 유사한 구문에서 요청이 발생합니다.                  | Node.js, webpack, rollup, esinstall<sup>(1)</sup>, wmr<sup>(1)</sup> |
+| `require` | CommonJs/AMD 또는 유사한 구문에서 요청이 발생합니다.         | Node.js, webpack, rollup, esinstall<sup>(1)</sup>, wmr<sup>(1)</sup> |
+| `style`   | 스타일시트 참조에서 요청이 발생합니다.                       |
+| `sass`    | sass 스타일시트 참조에서 요청이 발생합니다.                  |
+| `asset`   | 애셋 참조에서 요청이 발생합니다.                             |
 | `script`  | 모듈 시스템 없이 스크립트 태그를 사용할때 요청이 발생합니다. |
 
 부가적으로 아래의 조건도 설정할 수 있습니다.
 
-| 조건   | 설명                                                                                                       | 지원         |
-| ----------- | ----------------------------------------------------------------------------------------------------------------- | -------------------- |
+| 조건        | 설명                                                                                                        | 지원                 |
+| ----------- | ----------------------------------------------------------------------------------------------------------- | -------------------- |
 | `module`    | javascript를 참조 가능한 모든 모듈 구문은 ESM을 지원합니다.<br>(`import` 또는 `require`와 함께 사용했을 때) | webpack, rollup, wmr |
-| `esmodules` | 지원하는 도구에서 항상 설정합니다.                            | wmr                  |
-| `types`     | type 선언과 관련 있는 typescript로부터 요청이 발생합니다. |
+| `esmodules` | 지원하는 도구에서 항상 설정합니다.                                                                          | wmr                  |
+| `types`     | type 선언과 관련 있는 typescript로부터 요청이 발생합니다.                                                   |
 
 (1) 참조 구문에서 `import`와 `require`는 모두 독립적으로 설정됩니다. `require`는 항상 더 낮은 우선순위를 갖습니다.
 
@@ -260,10 +262,10 @@ CommonJs를 지원하는 시스템에서 스크립트를 전처리하는 경우,
 
 다양한 최적화를 위해 다음 조건이 설정됩니다.
 
-| 조건     | 설명                                                       | 지원 |
-| ------------- | ----------------------------------------------------------------- | ------------ |
-| `production`  | 프로덕션 환경.<br>개발 도구를 포함하지 않아야 합니다. | webpack      |
-| `development` | 개발 환경.<br>개발 도구를 포함해야 합니다.   | webpack      |
+| 조건          | 설명                                                  | 지원    |
+| ------------- | ----------------------------------------------------- | ------- |
+| `production`  | 프로덕션 환경.<br>개발 도구를 포함하지 않아야 합니다. | webpack |
+| `development` | 개발 환경.<br>개발 도구를 포함해야 합니다.            | webpack |
 
 노트: `production`과 `development`는 모두가 사용하는 것이 아닙니다. 이 중 아무것도 설정되지 않은 경우는 가정하지 않아야 합니다.
 
@@ -271,7 +273,7 @@ CommonJs를 지원하는 시스템에서 스크립트를 전처리하는 경우,
 
 대상 환경에 따라 다음 조건이 설정됩니다.
 
-| 조건      | 설명                                   | 지원                        |
+| 조건           | 설명                                          | 지원                                |
 | -------------- | --------------------------------------------- | ----------------------------------- |
 | `browser`      | Code will run in a browser.                   | webpack, esinstall, wmr             |
 | `electron`     | Code will run in electron.<sup>(1)</sup>      | webpack                             |
@@ -289,7 +291,7 @@ CommonJs를 지원하는 시스템에서 스크립트를 전처리하는 경우,
 
 - `node`: 호환성은 `engines` 필드를 참고하세요.
 - `browser`: 패키지를 배포하는 시점의 현재 Spec 및 4단계 제안과 호환됩니다. 폴리필과 트랜스파일은 소비하는 쪽에서 처리되어야 합니다.
-    - 폴리필이나 트랜스파일이 불가능한 기능은 사용이 제한되므로 주의하여 사용해야 합니다.
+  - 폴리필이나 트랜스파일이 불가능한 기능은 사용이 제한되므로 주의하여 사용해야 합니다.
 - `deno`: TBD
 - `react-native`: TBD
 
@@ -297,9 +299,9 @@ CommonJs를 지원하는 시스템에서 스크립트를 전처리하는 경우,
 
 소스 코드를 전처리하는 도구에 따라 다음 조건이 설정됩니다.
 
-| 조건 | 설명           | 지원 |
-| --------- | --------------------- | ------------ |
-| `webpack` | webpack을 통해 처리됩니다. | webpack      |
+| 조건      | 설명                       | 지원    |
+| --------- | -------------------------- | ------- |
+| `webpack` | webpack을 통해 처리됩니다. | webpack |
 
 아쉽지만 Node.js 런타임에 대한 `node-js` 조건이 없습니다.
 이것은 Node.js에 대한 예외 처리를 단순화합니다.
@@ -308,13 +310,13 @@ CommonJs를 지원하는 시스템에서 스크립트를 전처리하는 경우,
 
 다음 도구는 커스텀 조건을 지원합니다.
 
-| 도구      | 지원 | 노트                                                           |
-| --------- | --------- | --------------------------------------------------------------- |
-| Node.js   | 지원       | `--conditions` CLI 인자를 사용.                                |
-| webpack   | 지원       | `resolve.conditionNames` 설정 옵션을 사용. |
-| rollup    | 지원       | `@rollup/plugin-node-resolve` 에서 `exportConditions` 옵션을 사용. |
-| esinstall | 미지원        |
-| wmr       | 미지원        |
+| 도구      | 지원   | 노트                                                               |
+| --------- | ------ | ------------------------------------------------------------------ |
+| Node.js   | 지원   | `--conditions` CLI 인자를 사용.                                    |
+| webpack   | 지원   | `resolve.conditionNames` 설정 옵션을 사용.                         |
+| rollup    | 지원   | `@rollup/plugin-node-resolve` 에서 `exportConditions` 옵션을 사용. |
+| esinstall | 미지원 |
+| wmr       | 미지원 |
 
 커스텀 조건에는 다음 네이밍 스키마를 권장합니다.
 
@@ -332,15 +334,15 @@ CommonJs를 지원하는 시스템에서 스크립트를 전처리하는 경우,
 이러한 패턴은 다음과 같은 목표와 가정을 기반으로 합니다.
 
 - 패키지가 운영되지 않는다.
-    - 어떤 시점에서 패키지가 더 이상 운영되지 않는다고 가정합니다. 하지만 패키지는 계속 사용됩니다.
-    - `exports`는 향후 알려지지 않은 케이스에 대한 폴백으로 작성되어야 합니다. 이를 위해 `default` 조건을 사용할 수 있습니다.
-    - 미래는 알 수 없기 때문에 브라우저와 유사한 환경, ESM과 유사한 모듈 시스템이라고 가정합니다.
+  - 어떤 시점에서 패키지가 더 이상 운영되지 않는다고 가정합니다. 하지만 패키지는 계속 사용됩니다.
+  - `exports`는 향후 알려지지 않은 케이스에 대한 폴백으로 작성되어야 합니다. 이를 위해 `default` 조건을 사용할 수 있습니다.
+  - 미래는 알 수 없기 때문에 브라우저와 유사한 환경, ESM과 유사한 모듈 시스템이라고 가정합니다.
 - 모든 도구가 모든 조건을 지원하지 않는다.
-    - 이러한 케이스를 처리하려면 폴백을 사용해야 합니다.
-    - 일반적으로 다음과 같은 폴백이 합리적으로 보입니다.
-        - ESM > CommonJs
-        - Production > Development
-        - 브라우저 > node.js
+  - 이러한 케이스를 처리하려면 폴백을 사용해야 합니다.
+  - 일반적으로 다음과 같은 폴백이 합리적으로 보입니다.
+    - ESM > CommonJs
+    - Production > Development
+    - 브라우저 > node.js
 
 패키지의 의도에 따라 다른 방법이 알맞을 수 있으며 패턴은 이를 따라야 합니다. 예를 들면, 커맨드라인 도구의 경우 브라우저와 같은 미래 환경에 대한 폴백은 별로 의미가 없으며, 이 경우에는 node.js와 같은 환경 및 폴백을 대신 사용해야 합니다.
 
@@ -617,8 +619,8 @@ Node.js는 런타임에 `process.env.NODE_ENV`를 통해 프로덕션/개발 모
 - 소스 코드를 ESM으로 작성하고 babel, typescript 또는 유사한 도구를 통해 CJS로 트랜스파일하세요.
 - package.json에서 `.cjs` 또는 `type: "commonjs"`를 사용하여 소스 코드를 CommonJs로 명확하게 표시하세요. CommonJs 또는 ESM을 사용하는 경우 도구가 이를 정적으로 감지 할 수 있습니다. 이는 ESM만 지원하고 CommonJs는 지원하지 않는 도구의 경우 중요합니다.
 - 패키지에서 사용하는 ESM은 다음 유형의 요청을 지원합니다.
-    - package.json이 있는 다른 패키지를 가리키는 모듈 요청을 지원합니다.
-    - 패키지 내의 다른 파일을 가리키는 상대적 요청을 지원합니다.
-        - 패키지 외부의 파일을 가리켜서는 안 됩니다.
-    - `data:` URL 요청을 지원합니다.
-    - 기타 절대적 요청 또는 서버와 관련된 요청은 기본적으로 지원되지 않지만, 일부 도구 또는 환경에서는 지원할 수 있습니다.
+  - package.json이 있는 다른 패키지를 가리키는 모듈 요청을 지원합니다.
+  - 패키지 내의 다른 파일을 가리키는 상대적 요청을 지원합니다.
+    - 패키지 외부의 파일을 가리켜서는 안 됩니다.
+  - `data:` URL 요청을 지원합니다.
+  - 기타 절대적 요청 또는 서버와 관련된 요청은 기본적으로 지원되지 않지만, 일부 도구 또는 환경에서는 지원할 수 있습니다.
