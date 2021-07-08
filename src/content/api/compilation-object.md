@@ -276,11 +276,11 @@ Compilation 객체에는 사용 가능한 많은 메서드와 훅이 있습니�
 
 `function (name, outputOptions, plugins)`
 
-webpack 내에서 webpack의 다른 인스턴스를 실행할 수 있습니다. 그러나, 다른 설정과 구성이 적용된 자식으로서 부모(또는 최상위 컴파일러)에서 모든 훅과 플러그인을 복사하고 자식 `Compiler` 인스턴스를 만듭니다. 생성된 `Compiler`를 반환합니다.
+webpack 내에서 webpack의 다른 인스턴스를 실행할 수 있습니다. 그러나, 다른 설정과 구성이 적용된 하위 컴파일러로서 상위(또는 최상위 컴파일러)에서 모든 훅과 플러그인을 복사하고 하위 `Compiler` 인스턴스를 만듭니다. 생성된 `Compiler`를 반환합니다.
 
 파라미터:
 
-- `name` - 자식 `Compiler`의 이름.
+- `name` - 하위 `Compiler`의 이름.
 - `outputOptions` - 출력 옵션 객체.
 - `plugins` - 적용될 webpack 플러그인.
 
