@@ -15,12 +15,11 @@ translators:
   - YukJiSoo
 ---
 
-`Compilation` 모듈은 `Compiler`에서 새 컴파일 또는 빌드를 만드는 데
-사용됩니다. `compilation` 객체는 모든 모듈과 해당 모듈의 디펜던시에
-접근할 수 있습니다(대부분 순환 참조). 또한 애플리케이션의 디펜던시 그래프에
-있는 모든 모듈의 리터럴 컴파일입니다.
-컴파일 단계 동안 모듈은 로드, 봉인, 최적화, 청크,
-해시 및 복원됩니다.
+`Compilation` 모듈은 `Compiler`에서 새 컴파일 또는 빌드를 만드는 데 사용됩니다.
+`compilation` 객체는 모든 모듈과 해당 모듈의 디펜던시에 접근할 수 있습니다(대부분 순환 참조).
+또한 애플리케이션의 디펜던시 그래프에 있는 모든 모듈의 리터럴 컴파일입니다.
+컴파일 단계 동안 모듈은
+로드, 봉인, 최적화, 청크, 해시 및 복원됩니다.
 
 `Compilation` 클래스는 `Tapable`을 확장하고 다음과 같은 생명주기 훅을 제공합니다.
 컴파일러 훅과 같은 방식으로 탭할 수 있습니다.
@@ -422,7 +421,6 @@ W> `afterOptimizeChunkAssets`은 더이상 지원하지 않습니다. 대신 [Co
 
 - 콜백 파라미터: `chunks`
 
-Here's an example plugin from [@boopathi](https://github.com/boopathi) that outputs exactly what went into each chunk.
 다음은 각 청크에 들어간 내용을 정확히 출력하는 [@boopathi](https://github.com/boopathi)의 플러그인 예시입니다.
 
 ```js
@@ -459,7 +457,7 @@ compilation.hooks.afterOptimizeChunkAssets.tap('MyPlugin', (chunks) => {
 
 애셋을 처리합니다.
 
-**Hook parameters:**
+**훅 파라미터:**
 
 - `name: string` — 플러그인의 이름
 - `stage: Stage` — 활용되는 단계. 아래의 [지원되는 단계 목록](#list-of-asset-processing-stages)을 참고하세요.
@@ -515,7 +513,7 @@ compilation.hooks.processAssets.tap(
        name: 'MyPlugin',
        stage: Compilation.PROCESS_ASSETS_STAGE_DEV_TOOLING,
        additionalAssets: (assets) => {
-         // 이 함수는 잠재적으로 이후 단계에서 추가된 애셋에 대해 여러번 호출될 수 있습니다.
+         // 이 함수는 이후 단계에서 추가된 애셋에 대해 여러번 호출될 가능성이 있습니다.
        },
      },
      (assets) => {
@@ -630,4 +628,4 @@ compilation.hooks.processAssets.tap(
 
 ### `normalModuleLoader`
 
-webpack v5 `normalModuleLoader` 훅이 제거되었기 때문에, 이제 로더에 액세스하려면 `NormalModule.getCompilationHooks(compilation).loader`를 사용하세요.
+webpack v5부터 `normalModuleLoader` 훅이 제거되었기 때문에, 이제 로더에 액세스하려면 `NormalModule.getCompilationHooks(compilation).loader`를 사용하세요.
