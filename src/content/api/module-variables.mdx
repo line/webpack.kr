@@ -20,19 +20,19 @@ related:
     url: https://en.wikipedia.org/wiki/Asynchronous_module_definition
 ---
 
-This section covers all **variables** available in code compiled with webpack. Modules will have access to certain data from the compilation process through `module` and other variables.
+이 섹션에서는 webpack으로 컴파일된 코드에서 사용할 수 있는 모든 **변수**를 다룹니다. 모듈은 `module` 및 기타 변수를 통해 컴파일 프로세스의 특정 데이터에 접근할 수 있습니다.
 
 ## `module.loaded` (NodeJS)
 
-This is `false` if the module is currently executing, and `true` if the sync execution has finished.
+모듈이 현재 실행 중이면 `false`이고, 실행이 완료되면 `true`입니다.
 
 ## `module.hot` (webpack-specific)
 
-Indicates whether or not [Hot Module Replacement](/concepts/hot-module-replacement) is enabled and provides an interface to the process. See the [HMR API page](/api/hot-module-replacement) for details.
+[Hot Module Replacement](/concepts/hot-module-replacement)가 활성화 되었는지 여부를 나타내며 프로세스를 위한 인터페이스를 제공합니다. 자세한 내용은 [HMR API 페이지](/api/hot-module-replacement)를 참고하세요.
 
 ## `module.id` (CommonJS)
 
-The ID of the current module.
+현재 모듈의 ID입니다.
 
 ```javascript
 module.id === require.resolve('./file.js');
@@ -40,7 +40,7 @@ module.id === require.resolve('./file.js');
 
 ## `module.exports` (CommonJS)
 
-Defines the value that will be returned when a consumer makes a `require` call to the module (defaults to a new object).
+사용자가 모듈을 `require` 호출할 때 반환할 값을 정의합니다 (기본값은 새 객체).
 
 ```javascript
 module.exports = function doSomething() {
@@ -48,11 +48,11 @@ module.exports = function doSomething() {
 };
 ```
 
-W> This CANNOT be used in an asynchronous function.
+W> 이것은 비동기 함수에서 사용할 수 없습니다.
 
 ## `exports` (CommonJS)
 
-This variable is equal to the default value of `module.exports` (i.e. an object). If `module.exports` gets overwritten, `exports` will no longer be exported.
+이 변수는 `module.exports`(즉. 객체)의 기본값과 같습니다. `module.exports`를 덮어쓰면, `exports`를 더 이상 내보내지 않습니다.
 
 ```javascript
 exports.someValue = 42;
@@ -66,57 +66,57 @@ exports.aFunction = function doSomething() {
 
 ## `global` (NodeJS)
 
-See [node.js global](https://nodejs.org/api/globals.html#globals_global).
+[node.js global](https://nodejs.org/api/globals.html#globals_global)을 참고하세요.
 
-For compatibility reasons webpack polyfills the `global` variable by default.
+호환성을 위해 webpack은 기본적으로 `global` 변수를 폴리필합니다.
 
 ## `__dirname` (NodeJS)
 
-Depending on the configuration option `node.__dirname`:
+`node.__dirname`의 설정 옵션은 다음과 같습니다.
 
-- `false`: Not defined
-- `mock`: equal to `'/'`
+- `false`: 정의되지 않음
+- `mock`: `'/'`와 같음
 - `true`: [node.js \_\_dirname](https://nodejs.org/api/globals.html#globals_dirname)
 
-If used inside an expression that is parsed by the Parser, the configuration option is treated as `true`.
+파서에 의해 파싱되는 표현식 내부에서 사용되는 경우, 설정 옵션은 `true`로 처리됩니다.
 
 ## `import.meta.url`
 
-Returns the absolute `file:` URL of the module.
+모듈의 절대 `file:` URL을 반환합니다.
 
 **src/index.js**
 
 ```javascript
-console.log(import.meta.url); // output something like `file:///path/to/your/project/src/index.js`
+console.log(import.meta.url); // `file:///path/to/your/project/src/index.js`와 같은 출력
 ```
 
 ## `import.meta.webpack`
 
-Returns the webpack version.
+webpack 버전을 반환합니다.
 
 **src/index.js**
 
 ```javascript
-console.log(import.meta.webpack); // output `5` for webpack 5
+console.log(import.meta.webpack); // webpack 5의 경우 `5` 출력
 ```
 
 ## import.meta.webpackHot
 
-Webpack specific. An alias for [`module.hot`](#modulehot-webpack-specific), however `import.meta.webpackHot` can be used in [strict ESM](/guides/ecma-script-modules/#flagging-modules-as-esm) while `module.hot` can't.
+Webpack 특유의 속성입니다. [`module.hot`](#modulehot-webpack-specific)의 별칭으로, `import.meta.webpackHot`는 [strict ESM](/guides/ecma-script-modules/#flagging-modules-as-esm)에서 사용 가능하지만 `module.hot`는 할 수 없습니다.
 
 ## `__filename` (NodeJS)
 
-Depending on the configuration option `node.__filename`:
+`node.__filename`의 설정 옵션은 다음과 같습니다.
 
-- `false`: Not defined
-- `mock`: equal to `'/index.js'`
+- `false`: 정의되지 않음
+- `mock`: `'/index.js'`와 같음
 - `true`: [node.js \_\_filename](https://nodejs.org/api/globals.html#globals_filename)
 
-If used inside an expression that is parsed by the Parser, the configuration option is treated as `true`.
+파서에 의해 파싱되는 표현식 내부에서 사용되는 경우, 설정 옵션은 `true`로 처리됩니다.
 
 ## `__resourceQuery` (webpack-specific)
 
-The resource query of the current module. If the following `require` call was made, then the query string would be available in `file.js`.
+현재 모듈의 리소스 쿼리입니다. 다음 `require`가 호출된 경우, 쿼리 문자열은 `file.js`에서 사용할 수 있습니다.
 
 ```javascript
 require('file.js?test');
@@ -130,19 +130,19 @@ __resourceQuery === '?test';
 
 ## `__webpack_public_path__` (webpack-specific)
 
-Equals the configuration option's `output.publicPath`.
+설정 옵션의 `output.publicPath`와 동일합니다.
 
 ## `__webpack_require__` (webpack-specific)
 
-The raw require function. This expression isn't parsed by the Parser for dependencies.
+원시 요청 함수입니다. 이 표현식은 파서에 의해 의존성이 파싱되지 않습니다.
 
 ## \_\_webpack_chunk_load\_\_ (webpack-specific)
 
-The internal chunk loading function. Takes one argument:
+내부 청크 로딩 함수. 하나의 인수를 가집니다.
 
-- `chunkId` The id for the chunk to load.
+- `chunkId`는 로드할 청크의 ID입니다.
 
-Example to load chunks from alternate public path when one failed:
+하나가 실패했을 때 대체 퍼블릭 경로에서 청크를 로드하는 예제입니다.
 
 ```js
 const originalLoad = __webpack_chunk_load__;
@@ -160,51 +160,51 @@ __webpack_chunk_load__ = async (id) => {
   throw error;
 };
 import('./module-a').then((moduleA) => {
-  // now webpack will use the custom __webpack_chunk_load__ to load chunk
+  // 이제 webpack은 사용자 정의 __webpack_chunk_load__ 를 사용하여 청크를 로드합니다.
 });
 ```
 
 ## `__webpack_modules__` (webpack-specific)
 
-Access to the internal object of all modules.
+모든 모듈의 내부 객체에 대한 접근.
 
 ## `__webpack_hash__` (webpack-specific)
 
-It provides access to the hash of the compilation.
+컴파일의 해시에 대한 접근을 제공합니다.
 
 ## `__non_webpack_require__` (webpack-specific)
 
-Generates a `require` function that is not parsed by webpack. Can be used to do cool stuff with a global require function if available.
+webpack에 의해 파싱되지 않는 `require` 함수를 생성합니다. 가능한 경우 전역 요청 함수로 멋진 작업을 수행하는데 사용할 수 있습니다.
 
 ## `__webpack_exports_info__` (webpack-specific)
 
-In modules, `__webpack_exports_info__` is available to allow exports introspection:
+모듈에서, `__webpack_exports_info__`는 export 내부 검사를 허용하는데 사용할 수 있습니다.
 
-- `__webpack_exports_info__` is always `true`
+- `__webpack_exports_info__`는 항상 `true`입니다.
 
-- `__webpack_exports_info__.<exportName>.used` is `false` when the export is known to be unused, `true` otherwise
+- `__webpack_exports_info__.<exportName>.used` 는 export가 사용되지 않는 경우 `false`이고, 그렇지 않으면 `true`입니다.
 
-- `__webpack_exports_info__.<exportName>.useInfo` is
+- `__webpack_exports_info__.<exportName>.useInfo`는 다음과 같습니다.
 
-  - `false` when the export is known to be unused
-  - `true` when the export is known to be used
-  - `null` when the export usage could depend on runtime conditions
-  - `undefined` when no info is available
+  - export가 사용되지 않는 경우 `false`
+  - export가 사용되는 경우 `true`
+  - export 사용이 런타임 조건에 따라 달라질 수 있는 경우 `null`
+  - 정보가 없을 경우 `undefined`
 
-- `__webpack_exports_info__.<exportName>.provideInfo` is
+- `__webpack_exports_info__.<exportName>.provideInfo`는 다음과 같습니다.
 
-  - `false` when the export is known to be not provided
-  - `true` when the export is known to be provided
-  - `null` when the export provision could depend on runtime conditions
-  - `undefined` when no info is available
+  - export가 제공되지 않는 경우 `false`
+  - export가 제공되는 경우 `true`
+  - export 규정이 런타임 조건에 따라 달라질 수 있는 경우 `null`
+  - 정보가 없을 경우 `undefined`
 
-- Accessing the info from nested exports is possible: i. e. `__webpack_exports_info__.<exportName>.<exportName>.<exportName>.used`
+- nested export에서 정보에 접근할 수 있습니다. 예. `__webpack_exports_info__.<exportName>.<exportName>.<exportName>.used`
 
 ## `__webpack_is_included__` (webpack-specific)
 
 <Badge text="5.16.0+" />
 
-Test whether or not the given module is bundled by webpack.
+주어진 모듈이 webpack에 의해 번들되어 있는지 테스트합니다.
 
 ```js
 if (__webpack_is_included__('./module-a.js')) {
@@ -214,7 +214,7 @@ if (__webpack_is_included__('./module-a.js')) {
 
 ## \_\_webpack_base_uri\_\_ (webpack-specific)
 
-Change base URI at runtime.
+런타임에 기본 URI를 변경합니다.
 
 - Type: `string`
 - Available: 5.21.0+
@@ -225,9 +225,9 @@ Change base URI at runtime.
 
 ## \_\_webpack_runtime_id\_\_
 
-Access the [runtime](/blog/2020-10-10-webpack-5-release/#entry-point-runtime) id of current entry.
+현재 엔트리의 [runtime](/blog/2020-10-10-webpack-5-release/#entry-point-runtime) id에 접근합니다.
 
-This is a webpack specific feature and it's available since webpack 5.25.0.
+이것은 webpack의 고유 기능이며 webpack 5.25.0부터 사용할 수 있습니다.
 
 **src/index.js**
 
@@ -237,4 +237,4 @@ console.log(__webpack_runtime_id__ === 'main');
 
 ## `DEBUG` (webpack-specific)
 
-Equals the configuration option `debug`.
+설정 옵션 `debug`와 동일합니다.
