@@ -33,11 +33,11 @@ related:
 
 이 설정을 적절하게 사용하고 쉽게 배포하려면 `webpack.config.js`로 webpack을 설정 할 수 있습니다. CLI로 전송된 모든 파라미터는 설정 파일의 해당 파라미터에 매핑됩니다.
 
-webpack 및 CLI를 아직 설치하지 않은 경우 [설치 가이드](/guides/installation))를 읽어보세요.
+webpack 및 CLI를 아직 설치하지 않은 경우 [설치 가이드](/guides/installation)를 읽어보세요.
 
 ## Commands
 
-webpack-cli는 webpack을 더 쉽게 사용할 수 있도록 다양한 명령을 제공합니다. 기본적으로 webpack은 다음과 함께 제공됩니다.
+webpack-cli는 webpack을 더 쉽게 사용할 수 있도록 다양한 명령을 제공합니다. 기본적으로 webpack은 다음과 같은 명령어를 제공합니다.
 
 | 명령어                               | 사용법                                                 | 설명                                                                     |
 | ------------------------------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------- |
@@ -146,7 +146,7 @@ webpack 설정 파일의 경로입니다. 기본값은 `./webpack.config.js`입�
 | `--target, -t`                      | string[]        | 빌드 대상을 설정합니다.                                                   |
 | `--watch, -w`                       | boolean         | 파일 변경 사항을 확인합니다.                                                 |
 | `--watch-options-stdin`             | boolean         | stdin 스트림이 종료되면 감시를 중단합니다.                               |
-| `--hot, -h`                         | boolean         | Hot Module Replacement를 활성화 합니다.                                          |
+| `--hot, -h`                         | boolean         | Hot Module Replacement를 활성화합니다.                                          |
 | `--devtool, -d`                     | string          | 소스 맵 생성 여부와 방법을 제어합니다.                          |
 | `--prefetch`                        | string          | 이 요청을 미리 가져옵니다.                                                   |
 | [`--json, -j`](#json)               | boolean, string | 결과를 JSON으로 출력하거나 파일으로 저장합니다.                             |
@@ -436,6 +436,7 @@ npx webpack --json
 ```bash
 npx webpack --json stats.json
 ```
+
 다른 모든 경우에 webpack은 번들, 청크 및 타이밍 세부 정보를 보여주는 일련의 통계를 출력합니다. 이 옵션을 사용하면 출력이 JSON 객체가 될 수 있습니다. webpack의 [분석 도구](https://webpack.github.io/analyse/), chrisbateman의 [webpack-visualizer](https://chrisbateman.github.io/webpack-visualizer/) 또는 th0r의 [webpack-bundle-analyzer](https://github.com/webpack-contrib/webpack-bundle-analyzer) 에서 이 응답이 수락됩니다. 이러한 분석 도구는 JSON을 가져와서 빌드의 모든 세부 정보를 그래픽 형식으로 제공합니다.
 
 T> 여기에서 생성된 통계에 대한 자세한 내용은 [통계 데이터 api](/api/stats)를 참고하세요.
