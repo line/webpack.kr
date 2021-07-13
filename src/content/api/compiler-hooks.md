@@ -10,29 +10,27 @@ contributors:
   - EugeneHlushko
   - superburrito
   - chenxsan
+translators:
+  - YukJiSoo
 ---
 
-The `Compiler` module is the main engine that creates a compilation instance
-with all the options passed through the [CLI](/api/cli) or [Node API](/api/node). It extends the
-`Tapable` class in order to register and call plugins. Most user facing plugins
-are first registered on the `Compiler`.
+`Compiler` 모듈은 [CLI](/api/cli) 또는 [Node API](/api/node)를 통해 전달된 모든 옵션으로 컴파일 인스턴스를 생성하는 메인 엔진입니다.
+플러그인 등록 및 호출을 위해 `Tapable`클래스를 확장합니다.
+대부분의 사용자용 플러그인은 먼저 `Compiler`에 등록됩니다.
 
-When developing a plugin for webpack, you might want to know where each hook is called. To learn this, search for `hooks.<hook name>.call` across the webpack source
+webpack 플러그인을 개발할 때, 훅이 어디서 호출되는지 알고 싶을 수 있습니다. 이를 알아 보려면 webpack 소스코드에서 `hooks.<hook name>.call`을 검색해보세요.
 
 ## Watching
 
-The `Compiler` supports [watching](/api/node/#watching) which monitors the file
-system and recompiles as files change. When in watch mode, the compiler will
-emit the additional events such as `watchRun`, `watchClose`, and `invalid`.
-This is typically used in [development](/guides/development), usually under
-the hood of tools like `webpack-dev-server`, so that the developer doesn't
-need to re-compile manually every time. Watch mode can also be entered via the
-[CLI](/api/cli/#watch-options).
+`Compiler`는 파일 시스템을 모니터링하고 파일이 변경되면 다시 컴파일하는 [watching](/api/node/#watching)을 지원합니다.
+watch 모드에서 컴파일러는 `watchRun`, `watchClose` 및 `invalid`와 같은 추가 이벤트를 내보냅니다.
+이것은 일반적으로 [development](/guides/development)에서 사용되며 `webpack-dev-server`와 같은 도구의 내부에서 사용되어 개발자가 매번 수동으로 다시 컴파일할 필요 없게 도와줍니다.
+watch 모드는 [CLI](/api/cli/#watch-options)를 통해서도 시작 할 수 있습니다.
 
 ## Hooks
 
-The following lifecycle hooks are exposed by the `compiler` and can be accessed
-as such:
+아래에서 소개할 라이프 사이클 훅들은 `compiler`에 의해 노출됩니다.
+아래와 같이 접근 할 수 있습니다.
 
 ```js
 compiler.hooks.someHook.tap('MyPlugin', (params) => {
@@ -40,29 +38,29 @@ compiler.hooks.someHook.tap('MyPlugin', (params) => {
 });
 ```
 
-Depending on the hook type, `tapAsync` and `tapPromise` may also be available.
+훅 타입에 따라서 `tapAsync`와 `tapPromise`를 사용할 수 있습니다.
 
-For the description of hook types, see [the Tapable docs](https://github.com/webpack/tapable#tapable).
+훅 타입에 대한 설명은 [Tapable 문서](https://github.com/webpack/tapable#tapable)를 참고하세요.
 
 ### `environment`
 
 `SyncHook`
 
-Called while preparing the compiler environment, right after initializing the plugins in the configuration file.
+설정 파일에서 플러그인을 초기화한 직후, 컴파일러 환경을 준비하는 동안 호출됩니다.
 
 ### `afterEnvironment`
 
 `SyncHook`
 
-Called right after the `environment` hook, when the compiler environment setup is complete.
+컴파일러 환경 설정이 완료된 때인 `environment` 훅 바로 뒤에 호출됩니다.
 
 ### `entryOption`
 
 `SyncBailHook`
 
-Called after the [`entry` configuration](/configuration/entry-context/#entry) from webpack options has been processed.
+webpack 옵션의 [`entry` 설정](/configuration/entry-context/#entry)이 처리된 후 호출됩니다.
 
-- Callback Parameters: [`context`](/configuration/entry-context/#context), [`entry`](/configuration/entry-context/#entry)
+- 콜백 파라미터: [`context`](/configuration/entry-context/#context), [`entry`](/configuration/entry-context/#entry)
 
 ```js
 compiler.hooks.entryOption.tap('MyPlugin', (context, entry) => {
@@ -74,73 +72,73 @@ compiler.hooks.entryOption.tap('MyPlugin', (context, entry) => {
 
 `SyncHook`
 
-Called after setting up initial set of internal plugins.
+내부 플러그인의 초기 설정이 완료된 후 호출됩니다.
 
-- Callback Parameters: `compiler`
+- 콜백 파라미터: `compiler`
 
 ### `afterResolvers`
 
 `SyncHook`
 
-Triggered after resolver setup is complete.
+리졸버 설정이 완료된 후 트리거됩니다.
 
-- Callback Parameters: `compiler`
+- 콜백 파라미터: `compiler`
 
 ### `initialize`
 
 `SyncHook`
 
-Called when a compiler object is initialized.
+컴파일러 객체가 초기화될 때 호출됩니다.
 
 ### `beforeRun`
 
 `AsyncSeriesHook`
 
-Adds a hook right before running the compiler.
+컴파일러를 실행하기 직전에 훅을 추가합니다.
 
-- Callback Parameters: `compiler`
+- 콜백 파라미터: `compiler`
 
 ### `run`
 
 `AsyncSeriesHook`
 
-Hook into the compiler before it begins reading [`records`](/configuration/other-options/#recordspath).
+컴파일러가 [`records`](/configuration/other-options/#recordspath)를 읽기 시작하기 전에 연결합니다.
 
-- Callback Parameters: `compiler`
+- 콜백 파라미터: `compiler`
 
 ### `watchRun`
 
 `AsyncSeriesHook`
 
-Executes a plugin during watch mode after a new compilation is triggered but before the compilation is actually started.
+새 컴파일이 트리거된 후 컴파일이 실제로 시작되기 전에 watch 모드에서 플러그인을 실행합니다.
 
-- Callback Parameters: `compiler`
+- 콜백 파라미터: `compiler`
 
 ### `normalModuleFactory`
 
 `SyncHook`
 
-Called after a [NormalModuleFactory](/api/normalmodulefactory-hooks) is created.
+[NormalModuleFactory](/api/normalmodulefactory-hooks)가 생성된 후 호출됩니다.
 
-- Callback Parameters: `normalModuleFactory`
+- 콜백 파라미터: `normalModuleFactory`
 
 ### `contextModuleFactory`
 
 `SyncHook`
 
-Runs a plugin after a [ContextModuleFactory](/api/contextmodulefactory-hooks) is created.
+[ContextModuleFactory](/api/contextmodulefactory-hooks)가 생성된 후 플러그인을 실행합니다.
 
-- Callback Parameters: `contextModuleFactory`
+- 콜백 파라미터: `contextModuleFactory`
 
 ### `beforeCompile`
 
 `AsyncSeriesHook`
 
-Executes a plugin after compilation parameters are created.
+컴파일 파라미터가 생성된 후 플러그인을 실행합니다.
 
-- Callback Parameters: `compilationParams`
+- 콜백 파라미터: `compilationParams`
 
-The `compilationParams` variable is initialized as follows:
+`compilationParams` 변수는 다음과 같이 초기화됩니다.
 
 ```js
 compilationParams = {
@@ -149,7 +147,7 @@ compilationParams = {
 };
 ```
 
-This hook can be used to add/modify the compilation parameters:
+이 훅은 컴파일 파라미터를 추가 또는 수정하는 데 사용할 수 있습니다.
 
 ```js
 compiler.hooks.beforeCompile.tapAsync('MyPlugin', (params, callback) => {
@@ -162,53 +160,53 @@ compiler.hooks.beforeCompile.tapAsync('MyPlugin', (params, callback) => {
 
 `SyncHook`
 
-Called right after `beforeCompile`, before a new compilation is created.
+새 컴파일이 생성되기 전인 `beforeCompile` 바로 뒤에 호출됩니다.
 
-- Callback Parameters: `compilationParams`
+- 콜백 파라미터: `compilationParams`
 
 ### `thisCompilation`
 
 `SyncHook`
 
-Executed while initializing the compilation, right before emitting the `compilation` event.
+컴파일을 초기화하는 동안 `compilation` 이벤트를 생성하기 직전에 실행됩니다.
 
-- Callback Parameters: `compilation`, `compilationParams`
+- 콜백 파라미터: `compilation`, `compilationParams`
 
 ### `compilation`
 
 `SyncHook`
 
-Runs a plugin after a compilation has been created.
+컴파일이 생성된 후 플러그인을 실행합니다.
 
-- Callback Parameters: `compilation`, `compilationParams`
+- 콜백 파라미터: `compilation`, `compilationParams`
 
 ### `make`
 
 `AsyncParallelHook`
 
-Executed before finishing the compilation.
+컴파일을 완료하기 전에 실행됩니다.
 
-- Callback Parameters: `compilation`
+- 콜백 파라미터: `compilation`
 
 ### `afterCompile`
 
 `AsyncSeriesHook`
 
-Called after finishing and sealing the compilation.
+컴파일을 완료하고 봉인한 후 호출됩니다.
 
-- Callback Parameters: `compilation`
+- 콜백 파라미터: `compilation`
 
 ### `shouldEmit`
 
 `SyncBailHook`
 
-Called before emitting assets. Should return a boolean telling whether to emit.
+애셋을 방출하기 전에 호출됩니다. 방출 여부를 알려주는 boolean을 반환해야 합니다.
 
-- Callback Parameters: `compilation`
+- 콜백 파라미터: `compilation`
 
 ```js
 compiler.hooks.shouldEmit.tap('MyPlugin', (compilation) => {
-  // return true to emit the output, otherwise false
+  // 출력을 내보내려면 true를 반환하고, 그렇지 않으면 false를 반환합니다.
   return true;
 });
 ```
@@ -217,27 +215,27 @@ compiler.hooks.shouldEmit.tap('MyPlugin', (compilation) => {
 
 `AsyncSeriesHook`
 
-Executed right before emitting assets to output dir.
+애셋을 출력 디렉터리로 방출하기 직전에 실행됩니다.
 
-- Callback Parameters: `compilation`
+- 콜백 파라미터: `compilation`
 
 ### `afterEmit`
 
 `AsyncSeriesHook`
 
-Called after emitting assets to output directory.
+출력 디렉터리에 애셋을 내보낸 후 호출됩니다.
 
-- Callback Parameters: `compilation`
+- 콜백 파라미터: `compilation`
 
 ### `assetEmitted`
 
 `AsyncSeriesHook`
 
-Executed when an asset has been emitted. Provides access to information about the emitted asset, such as its output path and byte content.
+애셋이 방출되었을 때 실행됩니다. 출력 경로 및 바이트 콘텐츠와 같은 내보낸 애셋의 정보에 대한 접근을 제공합니다.
 
-- Callback Parameters: `file`, `info`
+- 콜백 파라미터: `file`, `info`
 
-For example, you may access the asset's content buffer via `info.content`:
+예를 들어 `info.content`를 통해 애셋의 콘텐츠 버퍼에 접근할 수 있습니다.
 
 ```js
 compiler.hooks.assetEmitted.tap(
@@ -252,50 +250,50 @@ compiler.hooks.assetEmitted.tap(
 
 `AsyncSeriesHook`
 
-Executed when the compilation has completed.
+컴파일이 완료되면 실행됩니다.
 
-- Callback Parameters: `stats`
+- 콜백 파라미터: `stats`
 
 ### `additionalPass`
 
 `AsyncSeriesHook`
 
-This hook allows you to do a one more additional pass of the build.
+이 훅을 사용하면 빌드를 한 번 더 추가할 수 있습니다.
 
 ### `failed`
 
 `SyncHook`
 
-Called if the compilation fails.
+컴파일이 실패하면 호출됩니다.
 
-- Callback Parameters: `error`
+- 콜백 파라미터: `error`
 
 ### `invalid`
 
 `SyncHook`
 
-Executed when a watching compilation has been invalidated.
+감시중인 컴파일이 무효가 되었을 때 실행됩니다.
 
-- Callback Parameters: `fileName`, `changeTime`
+- 콜백 파라미터: `fileName`, `changeTime`
 
 ### `watchClose`
 
 `SyncHook`
 
-Called when a watching compilation has stopped.
+감시중인 컴파일이 중지되었을 때 호출됩니다.
 
 ### `infrastructureLog`
 
 `SyncBailHook`
 
-Allows to use infrastructure logging when enabled in the configuration via [`infrastructureLogging` option](/configuration/other-options/#infrastructurelogging).
+[`infrastructureLogging` 옵션](/configuration/other-options/#infrastructurelogging)을 통해 설정에서 활성화된 경우 인프라 로깅을 사용할 수 있습니다.
 
-- Callback Parameters: `name`, `type`, `args`
+- 콜백 파라미터: `name`, `type`, `args`
 
 ### `log`
 
 `SyncBailHook`
 
-Allows to log into [stats](/configuration/stats/) when enabled, see [`stats.logging`, `stats.loggingDebug` and `stats.loggingTrace` options](/configuration/stats/#stats-options).
+활성화되면 [stats](/configuration/stats/)에 로그를 작성할 수 있습니다. [`stats.logging`, `stats.loggingDebug` 및 `stats.loggingTrace` 옵션](/configuration/stats/#stats-options)을 참고하세요.
 
-- Callback Parameters: `origin`, `logEntry`
+- 콜백 파라미터: `origin`, `logEntry`
