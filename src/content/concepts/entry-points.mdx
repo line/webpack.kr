@@ -86,6 +86,7 @@ T> 플러그인에 의해 생성된 엔트리 포인트만 있는 경우 빈 객
 - `import`: 시작 시 로드되는 모듈입니다.
 - `library`: 현재 엔트리에서 라이브러리를 번들링하려면 [라이브러리 옵션](/configuration/output/#outputlibrary)을 지정합니다.
 - `runtime`: 런타임 청크의 이름입니다. 설정되면 이 이름의 런타임 청크가 생성되고 그렇지 않으면 기존 엔트리 포인트의 이름이 사용됩니다.
+
 - `publicPath`: 브라우저에서 참조할 때 이 엔트리의 출력 파일에 대한 공용 URL 주소를 지정하세요. 또한 [output.publicPath](/configuration/output/#outputpublicpath)도 참고하세요.
 
 **webpack.config.js**
@@ -191,7 +192,7 @@ module.exports = {
 
 **왜?** 이를 통해 `vendor.js` 내에서 수정되지 않은 필수 라이브러리 또는 파일(예. Bootstrap, jQuery, images, 등)을 가져올 수 있으며, 이들은 자체 청크로 함께 번들 제공됩니다. 콘텐츠 해시는 동일하게 유지되므로, 브라우저가 별도로 캐시하여 로드 시간을 줄일 수 있습니다.
 
-T> webpack 버전 4 미만에서는 `CommonsChunkPlugin과` 함께 vendor를 개별 엔트리 포인트로 추가하여 개별 파일로 컴파일하는 것이 일반적이었습니다. <br><br> webpack 4에서는 이를 권장하지 않습니다. 대신, [`optimization.splitChunks`](/configuration/optimization/#optimizationsplitchunks) 옵션은 vendor와 앱 모듈을 분리하고 별도의 파일을 생성합니다. 실행의 시작점이 아닌 vendor나 기타 항목에 대한 엔트리를 생성하지 **마세요**.
+T> webpack 버전 4 미만에서는 `CommonsChunkPlugin과` 함께 vendor를 개별 엔트리 포인트로 추가하여 개별 파일로 컴파일하는 것이 일반적이었습니다. <br /><br /> webpack 4에서는 이를 권장하지 않습니다. 대신, [`optimization.splitChunks`](/configuration/optimization/#optimizationsplitchunks) 옵션은 vendor와 앱 모듈을 분리하고 별도의 파일을 생성합니다. 실행의 시작점이 아닌 vendor나 기타 항목에 대한 엔트리를 생성하지 **마세요**.
 
 ### Multi Page Application
 

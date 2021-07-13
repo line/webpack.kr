@@ -33,7 +33,13 @@ translators:
 
 최상위 `output` 키에는 번들, 애셋 및 webpack으로 번들링하거나 로드하는 기타 항목을 출력하는 방법과 위치를 webpack에 지시하는 옵션이 포함되어 있습니다.
 
-## `output.auxiliaryComment`
+## output.assetModuleFilename
+
+`string = '[hash][ext][query]'`
+
+The same as [`output.filename`](#outputfilename) but for [Asset Modules](/guides/asset-modules/).
+
+## output.auxiliaryComment
 
 W> [`output.library.auxiliaryComment`](#outputlibraryauxiliarycomment)를 사용하는 것이 좋습니다.
 
@@ -141,6 +147,24 @@ module.exports = {
 };
 ```
 
+## output.chunkFormat
+
+`false` `string: 'array-push' | 'commonjs' | 'module' | <any string>`
+
+청크의 포맷 (기본적으로 포함되는 포맷은 `'array-push'` (web/WebWorker), `'commonjs'` (node.js), `'module'` (ESM) 등이지만 플러그인에 의해 추가될 수 있습니다).
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  //...
+  output: {
+    //...
+    chunkFormat: 'commonjs',
+  },
+};
+```
+
 ## `output.chunkLoadTimeout`
 
 `number = 120000`
@@ -163,7 +187,7 @@ module.exports = {
 
 `string = 'webpackChunkwebpack'`
 
-청크 로드를 위해 webpack에서 사용하는 전역 변수입니다.
+webpack에서 청크를 로드하기 위해 사용하는 전역 변수입니다.
 
 **webpack.config.js**
 
@@ -177,11 +201,11 @@ module.exports = {
 };
 ```
 
-## `output.chunkLoading`
+## output.chunkLoading
 
-`false` `string: 'jsonp' | 'import-scripts' | 'require' | 'async-node' | <any string>`
+`false` `string: 'jsonp' | 'import-scripts' | 'require' | 'async-node' | 'import' | <any string>`
 
-청크를 로드하는 방법입니다. 기본적으로 포함된 방법은 'jsonp' (웹), 'importScripts' (WebWorker), 'require' (동기 node.js), 'async-node' (비동기 node.js)이고 다른 방법은 플러그인에 의해 추가될 수 있습니다.
+청크를 로드하는 메소드.(기본적으로 포함된 메소드는 `'jsonp'` (web), `'import'` (ESM), `'importScripts'` (WebWorker), `'require'` (sync node.js), `'async-node'` (async node.js) 등이지만 플러그인에 의해 추가될 수 있습니다).
 
 **webpack.config.js**
 
@@ -191,24 +215,6 @@ module.exports = {
   output: {
     //...
     chunkLoading: 'async-node',
-  },
-};
-```
-
-## `output.chunkFormat`
-
-`false` `string: 'array-push' | 'commonjs' | <any string>`
-
-청크의 포맷입니다. 기본적으로 포함된 포맷은 'array-push' (web/WebWorker), 'commonjs' (node.js)이고 다른 포맷은 플러그인에 의해 추가 될 수 있습니다.
-
-**webpack.config.js**
-
-```javascript
-module.exports = {
-  //...
-  output: {
-    //...
-    chunkFormat: 'commonjs',
   },
 };
 ```
@@ -489,12 +495,6 @@ type ModulePathData = {
 ```
 
 T> 일부 컨텍스트에서 프로퍼티는 원시 값 대신 JavaScript 코드 표현식을 사용합니다. 이러한 경우 `WithLength`변형을 사용할 수 있으며 원래 값을 분할하는 대신 사용해야합니다.
-
-## `output.assetModuleFilename`
-
-`string = '[hash][ext][query]'`
-
-[`output.filename`](#outputfilename)과 동일하지만 [애셋 모듈](/guides/asset-modules/)입니다.
 
 ## `output.globalObject`
 

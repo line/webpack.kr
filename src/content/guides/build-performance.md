@@ -99,7 +99,7 @@ W> Node.js 런타임 및 로더에 대한 부팅 오버헤드가 있음으로 �
 
 ### Persistent cache
 
-webpack 설정에서 [`cache`](/configuration/other-options/#cache) 옵션을 사용하세요. `package.json`의 `"postinstall"`에서 캐시 디렉터리를 지우세요.
+webpack 설정에서 [`cache`](/configuration/cache) 옵션을 사용하세요. `package.json`의 `"postinstall"`에서 캐시 디렉터리를 지우세요.
 
 T> 영구 캐싱을 위해 yarn PnP 버전 3 [`yarn 2 berry`](https://yarnpkg.com/features/pnp)를 지원합니다.
 

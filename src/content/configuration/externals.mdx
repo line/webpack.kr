@@ -329,24 +329,25 @@ module.exports = {
 
 지원 유형:
 
-- `'var'`
-- `'module'`
-- `'assign'`
-- `'this'`
-- `'window'`
-- `'self'`
-- `'global'`
-- `'commonjs'`
-- `'commonjs-module'`
 - `'amd'`
 - `'amd-require'`
+- `'assign'`
+- `'commonjs'`
+- `'commonjs-module'`
+- `'global'`
+- `'import'` - `import()`를 사용하여 네이티브 EcmaScript 모듈을 로드합니다(비동기 모듈)
+- `'jsonp'`
+- [`'module'`](#externalstypemodule)
+- [`'node-commonjs'`](#externalstypenode-commonjs)
+- `'promise'` - `'var'`과 동일하지만, 결과를 기다립니다(비동기 모듈)
+- `'self'`
+- `'system'`
+- [`'script'`](#externalstypescript)
+- `'this'`
 - `'umd'`
 - `'umd2'`
-- `'jsonp'`
-- `'system'`
-- `'promise'` - `'var'`과 동일하지만, 결과를 기다립니다(비동기 모듈)
-- `'import'` - `import()`를 사용하여 네이티브 EcmaScript 모듈을 로드합니다(비동기 모듈)
-- `'script'` - HTML `<script>` 요소로 사전 정의 된 전역 변수를 노출하는 스크립트를 로드합니다
+- `'var'`
+- `'window'`
 
 **webpack.config.js**
 
@@ -357,14 +358,45 @@ module.exports = {
 };
 ```
 
-### `script`
+### externalsType.module
 
-[`externalsType`](#externalstype)이 `'script'`로 설정된 경우 모든 URL에서 외부 스크립트를 로드할 수 있습니다. `<script>` 태그는 스크립트가 로드된 후 제거됩니다.
+외부의 기본 유형을 `'module'`로 지정하세요. Webpack은 모듈에서 사용되는 외부 요소에 대해 `import * as X from '...'`와 같은 코드를 생성합니다.
+
+우선 [`experiments.outputModule`](/configuration/experiments/#experimentsoutputmodule)을 활성화해야 합니다. 그렇지 않으면 webpack에서 오류가 발생합니다.
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  experiments: {
+    outputModule: true,
+  },
+  externalsType: 'module',
+};
+```
+
+### externalsType.node-commonjs
+
+외부의 기본 유형을 `'node-commonjs'`로 지정하세요. Webpack은 모듈에서 사용되는 외부 요소를 로드하기 위한 require 함수를 구성하기 위해 `'module'`에서 [`createRequire`](https://nodejs.org/api/module.html#module_module_createrequire_filename)를 가져올 것입니다.
+
+```js
+module.export = {
+  experiments: {
+    outputModule: true,
+  },
+  externalsType: 'node-commonjs',
+};
+```
+
+### externalsType.script
+
+외부의 기본 유형을 `'script'`로 지정하세요. Webpack은 HTML의 `<script>` 요소로 미리 정의된 전역 변수를 노출하는 스크립트로 외부를 로드합니다. `<script>` 태그는 스크립트가 로드된 후 제거됩니다.
 
 #### Syntax
 
 ```javascript
 module.exports = {
+  externalsType: 'script',
   externals: {
     packageName: [
       'http://example.com/script.js',
@@ -380,13 +412,14 @@ module.exports = {
 
 ```javascript
 module.exports = {
+  externalsType: 'script',
   externals: {
     packageName: 'global@http://example.com/script.js', // 여기엔 프로퍼티가 없습니다
   },
 };
 ```
 
-T> [`output.publicPath`](/configuration/output/#outputpublicpath)는 제공된 URL에 추가되지 않습니다.
+[`output.publicPath`](/configuration/output/#outputpublicpath)는 제공된 URL에 추가되지 않습니다.
 
 #### Example
 
@@ -445,18 +478,18 @@ T> `output.chunkLoadTimeout`, `output.crossOriginLoading` 및 `output.scriptType
 
 특정 대상에 대한 외부 프리셋 설정을 활성화합니다.
 
-W> 이전 webpack 버전에서는, [`target`](/configuration/target/) 을 사용하여 다음 기능을 수행했습니다.
+| Option             | Description                                                                                                                                                                             | Input Type |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| `electron`         | `electron`, `ipc` 또는 `shell`과 같은 main 및 preload 컨텍스트에서 공통 일렉트론 내장 모듈을 외부로 취급하고, 사용 시 `require()`를 통해 로드합니다.                                    | boolean    |
+| `electronMain`     | `app`, `ipc-main` 또는 `shell`과 같은 같은 주 컨텍스트에서 일렉트론 내장 모듈을 외부로 취급하고, 사용 시 `require()`를 통해 로드합니다.                                                 | boolean    |
+| `electronPreload`  | `web-frame`, `ipc-renderer` 또는 `shell`과 같은 사전 로드 컨텍스트에서 일렉트론 내장 모듈을 외부로 취급하고, 사용 시 require()를 통해 로드합니다.                                       | boolean    |
+| `electronRenderer` | `web-frame`, `ipc-renderer` 또는 `shell`과 같은 렌더러 컨텍스트에서 일렉토론 내장 모듈을 외부로 취급하고, 사용 시 `require()`를 통해 로드합니다.                                        | boolean    |
+| `node`             | `fs`, `path` 또는 `vm`과 같은 node.js 내장 모듈을 외부 모듈로 취급하고, 사용 시 `require()`를 통해 로드합니다.                                                                          | boolean    |
+| `nwjs`             | `NW.js` 레거시 `nw.gui` 모듈을 외부 모듈로 취급하고, 사용 시 `require()`를 통해 로드합니다.                                                                                             | boolean    |
+| `web`              | `http(s)://...` 그리고 `std:...`에 대한 참조를 외부로 취급하고, 사용 시 `import`를 통해 로드합니다 **(청크의 다른 코드보다 먼저 외부가 실행되므로 실행 순서가 변경됩니다)**.            | boolean    |
+| `webAsync`         | `http(s)://...` 그리고 `std:...`에 대한 참조를 외부로 취급하고, 사용 시 `async import()`를 통해 로드합니다 **(이 유형의 외부 모듈은 `async` 모듈이며, 실행에 다양한 영향을 미칩니다)**. | boolean    |
 
-| Option             | Description                                                                                                                                                                            | Input Type |
-| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
-| `electron`         | `electron`, `ipc` 또는 `shell`과 같은 main 및 preload 컨텍스트에서 공통 일렉트론 내장 모듈을 외부로 취급하고, 사용 시 `require()`를 통해 로드합니다.                                   | boolean    |
-| `electronMain`     | `app`, `ipc-main` 또는 `shell`과 같은 같은 주 컨텍스트에서 일렉트론 내장 모듈을 외부로 취급하고, 사용 시 `require()`를 통해 로드합니다.                                                | boolean    |
-| `electronPreload`  | `web-frame`, `ipc-renderer` 또는 `shell`과 같은 사전 로드 컨텍스트에서 일렉트론 내장 모듈을 외부로 취급하고, 사용 시 require()를 통해 로드합니다.                                      | boolean    |
-| `electronRenderer` | `web-frame`, `ipc-renderer` 또는 `shell`과 같은 렌더러 컨텍스트에서 일렉토론 내장 모듈을 외부로 취급하고, 사용 시 `require()`를 통해 로드합니다.                                       | boolean    |
-| `node`             | `fs`, `path` 또는 `vm`과 같은 node.js 내장 모듈을 외부 모듈로 취급하고, 사용 시 `require()`를 통해 로드합니다.                                                                         | boolean    |
-| `nwjs`             | `NW.js` 레거시 `nw.gui` 모듈을 외부 모듈로 취급하고, 사용 시 `require()`를 통해 로드합니다.                                                                                            | boolean    |
-| `web`              | `http(s)://...` 그리고 `std:...`에 대한 참조를 외부로 취급하고, 사용 시 `import`를 통해 로드합니다**(청크의 다른 코드보다 먼저 외부가 실행되므로 실행 순서가 변경됩니다)**.            | boolean    |
-| `webAsync`         | `http(s)://...` 그리고 `std:...`에 대한 참조를 외부로 취급하고, 사용 시 `async import()`를 통해 로드합니다**(이 유형의 외부 모듈은 `async` 모듈이며, 실행에 다양한 영향을 미칩니다)**. | boolean    |
+Note that if you're going to output ES Modules with those node.js-related presets, webpack will set the default `externalsType` to [`node-commonjs`](#externalstypenode-commonjs) which would use `createRequire` to construct a require function instead of using `require()`.
 
 **Example**
 
