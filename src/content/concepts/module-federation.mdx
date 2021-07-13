@@ -9,8 +9,10 @@ contributors:
   - ScriptedAlchemy
   - snitin315
   - XiaofengXie16
+  - KyleBastien
 translators:
   - choilim
+  - dkstyle
 related:
   - title: 'Webpack 5 Module Federation: A game-changer in JavaScript architecture'
     url: https://medium.com/swlh/webpack-5-module-federation-a-game-changer-to-javascript-architecture-bcdd30e02669
@@ -27,7 +29,7 @@ related:
 이것은 종종 Micro-Frontends라고 알려져 있지만, 그것에만 국한되지는 않습니다.
 
 <StackBlitzPreview
-  example="module-federation?terminal="
+  example="module-federation?terminal=start&terminal="
   description="Check out this live module federation example on StackBlitz."
 />
 
@@ -148,6 +150,66 @@ loadComponent('abtests', 'test123');
 ```
 
 [전체 구현 보기](https://github.com/module-federation/module-federation-examples/tree/master/advanced-api/dynamic-remotes)
+
+## Promise Based Dynamic Remotes
+
+일반적으로, 원격은 다음 예시와 같은 URL을 사용하여 설정합니다.
+
+```js
+module.exports = {
+  plugins: [
+    new ModuleFederationPlugin({
+      name: 'host',
+      remotes: {
+        app1: 'app1@http://localhost:3001/remoteEntry.js',
+      },
+    }),
+  ],
+};
+```
+
+하지만 원격에 promise를 전달할 수도 있고, 이는 런타임에 해석됩니다. 위에서 설명한 `get/init` 인터페이스에 맞는 모듈로 이 promise를 해석해야 합니다. 예를 들어 사용할 통합 모듈의 버전을 전달하려는 경우 쿼리 매개 변수를 통해 다음과 같은 작업을 수행할 수 있습니다.
+
+```js
+module.exports = {
+  plugins: [
+    new ModuleFederationPlugin({
+      name: 'host',
+      remotes: {
+        app1: `promise new Promise(resolve => {
+      const urlParams = new URLSearchParams(window.location.search)
+      const version = urlParams.get('app1VersionParam')
+      // 이 부분은 통합 모듈 호스팅 및 버전의 관리 계획에 따라 달라집니다.
+      const remoteUrlWithVersion = 'http://localhost:3001/' + version + '/remoteEntry.js'
+      const script = document.createElement('script')
+      script.src = remoteUrlWithVersion
+      script.onload = () => {
+        // 주입된 스크립트가 로드되어 window에서 사용할 수 있습니다.
+        // 이제 Promise를 해석할 수 있습니다.
+        const proxy = {
+          get: (request) => window.app1.get(request),
+          init: (arg) => {
+            try {
+              return window.app1.init(arg)
+            } catch(e) {
+              console.log('remote container already initialized')
+            }
+          }
+        }
+        resolve(proxy)
+      }
+      // 이 스크립트를 버전이 지정된 remoteEntry.js로 src 세트와 함께 주입합니다.
+      document.head.appendChild(script);
+    })
+    `,
+      },
+      // ...
+    }),
+  ],
+};
+```
+
+이 API를 사용할 때는 get/init API가 포함된 개체를 _확인해야_ 합니다.
 
 ## Dynamic Public Path
 
