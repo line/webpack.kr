@@ -110,6 +110,10 @@ module.exports = (env) =>
             from: './assets/robots.txt',
             to: './',
           },
+          {
+            from: './assets/google2f228e794f2592f2.html',
+            to: './',
+          },
           'CNAME',
         ],
       }),
