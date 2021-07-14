@@ -28,7 +28,7 @@ related:
 
 ## `module.hot` (webpack-specific)
 
-[Hot Module Replacement](/concepts/hot-module-replacement)가 활성화 되었는지 여부를 나타내며 프로세스를 위한 인터페이스를 제공합니다. 자세한 내용은 [HMR API 페이지](/api/hot-module-replacement)를 참고하세요.
+[Hot Module Replacement](/concepts/hot-module-replacement)가 활성화되었는지 여부를 나타내며 프로세스를 위한 인터페이스를 제공합니다. 자세한 내용은 [HMR API 페이지](/api/hot-module-replacement)를 참고하세요.
 
 ## `module.id` (CommonJS)
 
@@ -52,7 +52,7 @@ W> 이것은 비동기 함수에서 사용할 수 없습니다.
 
 ## `exports` (CommonJS)
 
-이 변수는 `module.exports`(즉. 객체)의 기본값과 같습니다. `module.exports`를 덮어쓰면, `exports`를 더 이상 내보내지 않습니다.
+이 변수는 `module.exports`(즉. 객체)의 기본값과 같습니다. `module.exports`를 덮어쓰면, `exports`를 더 내보내지 않습니다.
 
 ```javascript
 exports.someValue = 42;
@@ -102,7 +102,7 @@ console.log(import.meta.webpack); // webpack 5의 경우 `5` 출력
 
 ## import.meta.webpackHot
 
-Webpack 특유의 속성입니다. [`module.hot`](#modulehot-webpack-specific)의 별칭으로, `import.meta.webpackHot`는 [strict ESM](/guides/ecma-script-modules/#flagging-modules-as-esm)에서 사용 가능하지만 `module.hot`는 할 수 없습니다.
+Webpack 특유의 속성입니다. [`module.hot`](#modulehot-webpack-specific)의 별칭으로, `import.meta.webpackHot`는 [strict ESM](/guides/ecma-script-modules/#flagging-modules-as-esm)에서 사용할 수 있지만 `module.hot`는 할 수 없습니다.
 
 ## `__filename` (NodeJS)
 
@@ -204,7 +204,7 @@ webpack에 의해 파싱되지 않는 `require` 함수를 생성합니다. 가�
 
 <Badge text="5.16.0+" />
 
-주어진 모듈이 webpack에 의해 번들되어 있는지 테스트합니다.
+주어진 모듈이 webpack에 의해 번들 되어 있는지 테스트합니다.
 
 ```js
 if (__webpack_is_included__('./module-a.js')) {
