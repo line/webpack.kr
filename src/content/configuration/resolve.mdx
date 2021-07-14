@@ -283,7 +283,7 @@ module.exports = {
 
 ### resolve.fallback
 
-Redirect module requests when normal resolving fails.
+정상적인 확인이 실패하면 모듈 요청을 리디렉션합니다.
 
 **webpack.config.js**
 
@@ -292,8 +292,8 @@ module.exports = {
   //...
   resolve: {
     fallback: {
-      abc: false, // do not include a polyfill for abc
-      xyz: path.resolve(__dirname, 'path/to/file.js'), // include a polyfill for xyz
+      abc: false, // abc에 대한 폴리필을 포함하지 않습니다.
+      xyz: path.resolve(__dirname, 'path/to/file.js'), // xyz에 대한 폴리필을 포함합니다.
     },
   },
 };
