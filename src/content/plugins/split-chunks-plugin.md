@@ -27,34 +27,34 @@ related:
     url: https://medium.com/webpack/webpack-4-code-splitting-chunk-graph-and-the-splitchunks-optimization-be739a861366
 ---
 
-Originally, chunks (and modules imported inside them) were connected by a parent-child relationship in the internal webpack graph. The `CommonsChunkPlugin` was used to avoid duplicated dependencies across them, but further optimizations were not possible.
+원래 청크(및 그 안에 가져온 모듈)는 webpack 내부 그래프에서 부모-자식 관계로 연결되었습니다. `CommonsChunkPlugin`은 중복되는 의존성을 피하고자 사용되었지만, 추가 최적화는 불가능했습니다.
 
-Since webpack v4, the `CommonsChunkPlugin` was removed in favor of `optimization.splitChunks`.
+webpack v4부터 `optimization.splitChunks`를 위해 `CommonsChunkPlugin`은 제거되었습니다.
 
 ## Defaults
 
-Out of the box `SplitChunksPlugin` should work well for most users.
+즉시 사용 가능한 `SplitChunksPlugin`은 대부분의 사용자에게 잘 작동합니다.
 
-By default it only affects on-demand chunks, because changing initial chunks would affect the script tags the HTML file should include to run the project.
+초기 청크를 변경하면 HTML 파일이 프로젝트를 실행하기 위해 포함해야 하는 스크립트 태그에 영향을 미치기 때문에 기본적으로 on-demand 청크에만 영향을 미칩니다.
 
-webpack will automatically split chunks based on these conditions:
+webpack은 다음 조건에 따라 자동으로 청크를 분할합니다.
 
-- New chunk can be shared OR modules are from the `node_modules` folder
-- New chunk would be bigger than 20kb (before min+gz)
-- Maximum number of parallel requests when loading chunks on demand would be lower or equal to 30
-- Maximum number of parallel requests at initial page load would be lower or equal to 30
+- 새 청크를 공유 할 수 있거나 모듈이 `node_modules` 폴더에 있는 경우
+- 새 청크가 20kb보다 클 경우(min+gz 이전에)
+- 요청 시 청크를 로드할 때 최대 병렬 요청 수가 30개 이하일 때
+- 초기 페이지 로드 시 최대 병렬 요청 수가 30개 이하일 때
 
-When trying to fulfill the last two conditions, bigger chunks are preferred.
+마지막 두 가지 조건을 충족하려고 할 때 더 큰 청크가 선호됩니다.
 
 ## Configuration
 
-webpack provides a set of options for developers that want more control over this functionality.
+webpack은 이 기능에 대한 더 많은 제어를 원하는 개발자를 위해 옵션 세트를 제공합니다.
 
-W> The default configuration was chosen to fit web performance best practices, but the optimal strategy for your project might differ. If you're changing the configuration, you should measure the impact of your changes to ensure there's a real benefit.
+W> 웹 성능 모범 사례에 맞게 기본 설정이 선택되어 있지만, 프로젝트에 대한 최적의 전략은 다를 수 있습니다. 설정을 변경하는 경우 실제 이점이 있는지 확인하기 위해 변경 사항의 영향을 측정해야 합니다.
 
 ## `optimization.splitChunks`
 
-This configuration object represents the default behavior of the `SplitChunksPlugin`.
+이 설정 객체는 `SplitChunksPlugin`의 기본 동작을 나타냅니다.
 
 **webpack.config.js**
 
@@ -87,21 +87,21 @@ module.exports = {
 };
 ```
 
-W> When files paths are processed by webpack, they always contain `/` on Unix systems and `\` on Windows. That's why using `[\\/]` in `{cacheGroup}.test` fields is necessary to represent a path separator. `/` or `\` in `{cacheGroup}.test` will cause issues when used cross-platform.
+W> webpack에서 파일 경로를 처리할 때 항상 Unix 시스템에서는 `/`, Windows에서는 `\`를 포함합니다. 그렇기 때문에 `{cacheGroup}.test` 필드에 `[\\/]`를 사용하여 경로 구분자를 나타내야 합니다. `{cacheGroup}.test`의 `/` 또는 `\`는 크로스 플랫폼 사용 시 문제를 유발합니다.
 
-W> Since webpack 5, passing an entry name to `{cacheGroup}.test` and using a name of an existing chunk for `{cacheGroup}.name` is no longer allowed.
+W> webpack 5부터 `{cacheGroup}.test`에 엔트리 이름을 전달하고 `{cacheGroup}.name`에 기존 청크 이름을 사용하는 것은 더는 허용되지 않습니다.
 
 ### `splitChunks.automaticNameDelimiter`
 
 `string = '~'`
 
-By default webpack will generate names using origin and name of the chunk (e.g. `vendors~main.js`). This option lets you specify the delimiter to use for the generated names.
+기본적으로 webpack은 출처와 청크 이름을 사용하여 이름을 생성합니다(예: `vendors~main.js`). 이 옵션을 사용하면 생성된 이름에 사용할 구분 기호를 지정할 수 있습니다.
 
 ### `splitChunks.chunks`
 
 `string = 'async'` `function (chunk)`
 
-This indicates which chunks will be selected for optimization. When a string is provided, valid values are `all`, `async`, and `initial`. Providing `all` can be particularly powerful, because it means that chunks can be shared even between async and non-async chunks.
+이것은 최적화를 위해 선택될 청크를 나타냅니다. 문자열이 제공될 때 유효한 값은 `all`, `async` 및 `initial`입니다. `all`을 제공하는 것은 비동기 청크와 동기 청크 간에도 청크를 공유할 수 있다는 것을 의미하기 때문에 특히 강력 할 수 있습니다.
 
 **webpack.config.js**
 
@@ -110,14 +110,14 @@ module.exports = {
   //...
   optimization: {
     splitChunks: {
-      // include all types of chunks
+      // 모든 유형의 청크를 포함합니다.
       chunks: 'all',
     },
   },
 };
 ```
 
-Alternatively, you may provide a function for more control. The return value will indicate whether to include each chunk.
+또는 더 많은 제어를 위한 기능을 제공할 수 있습니다. 반환 값은 각 청크를 포함할지 여부를 나타냅니다.
 
 ```js
 module.exports = {
@@ -125,7 +125,7 @@ module.exports = {
   optimization: {
     splitChunks: {
       chunks(chunk) {
-        // exclude `my-excluded-chunk`
+        // `my-excluded-chunk`를 제외합니다.
         return chunk.name !== 'my-excluded-chunk';
       },
     },
@@ -133,43 +133,43 @@ module.exports = {
 };
 ```
 
-T> You can combine this configuration with the [HtmlWebpackPlugin](/plugins/html-webpack-plugin/). It will inject all the generated vendor chunks for you.
+T> 이 설정을 [HtmlWebpackPlugin](/plugins/html-webpack-plugin/)과 결합할 수 있습니다. 이는 생성 된 모든 vendor 청크를 주입합니다.
 
 ### `splitChunks.maxAsyncRequests`
 
 `number = 30`
 
-Maximum number of parallel requests when on-demand loading.
+on-demand 로드 시의 최대 병렬 요청 수입니다.
 
 ### `splitChunks.maxInitialRequests`
 
 `number = 30`
 
-Maximum number of parallel requests at an entry point.
+엔트리 포인트의 최대 병렬 요청 수입니다.
 
 ### `splitChunks.defaultSizeTypes`
 
 `[string] = ['javascript', 'unknown']`
 
-Sets the size types which are used when a number is used for sizes.
+크기에 숫자를 사용할 때 적용되는 크기 유형을 설정합니다.
 
 ### `splitChunks.minChunks`
 
 `number = 1`
 
-The minimum times must a module be shared among chunks before splitting.
+모듈이 분할 전에 청크간에 공유되어야 하는 최소 시간입니다.
 
 ### `splitChunks.hidePathInfo`
 
 `boolean`
 
-Prevents exposing path info when creating names for parts splitted by maxSize.
+maxSize로 분할된 부분의 이름을 만들 때 경로 정보가 노출되지 않도록 합니다.
 
 ### `splitChunks.minSize`
 
 `number = 20000`
 
-Minimum size, in bytes, for a chunk to be generated.
+생성할 청크의 최소 byte 크기입니다.
 
 ### `splitChunks.enforceSizeThreshold`
 
@@ -177,7 +177,7 @@ Minimum size, in bytes, for a chunk to be generated.
 
 `number = 50000`
 
-Size threshold at which splitting is enforced and other restrictions (minRemainingSize, maxAsyncRequests, maxInitialRequests) are ignored.
+분할이 적용되고 기타 제한(minRemainingSize, maxAsyncRequests, maxInitialRequests)이 무시되는 임계 크기 값입니다.
 
 ### `splitChunks.minRemainingSize`
 
@@ -185,9 +185,9 @@ Size threshold at which splitting is enforced and other restrictions (minRemaini
 
 `number = 0`
 
-`splitChunks.minRemainingSize` option was introduced in webpack 5 to avoid zero sized modules by ensuring that the minimum size of the chunk which remains after splitting is above a limit. Defaults to `0` in ['development' mode](/configuration/mode/#mode-development). For other cases `splitChunks.minRemainingSize` defaults to the value of `splitChunks.minSize` so it doesn't need to be specified manually except for the rare cases where deep control is required.
+`splitChunks.minRemainingSize` 옵션은 분할 후 남아있는 청크의 최소 크기가 제한을 초과하도록하여 크기가 0인 모듈을 방지하기 위해 webpack 5에 도입되었습니다. ['development' 모드](/configuration/mode/#mode-development)에서 기본값은 `0`입니다. 다른 경우 `splitChunks.minRemainingSize`는 기본적으로 `splitChunks.minSize` 값으로 설정되므로 심층 제어가 필요한 드문 경우를 제외하고는 수동으로 지정할 필요가 없습니다.
 
-W> `splitChunks.minRemainingSize` only takes effect when a single chunk is remaining.
+W> `splitChunks.minRemainingSize`는 단일 청크가 남아있을 때만 적용됩니다.
 
 ### `splitChunks.layer`
 
@@ -195,52 +195,52 @@ W> `splitChunks.minRemainingSize` only takes effect when a single chunk is remai
 
 `RegExp` `string` `function`
 
-Assign modules to a cache group by module layer.
+모듈 계층별로 캐시 그룹에 모듈을 할당합니다.
 
 ### `splitChunks.maxSize`
 
 `number = 0`
 
-Using `maxSize` (either globally `optimization.splitChunks.maxSize` per cache group `optimization.splitChunks.cacheGroups[x].maxSize` or for the fallback cache group `optimization.splitChunks.fallbackCacheGroup.maxSize`) tells webpack to try to split chunks bigger than `maxSize` bytes into smaller parts. Parts will be at least `minSize` (next to `maxSize`) in size.
-The algorithm is deterministic and changes to the modules will only have local impact. So that it is usable when using long term caching and doesn't require records. `maxSize` is only a hint and could be violated when modules are bigger than `maxSize` or splitting would violate `minSize`.
+`maxSize`를 사용하면(캐시 그룹 `optimization.splitChunks.cacheGroups[x].maxSize`당 전역적으로 `optimization.splitChunks.maxSize` 또는 대체 캐시 그룹 `optimization.splitChunks.fallbackCacheGroup.maxSize`의 경우) webpack이 `maxSize` byte보다 큰 청크를 더 작은 부분으로 분할하도록 합니다. 분할된 크기는 최소 `minSize`(`maxSize` 옆)입니다.
+알고리즘은 결정론적이며 모듈 변경은 로컬에만 영향을 미칩니다. 따라서 장기 캐싱을 사용할 때 사용할 수 있으며 기록이 필요하지 않습니다. `maxSize`는 힌트일 뿐이며 모듈이 `maxSize` 보다 크거나 분할이 `minSize`를 벗어날 때 위반될 수 있습니다.
 
-When the chunk has a name already, each part will get a new name derived from that name. Depending on the value of `optimization.splitChunks.hidePathInfo` it will add a key derived from the first module name or a hash of it.
+청크에 이미 이름이 있는 경우 각 부분은 해당 이름에서 파생된 새 이름을 얻습니다. `optimization.splitChunks.hidePathInfo`의 값에 따라 첫 번째 모듈 이름이나 해시에서 파생된 키를 추가합니다.
 
-`maxSize` option is intended to be used with HTTP/2 and long term caching. It increases the request count for better caching. It could also be used to decrease the file size for faster rebuilding.
+`maxSize` 옵션은 HTTP/2 및 장기 캐싱과 함께 사용하기 위한 것입니다. 더 나은 캐싱을 위해 요청수가 증가합니다. 빠른 재구축을 위해 파일 크기를 줄이는 데도 사용할 수 있습니다.
 
-T> `maxSize` takes higher priority than `maxInitialRequest/maxAsyncRequests`. Actual priority is `maxInitialRequest/maxAsyncRequests < maxSize < minSize`.
+T> `maxSize`는 `maxInitialRequest/maxAsyncRequests`보다 우선순위가 높습니다. 실제 우선순위는 `maxInitialRequest/maxAsyncRequests < maxSize < minSize`입니다.
 
-T> Setting the value for `maxSize` sets the value for both `maxAsyncSize` and `maxInitialSize`.
+T> `maxSize` 값을 설정하면 `maxAsyncSize` 및 `maxInitialSize` 값이 모두 설정됩니다.
 
 ### `splitChunks.maxAsyncSize`
 
 `number`
 
-Like `maxSize`, `maxAsyncSize` can be applied globally (`splitChunks.maxAsyncSize`), to cacheGroups (`splitChunks.cacheGroups.{cacheGroup}.maxAsyncSize`), or to the fallback cache group (`splitChunks.fallbackCacheGroup.maxAsyncSize`).
+`maxSize`와 마찬가지로 `maxAsyncSize`는 전역적으로(`splitChunks.maxAsyncSize`) 캐시 그룹(`splitChunks.cacheGroups.{cacheGroup}.maxAsyncSize`) 또는 대체 캐시 그룹(`splitChunks.fallbackCacheGroup.maxAsyncSize`)에 적용될 수 있습니다.
 
-The difference between `maxAsyncSize` and `maxSize` is that `maxAsyncSize` will only affect on-demand loading chunks.
+`maxAsyncSize`와 `maxSize`의 차이점은 `maxAsyncSize`가 on-demand 로딩 청크에만 영향을 미친다는 점입니다.
 
 ### `splitChunks.maxInitialSize`
 
 `number`
 
-Like `maxSize`, `maxInitialSize` can be applied globally (`splitChunks.maxInitialSize`), to cacheGroups (`splitChunks.cacheGroups.{cacheGroup}.maxInitialSize`), or to the fallback cache group (`splitChunks.fallbackCacheGroup.maxInitialSize`).
+`maxSize`와 마찬가지로 `maxInitialSize`는 전역적으로(`splitChunks.maxInitialSize`) 캐시 그룹(`splitChunks.cacheGroups.{cacheGroup}.maxInitialSize`) 또는 대체 캐시 그룹(`splitChunks.fallbackCacheGroup.maxInitialSize`)에 적용될 수 있습니다.
 
-The difference between `maxInitialSize` and `maxSize` is that `maxInitialSize` will only affect initial load chunks.
+`maxInitialSize`와 `maxSize`의 차이점은 `maxInitialSize`가 초기 로딩 청크 에만 영향을 미친다는 것입니다.
 
 ### `splitChunks.name`
 
 `boolean = false` `function (module, chunks, cacheGroupKey) => string` `string`
 
-Also available for each cacheGroup: `splitChunks.cacheGroups.{cacheGroup}.name`.
+또한 `splitChunks.cacheGroups.{cacheGroup}.name`와 같이 각 캐시 그룹에 대해서도 사용 가능합니다.
 
-The name of the split chunk. Providing `false` will keep the same name of the chunks so it doesn't change names unnecessarily. It is the recommended value for production builds.
+이는 분할 청크의 이름입니다. `false`를 제공하면 청크의 이름이 동일하게 유지되므로 불필요하게 이름이 변경되지 않습니다. 프로덕션 빌드에 권장되는 값입니다.
 
-Providing a string or a function allows you to use a custom name. Specifying either a string or a function that always returns the same string will merge all common modules and vendors into a single chunk. This might lead to bigger initial downloads and slow down page loads.
+문자열이나 함수를 제공하면 이름을 커스텀 할 수 있습니다. 항상 같은 문자열을 반환하는 문자열이나 함수를 지정하면 모든 공통 모듈과 vendor가 단일 청크로 병합됩니다. 이로 인해 초기 다운로드가 더 커지고 페이지 로드가 느려질 수 있습니다.
 
-If you choose to specify a function, you may find the `chunk.name` and `chunk.hash` properties (where `chunk` is an element of the `chunks` array) particularly useful in choosing a name for your chunk.
+함수를 명시한 경우 청크의 이름을 선택하는 데 특히 유용한 `chunk.name` 및 `chunk.hash` 속성(여기서 `chunk`는 `chunks` 배열의 요소)을 찾을 수 있습니다.
 
-If the `splitChunks.name` matches an [entry point](/configuration/entry-context/#entry) name, the entry point will be removed.
+`splitChunks.name`이 [엔트리 포인트](/configuration/entry-context/#entry)와 일치하면 엔트리 포인트가 제거됩니다.
 
 **main.js**
 
@@ -260,7 +260,7 @@ module.exports = {
       cacheGroups: {
         commons: {
           test: /[\\/]node_modules[\\/]/,
-          // cacheGroupKey here is `commons` as the key of the cacheGroup
+          // 여기서 cacheGroupKey는 cacheGroup의 키로 `commons`입니다.
           name(module, chunks, cacheGroupKey) {
             const moduleFileName = module
               .identifier()
@@ -277,9 +277,9 @@ module.exports = {
 };
 ```
 
-Running webpack with following `splitChunks` configuration would also output a chunk of the group common with next name: `commons-main-lodash.js.e7519d2bb8777058fa27.js` (hash given as an example of real world output).
+`splitChunks` 구성으로 webpack을 실행하면 다음의 이름으로 공통 그룹 청크도 출력됩니다. `commons-main-lodash.js.e7519d2bb8777058fa27.js`(해시는 실제 출력의 예로 제공됩니다).
 
-W> When assigning equal names to different split chunks, all vendor modules are placed into a single shared chunk, though it's not recommend since it can result in more code downloaded.
+W> 다른 분할 청크에 동일한 이름을 할당할 때 모든 vendor 모듈은 단일 공유 청크에 배치되지만, 더 많은 코드가 다운로드될 수 있으므로 권장하지 않습니다.
 
 ### `splitChunks.usedExports`
 
@@ -287,12 +287,12 @@ W> When assigning equal names to different split chunks, all vendor modules are 
 
 `boolean = true`
 
-Figure out which exports are used by modules to mangle export names, omit unused exports and generate more efficient code.
-When it is `true`: analyse used exports for each runtime, when it is `"global"`: analyse exports globally for all runtimes combined).
+모듈이 export 할 파일의 이름을 수정(mangle)하고 사용하지 않는 export를 생략하고 보다 효율적인 코드를 생성하기 위해 어떤 export를 사용하는지 알아봅니다.
+`true`인 경우 각 런타임에 대해 사용된 export를 분석하고, `"global"`인 경우 결합한 모든 런타임에 대해 전역적으로 export를 분석합니다.
 
 ### `splitChunks.cacheGroups`
 
-Cache groups can inherit and/or override any options from `splitChunks.*`; but `test`, `priority` and `reuseExistingChunk` can only be configured on cache group level. To disable any of the default cache groups, set them to `false`.
+캐시 그룹은 `splitChunks.*`의 모든 옵션을 상속 및(또는) 재정의할 수 있습니다. 그러나 `test`, `priority` 및 `reuseExistingChunk`는 캐시 그룹 수준에서만 구성할 수 있습니다. 기본 캐시 그룹을 비활성화하려면 `false`로 설정하세요.
 
 **webpack.config.js**
 
@@ -313,13 +313,13 @@ module.exports = {
 
 `number = -20`
 
-A module can belong to multiple cache groups. The optimization will prefer the cache group with a higher `priority`. The default groups have a negative priority to allow custom groups to take higher priority (default value is `0` for custom groups).
+모듈은 여러 캐시 그룹에 속할 수 있습니다. 최적화는 `priority`(우선순위)가 더 높은 캐시 그룹을 선호합니다. 기본 그룹은 커스텀 그룹이 더 높은 우선순위를 가질 수 있도록 음수 우선순위를 갖습니다(커스텀 그룹일 경우 기본값은 `0`입니다).
 
 #### `splitChunks.cacheGroups.{cacheGroup}.reuseExistingChunk`
 
 `boolean = true`
 
-If the current chunk contains modules already split out from the main bundle, it will be reused instead of a new one being generated. This can impact the resulting file name of the chunk.
+현재 청크에 이미 기본 번들에서 분리된 모듈이 포함되어 있으면 새로 생성되는 대신 재사용됩니다. 이것은 청크의 파일 이름에 영향을 줄 수 있습니다.
 
 **webpack.config.js**
 
@@ -342,7 +342,7 @@ module.exports = {
 
 `function` `RegExp` `string`
 
-Allows to assign modules to a cache group by module type.
+모듈 유형별로 캐시 그룹에 모듈을 할당할 수 있습니다.
 
 **webpack.config.js**
 
@@ -367,9 +367,9 @@ module.exports = {
 
 `function (module, { chunkGraph, moduleGraph }) => boolean` `RegExp` `string`
 
-Controls which modules are selected by this cache group. Omitting it selects all modules. It can match the absolute module resource path or chunk names. When a chunk name is matched, all modules in the chunk are selected.
+캐시 그룹에 의해 선택되는 모듈을 제어합니다. 생략하면 모든 모듈이 선택됩니다. 이는 절대 경로 모듈 리소스 또는 청크 이름과 일치할 수 있습니다. 청크 이름이 일치하면 청크의 모든 모듈이 선택됩니다.
 
-Providing a function to`{cacheGroup}.test`:
+아래와 같이 `{cacheGroup}.test`에 기능을 제공합니다.
 
 **webpack.config.js**
 
@@ -381,8 +381,8 @@ module.exports = {
       cacheGroups: {
         svgGroup: {
           test(module) {
-            // `module.resource` contains the absolute path of the file on disk.
-            // Note the usage of `path.sep` instead of / or \, for cross-platform compatibility.
+            // `module.resource`는 디스크에 있는 파일의 절대 경로를 포함합니다.
+            // 플랫폼 간 호환성을 위해 / 또는 \ 대신 `path.sep`을 사용합니다.
             const path = require('path');
             return (
               module.resource &&
@@ -402,9 +402,9 @@ module.exports = {
 };
 ```
 
-In order to see what information is available in `module` and `chunks` objects, you can put `debugger;` statement in the callback. Then [run your webpack build in debug mode](/contribute/debugging/#devtools) to inspect the parameters in Chromium DevTools.
+`module` 및 `chunks` 객체에서 어떤 정보를 사용할 수 있는지 확인하려면 콜백에 `debugger;` 문을 넣으면 됩니다. 그런 다음 [디버그 모드에서 webpack 빌드를 실행](/contribute/debugging/#devtools)하여 Chromium DevTools의 파라미터를 검사합니다.
 
-Providing a `RegExp` to `{cacheGroup}.test`:
+아래는 `{cacheGroup}.test`에 `RegExp`를 제공한 경우입니다.
 
 **webpack.config.js**
 
@@ -415,7 +415,7 @@ module.exports = {
     splitChunks: {
       cacheGroups: {
         defaultVendors: {
-          // Note the usage of `[\\/]` as a path separator for cross-platform compatibility.
+          // 플랫폼 간 호환성을 위한 경로 구분 기호로 `[\\/]`의 사용에 유의하세요.
           test: /[\\/]node_modules[\\/]|vendor[\\/]analytics_provider|vendor[\\/]other_lib/,
         },
       },
@@ -428,10 +428,10 @@ module.exports = {
 
 `string` `function (pathData, assetInfo) => string`
 
-Allows to override the filename when and only when it's an initial chunk.
-All placeholders available in [`output.filename`](/configuration/output/#outputfilename) are also available here.
+초기 청크인 경우에만 파일 이름을 재정의할 수 있습니다.
+[`output.filename`](/configuration/output/#outputfilename)에서 사용할 수 있는 모든 플레이스홀더는 여기에서도 사용할 수 있습니다.
 
-W> This option can also be set globally in `splitChunks.filename`, but this isn't recommended and will likely lead to an error if [`splitChunks.chunks`](#splitchunkschunks) is not set to `'initial'`. Avoid setting it globally.
+W> 이 옵션은 `splitChunks.filename`에서 전역적으로 설정할 수도 있지만, 이는 권장되지 않으며 [`splitChunks.chunks`](#splitchunkschunks)가 `'initial'`로 설정되지 않는 경우 오류가 발생할 수 있습니다. 전역으로 설정하지 마세요.
 
 **webpack.config.js**
 
@@ -450,7 +450,7 @@ module.exports = {
 };
 ```
 
-And as a function:
+아래는 함수로 사용하는 방법입니다.
 
 **webpack.config.js**
 
@@ -462,7 +462,7 @@ module.exports = {
       cacheGroups: {
         defaultVendors: {
           filename: (pathData) => {
-            // Use pathData object for generating filename string based on your requirements
+            // 요구 사항에 따라 파일 이름 문자열을 생성하기 위해 pathData 객체를 사용하세요.
             return `${pathData.chunk.name}-bundle.js`;
           },
         },
@@ -472,7 +472,7 @@ module.exports = {
 };
 ```
 
-It is possible to create a folder structure by providing path prefixing the filename: `'js/vendor/bundle.js'`.
+파일 이름 앞에 경로를 제공하여 폴더 구조를 생성할 수 있습니다(예: `'js/vendor/bundle.js'`).
 
 **webpack.config.js**
 
@@ -495,7 +495,7 @@ module.exports = {
 
 `boolean = false`
 
-Tells webpack to ignore [`splitChunks.minSize`](#splitchunksminsize), [`splitChunks.minChunks`](#splitchunksminchunks), [`splitChunks.maxAsyncRequests`](#splitchunksmaxasyncrequests) and [`splitChunks.maxInitialRequests`](#splitchunksmaxinitialrequests) options and always create chunks for this cache group.
+Webpack에 [`splitChunks.minSize`](#splitchunksminsize), [`splitChunks.minChunks`](#splitchunksminchunks), [`splitChunks.maxAsyncRequests`](#splitchunksmaxasyncrequests) 및 [`splitChunks.maxInitialRequests`](#splitchunksmaxinitialrequests) 옵션을 무시하고 항상 이 캐시 그룹에 대한 청크를 생성하도록 지시합니다.
 
 **webpack.config.js**
 
@@ -518,7 +518,7 @@ module.exports = {
 
 `string`
 
-Sets the hint for chunk id. It will be added to chunk's filename.
+청크 ID에 대한 힌트를 설정합니다. 청크의 파일 이름에 추가됩니다.
 
 **webpack.config.js**
 
@@ -544,7 +544,7 @@ module.exports = {
 ```js
 // index.js
 
-import('./a'); // dynamic import
+import('./a'); // 동적 import
 ```
 
 ```js
@@ -554,30 +554,30 @@ import 'react';
 //...
 ```
 
-**Result:** A separate chunk would be created containing `react`. At the import call this chunk is loaded in parallel to the original chunk containing `./a`.
+**결과:** `react`를 포함하는 별도의 청크가 생성됩니다. import 호출에서 이 청크는 `./a`를 포함하는 원래 청크와 병렬로 로드됩니다.
 
-Why:
+이유:
 
-- Condition 1: The chunk contains modules from `node_modules`
-- Condition 2: `react` is bigger than 30kb
-- Condition 3: Number of parallel requests at the import call is 2
-- Condition 4: Doesn't affect request at initial page load
+- 조건 1: 청크는 `node_modules`의 모듈을 포함합니다
+- 조건 2: `react`가 30kb보다 큽니다
+- 조건 3: import 호출 시 병렬 요청 수는 2입니다
+- 조건 4: 초기 페이지 로드 시 요청에 영향을 주지 않습니다
 
-What's the reasoning behind this? `react` probably won't change as often as your application code. By moving it into a separate chunk this chunk can be cached separately from your app code (assuming you are using chunkhash, records, Cache-Control or other long term cache approach).
+이 이유는 무엇일까요? `react`는 애플리케이션 코드만큼 자주 변경되지 않을 것입니다. 별도의 청크로 이동하면 이 청크를 앱 코드와 별도로 캐시할 수 있습니다(청크 해시, 레코드, Cache-Control 또는 장기 캐시 접근 방식을 사용한다고 가정합니다).
 
 ### Defaults: Example 2
 
 ```js
 // entry.js
 
-// dynamic imports
+// 동적 imports
 import('./a');
 import('./b');
 ```
 
 ```js
 // a.js
-import './helpers'; // helpers is 40kb in size
+import './helpers'; // helpers의 크기는 40kb입니다
 
 //...
 ```
@@ -585,25 +585,25 @@ import './helpers'; // helpers is 40kb in size
 ```js
 // b.js
 import './helpers';
-import './more-helpers'; // more-helpers is also 40kb in size
+import './more-helpers'; // more-helpers 또한 40kb의 크기를 가집니다
 
 //...
 ```
 
-**Result:** A separate chunk would be created containing `./helpers` and all dependencies of it. At the import calls this chunk is loaded in parallel to the original chunks.
+**결과:** `./helpers`와 이에 대한 모든 의존성을 포함하는 별도의 청크가 생성됩니다. import 호출에서 이 청크는 원래 청크와 병렬로 로드됩니다.
 
-Why:
+이유:
 
-- Condition 1: The chunk is shared between both import calls
-- Condition 2: `helpers` is bigger than 30kb
-- Condition 3: Number of parallel requests at the import calls is 2
-- Condition 4: Doesn't affect request at initial page load
+- 조건 1: 청크는 두 import 호출 간에 공유됩니다
+- 조건 2: `helpers`는 30kb보다 큽니다
+- 조건 3: import 호출 시 병렬 요청 수는 2입니다
+- 조건 4: 초기 페이지 로드 시 요청에 영향을 주지 않습니다
 
-Putting the content of `helpers` into each chunk will result into its code being downloaded twice. By using a separate chunk this will only happen once. We pay the cost of an additional request, which could be considered a tradeoff. That's why there is a minimum size of 30kb.
+`helpers`의 내용을 각 청크에 넣으면 코드가 두 번 다운로드됩니다. 별도의 청크를 사용하면 한 번만 발생합니다. 우리는 추가 요청 비용을 지불하며 이는 절충안으로 간주할 수 있습니다. 그렇기 때문에 최소 크기는 30kb입니다.
 
 ### Split Chunks: Example 1
 
-Create a `commons` chunk, which includes all code shared between entry points.
+엔트리 포인트 간에 공유되는 모든 코드를 포함하는 `commons` 청크를 만듭니다.
 
 **webpack.config.js**
 
@@ -624,11 +624,11 @@ module.exports = {
 };
 ```
 
-W> This configuration can enlarge your initial bundles, it is recommended to use dynamic imports when a module is not immediately needed.
+W> 이 구성은 초기 번들을 확장할 수 있으므로 모듈이 즉시 필요하지 않을 때 동적 import를 사용하는 것이 좋습니다.
 
 ### Split Chunks: Example 2
 
-Create a `vendors` chunk, which includes all code from `node_modules` in the whole application.
+전체 애플리케이션에서 `node_modules`의 모든 코드를 포함하는 `vendors` 청크를 만듭니다.
 
 **webpack.config.js**
 
@@ -649,11 +649,11 @@ module.exports = {
 };
 ```
 
-W> This might result in a large chunk containing all external packages. It is recommended to only include your core frameworks and utilities and dynamically load the rest of the dependencies.
+W> 이로 인해 모든 외부 패키지가 포함된 큰 청크가 생성될 수 있습니다. 핵심 프레임워크와 유틸리티만 포함하고 나머지 종속성을 동적으로 로드하는 것이 좋습니다.
 
 ### Split Chunks: Example 3
 
-Create a `custom vendor` chunk, which contains certain `node_modules` packages matched by `RegExp`.
+`RegExp`와 일치하는 특정 `node_modules` 패키지를 포함하는 `custom vendor` 청크를 만듭니다.
 
 **webpack.config.js**
 
@@ -674,4 +674,4 @@ module.exports = {
 };
 ```
 
-T> This will result in splitting `react` and `react-dom` into a separate chunk. If you're not sure what packages have been included in a chunk you may refer to [Bundle Analysis](/guides/code-splitting/#bundle-analysis) section for details.
+T> 이로 인해 `react`와 `react-dom`이 별도의 청크로 분할됩니다. 어떤 패키지가 청크에 포함되었는지 확실하지 않은 경우 자세한 내용은 [Bundle Analysis](/guides/code-splitting/#bundle-analysis) 섹션을 참조하세요.
