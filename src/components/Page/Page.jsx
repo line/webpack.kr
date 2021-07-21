@@ -92,21 +92,14 @@ export default function Page(props) {
   }
   return (
     <section className="page">
-      <PageLinks page={rest} />
-
       <Markdown>
         <h1>{title}</h1>
 
         {contentRender}
 
-        {(previous || next) && (
-          <AdjacentPages previous={previous} next={next} />
-        )}
-
         {loadRelated && (
-          <div className="related__section">
-            <hr />
-            <h3>Further Reading</h3>
+          <div className="print:hidden">
+            <h2>Further Reading</h2>
             <ul>
               {related.map((link, index) => (
                 <li key={index}>
@@ -116,18 +109,25 @@ export default function Page(props) {
             </ul>
           </div>
         )}
+
+        <PageLinks page={rest} />
+
+        {(previous || next) && (
+          <AdjacentPages previous={previous} next={next} />
+        )}
+
+        {loadContributors && (
+          <div className="contributors__section">
+            <h3>Contributors</h3>
+            <Contributors contributors={contributors} />
+          </div>
+        )}
+
         {loadTranslators && (
           <div className="translators__section">
             <hr />
             <h3>Translators</h3>
             <Translators translators={translators} />
-          </div>
-        )}
-        {loadContributors && (
-          <div className="contributors__section">
-            <hr />
-            <h3>Contributors</h3>
-            <Contributors contributors={contributors} />
           </div>
         )}
       </Markdown>
