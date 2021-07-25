@@ -13,6 +13,8 @@ contributors:
   - anikethsaha
   - chenxsan
   - jamesgeorge007
+translators:
+  - choilim
 related:
   - title: CommonJS
     url: https://en.wikipedia.org/wiki/CommonJS
@@ -102,7 +104,7 @@ console.log(import.meta.webpack); // webpack 5의 경우 `5` 출력
 
 ## import.meta.webpackHot
 
-Webpack 특유의 속성입니다. [`module.hot`](#modulehot-webpack-specific)의 별칭으로, `import.meta.webpackHot`는 [strict ESM](/guides/ecma-script-modules/#flagging-modules-as-esm)에서 사용할 수 있지만 `module.hot`는 할 수 없습니다.
+Webpack 특유의 속성입니다. [`module.hot`](#modulehot-webpack-specific)의 별칭으로, `import.meta.webpackHot`은 [strict ESM](/guides/ecma-script-modules/#flagging-modules-as-esm)에서 사용할 수 있지만 `module.hot`은 할 수 없습니다.
 
 ## `__filename` (NodeJS)
 
@@ -166,7 +168,7 @@ import('./module-a').then((moduleA) => {
 
 ## `__webpack_modules__` (webpack-specific)
 
-모든 모듈의 내부 객체에 대한 접근.
+모든 모듈의 내부 객체에 대한 접근을 제공합니다.
 
 ## `__webpack_hash__` (webpack-specific)
 
@@ -182,7 +184,7 @@ webpack에 의해 파싱되지 않는 `require` 함수를 생성합니다. 가�
 
 - `__webpack_exports_info__`는 항상 `true`입니다.
 
-- `__webpack_exports_info__.<exportName>.used` 는 export가 사용되지 않는 경우 `false`이고, 그렇지 않으면 `true`입니다.
+- `__webpack_exports_info__.<exportName>.used`는 export가 사용되지 않는 경우 `false`이고, 그렇지 않으면 `true`입니다.
 
 - `__webpack_exports_info__.<exportName>.useInfo`는 다음과 같습니다.
 
