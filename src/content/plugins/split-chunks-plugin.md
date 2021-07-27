@@ -101,7 +101,7 @@ W> webpack 5부터 `{cacheGroup}.test`에 엔트리 이름을 전달하고 `{cac
 
 `string = 'async'` `function (chunk)`
 
-이것은 최적화를 위해 선택될 청크를 나타냅니다. 문자열이 제공될 때 유효한 값은 `all`, `async` 및 `initial`입니다. `all`을 제공하는 것은 비동기 청크와 동기 청크 간에도 청크를 공유할 수 있다는 것을 의미하기 때문에 특히 강력 할 수 있습니다.
+이것은 최적화를 위해 선택될 청크를 나타냅니다. 문자열이 제공될 때 유효한 값은 `all`, `async` 및 `initial`입니다. `all`을 제공하는 것은 비동기 청크와 동기 청크 간에도 청크를 공유할 수 있다는 것을 의미하기 때문에 특히 강력할 수 있습니다.
 
 **webpack.config.js**
 
@@ -201,7 +201,7 @@ W> `splitChunks.minRemainingSize`는 단일 청크가 남아있을 때만 적용
 
 `number = 0`
 
-`maxSize`를 사용하면(캐시 그룹 `optimization.splitChunks.cacheGroups[x].maxSize`당 전역적으로 `optimization.splitChunks.maxSize` 또는 대체 캐시 그룹 `optimization.splitChunks.fallbackCacheGroup.maxSize`의 경우) webpack이 `maxSize` byte보다 큰 청크를 더 작은 부분으로 분할하도록 합니다. 분할된 크기는 최소 `minSize`(`maxSize` 옆)입니다.
+`maxSize`를 사용하면(캐시 그룹 `optimization.splitChunks.cacheGroups[x].maxSize`당 전역적으로 `optimization.splitChunks.maxSize` 또는 대체 캐시 그룹 `optimization.splitChunks.fallbackCacheGroup.maxSize`의 경우) webpack이 `maxSize` byte보다 큰 청크를 더 작은 부분으로 분할하도록 합니다. 분할된 크기는 최소 `minSize`(`maxSize` 다음)입니다.
 알고리즘은 결정론적이며 모듈 변경은 로컬에만 영향을 미칩니다. 따라서 장기 캐싱을 사용할 때 사용할 수 있으며 기록이 필요하지 않습니다. `maxSize`는 힌트일 뿐이며 모듈이 `maxSize` 보다 크거나 분할이 `minSize`를 벗어날 때 위반될 수 있습니다.
 
 청크에 이미 이름이 있는 경우 각 부분은 해당 이름에서 파생된 새 이름을 얻습니다. `optimization.splitChunks.hidePathInfo`의 값에 따라 첫 번째 모듈 이름이나 해시에서 파생된 키를 추가합니다.
