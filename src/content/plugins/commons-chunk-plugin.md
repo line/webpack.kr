@@ -27,9 +27,7 @@ new webpack.optimize.CommonsChunkPlugin(options);
 
 ## Options
 
-<!-- eslint-skip -->
-
-```js
+```ts
 {
   name: string, // 또는
   names: string[],
