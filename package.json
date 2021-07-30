@@ -137,7 +137,7 @@
     "style-loader": "^3.1.0",
     "tailwindcss": "^2.2.4",
     "tap-spot": "^1.1.1",
-    "unist-util-visit": "^2.0.3",
+    "unist-util-visit": "^4.0.0",
     "webpack": "^5.44.0",
     "webpack-bundle-analyzer": "^4.4.2",
     "webpack-cli": "^4.7.2",
@@ -159,7 +159,7 @@
     "react-tiny-popover": "5",
     "react-use": "^17.2.4",
     "react-visibility-sensor": "^5.0.2",
-    "unist-util-visit": "^2.0.3",
+    "unist-util-visit": "^4.0.0",
     "webpack-pwa-manifest": "^4.3.0",
     "webpack.vote": "https://github.com/webpack/voting-app.git",
     "workbox-window": "^6.1.5"
