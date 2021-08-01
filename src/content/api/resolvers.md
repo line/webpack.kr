@@ -5,51 +5,50 @@ sort: 15
 contributors:
   - EugeneHlushko
   - chenxsan
+translators:
+  - dkstyle
 ---
 
-Resolvers are created using the `enhanced-resolve` package. The `Resolver`
-class extends the `tapable` class and uses `tapable` to provide a few hooks.
-The `enhanced-resolve` package can be used directly to create new resolvers,
-however any [`compiler` instance](/api/node/#compiler-instance) has a few resolver instances that can be
-tapped into.
+리졸버는 `enhanced-resolve` 패키지를 사용하여 생성됩니다.
+`Resolver` 클래스는 `tapable` 클래스를 확장하고 `tapable`을 사용하여 몇 가지 hooks를 제공합니다.
+`enhanced-resolve` 패키지를 사용하여 새 리졸버를 직접 만들 수 있습니다.
+하지만 모든 [`컴파일러` 인스턴스](/api/node/#compiler-instance)에는 탭 할 수 있는 몇 가지 리졸버 인스턴스가 있습니다.
 
-Before reading on, make sure to have a look at the
-[`enhanced-resolve`](https://github.com/webpack/enhanced-resolve) and [`tapable`](/api/plugins/#tapable) documentation.
+계속 읽기 전에
+[`enhanced-resolve`](https://github.com/webpack/enhanced-resolve) 및 [`tapable`](/api/plugins/#tapable) 문서를 확인하세요.
 
 ## Types
 
-There are three types of built-in resolvers available on the `compiler` class:
+`compiler` 클래스에서 사용할 수 있는 내장 리졸버에는 세 가지 유형이 있습니다.
 
-- `normal`: Resolves a module via an absolute or relative path.
-- `context`: Resolves a module within a given context.
-- `loader`: Resolves a webpack [loader](/loaders).
+- `normal`: 절대 또는 상대 경로를 통해 모듈을 해석합니다.
+- `context`: 주어진 컨텍스트 내에서 모듈을 해석합니다.
+- `loader`: webpack [로더](/loaders)를 해석합니다.
 
-Depending on need, any one of these built-in resolvers, that are used by the `compiler`,
-can be customized via plugins:
+필요에 따라 `컴파일러`에서 사용하는 내장 리졸버 중 하나를,
+플러그인을 통해 사용자 지정할 수 있습니다.
 
 ```js
 compiler.resolverFactory.hooks.resolver
   .for('[type]')
   .tap('name', (resolver) => {
-    // you can tap into resolver.hooks now
+    // 이제 resolver.hooks를 활용할 수 있습니다.
     resolver.hooks.result.tap('MyPlugin', (result) => {
       return result;
     });
   });
 ```
 
-Where `[type]` is one of the three resolvers mentioned above.
+여기에서 `[타입]`은 위에서 언급한 세 가지 리졸버 중 하나입니다.
 
-See the [`enhanced-resolve` documentation](https://github.com/webpack/enhanced-resolve) for a full list of hooks and their description.
+hooks의 전체 목록과 설명은 [`enhanced-resolve` 문서](https://github.com/webpack/enhanced-resolve)를 참고하세요.
 
 ## Configuration Options
 
-The resolvers mentioned above can also be customized via a configuration file
-with the [`resolve`](/configuration/resolve/) or [`resolveLoader`](/configuration/resolve/#resolveloader) options. These options allow
-users to change the resolving behavior through a variety of options including
-through resolve `plugins`.
+위에서 언급한 리졸버는 [`resolve`](/configuration/resolve/) 또는 [`resolveLoader`](/configuration/resolve/#resolveloader) 옵션이 있는
+설정 파일을 통해 사용자 지정할 수도 있습니다.
+이러한 옵션을 통해 사용자는 resolve `플러그인`을 비롯한 다양한 옵션을 통해 해석 동작을 변경할 수 있습니다.
 
-The resolver plugins, e.g. [`DirectoryNamedPlugin`](https://github.com/shaketbaby/directory-named-webpack-plugin), can be included
-directly in `resolve.plugins` rather than using directly in [`plugins` configuration option](/configuration/plugins/#plugins).
+리졸버 플러그인, 예: [`DirectoryNamedPlugin`](https://github.com/shaketbaby/directory-named-webpack-plugin), [`플러그인` 설정 옵션](/configuration/plugins/#plugins)에서 사용하는 대신 `resolve.plugins`에 직접 포함될 수 있습니다.
 
-T> Note that the `resolve` configuration affects the `normal` and `context` resolvers while `resolveLoader` is used to modify the `loader` resolver.
+T> `resolve` 설정은 `normal` 및 `context` 리졸버에 영향을 미치지만 `resolveLoader`는 `loader` 리졸버를 수정하는 데 사용됩니다.
