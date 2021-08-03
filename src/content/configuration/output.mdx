@@ -219,25 +219,68 @@ module.exports = {
 };
 ```
 
-## `output.enabledChunkLoadingTypes`
+## output.clean
 
-`[string: 'jsonp' | 'import-scripts' | 'require' | 'async-node' | <any string>]`
+<Badge text="5.20.0+" />
 
-엔트리 포인트에서 사용할 수 있는 청크 로딩 타입 목록입니다. webpack에 의해 자동으로 채워집니다. 함수를 entry 옵션으로 사용하고 거기에서 chunkLoading 옵션을 반환할 때만 필요합니다.
-
-**webpack.config.js**
+`boolean` `{ dry?: boolean, keep?: RegExp | string | ((filename: string) => boolean) }`
 
 ```javascript
 module.exports = {
   //...
   output: {
-    //...
-    enabledChunkLoadingTypes: ['jsonp', 'require'],
+    clean: true, // 내보내기 전에 output 디렉토리를 정리합니다.
   },
 };
 ```
 
-## `output.crossOriginLoading`
+```javascript
+module.exports = {
+  //...
+  output: {
+    clean: {
+      dry: true, // 삭제하는 대신 제거해야 하는 애셋을 기록합니다.
+    },
+  },
+};
+```
+
+```javascript
+module.exports = {
+  //...
+  output: {
+    clean: {
+      keep: /ignored\/dir\//, // 애셋을 'ignored/dir' 아래에 유지합니다.
+    },
+  },
+};
+
+// 또는
+
+module.exports = {
+  //...
+  output: {
+    clean: {
+      keep(asset) {
+        return asset.includes('ignored/dir');
+      },
+    },
+  },
+};
+```
+
+hook과 함께 사용할 수도 있습니다.
+
+```javascript
+webpack.CleanPlugin.getCompilationHooks(compilation).keep.tap(
+  'Test',
+  (asset) => {
+    if (/ignored\/dir\//.test(asset)) return true;
+  }
+);
+```
+
+## output.crossOriginLoading
 
 `boolean = false` `string: 'anonymous' | 'use-credentials'`
 
@@ -253,6 +296,24 @@ module.exports = {
 위의 템플릿 문자열 또는 함수가 중복을 생성할 때 사용되는 폴백입니다.
 
 [`output.devtoolModuleFilenameTemplate`](#outputdevtoolmodulefilenametemplate)을 참고하세요.
+
+## `output.enabledChunkLoadingTypes`
+
+`[string: 'jsonp' | 'import-scripts' | 'require' | 'async-node' | <any string>]`
+
+엔트리포인트에서 사용할 수 있는 청크 로드의 유형 목록입니다. webpack에 의해 자동으로 채워집니다. 함수를 입력 옵션으로 사용하고, 거기에서 chunkLoading 옵션을 반환할 때만 필요합니다.
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  //...
+  output: {
+    //...
+    enabledChunkLoadingTypes: ['jsonp', 'require'],
+  },
+};
+```
 
 ## `output.devtoolModuleFilenameTemplate`
 
@@ -1400,7 +1461,7 @@ MyLibrary = _entry_return_;
 
 #### `libraryTarget: 'assign-properties'` <Badge text='5.16.0+' />
 
-W> [output.library.type: 'assign-properties'`](#type-assign-properties-badge-text5160-)를 사용하는 것이 좋습니다.
+W> [output.library.type: 'assign-properties'`](#type-assign-properties)를 사용하는 것이 좋습니다.
 
 반환 값이 있는 경우 대상 객체에 복사하고, 그렇지 않으면 먼저 대상 객체를 만듭니다.
 
@@ -2173,64 +2234,3 @@ module.exports = {
 ```
 
 W> `output.module`은 실험적 기능이며 [`experiments.outputModule`](/configuration/experiments/#experiments)을 `true`로 설정해야만 활성화 할 수 있습니다.
-
-## output.clean
-
-<Badge text="5.20.0+" />
-
-`boolean` `{ dry?: boolean, keep?: RegExp | string | ((filename: string) => boolean) }`
-
-```javascript
-module.exports = {
-  //...
-  output: {
-    clean: true, // 방출하기 전에 출력 디렉토리를 정리합니다.
-  },
-};
-```
-
-```javascript
-module.exports = {
-  //...
-  output: {
-    clean: {
-      dry: true, // 삭제하는 대신 제거해야 하는 애셋을 기록합니다.
-    },
-  },
-};
-```
-
-```javascript
-module.exports = {
-  //...
-  output: {
-    clean: {
-      keep: /ignored\/dir\//, // 애셋을 'ignored/dir'에 유지시킵니다.
-    },
-  },
-};
-
-// or
-
-module.exports = {
-  //...
-  output: {
-    clean: {
-      keep(asset) {
-        return asset.includes('ignored/dir');
-      },
-    },
-  },
-};
-```
-
-hook과 함께 사용할 수 있습니다.
-
-```javascript
-webpack.CleanPlugin.getCompilationHooks(compilation).keep.tap(
-  'Test',
-  (asset) => {
-    if (/ignored\/dir\//.test(asset)) return true;
-  }
-);
-```
