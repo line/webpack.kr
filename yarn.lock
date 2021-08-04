@@ -8959,11 +8959,6 @@ object-inspect@^1.10.3:
   resolved "https://registry.yarnpkg.com/object-inspect/-/object-inspect-1.10.3.tgz#c2aa7d2d09f50c99375704f7a0adf24c5782d369"
   integrity sha512-e5mCJlSH7poANfC8z8S9s9S2IN5/4Zb3aZ33f5s8YqoazCFzNLloLU8r5VCG+G7WoqLvAAZoVMcy3tp/3X0Plw==
 
-object-inspect@^1.10.3:
-  version "1.10.3"
-  resolved "https://registry.yarnpkg.com/object-inspect/-/object-inspect-1.10.3.tgz#c2aa7d2d09f50c99375704f7a0adf24c5782d369"
-  integrity sha512-e5mCJlSH7poANfC8z8S9s9S2IN5/4Zb3aZ33f5s8YqoazCFzNLloLU8r5VCG+G7WoqLvAAZoVMcy3tp/3X0Plw==
-
 object-inspect@^1.8.0, object-inspect@^1.9.0:
   version "1.9.0"
   resolved "https://registry.yarnpkg.com/object-inspect/-/object-inspect-1.9.0.tgz#c90521d74e1127b67266ded3394ad6116986533a"
@@ -11092,10 +11087,10 @@ sass-loader@^12.1.0:
     klona "^2.0.4"
     neo-async "^2.6.2"
 
-sass@^1.36.0:
-  version "1.36.0"
-  resolved "https://registry.yarnpkg.com/sass/-/sass-1.36.0.tgz#5912ef9d5d16714171ba11cb17edb274c4bbc07e"
-  integrity sha512-fQzEjipfOv5kh930nu3Imzq3ie/sGDc/4KtQMJlt7RRdrkQSfe37Bwi/Rf/gfuYHsIuE1fIlDMvpyMcEwjnPvg==
+sass@^1.37.5:
+  version "1.37.5"
+  resolved "https://registry.yarnpkg.com/sass/-/sass-1.37.5.tgz#f6838351f7cc814c4fcfe1d9a20e0cabbd1e7b3c"
+  integrity sha512-Cx3ewxz9QB/ErnVIiWg2cH0kiYZ0FPvheDTVC6BsiEGBTZKKZJ1Gq5Kq6jy3PKtL6+EJ8NIoaBW/RSd2R6cZOA==
   dependencies:
     chokidar ">=3.0.0 <4.0.0"
 
@@ -11808,7 +11803,7 @@ stringify-object@^3.3.0:
     is-obj "^1.0.1"
     is-regexp "^1.0.0"
 
-strip-ansi@^3.0.0:
+strip-ansi@^3.0.0, strip-ansi@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-3.0.1.tgz#6a385fb8853d952d5ff05d0e8aaf94278dc63dcf"
   integrity sha1-ajhfuIU9lS1f8F0Oiq+UJ43GPc8=
@@ -12565,18 +12560,6 @@ unified@9.2.0:
     vfile "^4.0.0"
 
 unified@^9.0.0, unified@^9.1.0, unified@^9.2.0, unified@^9.2.1:
-  version "9.2.2"
-  resolved "https://registry.yarnpkg.com/unified/-/unified-9.2.2.tgz#67649a1abfc3ab85d2969502902775eb03146975"
-  integrity sha512-Sg7j110mtefBD+qunSLO1lqOEKdrwBFBrR6Qd8f4uwkhWNlbkaqwHse6e7QvD3AP/MNoJdEDLaf8OxYyoWgorQ==
-  dependencies:
-    bail "^1.0.0"
-    extend "^3.0.0"
-    is-buffer "^2.0.0"
-    is-plain-obj "^2.0.0"
-    trough "^1.0.0"
-    vfile "^4.0.0"
-
-unified@^9.2.0:
   version "9.2.2"
   resolved "https://registry.yarnpkg.com/unified/-/unified-9.2.2.tgz#67649a1abfc3ab85d2969502902775eb03146975"
   integrity sha512-Sg7j110mtefBD+qunSLO1lqOEKdrwBFBrR6Qd8f4uwkhWNlbkaqwHse6e7QvD3AP/MNoJdEDLaf8OxYyoWgorQ==
