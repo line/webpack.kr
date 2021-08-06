@@ -14,9 +14,9 @@ import './SplashViz.scss';
 export default class SplashViz extends Component {
   render() {
     return (
-      <section className="splash-viz">
+      <section className="splash-viz dark:bg-gray-900">
         <h1 className="splash-viz__heading">
-          <TextRotator delay={ 5000 } repeatDelay={ 5000 } maxWidth={ 175 }>
+          <TextRotator delay={5000} repeatDelay={5000} maxWidth={175}>
             <span> 애셋을 </span>
             <span> 스크립트를 </span>
             <span> 이미지를 </span>

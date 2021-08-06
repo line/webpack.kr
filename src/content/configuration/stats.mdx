@@ -57,7 +57,7 @@ stats 출력에서 보고 싶은 정보를 설정할 수 있습니다.
 
 T> stats 설정 객체의 모든 옵션은 선택 사항입니다.
 
-### `stats.all`
+### stats.all
 
 정의되지 않은 경우 stats 옵션의 폴백입니다. 로컬 webpack의 기본값보다 우선시 됩니다.
 
@@ -70,7 +70,7 @@ module.exports = {
 };
 ```
 
-### `stats.assets`
+### stats.assets
 
 `boolean = true`
 
@@ -85,7 +85,7 @@ module.exports = {
 };
 ```
 
-### `stats.assetsSort`
+### stats.assetsSort
 
 `string = 'id'`
 
@@ -100,7 +100,7 @@ module.exports = {
 };
 ```
 
-### `stats.builtAt`
+### stats.builtAt
 
 `boolean = true`
 
@@ -115,7 +115,7 @@ module.exports = {
 };
 ```
 
-### `stats.moduleAssets`
+### stats.moduleAssets
 
 `boolean = true`
 
@@ -130,7 +130,7 @@ module.exports = {
 };
 ```
 
-### `stats.assetsSpace`
+### stats.assetsSpace
 
 `number = 15`
 
@@ -145,7 +145,7 @@ module.exports = {
 };
 ```
 
-### `stats.modulesSpace`
+### stats.modulesSpace
 
 `number = 15`
 
@@ -160,7 +160,7 @@ module.exports = {
 };
 ```
 
-### `stats.chunkModulesSpace`
+### stats.chunkModulesSpace
 
 `number = 10`
 
@@ -175,7 +175,7 @@ module.exports = {
 };
 ```
 
-### `stats.nestedModulesSpace`
+### stats.nestedModulesSpace
 
 `number = 10`
 
@@ -190,11 +190,11 @@ module.exports = {
 };
 ```
 
-### `stats.cached`
+### stats.cached
 
 `stats.cachedModules`의 오래된 버전입니다.
 
-### `stats.cachedModules`
+### stats.cachedModules
 
 `boolean = true`
 
@@ -209,7 +209,7 @@ module.exports = {
 };
 ```
 
-### `stats.runtimeModules`
+### stats.runtimeModules
 
 `boolean = true`
 
@@ -224,7 +224,7 @@ module.exports = {
 };
 ```
 
-### `stats.dependentModules`
+### stats.dependentModules
 
 `boolean`
 
@@ -239,7 +239,7 @@ module.exports = {
 };
 ```
 
-### `stats.groupAssetsByChunk`
+### stats.groupAssetsByChunk
 
 `boolean`
 
@@ -254,7 +254,7 @@ module.exports = {
 };
 ```
 
-### `stats.groupAssetsByEmitStatus`
+### stats.groupAssetsByEmitStatus
 
 `boolean`
 
@@ -269,7 +269,7 @@ module.exports = {
 };
 ```
 
-### `stats.groupAssetsByInfo`
+### stats.groupAssetsByInfo
 
 `boolean`
 
@@ -284,7 +284,7 @@ module.exports = {
 };
 ```
 
-### `stats.groupModulesByAttributes`
+### stats.groupModulesByAttributes
 
 `boolean`
 
@@ -299,7 +299,24 @@ module.exports = {
 };
 ```
 
-### `stats.cachedAssets`
+### stats.groupReasonsByOrigin
+
+`boolean`
+
+<Badge text="5.46.0+" />
+
+Group [`reasons`](#statsreasons) by their origin module to avoid large set of reasons.
+
+```javascript
+module.exports = {
+  //...
+  stats: {
+    groupReasonsByOrigin: true,
+  },
+};
+```
+
+### stats.cachedAssets
 
 `boolean = true`
 
@@ -314,7 +331,7 @@ module.exports = {
 };
 ```
 
-### `stats.children`
+### stats.children
 
 `boolean = true`
 
@@ -329,7 +346,7 @@ module.exports = {
 };
 ```
 
-### `stats.chunks`
+### stats.chunks
 
 `boolean = true`
 
@@ -344,7 +361,7 @@ module.exports = {
 };
 ```
 
-### `stats.chunkGroups`
+### stats.chunkGroups
 
 `boolean = true`
 
@@ -359,7 +376,7 @@ module.exports = {
 };
 ```
 
-### `stats.chunkModules`
+### stats.chunkModules
 
 `boolean = true`
 
@@ -374,7 +391,7 @@ module.exports = {
 };
 ```
 
-### `stats.chunkOrigins`
+### stats.chunkOrigins
 
 `boolean = true`
 
@@ -389,7 +406,7 @@ module.exports = {
 };
 ```
 
-### `stats.chunksSort`
+### stats.chunksSort
 
 `string = 'id'`
 
@@ -404,7 +421,7 @@ module.exports = {
 };
 ```
 
-### `stats.context`
+### stats.context
 
 `string = '../src/'`
 
@@ -419,7 +436,7 @@ module.exports = {
 };
 ```
 
-### `stats.colors`
+### stats.colors
 
 `boolean = false` `object`
 
@@ -437,7 +454,13 @@ module.exports = {
 CLI 플래그로도 사용할 수 있습니다.
 
 ```bash
-webpack-cli --colors
+npx webpack --stats-colors
+```
+
+To disable:
+
+```bash
+npx webpack --no-stats-colors
 ```
 
 [ANSI 이스케이프 시퀀스](https://en.wikipedia.org/wiki/ANSI_escape_code)를 사용하여 자신만의 터미널 출력 색상을 지정할 수 있습니다.
@@ -451,7 +474,7 @@ module.exports = {
 };
 ```
 
-### `stats.depth`
+### stats.depth
 
 `boolean = false`
 
@@ -466,7 +489,7 @@ module.exports = {
 };
 ```
 
-### `stats.entrypoints`
+### stats.entrypoints
 
 `boolean = true` `string = 'auto'`
 
@@ -483,7 +506,7 @@ module.exports = {
 
 `stats.entrypoints`가 `'auto'`로 설정되면 webpack은 stats 출력에 엔트리 포인트를 표시할지 여부를 자동으로 결정합니다.
 
-### `stats.env`
+### stats.env
 
 `boolean = false`
 
@@ -498,7 +521,7 @@ module.exports = {
 };
 ```
 
-### `stats.orphanModules`
+### stats.orphanModules
 
 `boolean = false`
 
@@ -513,7 +536,7 @@ module.exports = {
 };
 ```
 
-### `stats.errors`
+### stats.errors
 
 `boolean = true`
 
@@ -528,7 +551,7 @@ module.exports = {
 };
 ```
 
-### `stats.errorDetails`
+### stats.errorDetails
 
 `boolean` `string = "auto"`
 
@@ -543,7 +566,7 @@ module.exports = {
 };
 ```
 
-### `stats.errorStack`
+### stats.errorStack
 
 `boolean = true`
 
@@ -558,7 +581,7 @@ module.exports = {
 };
 ```
 
-### `stats.excludeAssets`
+### stats.excludeAssets
 
 `array = []: string | RegExp | function (assetName) => boolean` `string` `RegExp` `function (assetName) => boolean`
 
@@ -577,7 +600,7 @@ module.exports = {
 };
 ```
 
-### `stats.excludeModules`
+### stats.excludeModules
 
 `array = []: string | RegExp | function (assetName) => boolean` `string` `RegExp` `function (assetName) => boolean` `boolean: false`
 
@@ -603,11 +626,11 @@ module.exports = {
 };
 ```
 
-### `stats.exclude`
+### stats.exclude
 
 [`stats.excludeModules`](#statsexcludemodules)을 참고하세요.
 
-### `stats.hash`
+### stats.hash
 
 `boolean = true`
 
@@ -622,7 +645,7 @@ module.exports = {
 };
 ```
 
-### `stats.logging`
+### stats.logging
 
 `string = 'info': 'none' | 'error' | 'warn' | 'info' | 'log' | 'verbose'` `boolean`
 
@@ -644,7 +667,7 @@ module.exports = {
 };
 ```
 
-### `stats.loggingDebug`
+### stats.loggingDebug
 
 `array = []: string | RegExp | function (name) => boolean` `string` `RegExp` `function (name) => boolean`
 
@@ -664,7 +687,7 @@ module.exports = {
 };
 ```
 
-### `stats.loggingTrace`
+### stats.loggingTrace
 
 `boolean = true`
 
@@ -679,7 +702,7 @@ module.exports = {
 };
 ```
 
-### `stats.modules`
+### stats.modules
 
 `boolean = true`
 
@@ -694,7 +717,7 @@ module.exports = {
 };
 ```
 
-### `stats.modulesSort`
+### stats.modulesSort
 
 `string = 'id'`
 
@@ -709,7 +732,7 @@ module.exports = {
 };
 ```
 
-### `stats.moduleTrace`
+### stats.moduleTrace
 
 `boolean = true`
 
@@ -724,7 +747,7 @@ module.exports = {
 };
 ```
 
-### `stats.outputPath`
+### stats.outputPath
 
 `boolean = true`
 
@@ -739,7 +762,7 @@ module.exports = {
 };
 ```
 
-### `stats.performance`
+### stats.performance
 
 `boolean = true`
 
@@ -754,7 +777,7 @@ module.exports = {
 };
 ```
 
-### `stats.preset`
+### stats.preset
 
 `string` `boolean: false`
 
@@ -771,7 +794,7 @@ module.exports = {
 
 `stats.preset`의 값을 `false`로 설정하면 webpack이 `'none'` [stats 프리셋](/configuration/stats/#stats-presets)을 사용하도록 지시합니다.
 
-### `stats.providedExports`
+### stats.providedExports
 
 `boolean = false`
 
@@ -786,7 +809,7 @@ module.exports = {
 };
 ```
 
-### `stats.errorsCount`
+### stats.errorsCount
 
 `boolean = true`
 
@@ -801,7 +824,7 @@ module.exports = {
 };
 ```
 
-### `stats.warningsCount`
+### stats.warningsCount
 
 `boolean = true`
 
@@ -816,7 +839,7 @@ module.exports = {
 };
 ```
 
-### `stats.publicPath`
+### stats.publicPath
 
 `boolean = true`
 
@@ -831,7 +854,7 @@ module.exports = {
 };
 ```
 
-### `stats.reasons`
+### stats.reasons
 
 `boolean = true`
 
@@ -846,7 +869,26 @@ module.exports = {
 };
 ```
 
-### `stats.relatedAssets`
+### stats.reasonsSpace
+
+`number`
+
+<Badge text="5.46.0+" />
+
+Space to display [`reasons`](#statsreasons) (groups will be collapsed to fit this space).
+
+```javascript
+module.exports = {
+  //...
+  stats: {
+    reasonsSpace: 1000,
+  },
+};
+```
+
+T> The [`detailed preset`](#stats-presets) limits [`modulesSpace`](#statsmodulesspace), [`assetsSpace`](#statsassetsspace), and [`reasonsSpace`](#statsreasonsspace) to 1000 by default.
+
+### stats.relatedAssets
 
 `boolean = false`
 
@@ -861,7 +903,7 @@ module.exports = {
 };
 ```
 
-### `stats.source`
+### stats.source
 
 `boolean = false`
 
@@ -876,7 +918,7 @@ module.exports = {
 };
 ```
 
-### `stats.timings`
+### stats.timings
 
 `boolean = true`
 
@@ -891,7 +933,7 @@ module.exports = {
 };
 ```
 
-### `stats.ids`
+### stats.ids
 
 `boolean = false`
 
@@ -906,7 +948,7 @@ module.exports = {
 };
 ```
 
-### `stats.usedExports`
+### stats.usedExports
 
 `boolean = false`
 
@@ -921,7 +963,7 @@ module.exports = {
 };
 ```
 
-### `stats.version`
+### stats.version
 
 `boolean = true`
 
@@ -936,7 +978,7 @@ module.exports = {
 };
 ```
 
-### `stats.chunkGroupAuxiliary`
+### stats.chunkGroupAuxiliary
 
 `boolean = true`
 
@@ -951,7 +993,7 @@ module.exports = {
 };
 ```
 
-### `stats.chunkGroupChildren`
+### stats.chunkGroupChildren
 
 `boolean = true`
 
@@ -966,7 +1008,7 @@ module.exports = {
 };
 ```
 
-### `stats.chunkGroupMaxAssets`
+### stats.chunkGroupMaxAssets
 
 `number`
 
@@ -981,7 +1023,7 @@ module.exports = {
 };
 ```
 
-### `stats.warnings`
+### stats.warnings
 
 `boolean = true`
 
@@ -996,7 +1038,7 @@ module.exports = {
 };
 ```
 
-### `stats.warningsFilter`
+### stats.warningsFilter
 
 `array = []: string | RegExp | function (warning) => boolean` `string` `RegExp` `function (warning) => boolean`
 
@@ -1013,7 +1055,7 @@ module.exports = {
 
 W> `stats.warningsFilter`는 지원이 중단되어 대신 [`ignoreWarnings`](/configuration/other-options/#ignorewarnings)이 사용됩니다.
 
-### `stats.chunkRelations`
+### stats.chunkRelations
 
 `boolean = false`
 

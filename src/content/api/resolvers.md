@@ -10,7 +10,7 @@ translators:
 ---
 
 리졸버는 `enhanced-resolve` 패키지를 사용하여 생성됩니다.
-`Resolver` 클래스는 `tapable` 클래스를 확장하고 `tapable`을 사용하여 몇 가지 hooks를 제공합니다.
+`Resolver` 클래스는 `tapable` 클래스를 확장하고 `tapable`을 사용하여 몇 가지 hook을 제공합니다.
 `enhanced-resolve` 패키지를 사용하여 새 리졸버를 직접 만들 수 있습니다.
 하지만 모든 [`컴파일러` 인스턴스](/api/node/#compiler-instance)에는 탭 할 수 있는 몇 가지 리졸버 인스턴스가 있습니다.
 
@@ -39,9 +39,9 @@ compiler.resolverFactory.hooks.resolver
   });
 ```
 
-여기에서 `[타입]`은 위에서 언급한 세 가지 리졸버 중 하나입니다.
+여기에서 `[type]`은 위에서 언급한 세 가지 리졸버 중 하나입니다.
 
-hooks의 전체 목록과 설명은 [`enhanced-resolve` 문서](https://github.com/webpack/enhanced-resolve)를 참고하세요.
+hook의 전체 목록과 설명은 [`enhanced-resolve` 문서](https://github.com/webpack/enhanced-resolve)를 참고하세요.
 
 ## Configuration Options
 
@@ -49,6 +49,6 @@ hooks의 전체 목록과 설명은 [`enhanced-resolve` 문서](https://github.c
 설정 파일을 통해 사용자 지정할 수도 있습니다.
 이러한 옵션을 통해 사용자는 resolve `플러그인`을 비롯한 다양한 옵션을 통해 해석 동작을 변경할 수 있습니다.
 
-리졸버 플러그인, 예: [`DirectoryNamedPlugin`](https://github.com/shaketbaby/directory-named-webpack-plugin), [`플러그인` 설정 옵션](/configuration/plugins/#plugins)에서 사용하는 대신 `resolve.plugins`에 직접 포함될 수 있습니다.
+예를 들면 [`DirectoryNamedPlugin`](https://github.com/shaketbaby/directory-named-webpack-plugin)과 같은 리졸버 플러그인은 [`플러그인` 설정 옵션](/configuration/plugins/#plugins)에서 사용하는 대신 `resolve.plugins`에 직접 포함될 수 있습니다.
 
 T> `resolve` 설정은 `normal` 및 `context` 리졸버에 영향을 미치지만 `resolveLoader`는 `loader` 리졸버를 수정하는 데 사용됩니다.
