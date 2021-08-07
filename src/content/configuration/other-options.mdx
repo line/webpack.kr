@@ -129,117 +129,6 @@ module.exports = {
 };
 ```
 
-## loader
-
-`object`
-
-사용자 정의 값을 [로더 컨텍스트](/api/loaders/#the-loader-context)에 노출합니다.
-
-예를 들면, 로더 컨텍스트에 새로운 값을 정의할 수 있습니다.
-
-**webpack.config.js**
-
-```javascript
-module.exports = {
-  // ...
-  loader: {
-    answer: 42,
-  },
-};
-```
-
-그런 다음 로더에서 이 값을 가져오기 위해 `this.answer`를 사용하세요.
-
-**custom-loader.js**
-
-```javascript
-module.exports = function (source) {
-  // ...
-  console.log(this.answer); // `42`를 기록합니다.
-  return source;
-};
-```
-
-T> webpack은 `loader`에 정의된 모든 속성을 로더 컨텍스트에 복사하므로 로더 컨텍스트의 속성을 재정의 할 수 있습니다.
-
-## parallelism
-
-`number = 100`
-
-병렬 처리되는 모듈의 수를 제한하세요. 성능을 미세하게 조정하거나 보다 안정적인 프로파일링 결과를 얻는 경우 사용할 수 있습니다.
-
-## profile
-
-`boolean`
-
-통계 및 힌트를 포함하여 애플리케이션의 "프로필"을 캡처 한 다음 [분석](https://webpack.github.io/analyse/) 도구를 사용하여 분석 할 수 있습니다. 또한 모듈 타이밍에 대한 요약도 기록합니다.
-
-T> 생성된 프로필을 더 세부적으로 제어하려면 [StatsPlugin](https://www.npmjs.com/package/stats-webpack-plugin)을 사용하세요.
-
-T> 정확한 타이밍을 얻으려면 `profile: true`를 `parallelism: 1`과 결합하세요. 이렇게 하면 빌드 속도도 느려집니다.
-
-## recordsPath
-
-`string`
-
-이 옵션을 사용하여 여러 빌드에서 모듈 식별자를 저장하는 경우 사용되는 데이터 조각인 webpack "레코드"를 포함하는 JSON 파일을 생성합니다. 이 파일을 사용하여 빌드간에 모듈이 변경되는 방식을 추적할 수 있습니다. 생성하려면 위치를 지정하기 만하면 됩니다.
-
-**webpack.config.js**
-
-```javascript
-const path = require('path');
-
-module.exports = {
-  //...
-  recordsPath: path.join(__dirname, 'records.json'),
-};
-```
-
-레코드는 [코드 스플리팅](/guides/code-splitting)을 활용하는 복잡한 설정이 있는 경우 특히 유용합니다. 분할된 번들이 필요한 [캐싱](/guides/caching) 동작을 달성하는지 확인할 수 있습니다.
-
-T> 이 파일은 컴파일러에 의해 생성되지만 소스 제어에서 추적하여 시간이 지남에 따라 어떻게 변경되었는지 기록할 수 있습니다.
-
-W> `recordsPath`를 설정하면 기본적으로 `recordsInputPath`와 `recordsOutputPath`가 동일한 위치로 설정됩니다. 레코드를 포함하는 파일의 이름을 변경하기로 결정하지 않는 한 이것은 일반적으로 필요한 모든 것입니다. 예제는 아래를 참고하세요.
-
-## recordsInputPath
-
-`string`
-
-마지막 레코드 세트를 읽을 파일을 지정하세요. 레코드 파일의 이름을 바꾸는 데 사용할 수 있습니다. 아래 예제를 참고하세요.
-
-## recordsOutputPath
-
-`string`
-
-레코드를 작성해야하는 위치를 지정하세요. 다음 예제는 이 옵션을 `recordsInputPath`와 함께 사용하여 레코드 파일의 이름을 바꾸는 방법을 보여줍니다.
-
-**webpack.config.js**
-
-```javascript
-const path = require('path');
-
-module.exports = {
-  //...
-  recordsInputPath: path.join(__dirname, 'records.json'),
-  recordsOutputPath: path.join(__dirname, 'newRecords.json'),
-};
-```
-
-## name
-
-`string`
-
-설정의 이름입니다. 여러 설정을 로드할 때 사용됩니다.
-
-**webpack.config.js**
-
-```javascript
-module.exports = {
-  //...
-  name: 'admin-app',
-};
-```
-
 ## infrastructureLogging
 
 인프라 레벨의 로깅 옵션입니다.
@@ -318,6 +207,24 @@ module.exports = {
 };
 ```
 
+### debug
+
+`string` `RegExp` `function(name) => boolean` `[string, RegExp, function(name) => boolean]`
+
+플러그인 또는 로더와 같은 지정된 로거의 디버그 정보를 활성화합니다. [`stats.loggingDebug`](/configuration/stats/#statsloggingdebug) 옵션과 유사하지만 인프라 용입니다. 기본값이 제공되지 않습니다.
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  //...
+  infrastructureLogging: {
+    level: 'info',
+    debug: ['MyPlugin', /MyPlugin/, (name) => name.contains('MyPlugin')],
+  },
+};
+```
+
 ### level
 
 `string`
@@ -344,24 +251,6 @@ module.exports = {
 };
 ```
 
-### debug
-
-`string` `RegExp` `function(name) => boolean` `[string, RegExp, function(name) => boolean]`
-
-플러그인 또는 로더와 같은 지정된 로거의 디버그 정보를 활성화합니다. [`stats.loggingDebug`](/configuration/stats/#statsloggingdebug) 옵션과 유사하지만 인프라 용입니다. 기본값이 제공되지 않습니다.
-
-**webpack.config.js**
-
-```javascript
-module.exports = {
-  //...
-  infrastructureLogging: {
-    level: 'info',
-    debug: ['MyPlugin', /MyPlugin/, (name) => name.contains('MyPlugin')],
-  },
-};
-```
-
 ### stream
 
 <Badge text="5.31.0+" />
@@ -382,6 +271,117 @@ module.exports = {
 ```
 
 T> TTY 스트림의 경우 `colors`가 활성화되고 `appendOnly`가 비활성화되며 그 반대의 경우도 마찬가지입니다.
+
+## loader
+
+`object`
+
+사용자 정의 값을 [loader context](/api/loaders/#the-loader-context)에 노출합니다.
+
+예를들면, loader context에 새 변수를 정의할 수 있습니다.
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  // ...
+  loader: {
+    answer: 42,
+  },
+};
+```
+
+그런 다음 로더에서 이 값을 가져오기 위해 `this.answer`를 사용하세요.
+
+**custom-loader.js**
+
+```javascript
+module.exports = function (source) {
+  // ...
+  console.log(this.answer); // `42`를 기록합니다.
+  return source;
+};
+```
+
+T> webpack은 `loader`에 정의된 모든 속성을 로더 컨텍스트에 복사하므로 로더 컨텍스트의 속성을 재정의 할 수 있습니다.
+
+## name
+
+`string`
+
+설정의 이름입니다. 여러 설정을 로드할 때 사용됩니다.
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  //...
+  name: 'admin-app',
+};
+```
+
+## parallelism
+
+`number = 100`
+
+병렬 처리되는 모듈의 수를 제한하세요. 성능을 미세하게 조정하거나 보다 안정적인 프로파일링 결과를 얻는 경우 사용할 수 있습니다.
+
+## profile
+
+`boolean`
+
+통계 및 힌트를 포함하여 애플리케이션의 "프로필"을 캡처 한 다음 [분석](https://webpack.github.io/analyse/) 도구를 사용하여 분석 할 수 있습니다. 또한 모듈 타이밍에 대한 요약도 기록합니다.
+
+T> 생성된 프로필을 더 세부적으로 제어하려면 [StatsPlugin](https://www.npmjs.com/package/stats-webpack-plugin)을 사용하세요.
+
+T> 정확한 타이밍을 얻으려면 `profile: true`를 `parallelism: 1`과 결합하세요. 이렇게 하면 빌드 속도도 느려집니다.
+
+## recordsInputPath
+
+`string`
+
+마지막 레코드 세트를 읽을 파일을 지정하세요. 레코드 파일의 이름을 바꾸는 데 사용할 수 있습니다. 아래 예제를 참고하세요.
+
+## recordsOutputPath
+
+`string`
+
+레코드를 작성해야하는 위치를 지정하세요. 다음 예제는 이 옵션을 `recordsInputPath`와 함께 사용하여 레코드 파일의 이름을 바꾸는 방법을 보여줍니다.
+
+**webpack.config.js**
+
+```javascript
+const path = require('path');
+
+module.exports = {
+  //...
+  recordsInputPath: path.join(__dirname, 'records.json'),
+  recordsOutputPath: path.join(__dirname, 'newRecords.json'),
+};
+```
+
+## recordsPath
+
+`string`
+
+이 옵션을 사용하여 여러 빌드에서 모듈 식별자를 저장하는 경우 사용되는 데이터 조각인 webpack "레코드"를 포함하는 JSON 파일을 생성합니다. 이 파일을 사용하여 빌드간에 모듈이 변경되는 방식을 추적할 수 있습니다. 생성하려면 위치를 지정하기 만하면 됩니다.
+
+**webpack.config.js**
+
+```javascript
+const path = require('path');
+
+module.exports = {
+  //...
+  recordsPath: path.join(__dirname, 'records.json'),
+};
+```
+
+레코드는 [코드 스플리팅](/guides/code-splitting)을 활용하는 복잡한 설정이 있는 경우 특히 유용합니다. 분할된 번들이 필요한 [캐싱](/guides/caching) 동작을 달성하는지 확인할 수 있습니다.
+
+T> 이 파일은 컴파일러에 의해 생성되지만 소스 제어에서 추적하여 시간이 지남에 따라 어떻게 변경되었는지 기록할 수 있습니다.
+
+W> `recordsPath`를 설정하면 기본적으로 `recordsInputPath`와 `recordsOutputPath`가 동일한 위치로 설정됩니다. 레코드를 포함하는 파일의 이름을 변경하기로 결정하지 않는 한 이것은 일반적으로 필요한 모든 것입니다. 예제는 아래를 참고하세요.
 
 ## snapshot
 
@@ -416,18 +416,6 @@ module.exports = {
 };
 ```
 
-### managedPaths
-
-`[string]`
-
-패키지 관리자가 관리하고 수정되지 않도록 신뢰할 수 있는 경로의 배열입니다.
-
-### immutablePaths
-
-`[string]`
-
-패키지 관리자가 관리하고 경로에 버전 또는 해시를 포함하여 모든 파일을 변경할 수 없는 경로 배열입니다.
-
 ### buildDependencies
 
 `object = { hash boolean = true, timestamp boolean = true }`
@@ -442,6 +430,18 @@ module.exports = {
 - `{ hash: true }`: 타임 스탬프를 유지하지 않고 해시를 사용하는 새로운 체크 아웃으로 CI 캐싱에 적합합니다.
 - `{ timestamp: true }`: 로컬 개발 캐싱에 적합합니다.
 - `{ timestamp: true, hash: true }`: 위에서 언급 한 두 경우 모두 좋습니다. 타임 스탬프가 먼저 비교되는데, 이는 webpack이 해시를 계산하기 위해 파일을 읽을 필요가 없기 때문에 비용이 저렴합니다. 콘텐츠 해시는 타임 스탬프가 동일한 경우에만 비교되므로 초기 빌드에서 약간의 성능 저하가 발생합니다.
+
+### immutablePaths
+
+`[string]`
+
+패키지 관리자가 관리하고 경로에 버전 또는 해시를 포함하여 모든 파일을 변경할 수 없는 경로 배열입니다.
+
+### managedPaths
+
+`[string]`
+
+패키지 관리자가 관리하고 수정되지 않도록 신뢰할 수 있는 경로의 배열입니다.
 
 ### module
 

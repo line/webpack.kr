@@ -60,10 +60,6 @@ T> 가이드라인을 따르고 여기까지 온 분들을 위해, 커스텀 이
 
 <img src="/assets/icon-square-small-slack.png" width="50" alt="icon square small example">
 
-## Font
-
-우리는 '원하는 만큼 지불하는' 모델로 전체 font family를 제공하는 매우 재능있는 사람들의 [Atipo Foundry](http://atipofoundry.com/)에서 아름다운 [Geomanist Medium](http://atipofoundry.com/fonts/geomanist) 폰트를 사용합니다.
-
 ## Color Palette
 
 다음 색상은 사이트 전체에서 다양한 조합으로 사용되며 [공식 webpack 스토어](https://webpack.threadless.com/collections/the-final-release-collection/)에서 [Open Collective](https://opencollective.com/)와 [Threadless](https://medium.com/u/840563ee2a56)의 도움으로 출시된 멋진 의류 라인에 사용됩니다!
