@@ -1,0 +1,29 @@
+---
+title: Release Process
+sort: 6
+contributors:
+  - d3viant0ne
+  - sokra
+  - byzyk
+  - chenxsan
+translators:
+  - yoonminsohappy
+---
+
+webpack 배포를 위한 릴리스 프로세스는 실제로 매우 고통스럽지는 않습니다. 다음 단계를 읽으면, 수행 방법을 명확하게 이해할 수 있습니다.
+
+## Pull Requests
+
+pull requests를 `main`브랜치로 병합할 때, _Create Merge Commit_ 옵션을 선택합니다.
+
+## Releasing
+
+```bash
+npm version patch && git push --follow-tags && npm publish
+npm version minor && git push --follow-tags && npm publish
+npm version major && git push --follow-tags && npm publish
+```
+
+_이것은 패키지 버전을 증가시키고, 변경 사항을 커밋하고, **로컬 태그를** 자르고, github에 푸시하고 & npm 패키지를 배포합니다._
+
+그런 다음 github [릴리스 페이지](https://github.com/webpack/webpack/releases)로 이동하여 새 태그에 대한 변경 로그를 작성합니다.
