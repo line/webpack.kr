@@ -2498,6 +2498,11 @@
   resolved "https://registry.yarnpkg.com/@types/stack-utils/-/stack-utils-2.0.0.tgz#7036640b4e21cc2f259ae826ce843d277dad8cff"
   integrity sha512-RJJrrySY7A8havqpGObOB4W92QXKJo63/jFLLgpvOtsGUqbQZ9Sbgl35KMm1DjC6j7AvmmU2bIno+3IyEaemaw==
 
+"@types/trusted-types@^2.0.2":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@types/trusted-types/-/trusted-types-2.0.2.tgz#fc25ad9943bcac11cceb8168db4f275e0e72e756"
+  integrity sha512-F5DIZ36YVLE+PN+Zwws4kJogq47hNgX3Nx6WyDJ3kcplxyke3XIzB8uK5n/Lpm1HBsbGzd6nmGehL8cPekP+Tg==
+
 "@types/unist@*", "@types/unist@^2.0.0", "@types/unist@^2.0.2":
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/@types/unist/-/unist-2.0.3.tgz#9c088679876f374eb5983f150d4787aa6fb32d7e"
@@ -8959,11 +8964,6 @@ object-inspect@^1.10.3:
   resolved "https://registry.yarnpkg.com/object-inspect/-/object-inspect-1.10.3.tgz#c2aa7d2d09f50c99375704f7a0adf24c5782d369"
   integrity sha512-e5mCJlSH7poANfC8z8S9s9S2IN5/4Zb3aZ33f5s8YqoazCFzNLloLU8r5VCG+G7WoqLvAAZoVMcy3tp/3X0Plw==
 
-object-inspect@^1.10.3:
-  version "1.10.3"
-  resolved "https://registry.yarnpkg.com/object-inspect/-/object-inspect-1.10.3.tgz#c2aa7d2d09f50c99375704f7a0adf24c5782d369"
-  integrity sha512-e5mCJlSH7poANfC8z8S9s9S2IN5/4Zb3aZ33f5s8YqoazCFzNLloLU8r5VCG+G7WoqLvAAZoVMcy3tp/3X0Plw==
-
 object-inspect@^1.8.0, object-inspect@^1.9.0:
   version "1.9.0"
   resolved "https://registry.yarnpkg.com/object-inspect/-/object-inspect-1.9.0.tgz#c90521d74e1127b67266ded3394ad6116986533a"
@@ -11808,7 +11808,7 @@ stringify-object@^3.3.0:
     is-obj "^1.0.1"
     is-regexp "^1.0.0"
 
-strip-ansi@^3.0.0:
+strip-ansi@^3.0.0, strip-ansi@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-3.0.1.tgz#6a385fb8853d952d5ff05d0e8aaf94278dc63dcf"
   integrity sha1-ajhfuIU9lS1f8F0Oiq+UJ43GPc8=
@@ -12576,18 +12576,6 @@ unified@^9.0.0, unified@^9.1.0, unified@^9.2.0, unified@^9.2.1:
     trough "^1.0.0"
     vfile "^4.0.0"
 
-unified@^9.2.0:
-  version "9.2.2"
-  resolved "https://registry.yarnpkg.com/unified/-/unified-9.2.2.tgz#67649a1abfc3ab85d2969502902775eb03146975"
-  integrity sha512-Sg7j110mtefBD+qunSLO1lqOEKdrwBFBrR6Qd8f4uwkhWNlbkaqwHse6e7QvD3AP/MNoJdEDLaf8OxYyoWgorQ==
-  dependencies:
-    bail "^1.0.0"
-    extend "^3.0.0"
-    is-buffer "^2.0.0"
-    is-plain-obj "^2.0.0"
-    trough "^1.0.0"
-    vfile "^4.0.0"
-
 union@~0.5.0:
   version "0.5.0"
   resolved "https://registry.yarnpkg.com/union/-/union-0.5.0.tgz#b2c11be84f60538537b846edb9ba266ba0090075"
@@ -13314,10 +13302,10 @@ workbox-cacheable-response@^6.1.5:
   dependencies:
     workbox-core "^6.1.5"
 
-workbox-core@^6.1.5:
-  version "6.1.5"
-  resolved "https://registry.yarnpkg.com/workbox-core/-/workbox-core-6.1.5.tgz#424ff600e2c5448b14ebd58b2f5ac8ed91b73fb9"
-  integrity sha512-9SOEle7YcJzg3njC0xMSmrPIiFjfsFm9WjwGd5enXmI8Lwk8wLdy63B0nzu5LXoibEmS9k+aWF8EzaKtOWjNSA==
+workbox-core@6.2.4, workbox-core@^6.1.5:
+  version "6.2.4"
+  resolved "https://registry.yarnpkg.com/workbox-core/-/workbox-core-6.2.4.tgz#0ffb4f0ce6d8e36f10bf4aabd96a6f55705ccd80"
+  integrity sha512-Nu8X4R4Is3g8uzEJ6qwbW2CGVpzntW/cSf8OfsQGIKQR0nt84FAKzP2cLDaNLp3L/iV9TuhZgCTZzkMiap5/OQ==
 
 workbox-expiration@^6.1.5:
   version "6.1.5"
@@ -13410,12 +13398,13 @@ workbox-webpack-plugin@^6.1.5:
     webpack-sources "^1.4.3"
     workbox-build "^6.1.5"
 
-workbox-window@^6.1.5:
-  version "6.1.5"
-  resolved "https://registry.yarnpkg.com/workbox-window/-/workbox-window-6.1.5.tgz#017b22342e10c6df6b9672326b575ec950b6cd80"
-  integrity sha512-akL0X6mAegai2yypnq78RgfazeqvKbsllRtEI4dnbhPcRINEY1NmecFmsQk8SD+zWLK1gw5OdwAOX+zHSRVmeA==
+workbox-window@^6.1.5, workbox-window@^6.2.4:
+  version "6.2.4"
+  resolved "https://registry.yarnpkg.com/workbox-window/-/workbox-window-6.2.4.tgz#377e792158ec83670b6f810e0077a45c1a948d1b"
+  integrity sha512-9jD6THkwGEASj1YP56ZBHYJ147733FoGpJlMamYk38k/EBFE75oc6K3Vs2tGOBx5ZGq54+mHSStnlrtFG3IiOg==
   dependencies:
-    workbox-core "^6.1.5"
+    "@types/trusted-types" "^2.0.2"
+    workbox-core "6.2.4"
 
 wrap-ansi@^6.2.0:
   version "6.2.0"
