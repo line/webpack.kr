@@ -96,7 +96,7 @@ T> 애셋의 `info` 프로퍼티는 webpack v4.40.0부터 사용할 수 있습�
 
 ### Chunk Objects
 
-각 `chunks` 객체는 [chunk](/glossary/#c)로 알려진 모듈 그룹을 나타냅니다. 각 객체는 다음의 구조를 따릅니다.
+각 `chunks` 객체는 [청크](/glossary/#c)로 알려진 모듈 그룹을 나타냅니다. 각 객체는 다음의 구조를 따릅니다.
 
 ```js-with-links
 {
@@ -108,7 +108,7 @@ T> 애셋의 `info` 프로퍼티는 webpack v4.40.0부터 사용할 수 있습�
   "id": 0, // 이 청크의 ID
   "initial": true, // 이 청크가 초기 페이지 로드 시 로드되는지 아니면 [on demand](/guides/lazy-loading) 시 로드되는지 여부
   "modules": [
-    // [module objects](#module-objects) 목록
+    // [모듈 객체](#module-objects) 목록
     "web.js?h=11593e3b3ac85436984a"
   ],
   "names": [
@@ -146,9 +146,9 @@ T> 애셋의 `info` 프로퍼티는 webpack v4.40.0부터 사용할 수 있습�
 ```js-with-links
 {
   "assets": [
-    // [asset objects](#asset-objects) 목록
+    // [애셋 객체](#asset-objects) 목록
   ],
-  "built": true, // 모듈이 [Loaders](/concepts/loaders), 파싱, 및 코드 제너레이션을 거쳤음을 의미
+  "built": true, // 모듈이 [로더](/concepts/loaders), 파싱 및 코드 제너레이션을 거쳤음을 의미
   "cacheable": true, // 모듈이 캐시 가능한지 여부
   "chunks": [
     // 모듈을 포함하는 청크 ID
@@ -164,18 +164,18 @@ T> 애셋의 `info` 프로퍼티는 webpack v4.40.0부터 사용할 수 있습�
     // [`--profile` flag](/api/cli/#profiling)에 해당하는 모듈별 컴파일 통계 (밀리초 단위)
     "building": 73, // 로드 및 파싱
     "dependencies": 242, // 의존성 구축
-    "factory": 11 // 의존성 리졸브
+    "factory": 11 // 의존성 해석
   },
   "reasons": [
     // 아래 설명 참고...
   ],
   "size": 3593, // 모듈 예상 크기(바이트)
   "source": "// Should not break it...\r\nif(typeof...", // 문자열화된 원시 소스
-  "warnings": 0 // 모듈을 리졸브하거나 처리할 때 경고의 수
+  "warnings": 0 // 모듈을 해석하거나 처리할 때 경고의 수
 }
 ```
 
-모든 모듈에는 해당 모듈이 의존성 그래프에 포함된 이유를 설명하는 `reasons` 객체 목록도 포함되어 있습니다. 각 "reason"은 위의 [chunk objects](#chunk-objects) 섹션에서 본 `origins`와 유사합니다.
+모든 모듈에는 해당 모듈이 의존성 그래프에 포함된 이유를 설명하는 `reasons` 객체 목록도 포함되어 있습니다. 각 "reason"은 위의 [청크 객체](#chunk-objects) 섹션에서 본 `origins`와 유사합니다.
 
 ```js-with-links
 {
