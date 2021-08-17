@@ -45,7 +45,7 @@ class MyPlugin {
 module.exports = MyPlugin;
 ```
 
-- `compilation.modules`:컴파일 결과물의 모듈(빌드된 입력) 집합입니다. 각 모듈은 소스 라이브러리의 원시 파일의 빌드를 관리합니다.
+- `compilation.modules`: 컴파일 결과물의 모듈(빌드된 입력) 집합입니다. 각 모듈은 소스 라이브러리의 원시 파일의 빌드를 관리합니다.
 
 W> **Deprecation warning**: Array functions will still work.
 
