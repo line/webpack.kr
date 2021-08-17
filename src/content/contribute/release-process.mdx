@@ -6,13 +6,15 @@ contributors:
   - sokra
   - byzyk
   - chenxsan
+translators:
+  - yoonminsohappy
 ---
 
-The release process for deploying webpack is actually quite painless. Read through the following steps, so you have a clear understanding of how it's done.
+webpack 배포를 위한 릴리스 프로세스는 실제로 매우 간단합니다. 다음 단계를 읽으면, 수행 방법을 명확하게 이해할 수 있습니다.
 
 ## Pull Requests
 
-When merging pull requests into the `main` branch, select the _Create Merge Commit_ option.
+pull requests를 `main`브랜치로 병합할 때, _Create Merge Commit_ 옵션을 선택합니다.
 
 ## Releasing
 
@@ -22,6 +24,6 @@ npm version minor && git push --follow-tags && npm publish
 npm version major && git push --follow-tags && npm publish
 ```
 
-_This will increment the package version, commits the changes, cuts a **local tag**, push to github & publish the npm package._
+_그러면 패키지 버전이 증가되고, 변경 내용이 커밋되며, **로컬 태그**를 잘라내고, github에 푸시 후 npm 패키지를 배포합니다._
 
-After that go to the github [releases page](https://github.com/webpack/webpack/releases) and write a Changelog for the new tag.
+그런 다음 github [릴리스 페이지](https://github.com/webpack/webpack/releases)로 이동하여 새 태그에 대한 변경 로그를 작성합니다.
