@@ -13,9 +13,9 @@ related:
     url: https://github.com/date-fns/date-fns/blob/master/docs/webpack.md
 ---
 
-_Context_ refers to a [require with an expression](/guides/dependency-management/#require-with-expression) such as `require('./locale/' + name + '.json')`. When encountering such an expression, webpack infers the directory (`'./locale/'`) and a regular expression (`/^.*\.json$/`). Since the `name` is not known at compile time, webpack includes every file as module in the bundle.
+_Context는_ `require('./locale/' + name + '.json')`와 같은 [require with an expression](/guides/dependency-management/#require-with-expression)을 나타냅니다. 이러한 표현식을 만나면, webpack은 디렉터리 (`'./locale/'`)와 정규 표현식 (`/^.*\.json$/`)을 추론합니다. 컴파일시 `name`를 알 수 없기 때문에 webpack은 모든 파일을 번들에 모듈로 포함합니다.
 
-The `ContextReplacementPlugin` allows you to override the inferred information. There are various ways to configure the plugin:
+`ContextReplacementPlugin`을 사용하면 추론된 정보를 오버라이드 할 수 있습니다. 플러그인을 구성하는 방법에는 여러가지가 있습니다.
 
 ## Usage
 
@@ -28,15 +28,15 @@ new webpack.ContextReplacementPlugin(
 )
 ```
 
-If the resource (directory) matches `resourceRegExp`, the plugin replaces the default resource, recursive flag or generated regular expression with `newContentResource`, `newContentRecursive` or `newContextRegExp` respectively. If `newContentResource` is relative, it is resolved relative to the previous resource.
+리소스(디렉터리)가 `resourceRegExp`와 일치하면, 플러그인은 기본 리소스, 재귀 플래그 또는 생성된 정규식을 각각 `newContentResource`, `newContentRecursive` 또는 `newContextRegExp`로 바꿉니다. `newContentResource`가 상대적인 경우 이전 리소스를 기준으로 해결됩니다.
 
-Here's a small example to restrict module usage:
+다음은 모듈 사용을 제한하는 작은 예제입니다.
 
 ```javascript
 new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /de|fr|hu/);
 ```
 
-The `moment/locale` context is restricted to files matching `/de|fr|hu/`. Thus only those locales are included (see [this issue](https://github.com/moment/moment/issues/2373) for more information).
+`moment/locale` 컨텍스트는 `/de|fr|hu/`와 일치하는 파일로 제한됩니다. 따라서 해당 locale만 포함됩니다(자세한 내용은 [이 이슈](https://github.com/moment/moment/issues/2373)를 참고하세요).
 
 ## Content Callback
 
@@ -47,9 +47,9 @@ new webpack.ContextReplacementPlugin(
 );
 ```
 
-The `newContentCallback` function is given a [`data` object of the `ContextModuleFactory`](/api/plugins/module-factories/) and is expected to overwrite the `request` attribute of the supplied object.
+`newContentCallback` 함수에는 [`ContextModuleFactory`의 `data`객체](/api/plugins/module-factories/)가 제공되며 제공된 객체의 `request` 속성을 덮어쓸 것으로 예상됩니다.
 
-Using this callback we can dynamically redirect requests to a new location:
+이 콜백을 사용하여 요청을 새 위치로 동적 리디렉션할 수 있습니다.
 
 ```javascript
 new webpack.ContextReplacementPlugin(/^\.\/locale$/, (context) => {
@@ -57,24 +57,24 @@ new webpack.ContextReplacementPlugin(/^\.\/locale$/, (context) => {
 
   Object.assign(context, {
     regExp: /^\.\/\w+/,
-    request: '../../locale', // resolved relatively
+    request: '../../locale', // 상대적으로 해결
   });
 });
 ```
 
 ## Other Options
 
-The `newContentResource` and `newContentCreateContextMap` parameters are also available:
+`newContentResource`및 `newContentCreateContextMap` 파라미터도 사용할 수 있습니다.
 
 ```typescript
 new webpack.ContextReplacementPlugin(
   resourceRegExp: RegExp,
   newContentResource: string,
-  newContentCreateContextMap: object // mapping runtime-request (userRequest) to compile-time-request (request)
+  newContentCreateContextMap: object // 런타임-요청(userRequest)을 컴파일-시간-요청(request)으로 매핑
 );
 ```
 
-These two parameters can be used together to redirect requests in a more targeted way. The `newContentCreateContextMap` allows you to map runtime requests to compile requests in the form of an object:
+이 두 파라미터를 함께 사용하여 보다 대상화된 방식으로 요청을 리디렉션할 수 있습니다. `newContentCreateContextMap`을 사용하면 런타임 요청을 매핑하여 객체 형태로 요청을 컴파일 할 수 있습니다.
 
 ```javascript
 new ContextReplacementPlugin(/selector/, './folder', {
