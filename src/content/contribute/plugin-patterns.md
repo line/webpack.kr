@@ -50,7 +50,7 @@ module.exports = MyPlugin;
 W> **Deprecation warning**: Array functions will still work.
 
 - `module.fileDependencies`: 모듈에 포함된 소스 파일 경로의 배열입니다. 이것은 자바스크립트 파일 자체(예: index.js)와 필요한 모든 의존성 애셋 파일들(스타일 시트, 이미지 등)을 포함합니다. 의존성을 검토하는 것은 어떤 소스 파일이 모듈에 속하는지 파악하는데 유용합니다. 
-- `compilation.chunks`: 컴파일의 청크 세트(빌드 출력)입니다. 각 청크는 최종 렌더링된 자산의 구성을 관리합니다.
+- `compilation.chunks`: 컴파일의 청크 세트(빌드 출력)입니다. 각 청크는 최종 렌더링된 애셋의 구성을 관리합니다.
 
 W> **Deprecation warning**: Array functions will still work.
 
