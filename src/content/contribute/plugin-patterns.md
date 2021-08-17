@@ -9,7 +9,7 @@ translators:
   - yoonminsohappy
 ---
 
-플러그인은 웹팩 빌드 시스템 내에서 커스터마이징을 수행할 수 있는 무한한 기회를 제공합니다. 이를 통해 커스텀 애셋 유형을 생성하고, 고유한 빌드 수정을 수행할 수 있게 하며, 심지어 미들웨어를 사용하는 동안 웹팩 런타임을 향상시킬 수 있습니다. 다음은 플로그인을 작성할 때 유용하게 쓰이는 웹팩의 몇 가지 기능입니다.
+플러그인은 웹팩 빌드 시스템 내에서 커스터마이징을 수행할 수 있는 무한한 기회를 제공합니다. 이를 통해 커스텀 애셋 유형을 생성하고, 고유한 빌드 수정을 수행할 수 있게 하며, 심지어 미들웨어를 사용하는 동안 웹팩 런타임을 향상시킬 수 있습니다. 다음은 플러그인을 작성할 때 유용하게 쓰이는 웹팩의 몇 가지 기능입니다.
 
 ## Exploring assets, chunks, modules, and dependencies
 
@@ -49,7 +49,7 @@ module.exports = MyPlugin;
 
 W> **Deprecation warning**: Array functions will still work.
 
-- `module.fileDependencies`: 모듈에 포함된 소스 파일 경로의 배열입니다. 이것은 자바스크립트 파일 자체(예: index.js )와 필요한 모든 의존성 자산 파일들(스타일 시트, 이미지 등)을 포함합니다. 의존성을 검토하는 것은 어떤 소스 파일이 모듈에 속하는지 파악하는데 유용합니다. 
+- `module.fileDependencies`: 모듈에 포함된 소스 파일 경로의 배열입니다. 이것은 자바스크립트 파일 자체(예: index.js)와 필요한 모든 의존성 자산 파일들(스타일 시트, 이미지 등)을 포함합니다. 의존성을 검토하는 것은 어떤 소스 파일이 모듈에 속하는지 파악하는데 유용합니다. 
 - `compilation.chunks`: 컴파일의 청크 세트(빌드 출력)입니다. 각 청크는 최종 렌더링된 자산의 구성을 관리합니다.
 
 W> **Deprecation warning**: Array functions will still work.
