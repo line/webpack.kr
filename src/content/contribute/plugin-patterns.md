@@ -5,13 +5,15 @@ contributors:
   - nveenjain
   - EugeneHlushko
   - benglynn
+translators:
+  - yoonminsohappy
 ---
 
-Plugins grant unlimited opportunity to perform customizations within the webpack build system. This allows you to create custom asset types, perform unique build modifications, or even enhance the webpack runtime while using middleware. The following are some features of webpack that become useful while writing plugins.
+플러그인은 웹팩 빌드 시스템 내에서 커스터마이징을 수행할 수 있는 무한한 기회를 제공합니다. 이를 통해 커스텀 애셋 유형을 생성하고, 고유한 빌드 수정을 수행할 수 있게 하며, 심지어 미들웨어를 사용하는 동안 웹팩 런타임을 향상시킬 수 있습니다. 다음은 플로그인을 작성할 때 유용하게 쓰이는 웹팩의 몇 가지 기능입니다.
 
 ## Exploring assets, chunks, modules, and dependencies
 
-After a compilation is sealed, all structures within the compilation may be traversed.
+컴파일이 완료된 후에는, 컴파일 내의 모든 구조를 확인할 수 있습니다.
 
 ```javascript
 class MyPlugin {
@@ -43,12 +45,12 @@ class MyPlugin {
 module.exports = MyPlugin;
 ```
 
-- `compilation.modules`: A set of modules (built inputs) in the compilation. Each module manages the build of a raw file from your source library.
+- `compilation.modules`:컴파일 결과물의 모듈(빌드된 입력) 집합입니다. 각 모듈은 소스 라이브러리의 원시 파일의 빌드를 관리합니다.
 
 W> **Deprecation warning**: Array functions will still work.
 
-- `module.fileDependencies`: An array of source file paths included into a module. This includes the source JavaScript file itself (ex: `index.js`), and all dependency asset files (stylesheets, images, etc) that it has required. Reviewing dependencies is useful for seeing what source files belong to a module.
-- `compilation.chunks`: A set of chunks (build outputs) in the compilation. Each chunk manages the composition of a final rendered assets.
+- `module.fileDependencies`: 모듈에 포함된 소스 파일 경로의 배열입니다. 이것은 자바스크립트 파일 자체(예: index.js )와 필요한 모든 의존성 자산 파일들(스타일 시트, 이미지 등)을 포함합니다. 의존성을 검토하는 것은 어떤 소스 파일이 모듈에 속하는지 파악하는데 유용합니다. 
+- `compilation.chunks`: 컴파일 결과물의 덩어리 집합(빌드된 출력)입니다. 각 덩어리는 최종적으로 렌더된 애셋의 구성을 관리합니다. 
 
 W> **Deprecation warning**: Array functions will still work.
 
