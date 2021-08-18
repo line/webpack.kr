@@ -9,7 +9,7 @@ translators:
   - yoonminsohappy
 ---
 
-플러그인은 웹팩 빌드 시스템 내에서 커스터마이징을 수행할 수 있는 무한한 기회를 제공합니다. 이를 통해 커스텀 애셋 유형을 생성하고, 고유한 빌드 수정을 수행할 수 있게 하며, 심지어 미들웨어를 사용하는 동안 웹팩 런타임을 향상시킬 수 있습니다. 다음은 플러그인을 작성할 때 유용하게 쓰이는 웹팩의 몇 가지 기능입니다.
+플러그인은 webpack 빌드 시스템 내에서 커스터마이징을 수행할 수 있는 무한한 기회를 제공합니다. 이를 통해 커스텀 애셋 유형을 생성하고, 고유한 빌드 수정을 수행할 수 있게 하며, 심지어 미들웨어를 사용하는 동안 webpack 런타임을 향상시킬 수 있습니다. 다음은 플러그인을 작성할 때 유용하게 쓰이는 webpack의 몇 가지 기능입니다.
 
 ## Exploring assets, chunks, modules, and dependencies
 
@@ -27,7 +27,7 @@ class MyPlugin {
           module.buildInfo &&
             module.buildInfo.fileDependencies &&
             module.buildInfo.fileDependencies.forEach((filepath) => {
-              // 우리는 지금 소스 구조에 대해 많은 것을 배웠습니다...
+              // 이제 소스 구조에 대해 많은 것을 배웠습니다...ㄴ
             });
         });
 
