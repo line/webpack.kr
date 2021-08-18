@@ -10,29 +10,31 @@ contributors:
   - chenxsan
   - rahul3v
   - snitin315
+translators:
+  - choilim
 ---
 
-When compiling source code with webpack, users can generate a JSON file containing statistics about modules. These statistics can be used to analyze an application's dependency graph as well as to optimize compilation speed. The file is typically generated with the following CLI command:
+webpack으로 소스 코드를 컴파일 할 때, 사용자는 모듈에 대한 통계가 포함된 JSON 파일을 생성할 수 있습니다. 이러한 통계는 애플리케이션의 디펜던시 그래프를 분석하고 컴파일 속도를 최적화하는데 사용할 수 있습니다. 파일은 일반적으로 다음 CLI 커맨드로 생성됩니다.
 
 ```bash
 npx webpack --profile --json=compilation-stats.json
 ```
 
-The `--json=compilation-stats.json` flag indicates to webpack that it should emit the `compilation-stats.json` containing the dependency graph and various other build information. Typically, the `--profile` flag is also added so that a `profile` section is added to each [`modules` object](#module-objects) containing module-specific compilation stats.
+`--json=compilation-stats.json` 플래그는 디펜던시 그래프 및 기타 다양한 빌드 정보가 포함된 `compilation-stats.json`을 내보내야 함을 webpack에게 나타냅니다. 일반적으로, `--profile` 플래그도 추가되어 모듈별 컴파일 통계가 포함된 각 [`modules` 객체](#module-objects)에 `profile` 섹션이 추가됩니다.
 
 ## Structure
 
-The top-level structure of the output JSON file is fairly straightforward but there are a few nested data structures as well. Each nested structure has a dedicated section below to make this document more consumable. Note that you can click links within the top-level structure below to jump to relevant sections and documentation:
+출력 JSON 파일의 최상위 구조는 매우 간단하지만 몇 가지 중첩된 데이터 구조도 있습니다. 각 중첩 구조에는 이 문서를 보다 유용하게 사용할 수 있도록 아래에 전용 섹션이 있습니다. 아래의 최상위 구조 내의 링크를 클릭하면 관련 섹션 및 문서로 이동할 수 있습니다.
 
 ```js-with-links
 {
-  'version': '5.9.0', // Version of webpack used for the compilation
-  'hash': '11593e3b3ac85436984a', // Compilation specific hash
-  'time': 2469, // Compilation time in milliseconds
+  'version': '5.9.0', // 컴파일에 사용된 webpack 버전
+  'hash': '11593e3b3ac85436984a', // 컴파일 특정 해시
+  'time': 2469, // 컴파일 시간 밀리초
   'publicPath': 'auto',
-  'outputPath': '/', // path to webpack output directory
+  'outputPath': '/', // webpack 출력 디렉터리 경로
   'assetsByChunkName': {
-    // Chunk name to emitted asset(s) mapping
+    // 내보낸 애셋 매핑에 대한 청크 이름
     'main': [
       'web.js?h=11593e3b3ac85436984a'
     ],
@@ -45,145 +47,145 @@ The top-level structure of the output JSON file is fairly straightforward but th
     ]
   },
   'assets': [
-    // A list of [asset objects](#asset-objects)
+    // [애셋 객체](#asset-objects) 목록
   ],
   'chunks': [
-    // A list of [chunk objects](#chunk-objects)
+    // [청크 객체](#chunk-objects) 목록
   ],
   'modules': [
-    // A list of [module objects](#module-objects)
+    // [모듈 객체](#module-objects) 목록
   ],
   'entryPoints': {
-    // A list of [entry objects](#entry-objects)
+    // [엔트리 객체](#entry-objects) 목록
   },
   'errors': [
-    // A list of [error objects](#errors-and-warnings)
+    // [에러 객체](#errors-and-warnings) 목록
   ],
-  'errorsCount': 0, // number of errors
+  'errorsCount': 0, // 오류 개수
   'warnings': [
-    // A list of [warning objects](#errors-and-warnings)
+    // [경고 객체](#errors-and-warnings) 목록
   ],
-  'warningsCount': 0, // nummber of warnings
+  'warningsCount': 0, // 경고 개수
 }
 ```
 
 ### Asset Objects
 
-Each `assets` object represents an `output` file emitted from the compilation. They all follow a similar structure:
+각 `assets` 객체는 컴파일에서 내보낸 `output` 파일을 나타냅니다. 모두 유사한 구조를 따릅니다.
 
 ```json
 {
-  "chunkNames": [], // The chunks this asset contains
-  "chunks": [10, 6], // The chunk IDs this asset contains
-  "comparedForEmit": false, // Indicates whether or not the asset was compared with the same file on the output file system
-  "emitted": true, // Indicates whether or not the asset made it to the `output` directory
-  "name": "10.web.js", // The `output` filename
-  "size": 1058, // The size of the file in bytes
+  "chunkNames": [], // 이 애셋에 포함된 청크
+  "chunks": [10, 6], // 이 애셋에 포함된 청크 ID
+  "comparedForEmit": false, // 애셋이 출력 파일 시스템의 동일한 파일과 비교되었는지 여부
+  "emitted": true, // 애셋이 `output` 디렉터리에 도달했는지 여부
+  "name": "10.web.js", // `output` 파일 이름
+  "size": 1058, // 파일 크기(바이트)
   "info": {
-    "immutable": true, // A flag telling whether the asset can be long term cached (contains a hash)
-    "size": 1058, // The size in bytes, only becomes available after asset has been emitted
-    "development": true, // A flag telling whether the asset is only used for development and doesn't count towards user-facing assets
-    "hotModuleReplacement": true, // A flag telling whether the asset ships data for updating an existing application (HMR)
-    "sourceFilename": "originalfile.js", // sourceFilename when asset was created from a source file (potentially transformed)
-    "javascriptModule": true // true, when asset is javascript and an ESM
+    "immutable": true, // 애셋을 장기간 캐시 할 수 있는지 여부를 나타내는 플래그(해시 포함)
+    "size": 1058, // 바이트 단위 크기, 애셋을 내보낸 뒤에만 사용 가능
+    "development": true, // 애셋이 개발용으로만 사용되고 사용자 대면 애셋에 포함되지 않는지 여부를 나타내는 플래그
+    "hotModuleReplacement": true, // 애셋이 기존 애플리케이션(HMR) 업데이트를 위한 데이터를 제공하는지 여부를 나타내는 플래그
+    "sourceFilename": "originalfile.js", // 애셋이 소스 파일에서 생성된 경우의 sourceFilename(변환될 수 있음)
+    "javascriptModule": true // true, 애셋이 Javascript 및 EMS인 경우
   }
 }
 ```
 
-T> Asset's `info` property is available since webpack v4.40.0
+T> 애셋의 `info` 프로퍼티는 webpack v4.40.0부터 사용할 수 있습니다.
 
 ### Chunk Objects
 
-Each `chunks` object represents a group of modules known as a [chunk](/glossary/#c). Each object follows the following structure:
+각 `chunks` 객체는 [청크](/glossary/#c)로 알려진 모듈 그룹을 나타냅니다. 각 객체는 다음의 구조를 따릅니다.
 
 ```js-with-links
 {
-  "entry": true, // Indicates whether or not the chunk contains the webpack runtime
+  "entry": true, // 청크에 webpack 런타임이 포함되었는지 여부
   "files": [
-    // An array of filename strings that contain this chunk
+    // 이 청크를 포함하는 파일 이름 문자열의 배열
   ],
-  "filteredModules": 0, // See the description in the [top-level structure](#structure) above
-  "id": 0, // The ID of this chunk
-  "initial": true, // Indicates whether this chunk is loaded on initial page load or [on demand](/guides/lazy-loading)
+  "filteredModules": 0, // 위의 [top-level structure](#structure) 설명 참고
+  "id": 0, // 이 청크의 ID
+  "initial": true, // 이 청크가 초기 페이지 로드 시 로드되는지 아니면 [on demand](/guides/lazy-loading) 시 로드되는지 여부
   "modules": [
-    // A list of [module objects](#module-objects)
+    // [모듈 객체](#module-objects) 목록
     "web.js?h=11593e3b3ac85436984a"
   ],
   "names": [
-    // An list of chunk names contained within this chunk
+    // 이 청크에 포함된 청크 이름 목록
   ],
   "origins": [
-    // See the description below...
+    // 아래 설명 참고...
   ],
-  "parents": [], // Parent chunk IDs
-  "rendered": true, // Indicates whether or not the chunk went through Code Generation
-  "size": 188057 // Chunk size in bytes
+  "parents": [], // 상위 청크 ID
+  "rendered": true, // 청크가 코드 제너레이션을 거쳤는지 여부
+  "size": 188057 // 청크 크기(바이트)
 }
 ```
 
-The `chunks` object will also contain a list of `origins` describing how the given chunk originated. Each `origins` object follows the following schema:
+`chunks` 객체에는 주어진 청크가 어떻게 생성되었는지 설명하는 `origins` 목록도 포함됩니다. 각 `origins` 객체는 다음 스키마를 따릅니다.
 
 ```js-with-links
 {
-  "loc": "", // Lines of code that generated this chunk
-  "module": "(webpack)\\test\\browsertest\\lib\\index.web.js", // Path to the module
-  "moduleId": 0, // The ID of the module
-  "moduleIdentifier": "(webpack)\\test\\browsertest\\lib\\index.web.js", // Path to the module
-  "moduleName": "./lib/index.web.js", // Relative path to the module
-  "name": "main", // The name of the chunk
+  "loc": "", // 이 청크를 생성한 코드 라인
+  "module": "(webpack)\\test\\browsertest\\lib\\index.web.js", // 모듈 경로
+  "moduleId": 0, // 모듈 ID
+  "moduleIdentifier": "(webpack)\\test\\browsertest\\lib\\index.web.js", // 모듈 경로
+  "moduleName": "./lib/index.web.js", // 모듈에 대한 상대 경로
+  "name": "main", // 청크 이름
   "reasons": [
-    // A list of the same `reasons` found in [module objects](#module-objects)
+    // [module objects](#module-objects)에서 찾은 동일한 `reasons` 목록
   ]
 }
 ```
 
 ### Module Objects
 
-What good would these statistics be without some description of the compiled application's actual modules? Each module in the dependency graph is represented by the following structure:
+컴파일된 애플리케이션의 실제 모듈에 대한 설명이 없으면 이런 통계가 무슨 의미가 있겠습니까? 의존성 그래프의 각 모듈은 다음 구조로 표시됩니다.
 
 ```js-with-links
 {
   "assets": [
-    // A list of [asset objects](#asset-objects)
+    // [애셋 객체](#asset-objects) 목록
   ],
-  "built": true, // Indicates that the module went through [Loaders](/concepts/loaders), Parsing, and Code Generation
-  "cacheable": true, // Whether or not this module is cacheable
+  "built": true, // 모듈이 [로더](/concepts/loaders), 파싱 및 코드 제너레이션을 거쳤음을 의미
+  "cacheable": true, // 모듈이 캐시 가능한지 여부
   "chunks": [
-    // IDs of chunks that contain this module
+    // 모듈을 포함하는 청크 ID
   ],
-  "errors": 0, // Number of errors when resolving or processing the module
-  "failed": false, // Whether or not compilation failed on this module
-  "id": 0, // The ID of the module (analogous to [`module.id`](/api/module-variables/#moduleid-commonjs))
-  "identifier": "(webpack)\\test\\browsertest\\lib\\index.web.js", // A unique ID used internally
-  "name": "./lib/index.web.js", // Path to the actual file
-  "optional": false, // All requests to this module are with `try... catch` blocks (irrelevant with ESM)
-  "prefetched": false, // Indicates whether or not the module was [prefetched](/plugins/prefetch-plugin)
+  "errors": 0, // 모듈을 리졸브하거나 처리할 때 발생한 오류 수
+  "failed": false, // 모듈에서 컴파일 실패 여부
+  "id": 0, // 모듈의 ID ([`module.id`](/api/module-variables/#moduleid-commonjs)와 유사)
+  "identifier": "(webpack)\\test\\browsertest\\lib\\index.web.js", // 내부적으로 사용되는 고유 ID
+  "name": "./lib/index.web.js", // 실제 파일 경로
+  "optional": false, // 모듈에 대한 모든 요청에는 `try... catch` 블록이 있습니다(ESM와 관련 없음)
+  "prefetched": false, // 모듈이 [prefetched](/plugins/prefetch-plugin) 되었는지 여부
   "profile": {
-    // Module specific compilation stats corresponding to the [`--profile` flag](/api/cli/#profiling) (in milliseconds)
-    "building": 73, // Loading and parsing
-    "dependencies": 242, // Building dependencies
-    "factory": 11 // Resolving dependencies
+    // [`--profile` flag](/api/cli/#profiling)에 해당하는 모듈별 컴파일 통계 (밀리초 단위)
+    "building": 73, // 로드 및 파싱
+    "dependencies": 242, // 의존성 구축
+    "factory": 11 // 의존성 해석
   },
   "reasons": [
-    // See the description below...
+    // 아래 설명 참고...
   ],
-  "size": 3593, // Estimated size of the module in bytes
-  "source": "// Should not break it...\r\nif(typeof...", // The stringified raw source
-  "warnings": 0 // Number of warnings when resolving or processing the module
+  "size": 3593, // 모듈 예상 크기(바이트)
+  "source": "// Should not break it...\r\nif(typeof...", // 문자열화된 원시 소스
+  "warnings": 0 // 모듈을 해석하거나 처리할 때 경고의 수
 }
 ```
 
-Every module also contains a list of `reasons` objects describing why that module was included in the dependency graph. Each "reason" is similar to the `origins` seen above in the [chunk objects](#chunk-objects) section:
+모든 모듈에는 해당 모듈이 의존성 그래프에 포함된 이유를 설명하는 `reasons` 객체 목록도 포함되어 있습니다. 각 "reason"은 위의 [청크 객체](#chunk-objects) 섹션에서 본 `origins`와 유사합니다.
 
 ```js-with-links
 {
-  "loc": "33:24-93", // Lines of code that caused the module to be included
-  "module": "./lib/index.web.js", // Relative path to the module based on [context](/configuration/entry-context/#context)
-  "moduleId": 0, // The ID of the module
-  "moduleIdentifier": "(webpack)\\test\\browsertest\\lib\\index.web.js", // Path to the module
-  "moduleName": "./lib/index.web.js", // A more readable name for the module (used for "pretty-printing")
-  "type": "require.context", // The [type of request](/api/module-methods) used
-  "userRequest": "../../cases" // Raw string used for the `import` or `require` request
+  "loc": "33:24-93", // 모듈을 포함하게 만든 코드의 라인
+  "module": "./lib/index.web.js", // [context](/configuration/entry-context/#context) 기반 모듈의 상대 경로
+  "moduleId": 0, // 모듈 ID
+  "moduleIdentifier": "(webpack)\\test\\browsertest\\lib\\index.web.js", // 모듈 경로
+  "moduleName": "./lib/index.web.js", // 모듈의 더 읽기 쉬운 이름 ("pretty-printing"에 사용됨)
+  "type": "require.context", // [type of request](/api/module-methods) 사용
+  "userRequest": "../../cases" // `import` 또는 `require` 요청에 사용되는 원시 문자열
 }
 ```
 
@@ -214,7 +216,7 @@ Every module also contains a list of `reasons` objects describing why that modul
 
 ### Errors and Warnings
 
-The `errors` and `warnings` properties each contain a list of objects. Each object contains a message, a stack trace and various other properties:
+`errors` 및 `warnings` 프로퍼티에는 각각 객체 목록이 포함되어 있습니다. 각 객체에는 메시지, 스택 추적 및 다양한 프로퍼티가 포함되어 있습니다.
 
 ```json
 {
@@ -256,4 +258,4 @@ The `errors` and `warnings` properties each contain a list of objects. Each obje
 }
 ```
 
-W> Note that the stack traces are removed when `errorStack: false` is passed to the `toJson` method. The `errorStack` option is set to `true` by default.
+W> `errorStack: false`가 `toJson` 메서드에 전달되면 스택 추적이 제거됩니다. `errorStack` 옵션은 기본적으로 `true`로 설정됩니다.
