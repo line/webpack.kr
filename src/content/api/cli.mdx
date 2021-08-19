@@ -39,18 +39,18 @@ webpack 및 CLI를 아직 설치하지 않은 경우 [설치 가이드](/guides/
 
 webpack-cli는 webpack을 더 쉽게 사용할 수 있도록 다양한 명령을 제공합니다. 기본적으로 webpack은 다음과 같은 명령어를 제공합니다.
 
-| 명령어                               | 사용법                                                 | 설명                                                                     |
-| ------------------------------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------- |
-| `build`                               | `build\|bundle\|b [entries...] [options]`             | webpack을 실행합니다. (기본 명령어, 생략 가능).                                  |
-| [`configtest`](#configtest)           | `configtest\|t [config-path]`                         | webpack 설정을 검증합니다.                                               |
-| [`help`](#help)                       | `help\|h [command] [option]`                          | 명렁어 및 옵션에 대한 도움말을 표시합니다.                                          |
-| [`info`](#info)                       | `info\|i [options]`                                   | 시스템 정보를 출력합니다.                                         |
-| [`init`](#init)                       | `init\|create\|c\|new\|n [generation-path] [options]` | 새로운 webpack 프로젝트를 초기화합니다.                                               |
-| `loader`                              | `loader\|l [output-path] [options]`                   | 로더를 스캐폴드합니다.                                                              |
-| `plugin`                              | `plugin\|p [output-path] [options]`                   | 플러그인을 스캐폴드합니다.                                                             |
-| [`serve`](/configuration/dev-server/) | `serve\|server\|s [options]`                          | `webpack-dev-server`를 실행합니다.                                                   |
+| 명령어                                | 사용법                                                | 설명                                                                       |
+| ------------------------------------- | ----------------------------------------------------- | -------------------------------------------------------------------------- |
+| `build`                               | `build\|bundle\|b [entries...] [options]`             | webpack을 실행합니다. (기본 명령어, 생략 가능).                            |
+| [`configtest`](#configtest)           | `configtest\|t [config-path]`                         | webpack 설정을 검증합니다.                                                 |
+| [`help`](#help)                       | `help\|h [command] [option]`                          | 명렁어 및 옵션에 대한 도움말을 표시합니다.                                 |
+| [`info`](#info)                       | `info\|i [options]`                                   | 시스템 정보를 출력합니다.                                                  |
+| [`init`](#init)                       | `init\|create\|c\|new\|n [generation-path] [options]` | 새로운 webpack 프로젝트를 초기화합니다.                                    |
+| `loader`                              | `loader\|l [output-path] [options]`                   | 로더를 스캐폴드합니다.                                                     |
+| `plugin`                              | `plugin\|p [output-path] [options]`                   | 플러그인을 스캐폴드합니다.                                                 |
+| [`serve`](/configuration/dev-server/) | `serve\|server\|s [options]`                          | `webpack-dev-server`를 실행합니다.                                         |
 | [`version`](#version)                 | `version\|v [commands...]`                            | `webpack`, `webpack-cli` 및 `webpack-dev-server`의 버전 넘버를 출력합니다. |
-| `watch`                               | `watch\|w [entries...] [options]`                     | webpack을 실행하고 파일 변경을 감지합니다.                                        |
+| `watch`                               | `watch\|w [entries...] [options]`                     | webpack을 실행하고 파일 변경을 감지합니다.                                 |
 
 ### Init
 
@@ -84,7 +84,7 @@ npx webpack init ./my-app --force --template=default
 
 질문 없이 프로젝트를 생성합니다. 활성화하면 각 질문에 대한 기본 답변을 사용합니다.
 
-T> [`webpack init` 명령의 전체 문서](https://github.com/webpack/webpack-cli/blob/master/packages/generators/INIT.md)를 참고하세요. 
+T> [`webpack init` 명령의 전체 문서](https://github.com/webpack/webpack-cli/blob/master/packages/generators/INIT.md)를 참고하세요.
 
 ### Info
 
@@ -130,41 +130,41 @@ webpack 설정 파일의 경로입니다. 기본값은 `./webpack.config.js`입�
 
 기본적으로 webpack은 다음 플래그와 함께 제공됩니다.
 
-| 플래그 / 별칭                        | 타입            | 설명                                                             |
-| ----------------------------------- | --------------- | ----------------------------------------------------------------------- |
-| [`--entry`](#entry)                 | string[]        | 애플리케이션의 엔트리 포인트입니다. (예: `./src/main.js`)             |
-| [`--config, -c`](#config)           | string[]        | webpack 설정 파일의 경로를 제공합니다. (예: `./webpack.config.js`) |
-| [`--config-name`](#config-name)     | string[]        | 사용할 설정의 이름입니다.                                        |
-| `--name`                            | string          | 사용할 설정의 이름. 복수의 설정을 로드할 때 사용합니다.    |
-| `--color`                           | boolean         | 콘솔에서 색상 활성화                                                |
-| [`--merge, -m`](#merge)             | boolean         | `webpack-merge`를 사용하여 둘 이상의 구성을 병합합니다.                  |
-| [`--env`](#env)                     | string[]        | 함수일 때 설정에 전달된 환경입니다.           |
-| [`--node-env`](#node-env)           | string          | `process.env.NODE_ENV`를 지정된 값으로 설정합니다.                       |
-| [`--progress`](#progress)           | boolean, string | 빌드 중 컴파일 진행률을 출력합니다.                                 |
-| [`--help`](#help)                   | boolean         | 지원되는 플래그 및 명령 목록을 출력합니다.                            |
-| [`--output-path, -o`](#output-path) | string          | webpack에 의해 생성된 파일의 출력 위치입니다. (예: `./dist`)          |
-| `--target, -t`                      | string[]        | 빌드 대상을 설정합니다.                                                   |
-| `--watch, -w`                       | boolean         | 파일 변경 사항을 확인합니다.                                                 |
-| `--watch-options-stdin`             | boolean         | stdin 스트림이 종료되면 감시를 중단합니다.                               |
-| `--hot, -h`                         | boolean         | Hot Module Replacement를 활성화합니다.                                          |
-| `--devtool, -d`                     | string          | 소스 맵 생성 여부와 방법을 제어합니다.                          |
-| `--prefetch`                        | string          | 이 요청을 미리 가져옵니다.                                                   |
-| [`--json, -j`](#json)               | boolean, string | 결과를 JSON으로 출력하거나 파일으로 저장합니다.                             |
-| `--mode`                            | string          | webpack에 전달할 모드를 정의합니다.                                     |
-| [`--version, -v`](#version)         | boolean         | 현재 버전을 가져옵니다.                                                     |
-| `--stats`                           | boolean, string | webpack에 통계 처리 방법을 지시합니다.                          |
-| [`--analyze`](#analyzing-bundle)    | boolean         | 번들 정보를 얻기 위해 `webpack-bundle-analyzer` 플러그인을 호출합니다.   |
+| 플래그 / 별칭                       | 타입            | 설명                                                                   |
+| ----------------------------------- | --------------- | ---------------------------------------------------------------------- |
+| [`--entry`](#entry)                 | string[]        | 애플리케이션의 엔트리 포인트입니다. (예: `./src/main.js`)              |
+| [`--config, -c`](#config)           | string[]        | webpack 설정 파일의 경로를 제공합니다. (예: `./webpack.config.js`)     |
+| [`--config-name`](#config-name)     | string[]        | 사용할 설정의 이름입니다.                                              |
+| `--name`                            | string          | 사용할 설정의 이름. 복수의 설정을 로드할 때 사용합니다.                |
+| `--color`                           | boolean         | 콘솔에서 색상 활성화                                                   |
+| [`--merge, -m`](#merge)             | boolean         | `webpack-merge`를 사용하여 둘 이상의 구성을 병합합니다.                |
+| [`--env`](#env)                     | string[]        | 함수일 때 설정에 전달된 환경입니다.                                    |
+| [`--node-env`](#node-env)           | string          | `process.env.NODE_ENV`를 지정된 값으로 설정합니다.                     |
+| [`--progress`](#progress)           | boolean, string | 빌드 중 컴파일 진행률을 출력합니다.                                    |
+| [`--help`](#help)                   | boolean         | 지원되는 플래그 및 명령 목록을 출력합니다.                             |
+| [`--output-path, -o`](#output-path) | string          | webpack에 의해 생성된 파일의 출력 위치입니다. (예: `./dist`)           |
+| `--target, -t`                      | string[]        | 빌드 대상을 설정합니다.                                                |
+| `--watch, -w`                       | boolean         | 파일 변경 사항을 확인합니다.                                           |
+| `--watch-options-stdin`             | boolean         | stdin 스트림이 종료되면 감시를 중단합니다.                             |
+| `--hot, -h`                         | boolean         | Hot Module Replacement를 활성화합니다.                                 |
+| `--devtool, -d`                     | string          | 소스 맵 생성 여부와 방법을 제어합니다.                                 |
+| `--prefetch`                        | string          | 이 요청을 미리 가져옵니다.                                             |
+| [`--json, -j`](#json)               | boolean, string | 결과를 JSON으로 출력하거나 파일으로 저장합니다.                        |
+| `--mode`                            | string          | webpack에 전달할 모드를 정의합니다.                                    |
+| [`--version, -v`](#version)         | boolean         | 현재 버전을 가져옵니다.                                                |
+| `--stats`                           | boolean, string | webpack에 통계 처리 방법을 지시합니다.                                 |
+| [`--analyze`](#analyzing-bundle)    | boolean         | 번들 정보를 얻기 위해 `webpack-bundle-analyzer` 플러그인을 호출합니다. |
 
 ### Negated Flags
 
-| 플래그                       | 설명                                                   |
-| -------------------------- | ------------------------------------------------------------- |
-| `--no-color`               | 콘솔에서 모든 색상을 비활성화합니다.                             |
+| 플래그                     | 설명                                                  |
+| -------------------------- | ----------------------------------------------------- |
+| `--no-color`               | 콘솔에서 모든 색상을 비활성화합니다.                  |
 | `--no-hot`                 | 설정을 통해 활성화한 경우 핫 리로딩을 비활성화합니다. |
-| `--no-stats`               | webpack에서 내보낸 컴파일 통계를 비활성화합니다.             |
-| `--no-watch`               | 파일 변경을 감시하지 않습니다.                                 |
-| `--no-devtool`             | 소스 맵을 생성하지 않습니다.                                   |
-| `--no-watch-options-stdin` | stdin 스트림이 종료되어도 감시를 중단하지 않습니다.              |
+| `--no-stats`               | webpack에서 내보낸 컴파일 통계를 비활성화합니다.      |
+| `--no-watch`               | 파일 변경을 감시하지 않습니다.                        |
+| `--no-devtool`             | 소스 맵을 생성하지 않습니다.                          |
+| `--no-watch-options-stdin` | stdin 스트림이 종료되어도 감시를 중단하지 않습니다.   |
 
 ### Core Flags
 
@@ -173,7 +173,6 @@ CLI v4와 webpack v5부터 CLI는 webpack 코어에서 전체 설정 스키마�
 **CLI v4를 통한 webpack v5에서 지원하는 모든 코어 플래그 목록입니다. - [링크](https://github.com/webpack/webpack-cli/blob/master/OPTIONS.md)**
 
 예를 들어, 프로젝트에서 성능 힌트를 활성화하려면 설정에서 [이 옵션](https://webpack.js.org/configuration/performance/#performancehints)을 사용할 수 있습니다. 코어 플래그를 사용하면 아래와 같이 할 수 있습니다.
-
 
 ```bash
 npx webpack --performance-hints warning
@@ -307,7 +306,7 @@ npx webpack help
 npx webpack --help=verbose
 ```
 
-**특정 명령어 또는 옵션에 대한 도움말 보기** 
+**특정 명령어 또는 옵션에 대한 도움말 보기**
 
 ```bash
 npx webpack help --mode
@@ -315,7 +314,7 @@ npx webpack help --mode
 
 ### version
 
-**설치된 패키지 및 하위 패키지의 버전 표시** 
+**설치된 패키지 및 하위 패키지의 버전 표시**
 
 사용 중인 `webpack` 및 `webpack-cli`의 버전을 검사하려면 다음 명령을 실행하세요.
 
@@ -453,7 +452,7 @@ npx webpack --env production    # env.production = true
 
 `--env` 인수는 복수의 값을 허용합니다.
 
-| 호출                                                       | 결과 환경                         |
+| 호출                                                             | 결과 환경                                      |
 | ---------------------------------------------------------------- | ---------------------------------------------- |
 | `npx webpack --env prod`                                         | `{ prod: true }`                               |
 | `npx webpack --env prod --env min`                               | `{ prod: true, min: true }`                    |
@@ -465,11 +464,11 @@ T> 사용법에 대한 자세한 내용은 [환경 변수](/guides/environment-v
 
 위에 표시된 사용자 정의 `env` 외에도 `env` 하위에는 webpack 설정 내에서 사용되는 몇 가지 내장 기능이 있습니다.
 
-| 환경 변수 | 설명                                  |
-| -------------------- | -------------------------------------------- |
-| `WEBPACK_SERVE`      | `serve\|s`를 사용하고 있으면 `true`         |
-| `WEBPACK_BUILD`      | `build\|bundle\|b`를 사용하고 있으면 `true`  |
-| `WEBPACK_WATCH`      | `--watch\|watch\|w`를 사용하고 있으면 `true` |
+| 환경 변수       | 설명                                         |
+| --------------- | -------------------------------------------- |
+| `WEBPACK_SERVE` | `serve\|s`를 사용하고 있으면 `true`          |
+| `WEBPACK_BUILD` | `build\|bundle\|b`를 사용하고 있으면 `true`  |
+| `WEBPACK_WATCH` | `--watch\|watch\|w`를 사용하고 있으면 `true` |
 
 번들 코드 내에서는 이러한 내장 환경 변수에 접근할 수 없는 점을 알아두세요.
 
@@ -489,15 +488,15 @@ module.exports = (env, argv) => {
 npx webpack --node-env production   # process.env.NODE_ENV = 'production'
 ```
 
-T> `mode` 옵션은 명시적으로 설정하지 않으면 `--node-env` 옵션을 받듭니다. 즉, `--node-env production`은 `process.env.NODE_ENV`와 `mode`를 모두 `'production'`으로 설정합니다. 
+T> `mode` 옵션은 명시적으로 설정하지 않으면 `--node-env` 옵션을 받듭니다. 즉, `--node-env production`은 `process.env.NODE_ENV`와 `mode`를 모두 `'production'`으로 설정합니다.
 
 ## Configuration Options
 
-| 파라미터       | 설명                                                    | 입력 타입 | 기본값                                             |
-| --------------- | -------------------------------------------------------------- | ---------- | --------------------------------------------------- |
-| `--config`      | 설정 파일 경로                                 | string[]   | [Default Configs](/api/cli/#default-configurations) |
-| `--config-name` | 사용할 설정의 이름                               | string[]   |                                                     |
-| `--env`         | 함수일 때 설정에 전달된 환경 | string[]   |                                                     |
+| 파라미터        | 설명                         | 입력 타입 | 기본값                                              |
+| --------------- | ---------------------------- | --------- | --------------------------------------------------- |
+| `--config`      | 설정 파일 경로               | string[]  | [Default Configs](/api/cli/#default-configurations) |
+| `--config-name` | 사용할 설정의 이름           | string[]  |                                                     |
+| `--env`         | 함수일 때 설정에 전달된 환경 | string[]  |                                                     |
 
 ## Analyzing Bundle
 
@@ -541,20 +540,20 @@ NODE_OPTIONS="--max-old-space-size=4096 -r /path/to/preload/file.js" webpack
 
 ## Exit codes and their meanings
 
-| 종료 코드 | 설명                                        |
-| --------- | -------------------------------------------------- |
-| `0`       | 성공                                            |
-| `1`       | webpack 오류                                |
+| 종료 코드 | 설명                            |
+| --------- | ------------------------------- |
+| `0`       | 성공                            |
+| `1`       | webpack 오류                    |
 | `2`       | 설정 / 옵션 문제 또는 내부 오류 |
 
 ## CLI Environment Variables
 
-| 환경 변수                  | 설명                                                         |
-| ------------------------------------- | ------------------------------------------------------------------- |
-| `WEBPACK_CLI_SKIP_IMPORT_LOCAL`       | `true`이면 `webpack-cli`의 로컬 인스턴스 사용을 건너뜁니다.|
-| `WEBPACK_CLI_FORCE_LOAD_ESM_CONFIG`   | `true`이면 ESM 설정을 강제로 로드합니다.                     |
-| [`WEBPACK_PACKAGE`](#webpack_package) | CLI에서 사용자 정의 webpack 버전을 사용합니다.                               |
-| `WEBPACK_CLI_HELP_WIDTH`              | 도움말 출력에 사용자 정의 너비를 사용합니다.                               |
+| 환경 변수                             | 설명                                                        |
+| ------------------------------------- | ----------------------------------------------------------- |
+| `WEBPACK_CLI_SKIP_IMPORT_LOCAL`       | `true`이면 `webpack-cli`의 로컬 인스턴스 사용을 건너뜁니다. |
+| `WEBPACK_CLI_FORCE_LOAD_ESM_CONFIG`   | `true`이면 ESM 설정을 강제로 로드합니다.                    |
+| [`WEBPACK_PACKAGE`](#webpack_package) | CLI에서 사용자 정의 webpack 버전을 사용합니다.              |
+| `WEBPACK_CLI_HELP_WIDTH`              | 도움말 출력에 사용자 정의 너비를 사용합니다.                |
 
 ```bash
 WEBPACK_CLI_FORCE_LOAD_ESM_CONFIG=true npx webpack --config ./webpack.config.esm

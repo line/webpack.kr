@@ -1,0 +1,13 @@
+**[설정 없이도](https://youtu.be/3Nv9muOkb6k?t=21293)** 번들할 수 있고 사용자 지정 **webpack.config.js를** 제공할 수도 있어요.
+
+```js
+const path = require('path');
+
+module.exports = {
+  entry: './src/index.js',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'bundle.js',
+  },
+};
+```
