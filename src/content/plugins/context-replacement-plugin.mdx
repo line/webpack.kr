@@ -13,9 +13,9 @@ related:
     url: https://github.com/date-fns/date-fns/blob/master/docs/webpack.md
 ---
 
-_Context는_ `require('./locale/' + name + '.json')`와 같은 [require with an expression](/guides/dependency-management/#require-with-expression)을 나타냅니다. 이러한 표현식을 만나면, webpack은 디렉터리 (`'./locale/'`)와 정규 표현식 (`/^.*\.json$/`)을 추론합니다. 컴파일시 `name`를 알 수 없기 때문에 webpack은 모든 파일을 번들에 모듈로 포함합니다.
+_Context는_ `require('./locale/' + name + '.json')`와 같은 [require with an expression](/guides/dependency-management/#require-with-expression)을 나타냅니다. 이러한 표현식을 만나면, webpack은 디렉터리 (`'./locale/'`)와 정규 표현식 (`/^.*\.json$/`)을 추론합니다. 컴파일 시 `name`을 알 수 없기 때문에 webpack은 모든 파일을 번들에 모듈로 포함합니다.
 
-`ContextReplacementPlugin`을 사용하면 추론된 정보를 오버라이드 할 수 있습니다. 플러그인을 구성하는 방법에는 여러가지가 있습니다.
+`ContextReplacementPlugin`을 사용하면 추론된 정보를 오버라이드 할 수 있습니다. 플러그인을 구성하는 방법에는 여러 가지가 있습니다.
 
 ## Usage
 
@@ -47,7 +47,7 @@ new webpack.ContextReplacementPlugin(
 );
 ```
 
-`newContentCallback` 함수에는 [`ContextModuleFactory`의 `data`객체](/api/plugins/module-factories/)가 제공되며 제공된 객체의 `request` 속성을 덮어쓸 것으로 예상됩니다.
+`newContentCallback` 함수에는 [`ContextModuleFactory`의 `data` 객체](/api/plugins/module-factories/)가 제공되며 제공된 객체의 `request` 속성을 덮어쓸 것으로 예상됩니다.
 
 이 콜백을 사용하여 요청을 새 위치로 동적 리디렉션할 수 있습니다.
 
@@ -64,7 +64,7 @@ new webpack.ContextReplacementPlugin(/^\.\/locale$/, (context) => {
 
 ## Other Options
 
-`newContentResource`및 `newContentCreateContextMap` 파라미터도 사용할 수 있습니다.
+`newContentResource` 및 `newContentCreateContextMap` 파라미터도 사용할 수 있습니다.
 
 ```typescript
 new webpack.ContextReplacementPlugin(
