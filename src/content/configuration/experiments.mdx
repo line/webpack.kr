@@ -10,7 +10,7 @@ translators:
   - choilim
 ---
 
-## `experiments`
+## experiments
 
 `boolean: false`
 
@@ -21,6 +21,7 @@ W> 실험적 기능은 시멘틱 버저닝을 완화하고 주요 변경 사항�
 사용 가능한 옵션은 다음과 같습니다.
 
 - `asyncWebAssembly`: [업데이트된 사양](https://github.com/WebAssembly/esm-integration)에 따라 새로운 웹 어셈블리를 지원하여, 웹 어셈블리 모듈을 비동기 모듈로 만듭니다.
+- [`buildHttp`](#experimentsbuildhttp)
 - [`executeModule`](#experimentsexecutemodule)
 - `layers`: 모듈 및 청크 레이어를 활성화합니다.
 - [`lazyCompilation`](#experimentslazycompilation)
@@ -34,16 +35,100 @@ W> 실험적 기능은 시멘틱 버저닝을 완화하고 주요 변경 사항�
 module.exports = {
   //...
   experiments: {
+    asyncWebAssembly: true,
+    buildHttp: true,
     executeModule: true,
+    layers: true,
+    lazyCompilation: true,
     outputModule: true,
     syncWebAssembly: true,
     topLevelAwait: true,
-    asyncWebAssembly: true,
-    layers: true,
-    lazyCompilation: true,
   },
 };
 ```
+
+### experiments.buildHttp
+
+활성화되면, webpack은 `http(s):` 프로토콜로 시작하는 원격 리소스를 빌드할 수 있습니다.
+
+- Type:
+
+  다음 중 하나:
+
+  - `boolean`
+  - `HttpUriOptions`
+    ```ts
+    {
+      cacheLocation?: false | string,
+      frozen?: boolean,
+      lockfileLocation?: string,
+      upgrade?: boolean
+    }
+    ```
+
+- 사용 가능: 5.49.0+
+- 예제
+
+  ```javascript
+  // webpack.config.js
+  module.exports = {
+    //...
+    experiments: {
+      buildHttp: true,
+    },
+  };
+  ```
+
+  ```js
+  // src/index.js
+  import pMap1 from 'https://cdn.skypack.dev/p-map';
+  // `buildHttp`가 활성화되면, webpack은 일반 로컬 모듈처럼 pMap1을 빌드합니다.
+  console.log(pMap1);
+  ```
+
+#### experiments.buildHttp.cacheLocation
+
+원격 리소스를 캐싱할 위치를 정의합니다.
+
+- Type
+  - `string`
+  - `false`
+- Example
+  ```javascript
+  // webpack.config.js
+  module.exports = {
+    //...
+    experiments: {
+      buildHttp: {
+        cacheLocation: false,
+      },
+    },
+  };
+  ```
+
+기본적으로 webpack은 캐싱을 위해 `<compiler-name.>webpack.lock.data/`를 사용하지만, 값을 `false`로 설정하여 비활성화할 수 있습니다.
+
+`프로덕션` 빌드 중에는 네트워크 요청이 이루어지지 않으므로 `experiments.buildHttp.cacheLocation` 아래의 파일을 버전 제어 시스템에 커밋해야 합니다.
+
+#### experiments.buildHttp.frozen
+
+원격 리소스 및 잠금 파일을 고정합니다. 잠금 파일 또는 리소스 내용을 수정하면 오류가 발생합니다.
+
+- Type: `boolean`
+
+#### experiments.buildHttp.lockfileLocation
+
+잠금 파일을 저장할 위치를 정의합니다.
+
+- Type: `string`
+
+기본적으로 webpack은 `<compiler-name.>webpack.lock` 파일>을 생성합니다. `프로덕션` 빌드 동안 webpack은 잠금 파일에서 `http(s):` 프로토콜로 시작하는 모듈을 빌드하고 [`experiments.buildHttp.cacheLocation`](#experimentsbuildhttpcachelocation) 아래에 캐시합니다.
+
+#### experiments.buildHttp.upgrade
+
+원격 리소스의 변경 사항을 감지하고 자동으로 업그레이드합니다.
+
+- Type: `boolean`
 
 ### experiments.executeModule
 
