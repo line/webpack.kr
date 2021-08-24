@@ -877,7 +877,7 @@ module.exports = {
     proxy: { // 백엔드 개발 서버에 대한 프록시 URL
       '/api': 'http://localhost:3000'
     },
-    contentBase: path.join(__dirname, 'public'), // boolean | string | array, 정적 파일 위치
+    static: path.join(__dirname, 'public'), // boolean | string | array, 정적 파일 위치
     compress: true, // gzip 압축 활성화
     historyApiFallback: true, // 404일때 index.html을 표시하려면 true, 복수의 경로를 적용하려면 객체
     hot: true, // hot module replacement. HotModuleReplacementPlugin에 따라 다름

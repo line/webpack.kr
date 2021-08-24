@@ -209,9 +209,9 @@ module.exports = {
 
 ### debug
 
-`string` `RegExp` `function(name) => boolean` `[string, RegExp, function(name) => boolean]`
+`string` `boolean = false` `RegExp` `function(name) => boolean` `[string, RegExp, function(name) => boolean]`
 
-플러그인 또는 로더와 같은 지정된 로거의 디버그 정보를 활성화합니다. [`stats.loggingDebug`](/configuration/stats/#statsloggingdebug) 옵션과 유사하지만 인프라 용입니다. 기본값이 제공되지 않습니다.
+플러그인 또는 로더와 같은 지정된 로거의 디버그 정보를 활성화합니다. [`stats.loggingDebug`](/configuration/stats/#statsloggingdebug) 옵션과 유사하지만 인프라 용입니다. 기본값은 `false`입니다.
 
 **webpack.config.js**
 
@@ -227,9 +227,9 @@ module.exports = {
 
 ### level
 
-`string`
+`string = 'info' : 'none' | 'error' | 'warn' | 'info' | 'log' | 'verbose'`
 
-인프라 로깅 출력을 활성화합니다. [`stats.logging`](/configuration/stats/#statslogging) 옵션과 유사하지만 인프라 용입니다. 기본값이 제공되지 않습니다.
+인프라 로깅 출력을 활성화합니다. [`stats.logging`](/configuration/stats/#statslogging) 옵션과 유사하지만 인프라 용입니다. 기본값은 `'info'` 입니다.
 
 Possible values:
 

@@ -99,7 +99,7 @@ function Site(props) {
       }))
       .filter(
         (page) =>
-          page.title !== 'printable.md' && !page.content.includes('Printable')
+          page.title !== 'printable.mdx' && !page.content.includes('Printable')
       );
   };
 

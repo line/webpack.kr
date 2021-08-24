@@ -228,25 +228,6 @@ module.exports = {
 };
 ```
 
-### `resolve.enforceModuleExtension`
-
-`boolean = false`
-
-W> webpack 5에서 삭제됨
-
-예를 들어 로더와 같은 모듈에 대한 확장자를 사용하는지 여부를 webpack에 알려줍니다.
-
-**webpack.config.js**
-
-```js
-module.exports = {
-  //...
-  resolve: {
-    enforceModuleExtension: false,
-  },
-};
-```
-
 ### resolve.extensions
 
 `[string] = ['.js', '.json', '.wasm']`
@@ -683,22 +664,3 @@ module.exports = {
 ```
 
 T> 여기서 별칭을 사용할 수 있으며 해석을 위한 익숙한 다른 기능도 사용할 수 있습니다. 예를 들어 `{ txt: 'raw-loader' }`는 `raw-loader`를 사용하기 위해 `txt!templates/demo.txt`를 shim 합니다.
-
-### `resolveLoader.moduleExtensions`
-
-`[string]`
-
-W> webpack 5에서 삭제됨
-
-로더를 해석할 때 사용되는 확장자/접미사입니다. 버전 2부터는 전체 이름을 사용하는 것을 [강력하게 추천](/migrate/3/#automatic--loader-module-name-extension-removed) 합니다. e.g. `example-loader`, 명확하게 하기 위해 가능한 많이 사용합니다 . 그러나 `-loader` 비트를 제외하려는 경우(즉, `example`만 사용), 이 옵션을 사용하여 다음을 할 수 있습니다.
-
-**webpack.config.js**
-
-```js
-module.exports = {
-  //...
-  resolveLoader: {
-    moduleExtensions: ['-loader'],
-  },
-};
-```
