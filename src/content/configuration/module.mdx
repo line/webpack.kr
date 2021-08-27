@@ -26,7 +26,7 @@ translators:
 
 이 옵션은 프로젝트 내에서 [다른 유형의 모듈](/concepts/modules)을 처리하는 방법을 결정합니다.
 
-## `module.generator`
+## module.generator
 
 <Badge text="5.12.0+" />
 
@@ -190,7 +190,7 @@ const x = require(/* webpackIgnore: true */ 'x');
 1. 이것은 기준 URL이 서버에의 알려지지 않을 때 SSR(서버 사이드 렌더링)에 유용하며 몇 바이트를 절약할 수 있습니다. 동일하게 유지하기 위해서 클라이언트 빌드에서도 사용해야 합니다.
 2. 또한 서버 측 렌더링이 일반적으로 필요한 정적 사이트 생성기, mini-css-plugin 및 html-plugin 등을 위해서도 필요합니다.
 
-## `module.noParse`
+## module.noParse
 
 `RegExp` `[RegExp]` `function(resource)` `string` `[string]`
 
@@ -216,7 +216,7 @@ module.exports = {
 };
 ```
 
-## `module.unsafeCache`
+## module.unsafeCache
 
 `boolean` `function (module)`
 
@@ -238,7 +238,7 @@ module.exports = {
 
 W> webpack 4에서는 기본값이 `true`입니다.
 
-## `module.rules`
+## module.rules
 
 `[Rule]`
 
@@ -295,7 +295,7 @@ Rule에는 두 가지 출력 값이 있습니다.
 2. [`rules`](#rulerules)
 3. [`oneOf`](#ruleoneof)
 
-## `Rule.enforce`
+## Rule.enforce
 
 `string`
 
@@ -329,15 +329,15 @@ import { c } from '!!./file3.js';
 
 인라인 로더와 `!` 접두사는 비표준이므로 사용해서는 안됩니다. 이것들은 로더가 생성한 코드에서 사용할 수 있습니다.
 
-## `Rule.exclude`
+## Rule.exclude
 
 조건과 일치하는 모든 모듈을 제외합니다. `Rule.exclude` 옵션을 사용하면 `Rule.resource` 옵션을 사용할 수 없습니다. 자세한 내용은 [`Rule.resource`](#ruleresource) 및 [`Condition.exclude`](#condition)를 참고하세요.
 
-## `Rule.include`
+## Rule.include
 
 조건과 일치하는 모든 모듈을 포함합니다. `Rule.include` 옵션을 사용하면 `Rule.resource` 옵션을 사용할 수 없습니다. 자세한 내용은 [`Rule.resource`](#ruleresource) 및 [`Condition.include`](#condition)를 참고하세요.
 
-## `Rule.issuer`
+## Rule.issuer
 
 요청한 모듈과 비교할 [`Condition`](#condition)입니다. 아래의 예제에서, `a.js`의 `issuer`는 `index.js` 파일의 경로입니다.
 
@@ -349,7 +349,7 @@ import A from './a.js';
 
 이 옵션은 특정 모듈 또는 모듈 세트의 디펜던시에 로더를 적용하는 데 사용할 수 있습니다.
 
-## `Rule.issuerLayer`
+## Rule.issuerLayer
 
 issuer의 계층별로 필터링하고 일치시킬 수 있습니다.
 
@@ -368,7 +368,7 @@ module.exports = {
 };
 ```
 
-## `Rule.layer`
+## Rule.layer
 
 `string`
 
@@ -390,17 +390,17 @@ module.exports = {
 };
 ```
 
-## `Rule.loader`
+## Rule.loader
 
 `Rule.loader`는 `Rule.use: [ { loader } ]`의 단축어입니다. 자세한 내용은 [`Rule.use`](#ruleuse)와 [`UseEntry.loader`](#useentry)를 참고하세요.
 
-## `Rule.loaders`
+## Rule.loaders
 
 W> 이 옵션은 `Rule.use`로 **대체되었습니다**.
 
 `Rule.loaders`는 `Rule.use`의 별칭입니다. 자세한 내용은 [`Rule.use`](#ruleuse)를 참고하세요.
 
-## `Rule.mimetype`
+## Rule.mimetype
 
 `mimetype`을 사용하여 설정 규칙을 데이터 URI에 일치시킬 수 있습니다.
 
@@ -422,7 +422,7 @@ module.exports = {
 
 `application/json`, `text/javascript`, `application/javascript`, `application/node` 및 `application/wasm`은 이미 기본적인 mimetype으로 포함되어 있습니다.
 
-## `Rule.oneOf`
+## Rule.oneOf
 
 Rule이 일치할 때 첫 번째 일치하는 Rule만 사용되는 [`Rules`](#rule)의 배열입니다.
 
@@ -453,13 +453,13 @@ module.exports = {
 
 T> 자세한 내용은 [`중첩된 rule`](#nested-rules)을 참고하세요.
 
-## `Rule.options` / `Rule.query`
+## Rule.options / Rule.query
 
 `Rule.options`과 `Rule.query`는 `Rule.use: [ { options } ]`의 단축어입니다. 자세한 내용은 [`Rule.use`](#ruleuse)와 [`UseEntry.options`](#useentry)을 참고하세요.
 
 W> `Rule.query`는 `Rule.options`과 `UseEntry.options`으로 대체되었습니다.
 
-## `Rule.parser`
+## Rule.parser
 
 파서 옵션이 있는 객체입니다. 적용된 모든 파서 옵션이 병합됩니다.
 
@@ -506,7 +506,7 @@ module.exports = {
 
 추가적인 정보나 사용 사례를 위해 [애셋 모듈 가이드](/guides/asset-modules/)를 참고하세요.
 
-## `Rule.parser.dataUrlCondition`
+## Rule.parser.dataUrlCondition
 
 `object = { maxSize number = 8096 }` `function (source, { filename, module }) => boolean`
 
@@ -693,11 +693,11 @@ module.exports = {
 };
 ```
 
-## `Rule.resource`
+## Rule.resource
 
 리소스와 일치하는 [`Condition`](#condition)입니다. 자세한 내용은 [`규칙` 조건](#rule-conditions)을 참고하세요.
 
-## `Rule.resourceQuery`
+## Rule.resourceQuery
 
 리소스 쿼리와 일치하는 [`Condition`](#condition)입니다. 이 옵션은 요청 문자열의 쿼리 섹션에 대해 테스트하는 경우 사용됩니다(즉, 물음표부터). `import Foo from './foo.css?inline'`을 사용하는 경우 다음 조건이 일치합니다.
 
@@ -718,7 +718,7 @@ module.exports = {
 };
 ```
 
-## `Rule.parser.parse`
+## Rule.parser.parse
 
 `function(input) => string | object`
 
@@ -745,23 +745,23 @@ module.exports = {
 };
 ```
 
-## `Rule.rules`
+## Rule.rules
 
 Rule이 일치 할 때도 사용되는 [`Rules`](#rule)의 배열입니다.
 
 T> 자세한 정보는 [`중첩된 rules`](#nested-rules)를 참고하세요.
 
-## `Rule.sideEffects`
+## Rule.sideEffects
 
 `bool`
 
 모듈의 어떤 부분에 부작용이 있는지 표시하세요. 자세한 내용은 [Tree Shaking](/guides/tree-shaking/#mark-the-file-as-side-effect-free)을 참고하세요.
 
-## `Rule.test`
+## Rule.test
 
 테스트를 통과하는 모든 모듈을 포함합니다. `Rule.test` 옵션을 제공하면 `Rule.resource`도 제공 할 수 없습니다. 자세한 내용은 [`Rule.resource`](#ruleresource) 및 [`Condition.test`](#condition)를 참고하세요.
 
-## `Rule.type`
+## Rule.type
 
 `string`
 
@@ -789,7 +789,7 @@ module.exports = {
 
 > `asset*` 유형에 대한 자세한 내용은 [애셋 모듈 가이드](/guides/asset-modules/)를 참고하세요.
 
-## `Rule.use`
+## Rule.use
 
 `[UseEntry]` `function(info)`
 
@@ -877,7 +877,7 @@ module.exports = {
 
 자세한 정보는 [UseEntry](#useentry)를 참고하세요.
 
-## `Rule.resolve`
+## Rule.resolve
 
 W> `Rule.resolve`는 webpack 4.36.1 이후로 사용 가능합니다.
 
@@ -944,7 +944,7 @@ module.exports = {
 
 변경된 설정으로 번들을 생성하면 `console.log(footer)`는 'overridden footer'를 출력합니다.
 
-### `resolve.fullySpecified`
+### resolve.fullySpecified
 
 `boolean = true`
 
@@ -971,7 +971,7 @@ module.exports = {
 
 W> `resolve.fullySpecified`는 [mainFields](/configuration/resolve/#resolvemainfields), [aliasFields](/configuration/resolve/#resolvealiasfields) 또는 [aliases](/configuration/resolve/#resolvealias)의 요청에 영향을 주지 않습니다.
 
-## `Condition`
+## Condition
 
 Condition은 아래 항목중의 하나가 됩니다.
 
@@ -1011,7 +1011,7 @@ module.exports = {
 };
 ```
 
-## `UseEntry`
+## UseEntry
 
 `object` `function(info)`
 

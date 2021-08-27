@@ -39,18 +39,18 @@ webpack 및 CLI를 아직 설치하지 않은 경우 [설치 가이드](/guides/
 
 webpack-cli는 webpack을 더 쉽게 사용할 수 있도록 다양한 명령을 제공합니다. 기본적으로 webpack은 다음과 같은 명령어를 제공합니다.
 
-| 명령어                                | 사용법                                                | 설명                                                                       |
-| ------------------------------------- | ----------------------------------------------------- | -------------------------------------------------------------------------- |
-| [`build`](#build)                     | `build\|bundle\|b [entries...] [options]`             | webpack을 실행합니다. (기본 명령어, 생략 가능).                            |
-| [`configtest`](#configtest)           | `configtest\|t [config-path]`                         | webpack 설정을 검증합니다.                                                 |
-| [`help`](#help)                       | `help\|h [command] [option]`                          | 명렁어 및 옵션에 대한 도움말을 표시합니다.                                 |
-| [`info`](#info)                       | `info\|i [options]`                                   | 시스템 정보를 출력합니다.                                                  |
-| [`init`](#init)                       | `init\|create\|c\|new\|n [generation-path] [options]` | 새로운 webpack 프로젝트를 초기화합니다.                                    |
-| `loader`                              | `loader\|l [output-path] [options]`                   | 로더를 스캐폴드합니다.                                                     |
-| `plugin`                              | `plugin\|p [output-path] [options]`                   | 플러그인을 스캐폴드합니다.                                                 |
-| [`serve`](/configuration/dev-server/) | `serve\|server\|s [options]`                          | `webpack-dev-server`를 실행합니다.                                         |
-| [`version`](#version)                 | `version\|v [commands...]`                            | `webpack`, `webpack-cli` 및 `webpack-dev-server`의 버전 넘버를 출력합니다. |
-| [`watch`](#watch)                     | `watch\|w [entries...] [options]`                     | webpack을 실행하고 파일 변경을 감지합니다.                                 |
+| 명령어                      | 사용법        | 설명                                           |
+| --------------------------- | ------------- | ---------------------------------------------- | -------------------------------------------------------------------------- |
+| [`build`](#build)           | `build\       | bundle\|b [entries...] [options]`              | webpack을 실행합니다. (기본 명령어, 생략 가능).                            |
+| [`configtest`](#configtest) | `configtest\  | t [config-path]`                               | webpack 설정을 검증합니다.                                                 |
+| [`help`](#help)             | `help\        | h [command] [option]`                          | 명렁어 및 옵션에 대한 도움말을 표시합니다.                                 |
+| [`info`](#info)             | `info\        | i [options]`                                   | 시스템 정보를 출력합니다.                                                  |
+| [`init`](#init)             | `init\        | create\|c\|new\|n [generation-path] [options]` | 새로운 webpack 프로젝트를 초기화합니다.                                    |
+| `loader`(#loader)           | `loader\      | l [output-path] [options]`                     | 로더를 스캐폴드합니다.                                                     |
+| `plugin`(#plugin)           | `plugin\      | p [output-path] [options]`                     | 플러그인을 스캐폴드합니다.                                                 |
+| [`serve`](#serve)           | `serve\       | server\|s [options]`                           | `webpack-dev-server`를 실행합니다.                                         |
+| [`version`](#version)       | `version\     | v [commands...]`                               | `webpack`, `webpack-cli` 및 `webpack-dev-server`의 버전 넘버를 출력합니다. |
+| [`watch`](#watch)           | `watch\       | w [entries...] [options]`                      | webpack을 실행하고 파일 변경을 감지합니다.                                 |
 
 ### Build
 
@@ -100,6 +100,58 @@ npx webpack init ./my-app --force --template=default
 
 T> [`webpack init` 명령의 전체 문서](https://github.com/webpack/webpack-cli/blob/master/packages/generators/INIT.md)를 참고하세요.
 
+### Loader
+
+로더를 스캐폴드합니다.
+
+```bash
+npx webpack loader [output-path] [options]
+```
+
+**example**
+
+```bash
+npx webpack loader ./my-loader --template=default
+```
+
+#### Output Path
+
+출력 디렉토리 경로, 예) `./loader-name`.
+
+#### Options
+
+**`-t`, `--template`**
+
+`string = 'default'`
+
+템플릿의 유형입니다.
+
+### Plugin
+
+플러그인을 스캐폴드합니다.
+
+```bash
+npx webpack plugin [output-path] [options]
+```
+
+**example**
+
+```bash
+npx webpack plugin ./my-loader --template=default
+```
+
+#### Output Path
+
+출력 디렉토리 경로, 예) `./plugin-name`.
+
+#### Options
+
+**`-t`, `--template`**
+
+`string = 'default'`
+
+템플릿의 유형입니다.
+
 ### Info
 
 시스템에 대한 정보를 출력합니다.
@@ -139,6 +191,22 @@ npx webpack configtest ./webpack.config.js
 #### Config Path
 
 webpack 설정 파일의 경로입니다. 기본값은 `./webpack.config.js`입니다.
+
+### Serve
+
+webpack dev server를 실행합니다.
+
+```bash
+npx webpack serve [options]
+```
+
+**example**
+
+```bash
+npx webpack serve --static --open
+```
+
+T> [`webpack serve` 명령에 대한 전체 옵션 목록](https://github.com/webpack/webpack-cli/blob/master/SERVE-OPTIONS-v4.md) 및 [webpack-dev-server 관련 문서](/configuration/dev-server)를 참고하세요.
 
 ### Watch
 
@@ -609,4 +677,19 @@ npx webpack
 
 ```bash
 WEBPACK_PACKAGE=webpack-5 npx webpack
+```
+
+## Troubleshooting
+
+### TypeError [ERR_UNKNOWN_FILE_EXTENSION]: Unknown file extension ".ts" for ./webpack.config.ts
+
+You might encounter this error in the case of using native ESM in TypeScript (i.e. `type: "module"` in `package.json`).
+
+`webpack-cli` supports configuration in both `CommonJS` and `ESM` format, at first it tries to load a configuration using `require()`, once it fails with an error code of `'ERR_REQUIRE_ESM'` (a special code for this case) it would try to load the configuration using `import()`.
+However, the `import()` method won't work with `ts-node` without [loader hooks](https://nodejs.org/api/esm.html#esm_experimental_loaders) enabled (described at [`TypeStrong/ts-node#1007`](https://github.com/TypeStrong/ts-node/issues/1007)).
+
+To fix the error above use the following command:
+
+```bash
+NODE_OPTIONS="--loader ts-node/esm" npx webpack --entry ./src/index.js --mode production
 ```

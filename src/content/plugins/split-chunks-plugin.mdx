@@ -37,7 +37,7 @@ webpack v4부터 `optimization.splitChunks`를 위해 `CommonsChunkPlugin`은 �
 
 초기 청크를 변경하면 HTML 파일이 프로젝트를 실행하기 위해 포함해야 하는 스크립트 태그에 영향을 미치기 때문에 기본적으로 on-demand 청크에만 영향을 미칩니다.
 
-webpack은 다음 조건에 따라 자동으로 청크를 분할합니다.
+Webpack은 다음 조건에 따라 자동으로 청크를 분할합니다.
 
 - 새 청크를 공유 할 수 있거나 모듈이 `node_modules` 폴더에 있는 경우
 - 새 청크가 20kb보다 클 경우(min+gz 이전에)
@@ -48,11 +48,11 @@ webpack은 다음 조건에 따라 자동으로 청크를 분할합니다.
 
 ## Configuration
 
-webpack은 이 기능에 대한 더 많은 제어를 원하는 개발자를 위해 옵션 세트를 제공합니다.
+Webpack은 이 기능에 대한 더 많은 제어를 원하는 개발자를 위해 옵션 세트를 제공합니다.
 
 W> 웹 성능 모범 사례에 맞게 기본 설정이 선택되어 있지만, 프로젝트에 대한 최적의 전략은 다를 수 있습니다. 설정을 변경하는 경우 실제 이점이 있는지 확인하기 위해 변경 사항의 영향을 측정해야 합니다.
 
-## `optimization.splitChunks`
+## optimization.splitChunks
 
 이 설정 객체는 `SplitChunksPlugin`의 기본 동작을 나타냅니다.
 
@@ -91,13 +91,13 @@ W> webpack에서 파일 경로를 처리할 때 항상 Unix 시스템에서는 `
 
 W> webpack 5부터 `{cacheGroup}.test`에 엔트리 이름을 전달하고 `{cacheGroup}.name`에 기존 청크 이름을 사용하는 것은 더는 허용되지 않습니다.
 
-### `splitChunks.automaticNameDelimiter`
+### splitChunks.automaticNameDelimiter
 
 `string = '~'`
 
 기본적으로 webpack은 출처와 청크 이름을 사용하여 이름을 생성합니다(예: `vendors~main.js`). 이 옵션을 사용하면 생성된 이름에 사용할 구분 기호를 지정할 수 있습니다.
 
-### `splitChunks.chunks`
+### splitChunks.chunks
 
 `string = 'async'` `function (chunk)`
 
@@ -135,43 +135,43 @@ module.exports = {
 
 T> 이 설정을 [HtmlWebpackPlugin](/plugins/html-webpack-plugin/)과 결합할 수 있습니다. 이는 생성 된 모든 vendor 청크를 주입합니다.
 
-### `splitChunks.maxAsyncRequests`
+### splitChunks.maxAsyncRequests
 
 `number = 30`
 
 on-demand 로드 시의 최대 병렬 요청 수입니다.
 
-### `splitChunks.maxInitialRequests`
+### splitChunks.maxInitialRequests
 
 `number = 30`
 
 엔트리 포인트의 최대 병렬 요청 수입니다.
 
-### `splitChunks.defaultSizeTypes`
+### splitChunks.defaultSizeTypes
 
 `[string] = ['javascript', 'unknown']`
 
 크기에 숫자를 사용할 때 적용되는 크기 유형을 설정합니다.
 
-### `splitChunks.minChunks`
+### splitChunks.minChunks
 
 `number = 1`
 
 모듈이 분할 전에 청크간에 공유되어야 하는 최소 시간입니다.
 
-### `splitChunks.hidePathInfo`
+### splitChunks.hidePathInfo
 
 `boolean`
 
 maxSize로 분할된 부분의 이름을 만들 때 경로 정보가 노출되지 않도록 합니다.
 
-### `splitChunks.minSize`
+### splitChunks.minSize
 
 `number = 20000`
 
 생성할 청크의 최소 byte 크기입니다.
 
-### `splitChunks.enforceSizeThreshold`
+### splitChunks.enforceSizeThreshold
 
 #### `splitChunks.cacheGroups.{cacheGroup}.enforceSizeThreshold`
 
@@ -179,7 +179,7 @@ maxSize로 분할된 부분의 이름을 만들 때 경로 정보가 노출되�
 
 분할이 적용되고 기타 제한(minRemainingSize, maxAsyncRequests, maxInitialRequests)이 무시되는 임계 크기 값입니다.
 
-### `splitChunks.minRemainingSize`
+### splitChunks.minRemainingSize
 
 #### `splitChunks.cacheGroups.{cacheGroup}.minRemainingSize`
 
@@ -189,7 +189,7 @@ maxSize로 분할된 부분의 이름을 만들 때 경로 정보가 노출되�
 
 W> `splitChunks.minRemainingSize`는 단일 청크가 남아있을 때만 적용됩니다.
 
-### `splitChunks.layer`
+### splitChunks.layer
 
 #### `splitChunks.cacheGroups.{cacheGroup}.layer`
 
@@ -197,7 +197,7 @@ W> `splitChunks.minRemainingSize`는 단일 청크가 남아있을 때만 적용
 
 모듈 계층별로 캐시 그룹에 모듈을 할당합니다.
 
-### `splitChunks.maxSize`
+### splitChunks.maxSize
 
 `number = 0`
 
@@ -212,7 +212,7 @@ T> `maxSize`는 `maxInitialRequest/maxAsyncRequests`보다 우선순위가 높�
 
 T> `maxSize` 값을 설정하면 `maxAsyncSize` 및 `maxInitialSize` 값이 모두 설정됩니다.
 
-### `splitChunks.maxAsyncSize`
+### splitChunks.maxAsyncSize
 
 `number`
 
@@ -220,7 +220,7 @@ T> `maxSize` 값을 설정하면 `maxAsyncSize` 및 `maxInitialSize` 값이 모�
 
 `maxAsyncSize`와 `maxSize`의 차이점은 `maxAsyncSize`가 on-demand 로딩 청크에만 영향을 미친다는 점입니다.
 
-### `splitChunks.maxInitialSize`
+### splitChunks.maxInitialSize
 
 `number`
 
@@ -228,7 +228,7 @@ T> `maxSize` 값을 설정하면 `maxAsyncSize` 및 `maxInitialSize` 값이 모�
 
 `maxInitialSize`와 `maxSize`의 차이점은 `maxInitialSize`가 초기 로딩 청크 에만 영향을 미친다는 것입니다.
 
-### `splitChunks.name`
+### splitChunks.name
 
 `boolean = false` `function (module, chunks, cacheGroupKey) => string` `string`
 
@@ -281,7 +281,7 @@ module.exports = {
 
 W> 다른 분할 청크에 동일한 이름을 할당할 때 모든 vendor 모듈은 단일 공유 청크에 배치되지만, 더 많은 코드가 다운로드될 수 있으므로 권장하지 않습니다.
 
-### `splitChunks.usedExports`
+### splitChunks.usedExports
 
 #### `splitChunks.cacheGroups{cacheGroup}.usedExports`
 
@@ -290,7 +290,7 @@ W> 다른 분할 청크에 동일한 이름을 할당할 때 모든 vendor 모�
 모듈이 export 할 파일의 이름을 수정(mangle)하고 사용하지 않는 export를 생략하고 보다 효율적인 코드를 생성하기 위해 어떤 export를 사용하는지 알아봅니다.
 `true`인 경우 각 런타임에 대해 사용된 export를 분석하고, `"global"`인 경우 결합한 모든 런타임에 대해 전역적으로 export를 분석합니다.
 
-### `splitChunks.cacheGroups`
+### splitChunks.cacheGroups
 
 캐시 그룹은 `splitChunks.*`의 모든 옵션을 상속 및(또는) 재정의할 수 있습니다. 그러나 `test`, `priority` 및 `reuseExistingChunk`는 캐시 그룹 수준에서만 구성할 수 있습니다. 기본 캐시 그룹을 비활성화하려면 `false`로 설정하세요.
 
@@ -361,7 +361,7 @@ module.exports = {
 };
 ```
 
-#### `splitChunks.cacheGroups.test`
+#### splitChunks.cacheGroups.test
 
 #### `splitChunks.cacheGroups.{cacheGroup}.test`
 

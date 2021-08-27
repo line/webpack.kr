@@ -42,19 +42,19 @@ compiler.hooks.someHook.tap('MyPlugin', (params) => {
 
 훅 타입에 대한 설명은 [Tapable 문서](https://github.com/webpack/tapable#tapable)를 참고하세요.
 
-### `environment`
+### environment
 
 `SyncHook`
 
 설정 파일에서 플러그인을 초기화한 직후, 컴파일러 환경을 준비하는 동안 호출됩니다.
 
-### `afterEnvironment`
+### afterEnvironment
 
 `SyncHook`
 
 컴파일러 환경 설정이 완료된 때인 `environment` 훅 바로 뒤에 호출됩니다.
 
-### `entryOption`
+### entryOption
 
 `SyncBailHook`
 
@@ -68,7 +68,7 @@ compiler.hooks.entryOption.tap('MyPlugin', (context, entry) => {
 });
 ```
 
-### `afterPlugins`
+### afterPlugins
 
 `SyncHook`
 
@@ -76,7 +76,7 @@ compiler.hooks.entryOption.tap('MyPlugin', (context, entry) => {
 
 - 콜백 파라미터: `compiler`
 
-### `afterResolvers`
+### afterResolvers
 
 `SyncHook`
 
@@ -84,13 +84,13 @@ compiler.hooks.entryOption.tap('MyPlugin', (context, entry) => {
 
 - 콜백 파라미터: `compiler`
 
-### `initialize`
+### initialize
 
 `SyncHook`
 
 컴파일러 객체가 초기화될 때 호출됩니다.
 
-### `beforeRun`
+### beforeRun
 
 `AsyncSeriesHook`
 
@@ -98,7 +98,7 @@ compiler.hooks.entryOption.tap('MyPlugin', (context, entry) => {
 
 - 콜백 파라미터: `compiler`
 
-### `run`
+### run
 
 `AsyncSeriesHook`
 
@@ -106,7 +106,7 @@ compiler.hooks.entryOption.tap('MyPlugin', (context, entry) => {
 
 - 콜백 파라미터: `compiler`
 
-### `watchRun`
+### watchRun
 
 `AsyncSeriesHook`
 
@@ -114,7 +114,7 @@ compiler.hooks.entryOption.tap('MyPlugin', (context, entry) => {
 
 - 콜백 파라미터: `compiler`
 
-### `normalModuleFactory`
+### normalModuleFactory
 
 `SyncHook`
 
@@ -122,7 +122,7 @@ compiler.hooks.entryOption.tap('MyPlugin', (context, entry) => {
 
 - 콜백 파라미터: `normalModuleFactory`
 
-### `contextModuleFactory`
+### contextModuleFactory
 
 `SyncHook`
 
@@ -130,7 +130,7 @@ compiler.hooks.entryOption.tap('MyPlugin', (context, entry) => {
 
 - 콜백 파라미터: `contextModuleFactory`
 
-### `beforeCompile`
+### beforeCompile
 
 `AsyncSeriesHook`
 
@@ -156,7 +156,7 @@ compiler.hooks.beforeCompile.tapAsync('MyPlugin', (params, callback) => {
 });
 ```
 
-### `compile`
+### compile
 
 `SyncHook`
 
@@ -164,7 +164,7 @@ compiler.hooks.beforeCompile.tapAsync('MyPlugin', (params, callback) => {
 
 - 콜백 파라미터: `compilationParams`
 
-### `thisCompilation`
+### thisCompilation
 
 `SyncHook`
 
@@ -172,7 +172,7 @@ compiler.hooks.beforeCompile.tapAsync('MyPlugin', (params, callback) => {
 
 - 콜백 파라미터: `compilation`, `compilationParams`
 
-### `compilation`
+### compilation
 
 `SyncHook`
 
@@ -180,7 +180,7 @@ compiler.hooks.beforeCompile.tapAsync('MyPlugin', (params, callback) => {
 
 - 콜백 파라미터: `compilation`, `compilationParams`
 
-### `make`
+### make
 
 `AsyncParallelHook`
 
@@ -188,7 +188,7 @@ compiler.hooks.beforeCompile.tapAsync('MyPlugin', (params, callback) => {
 
 - 콜백 파라미터: `compilation`
 
-### `afterCompile`
+### afterCompile
 
 `AsyncSeriesHook`
 
@@ -196,7 +196,7 @@ compiler.hooks.beforeCompile.tapAsync('MyPlugin', (params, callback) => {
 
 - 콜백 파라미터: `compilation`
 
-### `shouldEmit`
+### shouldEmit
 
 `SyncBailHook`
 
@@ -211,7 +211,7 @@ compiler.hooks.shouldEmit.tap('MyPlugin', (compilation) => {
 });
 ```
 
-### `emit`
+### emit
 
 `AsyncSeriesHook`
 
@@ -219,7 +219,7 @@ compiler.hooks.shouldEmit.tap('MyPlugin', (compilation) => {
 
 - 콜백 파라미터: `compilation`
 
-### `afterEmit`
+### afterEmit
 
 `AsyncSeriesHook`
 
@@ -227,7 +227,7 @@ compiler.hooks.shouldEmit.tap('MyPlugin', (compilation) => {
 
 - 콜백 파라미터: `compilation`
 
-### `assetEmitted`
+### assetEmitted
 
 `AsyncSeriesHook`
 
@@ -246,7 +246,7 @@ compiler.hooks.assetEmitted.tap(
 );
 ```
 
-### `done`
+### done
 
 `AsyncSeriesHook`
 
@@ -254,13 +254,13 @@ compiler.hooks.assetEmitted.tap(
 
 - 콜백 파라미터: `stats`
 
-### `additionalPass`
+### additionalPass
 
 `AsyncSeriesHook`
 
 이 훅을 사용하면 빌드를 한 번 더 추가할 수 있습니다.
 
-### `failed`
+### failed
 
 `SyncHook`
 
@@ -268,7 +268,7 @@ compiler.hooks.assetEmitted.tap(
 
 - 콜백 파라미터: `error`
 
-### `invalid`
+### invalid
 
 `SyncHook`
 
@@ -276,13 +276,13 @@ compiler.hooks.assetEmitted.tap(
 
 - 콜백 파라미터: `fileName`, `changeTime`
 
-### `watchClose`
+### watchClose
 
 `SyncHook`
 
 감시중인 컴파일이 중지되었을 때 호출됩니다.
 
-### `infrastructureLog`
+### infrastructureLog
 
 `SyncBailHook`
 
@@ -290,7 +290,7 @@ compiler.hooks.assetEmitted.tap(
 
 - 콜백 파라미터: `name`, `type`, `args`
 
-### `log`
+### log
 
 `SyncBailHook`
 

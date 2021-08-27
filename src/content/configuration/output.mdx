@@ -102,7 +102,7 @@ module.exports = {
 };
 ```
 
-## `output.charset`
+## output.charset
 
 `boolean = true`
 
@@ -110,7 +110,7 @@ webpack이 HTML의 `<script>` 태그에 `charset="utf-8"`을 추가하도록 합
 
 T> `<script>`태그의 `charset`속성이 [지원 중단](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#Deprecated_attributes)된 상태지만 최신이 아닌 브라우저와의 호환성을 위해 webpack은 여전히 charset을 기본적으로 추가합니다.
 
-## `output.chunkFilename`
+## output.chunkFilename
 
 `string = '[id].js'` `function (pathData, assetInfo) => string`
 
@@ -165,7 +165,7 @@ module.exports = {
 };
 ```
 
-## `output.chunkLoadTimeout`
+## output.chunkLoadTimeout
 
 `number = 120000`
 
@@ -183,7 +183,7 @@ module.exports = {
 };
 ```
 
-## `output.chunkLoadingGlobal`
+## output.chunkLoadingGlobal
 
 `string = 'webpackChunkwebpack'`
 
@@ -306,7 +306,7 @@ module.exports = {
 - `'anonymous'` - **자격 증명 없이** cross-origin 활성화
 - `'use-credentials'` - **자격 증명과 함께** cross-origin 활성화
 
-## `output.devtoolFallbackModuleFilenameTemplate`
+## output.devtoolFallbackModuleFilenameTemplate
 
 `string` `function (info)`
 
@@ -314,7 +314,7 @@ module.exports = {
 
 [`output.devtoolModuleFilenameTemplate`](#outputdevtoolmodulefilenametemplate)을 참고하세요.
 
-## `output.devtoolModuleFilenameTemplate`
+## output.devtoolModuleFilenameTemplate
 
 `string = 'webpack://[namespace]/[resource-path]?[loaders]'` `function (info) => string`
 
@@ -362,7 +362,7 @@ module.exports = {
 
 여러 모듈의 이름이 동일한 경우 [`output.devtoolFallbackModuleFilenameTemplate`](#outputdevtoolfallbackmodulefilenametemplate)이 대신 사용됩니다.
 
-## `output.devtoolNamespace`
+## output.devtoolNamespace
 
 `string`
 
@@ -648,7 +648,7 @@ module.exports = {
 };
 ```
 
-## `output.globalObject`
+## output.globalObject
 
 `string = 'window'`
 
@@ -670,19 +670,19 @@ module.exports = {
 };
 ```
 
-## `output.hashDigest`
+## output.hashDigest
 
 `string = 'hex'`
 
 해시를 생성할 때 사용하는 인코딩입니다. Node.JS의 모든 인코딩 [`hash.digest`](https://nodejs.org/api/crypto.html#crypto_hash_digest_encoding)가 지원됩니다. 파일 이름에`'base64'`를 사용하면 알파벳에 `/` 문자가 있으므로 문제가 될 수 있습니다. 마찬가지로`'latin1'`은 모든 문자를 포함 할 수 있습니다.
 
-## `output.hashDigestLength`
+## output.hashDigestLength
 
 `number = 20`
 
 사용할 해시 다이제스트의 접두사 길이입니다.
 
-## `output.hashFunction`
+## output.hashFunction
 
 `string = 'md4'` `function`
 
@@ -699,11 +699,11 @@ module.exports = {
 
 해싱 함수에서 `update` 및 `digest` 메소드를 사용할 수 있는지 확인하세요.
 
-## `output.hashSalt`
+## output.hashSalt
 
 Node.JS의 [`hash.update`](https://nodejs.org/api/crypto.html#crypto_hash_update_data_inputencoding)를 통해 해시를 업데이트하기 위해 선택적으로 사용할 수 있는 솔트입니다.
 
-## `output.hotUpdateChunkFilename`
+## output.hotUpdateChunkFilename
 
 `string = '[id].[fullhash].hot-update.js'`
 
@@ -724,7 +724,7 @@ module.exports = {
 
 T> 일반적으로 `output.hotUpdateChunkFilename`을 변경할 필요가 없습니다.
 
-## `output.hotUpdateGlobal`
+## output.hotUpdateGlobal
 
 `string`
 
@@ -734,7 +734,7 @@ T> 일반적으로 `output.hotUpdateChunkFilename`을 변경할 필요가 없습
 
 자세한 정보는 [`output.chunkLoadingGlobal`](#outputchunkloadingglobal)을 참고하세요.
 
-## `output.hotUpdateMainFilename`
+## output.hotUpdateMainFilename
 
 `string = '[runtime].[fullhash].hot-update.json'` `function`
 
@@ -914,7 +914,7 @@ module.exports = {
 
 이 옵션은 번들이 포함된 범위에서 [`output.library.name`](#outputlibraryname)이 제공한 이름에 엔트리 포인트의 반환 값(export한 엔트리 포인트에 관계없이)을 할당합니다.
 
-##### `type: 'var'`
+##### type: 'var'
 
 ```js
 module.exports = {
@@ -937,7 +937,7 @@ var MyLibrary = _entry_return_;
 MyLibrary.doSomething();
 ```
 
-##### `type: 'assign'`
+##### type: 'assign'
 
 ```js
 module.exports = {
@@ -959,7 +959,7 @@ MyLibrary = _entry_return_;
 
 `MyLibrary`가 이전에 정의되지 않은 경우 라이브러리는 전역 범위로 설정됩니다.
 
-##### `type: 'assign-properties'` <Badge text='5.16.0+' />
+##### type: 'assign-properties' <Badge text='5.16.0+' />
 
 ```js
 module.exports = {
@@ -995,7 +995,7 @@ MyLibrary.hello('World');
 
 이 옵션은 [`output.library.name`](#outputlibraryname)에 정의된 이름 아래의 특정 객체에 엔트리 포인트의 반환 값(export한 엔트리 포인트에 관계없이)을 할당합니다.
 
-##### `type: 'this'`
+##### type: 'this'
 
 ```js
 module.exports = {
@@ -1019,7 +1019,7 @@ this.MyLibrary.doSomething();
 MyLibrary.doSomething(); // `this`가 window인 경우
 ```
 
-##### `type: 'window'`
+##### type: 'window'
 
 ```js
 module.exports = {
@@ -1041,7 +1041,7 @@ window['MyLibrary'] = _entry_return_;
 window.MyLibrary.doSomething();
 ```
 
-##### `type: 'global'`
+##### type: 'global'
 
 ```js
 module.exports = {
@@ -1063,7 +1063,7 @@ global['MyLibrary'] = _entry_return_;
 global.MyLibrary.doSomething();
 ```
 
-##### `type: 'commonjs'`
+##### type: 'commonjs'
 
 ```js
 module.exports = {
@@ -1091,7 +1091,7 @@ W> `output.library.name`을 설정하지 않으면 엔트리 포인트에서 반
 
 이 옵션은 다양한 모듈 시스템과의 호환성을 보장하기 위한 헤더와 함께 제공되는 번들을 생성합니다. `output.library.name`은 `output.library.type`에서 다른 의미를 갖습니다.
 
-##### `type: 'module'`
+##### type: 'module'
 
 ```js
 module.exports = {
@@ -1112,7 +1112,7 @@ ES 모듈을 출력합니다.
 
 그러나 이 기능은 아직 실험적이며 완전히 지원되지 않으므로 [experiments.outputModule](/configuration/experiments/)을 활성화해야 합니다. 또한 [이 스레드](https://github.com/webpack/webpack/issues/2933#issuecomment-774253975)에서 개발 진행 상황을 추적할 수 있습니다.
 
-##### `type: 'commonjs2'`
+##### type: 'commonjs2'
 
 ```js
 module.exports = {
@@ -1138,7 +1138,7 @@ require('MyLibrary').doSomething();
 
 T> CommonJS와 CommonJS2의 차이점이 궁금하신가요? 비슷하지만 webpack과 관련이 없는 부분에서 약간의 차이가 있습니다. 자세한 내용은 [이 이슈](https://github.com/webpack/webpack/issues/1114)를 참고하세요.
 
-##### `type: 'amd'`
+##### type: 'amd'
 
 라이브러리를 AMD 모듈로 내보냅니다.
 
@@ -1184,7 +1184,7 @@ define(function () {
 
 이 번들은 예상대로 작동하지 않거나 almond 로더의 경우 `<script>`태그를 사용하여 직접 로드했을 때 전혀 작동하지 않습니다. 해당 파일의 실제 경로를 통해 RequireJS 호환 비동기 모듈 로더를 통해서만 작동하므로, 이 경우 `output.path` 및 `output.filename`이 서버에 직접 노출되는 경우 특정 설정에서 중요할 수 있습니다.
 
-##### `type: 'amd-require'`
+##### type: 'amd-require'
 
 ```javascript
 module.exports = {
@@ -1204,7 +1204,7 @@ module.exports = {
 
 이 타입에서는 라이브러리 이름을 사용할 수 없습니다.
 
-##### `type: 'umd'`
+##### type: 'umd'
 
 이렇게 하면 모든 모듈 정의 아래에 라이브러리가 내보내져서 CommonJS, AMD 및 전역 변수와 함께 작동 할 수 있습니다. 자세한 내용은 [UMD Repository](https://github.com/umdjs/umd)를 참고하세요.
 
@@ -1281,7 +1281,7 @@ module.exports = {
 };
 ```
 
-##### `type: 'system'`
+##### type: 'system'
 
 라이브러리를 [`System.register`](https://github.com/systemjs/systemjs/blob/master/docs/system-register.md)모듈로 내보냅니다. 이 기능은 [webpack 4.30.0](https://github.com/webpack/webpack/releases/tag/v4.30.0)에서 처음 출시되었습니다.
 
@@ -1328,7 +1328,7 @@ System.register(
 
 #### Other Types
 
-##### `type: 'jsonp'`
+##### type: 'jsonp'
 
 ```js
 module.exports = {
@@ -1485,7 +1485,7 @@ AMD 모듈은 다음과 같습니다.
 define('MyLibrary', [], factory);
 ```
 
-## `output.libraryExport`
+## output.libraryExport
 
 W> 지원을 중단 할 수 있으므로 `libraryExport`와 동일하게 작동하는 [output.library.export](#outputlibraryexport)를 사용하는 것이 좋습니다.
 
@@ -1536,7 +1536,7 @@ T> 아래 예제 코드에서 `_entry_return_`은 엔트리 포인트에서 반�
 
 이 옵션은 번들이 포함된 모든 범위에서 [`output.library`](#outputlibrary)에서 제공한 이름에 엔트리 포인트의 반환 값을 할당합니다.
 
-#### `libraryTarget: 'var'`
+#### libraryTarget: 'var'
 
 W> [`output.library.type: 'var'`](#type-var)를 사용하는 것이 좋습니다.
 
@@ -1549,7 +1549,7 @@ var MyLibrary = _entry_return_;
 MyLibrary.doSomething();
 ```
 
-#### `libraryTarget: 'assign'`
+#### libraryTarget: 'assign'
 
 W> [`output.library.type: 'assign'`](#type-assign)을 사용하는 것이 좋습니다.
 
@@ -1561,7 +1561,7 @@ MyLibrary = _entry_return_;
 
 `MyLibrary`가 이전에 정의되지 않은 경우 라이브러리는 전역 범위로 설정됩니다.
 
-#### `libraryTarget: 'assign-properties'` <Badge text='5.16.0+' />
+#### libraryTarget: 'assign-properties' <Badge text='5.16.0+' />
 
 W> [output.library.type: 'assign-properties'`](#type-assign-properties)를 사용하는 것이 좋습니다.
 
@@ -1601,7 +1601,7 @@ W> [`output.library`](#outputlibrary)에 빈 문자열은 유효하지 않습니
 
 W> `output.library`를 설정하지 않으면 엔트리 포인트에서 반환한 모든 프로퍼티가 객체에 할당됩니다. 존재하는 프로퍼티 이름에 대한 검사는 하지 않습니다.
 
-#### `libraryTarget: 'this'`
+#### libraryTarget: 'this'
 
 W> [`output.library.type: 'this'`](#type-this)를 사용하는 것이 좋습니다.
 
@@ -1615,7 +1615,7 @@ this.MyLibrary.doSomething();
 MyLibrary.doSomething(); // this가 window인 경우
 ```
 
-#### `libraryTarget: 'window'`
+#### libraryTarget: 'window'
 
 W> [`output.library.type: 'window'`](#type-window)를 사용하는 것이 좋습니다.
 
@@ -1627,7 +1627,7 @@ window['MyLibrary'] = _entry_return_;
 window.MyLibrary.doSomething();
 ```
 
-#### `libraryTarget: 'global'`
+#### libraryTarget: 'global'
 
 W> [`output.library.type: 'global'`](#type-global)을 사용하는 것이 좋습니다.
 
@@ -1639,7 +1639,7 @@ global['MyLibrary'] = _entry_return_;
 global.MyLibrary.doSomething();
 ```
 
-#### `libraryTarget: 'commonjs'`
+#### libraryTarget: 'commonjs'
 
 W> [`output.library.type: 'commonjs'`](#type-commonjs)를 사용하는 것이 좋습니다.
 
@@ -1655,7 +1655,7 @@ require('MyLibrary').doSomething();
 
 이 옵션은 다양한 모듈 시스템과의 호환성을 보장하기 위해 헤더와 함께 제공되는 번들을 생성합니다. `output.library`는 `output.libraryTarget`에서 다른 의미를 갖습니다.
 
-#### `libraryTarget: 'module'`
+#### libraryTarget: 'module'
 
 W> [`output.library.type: 'module'`](#type-module)을 사용하는 것이 좋습니다.
 
@@ -1663,7 +1663,7 @@ ES 모듈을 출력합니다. 미리 [experiments.outputModule](/configuration/e
 
 이 기능은 아직 완전히 지원되지 않습니다. [이 스레드](https://github.com/webpack/webpack/issues/2933#issuecomment-774253975)에서 진행 상황을 추적하세요.
 
-#### `libraryTarget: 'commonjs2'`
+#### libraryTarget: 'commonjs2'
 
 W> [`output.library.type: 'commonjs2'`](#type-commonjs2)를 사용하는 것이 좋습니다.
 
@@ -1679,7 +1679,7 @@ require('MyLibrary').doSomething();
 
 T> CommonJS와 CommonJS2의 차이점이 궁금하신가요? 비슷하지만 webpack과 관련이 없는 약간의 차이가 있습니다. 자세한 내용은 [이 이슈](https://github.com/webpack/webpack/issues/1114)를 참고하세요.
 
-#### `libraryTarget: 'amd'`
+#### libraryTarget: 'amd'
 
 W> [`output.library.type: 'amd'`](#type-amd)를 사용하는 것이 좋습니다.
 
@@ -1725,7 +1725,7 @@ define([], function () {
 
 이 번들은 예상대로 작동하지 않거나 almond 로더의 경우 `<script>`태그를 사용하여 직접 로드했을 때 전혀 작동하지 않습니다. 해당 파일의 실제 경로를 통해 RequireJS 호환 비동기 모듈 로더를 통해서만 작동하므로, 이 경우 `output.path` 및 `output.filename`이 서버에 직접 노출되는 경우 특정 설정에서 중요할 수 있습니다.
 
-#### `libraryTarget: 'amd-require'`
+#### libraryTarget: 'amd-require'
 
 W> [`output.library.type: 'amd-require'`](#type-amd-require)를 사용하는 것이 좋습니다.
 
@@ -1735,7 +1735,7 @@ W> [`output.library.type: 'amd-require'`](#type-amd-require)를 사용하는 것
 
 `'amd-require'`를 사용하면 라이브러리 이름이 무시됩니다.
 
-#### `libraryTarget: 'umd'`
+#### libraryTarget: 'umd'
 
 W> [`output.library.type: 'umd'`](#type-umd)를 사용하는 것이 좋습니다.
 
@@ -1810,7 +1810,7 @@ module.exports = {
 };
 ```
 
-#### `libraryTarget: 'system'`
+#### libraryTarget: 'system'
 
 W> [`output.library.type: 'system'`](#type-system)을 사용하는 것이 좋습니다.
 
@@ -1867,7 +1867,7 @@ __system_context__.import('./other-file.js').then((m) => {
 
 ### Other Targets
 
-#### `libraryTarget: 'jsonp'`
+#### libraryTarget: 'jsonp'
 
 W> [`output.library.type: 'jsonp'`](#type-jsonp)를 사용하는 것이 좋습니다.
 
@@ -1903,7 +1903,7 @@ module.exports = {
 
 W> `output.module`은 실험적 기능이며 [`experiments.outputModule`](/configuration/experiments/#experiments)을 `true`로 설정해야만 활성화 할 수 있습니다.
 
-## `output.path`
+## output.path
 
 `string = path.join(process.cwd(), 'dist')`
 
@@ -1924,7 +1924,7 @@ module.exports = {
 
 이 파라미터의 `[fullhash]`는 컴파일의 해시로 대체됩니다. 자세한 내용은 [캐싱 가이드](/guides/caching/)를 참고하세요.
 
-## `output.pathinfo`
+## output.pathinfo
 
 `boolean=true` `string: 'verbose'`
 
@@ -1945,7 +1945,7 @@ module.exports = {
 
 T> 또한 생성된 번들에 트리 쉐이킹에 대한 정보를 추가합니다.
 
-## `output.publicPath`
+## output.publicPath
 
 `string` `function`
 
@@ -2050,7 +2050,7 @@ module.exports = {
 };
 ```
 
-## `output.sourceMapFilename`
+## output.sourceMapFilename
 
 `string = '[file].map[query]'`
 
@@ -2058,7 +2058,7 @@ module.exports = {
 
 [`output.filename`](#outputfilename)의 `[name]`, `[id]`, `[fullhash]` 그리고 `[chunkhash]` substitution을 사용할 수 있습니다. 그 외에도 [템플릿 문자열](/configuration/output/#template-strings)의 파일 이름 수준 아래에 나열된 substitution을 사용할 수 있습니다.
 
-## `output.sourcePrefix`
+## output.sourcePrefix
 
 `string = ''`
 
@@ -2130,7 +2130,7 @@ require('module'); // <- 예외 발생
 require('module'); // <- 예외 발생
 ```
 
-## `output.trustedTypes`
+## output.trustedTypes
 
 `boolean = false` `string` `object`
 
@@ -2158,7 +2158,7 @@ module.exports = {
 };
 ```
 
-## `output.umdNamedDefine`
+## output.umdNamedDefine
 
 W> [`output.library.umdNamedDefine`](#outputlibraryumdnameddefine)을 사용하는 것이 좋습니다.
 
