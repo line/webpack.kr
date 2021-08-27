@@ -25,8 +25,6 @@ translators:
 
 `stats` 옵션을 사용하면 표시되는 번들 정보를 정확하게 제어할 수 있습니다. 번들 정보를 얻고 싶지만 전부에 대한 정보를 얻고자 하는 것은 아닐 것이기 때문에 `quiet` 또는 `noInfo`를 사용하지 않는 경우 좋은 절충안이 될 수 있습니다.
 
-T> webpack-dev-server의 경우 이 속성은 [`devServer` 설정 객체](/configuration/dev-server/#devserverstats-)에 있어야 합니다.
-
 W> 이 옵션은 Node.js API를 사용할 경우에는 아무 효과가 없습니다. stats 옵션을 `stats.toString()`에 전달해야 합니다. 대신 `stats.toJson()`이 호출됩니다.
 
 ```js

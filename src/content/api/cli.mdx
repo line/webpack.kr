@@ -41,7 +41,7 @@ webpack-cli는 webpack을 더 쉽게 사용할 수 있도록 다양한 명령을
 
 | 명령어                                | 사용법                                                | 설명                                                                       |
 | ------------------------------------- | ----------------------------------------------------- | -------------------------------------------------------------------------- |
-| `build`                               | `build\|bundle\|b [entries...] [options]`             | webpack을 실행합니다. (기본 명령어, 생략 가능).                            |
+| [`build`](#build)                     | `build\|bundle\|b [entries...] [options]`             | webpack을 실행합니다. (기본 명령어, 생략 가능).                            |
 | [`configtest`](#configtest)           | `configtest\|t [config-path]`                         | webpack 설정을 검증합니다.                                                 |
 | [`help`](#help)                       | `help\|h [command] [option]`                          | 명렁어 및 옵션에 대한 도움말을 표시합니다.                                 |
 | [`info`](#info)                       | `info\|i [options]`                                   | 시스템 정보를 출력합니다.                                                  |
@@ -50,7 +50,21 @@ webpack-cli는 webpack을 더 쉽게 사용할 수 있도록 다양한 명령을
 | `plugin`                              | `plugin\|p [output-path] [options]`                   | 플러그인을 스캐폴드합니다.                                                 |
 | [`serve`](/configuration/dev-server/) | `serve\|server\|s [options]`                          | `webpack-dev-server`를 실행합니다.                                         |
 | [`version`](#version)                 | `version\|v [commands...]`                            | `webpack`, `webpack-cli` 및 `webpack-dev-server`의 버전 넘버를 출력합니다. |
-| `watch`                               | `watch\|w [entries...] [options]`                     | webpack을 실행하고 파일 변경을 감지합니다.                                 |
+| [`watch`](#watch)                     | `watch\|w [entries...] [options]`                     | webpack을 실행하고 파일 변경을 감지합니다.                                 |
+
+### Build
+
+webpack을 실행합니다. (기본 명령어, 생략 가능).
+
+```bash
+npx webpack build [options]
+```
+
+**example**
+
+```bash
+npx webpack build --config ./webpack.config.js --stats verbose
+```
 
 ### Init
 
@@ -125,6 +139,20 @@ npx webpack configtest ./webpack.config.js
 #### Config Path
 
 webpack 설정 파일의 경로입니다. 기본값은 `./webpack.config.js`입니다.
+
+### Watch
+
+webpack을 실행하고 파일 변경을 감지합니다.
+
+```bash
+npx webpack watch [options]
+```
+
+**example**
+
+```bash
+npx webpack watch --mode development
+```
 
 ## Flags
 

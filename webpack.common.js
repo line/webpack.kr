@@ -8,6 +8,7 @@ const mdPlugins = [
   require('remark-slug'),
   remarkResponsiveTable,
   require('remark-emoji'),
+  require('./src/remark-plugins/remark-cleanup-readme/index.js'),
   [
     require('./src/remark-plugins/remark-custom-asides/index.js'),
     {
@@ -55,22 +56,6 @@ module.exports = ({ ssg = false }) => ({
             loader: '@mdx-js/loader',
             options: {
               remarkPlugins: [...mdPlugins, [require('remark-frontmatter')]],
-            },
-          },
-        ],
-      },
-      {
-        test: /\.md$/,
-        use: [
-          {
-            loader: 'html-loader',
-          },
-          {
-            loader: 'remark-loader',
-            options: {
-              remarkOptions: {
-                plugins: [...mdPlugins, require('remark-html')],
-              },
             },
           },
         ],
