@@ -39,18 +39,18 @@ webpack 및 CLI를 아직 설치하지 않은 경우 [설치 가이드](/guides/
 
 webpack-cli는 webpack을 더 쉽게 사용할 수 있도록 다양한 명령을 제공합니다. 기본적으로 webpack은 다음과 같은 명령어를 제공합니다.
 
-| 명령어                      | 사용법        | 설명                                           |
-| --------------------------- | ------------- | ---------------------------------------------- | -------------------------------------------------------------------------- |
-| [`build`](#build)           | `build\       | bundle\|b [entries...] [options]`              | webpack을 실행합니다. (기본 명령어, 생략 가능).                            |
-| [`configtest`](#configtest) | `configtest\  | t [config-path]`                               | webpack 설정을 검증합니다.                                                 |
-| [`help`](#help)             | `help\        | h [command] [option]`                          | 명렁어 및 옵션에 대한 도움말을 표시합니다.                                 |
-| [`info`](#info)             | `info\        | i [options]`                                   | 시스템 정보를 출력합니다.                                                  |
-| [`init`](#init)             | `init\        | create\|c\|new\|n [generation-path] [options]` | 새로운 webpack 프로젝트를 초기화합니다.                                    |
-| `loader`(#loader)           | `loader\      | l [output-path] [options]`                     | 로더를 스캐폴드합니다.                                                     |
-| `plugin`(#plugin)           | `plugin\      | p [output-path] [options]`                     | 플러그인을 스캐폴드합니다.                                                 |
-| [`serve`](#serve)           | `serve\       | server\|s [options]`                           | `webpack-dev-server`를 실행합니다.                                         |
-| [`version`](#version)       | `version\     | v [commands...]`                               | `webpack`, `webpack-cli` 및 `webpack-dev-server`의 버전 넘버를 출력합니다. |
-| [`watch`](#watch)           | `watch\       | w [entries...] [options]`                      | webpack을 실행하고 파일 변경을 감지합니다.                                 |
+| 명령어                      | 사용법                                                | 설명                                                                       |
+| --------------------------- | ----------------------------------------------------- | -------------------------------------------------------------------------- |
+| [`build`](#build)           | `build\|bundle\|b [entries...] [options]`             | webpack을 실행합니다. (기본 명령어, 생략 가능).                            |
+| [`configtest`](#configtest) | `configtest\|t [config-path]`                         | webpack 설정을 검증합니다.                                                 |
+| [`help`](#help)             | `help\|h [command] [option]`                          | 명렁어 및 옵션에 대한 도움말을 표시합니다.                                 |
+| [`info`](#info)             | `info\|i [options]`                                   | 시스템 정보를 출력합니다.                                                  |
+| [`init`](#init)             | `init\|create\|c\|new\|n [generation-path] [options]` | 새로운 webpack 프로젝트를 초기화합니다.                                    |
+| [`loader`](#loader)         | `loader\|l [output-path] [options]`                   | 로더를 스캐폴드합니다.                                                     |
+| [`plugin`](#plugin)         | `plugin\|p [output-path] [options]`                   | 플러그인을 스캐폴드합니다.                                                 |
+| [`serve`](#serve)           | `serve\|server\|s [options]`                          | `webpack-dev-server`를 실행합니다.                                         |
+| [`version`](#version)       | `version\|v [commands...]`                            | `webpack`, `webpack-cli` 및 `webpack-dev-server`의 버전 넘버를 출력합니다. |
+| [`watch`](#watch)           | `watch\|w [entries...] [options]`                     | webpack을 실행하고 파일 변경을 감지합니다.                                 |
 
 ### Build
 

@@ -4,48 +4,49 @@ group: Plugins
 sort: 11
 contributors:
   - iguessitsokay
+translators:
+  - YukJiSoo
 ---
 
-The `ContextModuleFactory` module is used by the `Compiler` to generate dependencies from webpack specific [require.context](/api/module-methods/#requirecontext) API. It resolves the requested directory, generates requests for each file and filters against passed regExp. Matching dependencies then passes through [NormalModuleFactory](/api/normalmodulefactory-hooks).
+`ContextModuleFactory` 모듈은 webpack의 [require.context](/api/module-methods/#requirecontext) API에서 디펜던시를 생성하기 위해 `컴파일러`에서 사용됩니다. 요청된 디렉터리를 확인하고, 각 파일에 대한 요청을 생성하며 전달된 정규 표현식으로 필터링합니다. 이 과정을 거쳐 일치하는 디펜던시만 [NormalModuleFactory](/api/normalmodulefactory-hooks)를 통과합니다.
 
-The `ContextModuleFactory` class extends `Tapable` and provides the following
-lifecycle hooks. They can be tapped the same way as compiler hooks:
+`ContextModuleFactory` 클래스는 `Tapable`을 확장하고 다음과 같은 수명 주기 훅을 제공합니다.
+아래와 같이 컴파일러 훅과 같은 방식으로 탭할 수 있습니다.
 
 ```js
 ContextModuleFactory.hooks.someHook.tap(/* ... */);
 ```
 
-As with the `compiler`, `tapAsync` and `tapPromise` may also be available
-depending on the type of hook.
+`compiler`와 마찬가지로 `tapAsync`와 `tapPromise`도 훅 유형에 따라 사용할 수 있습니다.
 
 ### beforeResolve
 
 `AsyncSeriesWaterfallHook`
 
-Called before resolving the requested directory. The request can be ignored by returning `false`.
+요청된 디렉타리를 확인하기 전에 호출됩니다. `false`를 반환하여 요청을 무시할 수 있습니다.
 
-- Callback Parameters: `data`
+- 콜백 파라미터: `data`
 
 ### afterResolve
 
 `AsyncSeriesWaterfallHook`
 
-Called after the requested directory resolved.
+요청된 디렉터리가 확인된 후 호출됩니다.
 
-- Callback Parameters: `data`
+- 콜백 파라미터: `data`
 
 ### contextModuleFiles
 
 `SyncWaterfallHook`
 
-Called after directory contents are read. On recursive mode, calls for each sub-directory as well. Callback parameter is an array of all file and folder names in each directory.
+디렉터리 내용을 읽은 후 호출됩니다. 재귀 모드에서는 각 하위 디렉터리도 호출합니다. 콜백 파라미터는 각 디렉터리에 있는 모든 파일 및 폴더 이름의 배열입니다.
 
-- Callback Parameters: `fileNames`
+- 콜백 파라미터: `fileNames`
 
 ### alternativeRequests
 
 `AsyncSeriesWaterfallHook`
 
-Called for each file after the request is created but before filtering against regExp.
+요청이 생성된 후 정규 표현식으로 필터링하기 전에 각 파일에 대해 호출됩니다.
 
-- Callback Parameters: `request` `options`
+- 콜백 파라미터: `request` `options`
