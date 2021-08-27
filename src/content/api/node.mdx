@@ -34,7 +34,7 @@ npm install --save-dev webpack
 const webpack = require('webpack');
 ```
 
-또는 ES2015를 선호하다면 아래 처럼 사용하세요.
+또는 ES2015를 선호하다면 아래처럼 사용하세요.
 
 ```js
 import webpack from 'webpack';
@@ -59,13 +59,14 @@ webpack({
 
 T> `err` 객체는 컴파일 오류를 포함하지 **않습니다**. 오류는 `stats.hasErrors()`를 사용하여 별도로 처리되어야 하며, 이는 이 가이드의 [오류 처리](#error-handling) 섹션에서 자세히 다룰 것입니다. `err` 객체는 잘못된 설정 등과 같은 webpack과 관련된 문제만 포함합니다.
 
-T> `webpack` 함수는 설정 배열으로 제공할 수 있습니다. 
+T> `webpack` 함수는 설정 배열로 제공할 수 있습니다. 
 보다 자세한 내용은 아래의 [MultiCompiler](#multicompiler) 섹션을 참고하세요.
 
 ## Compiler Instance
 
 `webpack` 러너 함수에 콜백을 전달하지 않으면 webpack `Compiler` 인스턴스를 반환합니다. 
-이 인스턴스를 사용하여 webpack 러너를 수동으로 트리거하거나, 빌드하고 변경 사항을 감시할 수 있습니다. [CLI](/api/cli/)와 비슷합니다.
+이 인스턴스를 사용하여 webpack 러너를 수동으로 트리거 하거나, 빌드하고 변경 사항을 감시할 수 있습니다.
+[CLI](/api/cli/)와 비슷합니다.
 `Compiler` 인스턴스는 다음 메소드를 제공합니다.
 
 - `.run(callback)`
@@ -73,11 +74,12 @@ T> `webpack` 함수는 설정 배열으로 제공할 수 있습니다.
 
 특정 작업을 위임하기 위해 자식 컴파일러를 생성할 수 있지만, 
 일반적으로 마스터 `Compiler` 인스턴스는 하나만 생성됩니다.
-`Compiler`는 궁극적으로 라이프사이클을 계속 실행하기 위해 
-최소한의 기능만을 수행하는 함수 입니다.
+`Compiler`는 궁극적으로 라이프 사이클을 계속 실행하기 위해 
+최소한의 기능만을 수행하는 함수입니다.
 이는 등록된 플러그인에 모든 로딩, 번들링 및 쓰기 작업을 위임합니다.
 
-`Compiler` 인스턴스의 `hooks` 속성은 `Compiler` 라이프사이클의 훅 이벤트에 플러그인을 등록하는 데 사용됩니다.
+`Compiler` 인스턴스의 `hooks` 속성은 `Compiler` 라이프 사이클의 훅 이벤트에 
+플러그인을 등록하는 데 사용됩니다.
 [`WebpackOptionsDefaulter`](https://github.com/webpack/webpack/blob/master/lib/WebpackOptionsDefaulter.js) 및 
 [`WebpackOptionsApply`](https://github.com/webpack/webpack/blob/master/lib/WebpackOptionsApply.js) 유틸리티는 
 webpack에서 모든 내장 플러그인으로 `Compiler` 인스턴스를 설정하는 데 사용됩니다.
@@ -86,8 +88,9 @@ webpack에서 모든 내장 플러그인으로 `Compiler` 인스턴스를 설정
 완료되면 지정된 `callback` 함수가 실행됩니다. 
 최종 통계 및 오류 로깅은 이 `callback` 함수에서 수행되어야 합니다.
 
-W> API는 한 번에 하나의 동시 컴파일만 지원합니다. `run` 또는 `watch`를 사용할 때, `close`를 호출하고 완료될 때 까지 기다렸다가 `run` 또는 `watch`를 다시 호출하세요.
-다시. 동시 컴파일은 출력 파일을 손상시킵니다.
+W> API는 한 번에 하나의 동시 컴파일만 지원합니다. `run` 또는 `watch`를 사용할 때, 
+`close`를 호출하고 완료될 때까지 기다렸다가 `run` 또는 `watch`를 다시 호출하세요.
+동시 컴파일은 출력 파일을 손상시킵니다.
 
 ## Run
 
@@ -110,11 +113,11 @@ compiler.run((err, stats) => { // [Stats Object](#stats-object)
 });
 ```
 
-W> 낮은 우선 순위 작업(예: 영구 캐싱)을 완료할 수 있도록 컴파일러를 종료하는 것을 잊지 마세요.
+W> 낮은 우선순위 작업(예: 영구 캐싱)을 완료할 수 있도록 컴파일러를 종료하는 것을 잊지 마세요.
 
 ## Watching
 
-`watch` 메서드를 호출하면 webpack 러너를 트리거하지만, 곧이어 변경 사항을 감시합니다 (`webpack --watch` CLI와 유사합니다). 
+`watch` 메서드를 호출하면 webpack 러너를 트리거 하지만, 곧이어 변경 사항을 감시합니다 (`webpack --watch` CLI와 유사합니다). 
 webpack이 변경사항을 감지하는 즉시 다시 실행합니다. 
 `Watching` 인스턴스를 반환합니다.
 
@@ -142,8 +145,8 @@ const watching = compiler.watch({
 `Watching` 옵션은 
 [여기에](/configuration/watch/#watchoptions) 자세히 설명되어 있습니다.
 
-W> 파일 시스템 부정확성은 하나의 변경 사항에 대해 빌드 여러번 트리거할 수 있습니다.
-위의 예에서 `console.log` 문은 하나의 수정에도 여러번 실행될 수 있습니다.
+W> 파일 시스템 부정확성은 하나의 변경 사항에 대해 빌드 여러 번 트리거할 수 있습니다.
+위의 예에서 `console.log` 문은 하나의 수정에도 여러 번 실행될 수 있습니다.
 사용자는 이 동작을 예상해야 하며, 
 `stats.hash`를 확인하여 파일 해시가 실제로 변경되었는지 확인할 수 있습니다.
 
