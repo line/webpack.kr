@@ -20,6 +20,7 @@ contributors:
   - jamesgeorge007
 translators:
   - keipark
+  - dkstyle
 related:
   - title: Analyzing Build Statistics
     url: https://survivejs.com/webpack/optimizing-build/analyzing-build-statistics/
@@ -683,12 +684,12 @@ WEBPACK_PACKAGE=webpack-5 npx webpack
 
 ### TypeError [ERR_UNKNOWN_FILE_EXTENSION]: Unknown file extension ".ts" for ./webpack.config.ts
 
-You might encounter this error in the case of using native ESM in TypeScript (i.e. `type: "module"` in `package.json`).
+TypeScript에서 기본 ESM을 사용하는 경우 이와 같은 오류가 발생할 수 있습니다 (예: `package.json`의 `type: "module"`).
 
-`webpack-cli` supports configuration in both `CommonJS` and `ESM` format, at first it tries to load a configuration using `require()`, once it fails with an error code of `'ERR_REQUIRE_ESM'` (a special code for this case) it would try to load the configuration using `import()`.
-However, the `import()` method won't work with `ts-node` without [loader hooks](https://nodejs.org/api/esm.html#esm_experimental_loaders) enabled (described at [`TypeStrong/ts-node#1007`](https://github.com/TypeStrong/ts-node/issues/1007)).
+`webpack-cli`는 `CommonJS` 및 `ESM` 형식의 설정을 모두 지원하며, 처음에는 `require()`를 사용하여 설정을 로드하려고 시도합니다. 일단 실패하면 `'ERR_REQUIRE_ESM'` (이 경우의 특수한 코드) `import()`를 사용하여 설정 로드를 시도합니다.
+그러나, `import()` 메소드는 [loader 훅](https://nodejs.org/api/esm.html#esm_experimental_loaders)이 활성화되어 있지 않으면 `ts-node`에서 작동하지 않습니다. ([`TypeStrong/ts-node#1007`](https://github.com/TypeStrong/ts-node/issues/1007)에 설명되어 있습니다).
 
-To fix the error above use the following command:
+위의 오류를 수정하려면 다음 명령을 사용하세요.
 
 ```bash
 NODE_OPTIONS="--loader ts-node/esm" npx webpack --entry ./src/index.js --mode production
