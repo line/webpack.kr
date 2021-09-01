@@ -54,7 +54,7 @@ T> `webpack-dev-server` 대신 `webpack-dev-middleware`를 사용한다면 [`web
     },
     devtool: 'inline-source-map',
     devServer: {
-      contentBase: './dist',
+      static: './dist',
 +     hot: true,
     },
     plugins: [
@@ -145,7 +145,7 @@ const webpack = require('webpack');
 
 const config = require('./webpack.config.js');
 const options = {
-  contentBase: './dist',
+  static: './dist',
   hot: true,
   host: 'localhost',
 };
@@ -230,7 +230,7 @@ npm install --save-dev style-loader css-loader
     },
     devtool: 'inline-source-map',
     devServer: {
-      contentBase: './dist',
+      static: './dist',
       hot: true,
     },
 +   module: {

@@ -445,7 +445,7 @@ module.exports = {
 };
 ```
 
-## `output.filename`
+## output.filename
 
 `string` `function (pathData, assetInfo) => string`
 
@@ -539,7 +539,7 @@ module.exports = {
 
 이 옵션은 온 디맨드 로드되는 청크의 출력 파일에는 영향을 주지 않습니다. 처음에 로드된 출력 파일에만 영향을 줍니다. 온 디맨드 로드 된 청크 파일의 경우 [`output.chunkFilename`](#outputchunkfilename) 옵션이 사용됩니다. 로더에서 생성된 파일도 영향을 받지 않습니다. 이 경우 특정 로더에서 사용 가능한 옵션의 사용을 시도해봐야 합니다.
 
-## Template strings
+### Template strings
 
 다음 substitution은 webpack의 내부 [`TemplatedPathPlugin`](https://github.com/webpack/webpack/blob/master/lib/TemplatedPathPlugin.js)를 통해 템플릿 문자열에서 사용할 수 있습니다.
 
@@ -631,6 +631,23 @@ type ModulePathData = {
 
 T> 일부 컨텍스트에서 프로퍼티는 원시 값 대신 JavaScript 코드 표현식을 사용합니다. 이러한 경우 `WithLength`변형을 사용할 수 있으며 원래 값을 분할하는 대신 사용해야합니다.
 
+## output.futureEmitAssets
+
+`boolean = false`
+
+webpack에 애셋 방출 로직의 미래 버전을 사용하도록 지시하여 방출 후 애셋의 메모리를 해제할 수 있습니다. 애셋이 방출된 후에도 여전히 읽을 수 있다고 가정하는 플러그인이 손상될 수 있습니다.
+
+W> `output.futureEmitAssets`은 webpack v5.0.0 에서 제거되고 기본 동작이 될 예정입니다.
+
+```javascript
+module.exports = {
+  //...
+  output: {
+    futureEmitAssets: true,
+  },
+};
+```
+
 ## `output.globalObject`
 
 `string = 'window'`
@@ -649,27 +666,6 @@ module.exports = {
     libraryTarget: 'umd',
     filename: 'myLib.js',
     globalObject: 'this',
-  },
-};
-```
-
-## `output.uniqueName`
-
-`string`
-
-전역을 사용할 때 여러 webpack 런타임이 충돌하지 않도록하는 webpack 빌드의 고유한 이름입니다. 기본값은 [`output.library`](/configuration/output/#outputlibrary) 이름 또는 컨텍스트에서 `package.json`의 패키지 이름입니다. 둘 다 찾을 수없는 경우 `''`으로 설정됩니다.
-
-`output.uniqueName`은 고유한 전역을 생성하는 데 사용됩니다.
-
-- [`output.chunkLoadingGlobal`](/configuration/output/#outputchunkloadingglobal)
-
-**webpack.config.js**
-
-```javascript
-module.exports = {
-  // ...
-  output: {
-    uniqueName: 'my-package-xyz',
   },
 };
 ```
@@ -745,6 +741,38 @@ T> 일반적으로 `output.hotUpdateChunkFilename`을 변경할 필요가 없습
 주요 핫 업데이트 파일 이름을 사용자 지정합니다. `[fullhash]`, `[runtime]`을 자리 표시자로 사용할 수 있습니다.
 
 T> 일반적으로 `output.hotUpdateMainFilename`을 변경할 필요가 없습니다.
+
+## output.iife
+
+`boolean = true`
+
+내보낸 코드에 [IIFE](https://developer.mozilla.org/en-US/docs/Glossary/IIFE) 래퍼를 추가하도록 webpack에 지시합니다.
+
+```javascript
+module.exports = {
+  //...
+  output: {
+    iife: true,
+  },
+};
+```
+
+## output.importFunctionName
+
+`string = 'import'`
+
+네이티브 `import()`함수의 이름입니다. [`dynamic-import-polyfill`](https://github.com/GoogleChromeLabs/dynamic-import-polyfill)같은 폴리필에 사용할 수 있습니다.
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  //...
+  output: {
+    importFunctionName: '__import__',
+  },
+};
+```
 
 ## output.library
 
@@ -1851,22 +1879,29 @@ MyLibrary(_entry_return_);
 
 라이브러리에 대한 디펜던시는 [`externals`](/configuration/externals/) 설정에 의해 정의됩니다.
 
-## `output.importFunctionName`
+## output.module
 
-`string = 'import'`
+`boolean = false`
 
-네이티브 `import()`함수의 이름입니다. [`dynamic-import-polyfill`](https://github.com/GoogleChromeLabs/dynamic-import-polyfill)같은 폴리필에 사용할 수 있습니다.
+모듈 타입으로 JavaScript 파일을 출력합니다. 실험적 기능이므로 기본적으로 비활성화되어 있습니다.
 
-**webpack.config.js**
+활성화되면 webpack은 내부적으로 [`output.iife`](#outputiife)를 `false`로, [`output.scriptType`](#outputscripttype)을 `'module'`로, `terserOptions.module`을 `true`로 설정합니다.
+
+다른 사용자가 사용할 라이브러리를 컴파일하기 위해 webpack을 사용하는 경우 `output.module`이 `true` 일 때 [`output.libraryTarget`](#librarytarget-module)을 `'module'`로 설정해야 합니다.
 
 ```javascript
 module.exports = {
   //...
+  experiments: {
+    outputModule: true,
+  },
   output: {
-    importFunctionName: '__import__',
+    module: true,
   },
 };
 ```
+
+W> `output.module`은 실험적 기능이며 [`experiments.outputModule`](/configuration/experiments/#experiments)을 `true`로 설정해야만 활성화 할 수 있습니다.
 
 ## `output.path`
 
@@ -2140,43 +2175,28 @@ module.exports = {
 };
 ```
 
-## `output.workerChunkLoading`
+## output.uniqueName
 
-`string: 'require' | 'import-scripts' | 'async-node' | 'import' | 'universal'` `boolean: false`
+`string`
 
-새로운 옵션 `workerChunkLoading`은 worker의 청크 로드를 제어합니다.
+전역을 사용할 때 여러 webpack 런타임이 충돌하지 않도록하는 webpack 빌드의 고유한 이름입니다. 기본값은 [`output.library`](/configuration/output/#outputlibrary) 이름 또는 컨텍스트에서 `package.json`의 패키지 이름입니다. 둘 다 찾을 수없는 경우 `''`으로 설정됩니다.
 
-T> 이 옵션의 기본값은 `target` 설정에 따라 다릅니다. 자세한 내용은 [webpack default에서](https://github.com/webpack/webpack/blob/master/lib/config/defaults.js) `"workerChunkLoading"`을 검색하세요.
+`output.uniqueName`은 고유한 전역을 생성하는 데 사용됩니다.
+
+- [`output.chunkLoadingGlobal`](/configuration/output/#outputchunkloadingglobal)
 
 **webpack.config.js**
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   output: {
-    workerChunkLoading: false,
+    uniqueName: 'my-package-xyz',
   },
 };
 ```
 
-## `output.futureEmitAssets`
-
-`boolean = false`
-
-webpack에 애셋 방출 로직의 미래 버전을 사용하도록 지시하여 방출 후 애셋의 메모리를 해제할 수 있습니다. 애셋이 방출된 후에도 여전히 읽을 수 있다고 가정하는 플러그인이 손상될 수 있습니다.
-
-W> `output.futureEmitAssets`은 webpack v5.0.0 에서 제거되고 기본 동작이 될 예정입니다.
-
-```javascript
-module.exports = {
-  //...
-  output: {
-    futureEmitAssets: true,
-  },
-};
-```
-
-## `output.wasmLoading`
+## output.wasmLoading
 
 `boolean = false` `string`
 
@@ -2196,41 +2216,21 @@ module.exports = {
 };
 ```
 
-## `output.iife`
+## output.workerChunkLoading
 
-`boolean = true`
+`string: 'require' | 'import-scripts' | 'async-node' | 'import' | 'universal'` `boolean: false`
 
-내보낸 코드에 [IIFE](https://developer.mozilla.org/en-US/docs/Glossary/IIFE) 래퍼를 추가하도록 webpack에 지시합니다.
+새로운 옵션 `workerChunkLoading`은 worker의 청크 로드를 제어합니다.
+
+T> 이 옵션의 기본값은 `target` 설정에 따라 다릅니다. 자세한 내용은 [webpack default에서](https://github.com/webpack/webpack/blob/master/lib/config/defaults.js) `"workerChunkLoading"`을 검색하세요.
+
+**webpack.config.js**
 
 ```javascript
 module.exports = {
   //...
   output: {
-    iife: true,
+    workerChunkLoading: false,
   },
 };
 ```
-
-## `output.module`
-
-`boolean = false`
-
-모듈 타입으로 JavaScript 파일을 출력합니다. 실험적 기능이므로 기본적으로 비활성화되어 있습니다.
-
-활성화되면 webpack은 내부적으로 [`output.iife`](#outputiife)를 `false`로, [`output.scriptType`](#outputscripttype)을 `'module'`로, `terserOptions.module`을 `true`로 설정합니다.
-
-다른 사용자가 사용할 라이브러리를 컴파일하기 위해 webpack을 사용하는 경우 `output.module`이 `true` 일 때 [`output.libraryTarget`](#librarytarget-module)을 `'module'`로 설정해야 합니다.
-
-```javascript
-module.exports = {
-  //...
-  experiments: {
-    outputModule: true,
-  },
-  output: {
-    module: true,
-  },
-};
-```
-
-W> `output.module`은 실험적 기능이며 [`experiments.outputModule`](/configuration/experiments/#experiments)을 `true`로 설정해야만 활성화 할 수 있습니다.

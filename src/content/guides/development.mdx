@@ -214,7 +214,7 @@ npm install --save-dev webpack-dev-server
    },
    devtool: 'inline-source-map',
 +  devServer: {
-+    contentBase: './dist',
++    static: './dist',
 +  },
    plugins: [
      new HtmlWebpackPlugin({
@@ -233,7 +233,7 @@ npm install --save-dev webpack-dev-server
 
 T> `webpack-dev-server`는 [`output.path`](/configuration/output/#outputpath)에 정의된 디렉터리에서 번들된 파일을 제공합니다. 예를 들면, 파일은 `http://[devServer.host]:[devServer.port]/[output.publicPath]/[output.filename]` 주소로 사용할 수 있습니다.
 
-W> webpack-dev-server는 컴파일 후 출력 파일을 작성하지 않습니다. 대신 번들 파일을 메모리에 보관하고 서버의 루트 경로에 마운트 된 실제 파일인 것처럼 제공합니다. 페이지가 다른 경로에서 번들 파일을 찾을 것으로 예상하는 경우 개발 서버 설정에서 [`publicPath`](/configuration/dev-server/#devserverpublicpath-) 옵션을 사용하여 변경할 수 있습니다.
+W> webpack-dev-server는 컴파일 후 출력 파일을 작성하지 않습니다. 대신 번들 파일을 메모리에 보관하고 서버의 루트 경로에 마운트 된 실제 파일인 것처럼 제공합니다. 페이지가 다른 경로에서 번들 파일을 찾을 것으로 예상하는 경우 개발 서버 설정에서 [`devMiddleware.publicPath`](/configuration/dev-server/#devserverdevmiddleware) 옵션을 사용하여 변경할 수 있습니다.
 
 개발 서버를 쉽게 실행할 수 있는 스크립트를 추가해보겠습니다.
 
@@ -298,7 +298,7 @@ npm install --save-dev express webpack-dev-middleware
    },
    devtool: 'inline-source-map',
    devServer: {
-     contentBase: './dist',
+     static: './dist',
    },
    plugins: [
      new HtmlWebpackPlugin({

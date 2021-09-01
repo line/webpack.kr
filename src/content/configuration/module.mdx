@@ -613,7 +613,7 @@ module.exports = {
 
 ### Rule.generator.emit
 
-Opt out of writing assets from [Asset Modules](/guides/asset-modules/), you might want to use it in Server side rendering cases.
+[애셋 모듈](/guides/asset-modules/)에서 애셋 쓰기를 하지 않는 경우, 서버 사이드 랜더링에서 사용할 수 있습니다.
 
 - Type: `boolean = true`
 - Available: <Badge text='5.25.0+' />
@@ -638,7 +638,7 @@ Opt out of writing assets from [Asset Modules](/guides/asset-modules/), you migh
 
 ### Rule.generator.filename
 
-[`output.assetModuleFilename`](/configuration/output/#outputassetmodulefilename)과 동일하지만 특정 규칙에 사용됩니다. Overrides `output.assetModuleFilename` and works only with `asset` and `asset/resource` module types.
+[`output.assetModuleFilename`](/configuration/output/#outputassetmodulefilename)과 동일하지만 특정 규칙에 사용됩니다. `output.assetModuleFilename`을 재정의하고 `asset` 및 `asset/resource` 모듈 유형에서만 작동합니다.
 
 **webpack.config.js**
 
@@ -668,7 +668,7 @@ module.exports = {
 
 ### Rule.generator.publicPath
 
-Customize `publicPath` for specific Asset Modules.
+특정 애셋 모듈에 대해 `publicPath`를 사용자 지정합니다.
 
 - Type: `string | ((pathData: PathData, assetInfo?: AssetInfo) => string)`
 - Available: <Badge text='5.28.0+' />
@@ -999,8 +999,11 @@ module.exports = {
       {
         test: /\\.css$/,
         include: [
+          // `app/styles`로 시작하는 현재 디렉터리와 관련된 모든 경로를 포함합니다.
+          // 예. `app/styles.css`, `app/styles/styles.css`, `app/stylesheet.css`
           path.resolve(__dirname, 'app/styles'),
-          path.resolve(__dirname, 'vendor/styles'),
+          // `vendor/styles/`디렉터리의 내용만 포함하도록 슬래시를 추가합니다.
+          path.join(__dirname, 'vendor/styles/'),
         ],
       },
     ],

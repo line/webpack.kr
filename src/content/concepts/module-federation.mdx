@@ -293,7 +293,7 @@ T> 또한 자동으로 publicPath를 결정하는 [`output.publicPath`](/configu
 
 ## Troubleshooting
 
-**`Uncaught Error: Shared module is not available for eager consumption`**
+### `Uncaught Error: Shared module is not available for eager consumption`
 
 애플리케이션은 전 방향 호스트로 작동하는 애플리케이션을 실행하고 있습니다. 선택할 수 있는 옵션이 있습니다.
 
@@ -351,7 +351,7 @@ new ModuleFederationPlugin({
 });
 ```
 
-**`Uncaught Error: Module "./Button" does not exist in container.`**
+### `Uncaught Error: Module "./Button" does not exist in container.`
 
 `"./Button"`은 표시되지 않지만, 오류 메세지는 유사하게 표시됩니다. 이 문제는 일반적으로 webpack beta.16에서 webpack beta.17로 업그레이드 하는 경우에 나타납니다.
 
@@ -366,7 +366,11 @@ new ModuleFederationPlugin({
 });
 ```
 
-**`Uncaught TypeError: fn is not a function`**
+### `Uncaught TypeError: fn is not a function`
 
 원격 컨테이너가 누락되었을 가능성이 있으므로 추가되었는지 확인하세요.
 사용하려는 원격 컨테이너가 로드되었지만 이 오류가 계속 나타나면 호스트 컨테이너의 원격 컨테이너 파일도 HTML에 추가하세요.
+
+### Collision between modules from different remotes
+
+서로 다른 원격에서 여러 모듈을 로드하는 경우 원격 빌드에 대해 [`output.uniqueName`](/configuration/output/#outputuniquename)을 설정하여 여러 webpack 런타임 간의 충돌을 방지하는 것이 좋습니다.
