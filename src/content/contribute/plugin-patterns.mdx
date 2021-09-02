@@ -89,7 +89,7 @@ module.exports = MyPlugin;
 
 파일이 변경될 때 컴파일 트리거를 수신하도록 감시 그래프에 새로운 파일 경로를 제공할 수도 있습니다. 유효한 파일 경로를 `compilation.fileDependencies` `Set` 에 더하여 감시된 파일에 추가합니다.
 
-T> `fileDependencies` `Set` 는 각 컴파일 결과물 내에서 다시 빌드되므로, 플러그인은 감시를 유지하기 위해 각 컴파일 결과물 자체에 감시된 의존성을 추가해야 합니다. 
+T> `fileDependencies` `Set` 은 각 컴파일 결과물 내에서 다시 빌드되므로, 플러그인은 감시를 유지하기 위해 각 컴파일 결과물 자체에 감시된 의존성을 추가해야 합니다. 
 
 W>  wepback 5부터, `compilation.fileDependencies` , `compilation.contextDependencies` 그리고 `compilation.missingDependencies` 는 이제 더 이상 `Sortable Set` 이 아니라 `Set` 이므로 정렬되지 않습니다. 
 
