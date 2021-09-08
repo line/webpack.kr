@@ -22,7 +22,6 @@ W> 실험적 기능은 시멘틱 버저닝을 완화하고 주요 변경 사항�
 
 - `asyncWebAssembly`: [업데이트된 사양](https://github.com/WebAssembly/esm-integration)에 따라 새로운 웹 어셈블리를 지원하여, 웹 어셈블리 모듈을 비동기 모듈로 만듭니다.
 - [`buildHttp`](#experimentsbuildhttp)
-- [`executeModule`](#experimentsexecutemodule)
 - `layers`: 모듈 및 청크 레이어를 활성화합니다.
 - [`lazyCompilation`](#experimentslazycompilation)
 - [`outputModule`](#experimentsoutputmodule)
@@ -129,23 +128,6 @@ module.exports = {
 원격 리소스의 변경 사항을 감지하고 자동으로 업그레이드합니다.
 
 - Type: `boolean`
-
-### experiments.executeModule
-
-빌드 시 플러그인 및 로더에 대한 모듈 그래프에서 모듈 실행을 활성화하여 코드 또는 기타 애셋을 생성합니다.
-
-- Type: `boolean`
-- Available: 5.32.0+
-- Example:
-
-  ```js
-  module.exports = {
-    // …
-    experiments: {
-      executeModule: true,
-    },
-  };
-  ```
 
 ### experiments.lazyCompilation
 
