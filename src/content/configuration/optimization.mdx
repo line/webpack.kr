@@ -23,7 +23,7 @@ related:
 
 webpack의 버전4 부터는 선택된 [`모드`](/configuration/mode/)에 따라 최적화를 실행하기 때문에, 여전히 모든 최적화는 수동 구성 및 재정의에 사용할 수 있습니다.
 
-## `optimization.minimize`
+## optimization.minimize
 
 `boolean = true`
 
@@ -42,7 +42,7 @@ module.exports = {
 
 T> [mode](/configuration/mode/)가 어떻게 동작하는지 알아보세요.
 
-## `optimization.minimizer`
+## optimization.minimizer
 
 `[TerserPlugin]` 및 또는`[function (compiler)]`
 
@@ -95,13 +95,13 @@ module.exports = {
 };
 ```
 
-## `optimization.splitChunks`
+## optimization.splitChunks
 
 `object`
 
 webpack v4+에서는 동적으로 가져온 모듈에 새로운 공통 청크 전략을 바로 사용할 수 있습니다. [SplitChunksPlugin](/plugins/split-chunks-plugin/) 페이지에서 이 동작을 설정할 때 사용 가능한 옵션을 확인해보세요.
 
-## `optimization.runtimeChunk`
+## optimization.runtimeChunk
 
 `object` `string` `boolean`
 
@@ -154,7 +154,7 @@ module.exports = {
 };
 ```
 
-## `optimization.emitOnErrors`
+## optimization.emitOnErrors
 
 `boolean = false`
 
@@ -173,7 +173,7 @@ module.exports = {
 
 W> webpack [CLI](/api/cli/)를 사용한다면, 이 플러그인이 활성화되어있는 동안 webpack 프로세스가 오류 코드와 함께 종료되지 않습니다. CLI를 사용할 때 webpack이 "실패"하게 하려면 [`bail` 옵션](/api/cli/#advanced-options)을 확인하세요.
 
-## `optimization.moduleIds`
+## optimization.moduleIds
 
 `boolean: false` `string: 'natural' | 'named' | 'deterministic' | 'size'`
 
@@ -221,7 +221,7 @@ W> `moduleIds: 'deterministic'`은 webpack 5에 추가되었으며, 이로 인�
 
 W> `moduleIds: total-size`는 webpack 5에서 제거되었습니다.
 
-## `optimization.chunkIds`
+## optimization.chunkIds
 
 `boolean = false` `string: 'natural' | 'named' | 'size' | 'total-size' | 'deterministic'`
 
@@ -269,7 +269,7 @@ module.exports = {
 };
 ```
 
-## `optimization.nodeEnv`
+## optimization.nodeEnv
 
 `boolean = false` `string`
 
@@ -293,7 +293,7 @@ module.exports = {
 
 T> [mode](/configuration/mode/)가 `'none'`일 때는 `optimization.nodeEnv`는 `false`가 됩니다.
 
-## `optimization.mangleWasmImports`
+## optimization.mangleWasmImports
 
 `boolean = false`
 
@@ -310,7 +310,7 @@ module.exports = {
 };
 ```
 
-## `optimization.removeAvailableModules`
+## optimization.removeAvailableModules
 
 `boolean = false`
 
@@ -329,7 +329,7 @@ module.exports = {
 
 W> `optimization.removeAvailableModules`는 webpack의 성능을 저하시키며 다음 메이저 릴리스의 `production` 모드에서 기본적으로 비활성화됩니다. 추가 빌드 성능 향상을 원한다면 `production`모드에서 이 옵션을 비활성화하세요.
 
-## `optimization.removeEmptyChunks`
+## optimization.removeEmptyChunks
 
 `boolean = true`
 
@@ -346,7 +346,7 @@ module.exports = {
 };
 ```
 
-## `optimization.mergeDuplicateChunks`
+## optimization.mergeDuplicateChunks
 
 `boolean = true`
 
@@ -363,7 +363,7 @@ module.exports = {
 };
 ```
 
-## `optimization.flagIncludedChunks`
+## optimization.flagIncludedChunks
 
 `boolean`
 
@@ -380,7 +380,7 @@ module.exports = {
 };
 ```
 
-## `optimization.providedExports`
+## optimization.providedExports
 
 `boolean`
 
@@ -397,7 +397,7 @@ module.exports = {
 };
 ```
 
-## `optimization.usedExports`
+## optimization.usedExports
 
 `boolean = true` `string: 'global'`
 
@@ -426,7 +426,7 @@ module.exports = {
 };
 ```
 
-## `optimization.concatenateModules`
+## optimization.concatenateModules
 
 `boolean`
 
@@ -444,7 +444,7 @@ module.exports = {
 };
 ```
 
-## `optimization.sideEffects`
+## optimization.sideEffects
 
 `boolean = true` `string: 'flag'`
 
@@ -490,7 +490,7 @@ module.exports = {
 
 T> 또한 `optimization.sideEffects`는 사이드 이펙트가 없는 구문만 포함된 모듈을 사이드 이펙트 없음으로 플래그합니다.
 
-## `optimization.portableRecords`
+## optimization.portableRecords
 
 `boolean`
 
@@ -509,7 +509,7 @@ module.exports = {
 };
 ```
 
-## `optimization.mangleExports`
+## optimization.mangleExports
 
 `boolean` `string: 'deterministic' | 'size'`
 
@@ -537,7 +537,7 @@ module.exports = {
 };
 ```
 
-## `optimization.innerGraph`
+## optimization.innerGraph
 
 `boolean = true`
 
@@ -554,7 +554,7 @@ module.exports = {
 };
 ```
 
-## `optimization.realContentHash`
+## optimization.realContentHash
 
 `boolean = true`
 

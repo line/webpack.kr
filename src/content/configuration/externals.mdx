@@ -24,7 +24,7 @@ translators:
 
 `externals` 옵션은 출력 번들에서 의존성을 제외하는 방법을 제공합니다. 대신, 생성된 번들은 소비자(모든 최종 사용자 애플리케이션)의 환경에 존재하기 위해 해당 의존성에 의존합니다. 이 기능은 일반적으로 **라이브러리 개발자에게** 가장 유용하지만, 이것을 위한 다양한 애플리케이션이 있습니다.
 
-## `externals`
+## externals
 
 `string` `[string]` `object` `function` `RegExp`
 
@@ -99,7 +99,7 @@ import fs from 'fs-extra';
 const fs = require('fs-extra');
 ```
 
-### `[string]`
+### [string]
 
 ```javascript
 module.exports = {
@@ -301,7 +301,7 @@ W> [기본 유형](/configuration/externals/#externalstype)은 유형 없이 `ex
 
 이 설정을 사용하는 방법에 대한 자세한 내용은, [라이브러리 작성 방법](/guides/author-libraries)에 대한 문서를 참고하십시오.
 
-### `byLayer`
+### byLayer
 
 `function` `object`
 
@@ -321,7 +321,7 @@ module.exports = {
 };
 ```
 
-## `externalsType`
+## externalsType
 
 `string = 'var'`
 
@@ -472,7 +472,7 @@ T> HTML `<script>` 태그를 사용하여 코드를 로드할 때, webpack 런�
 
 T> `output.chunkLoadTimeout`, `output.crossOriginLoading` 및 `output.scriptType`와 같은 옵션은 이러한 방식으로 로드된 외부 스크립트에도 영향을 줍니다.
 
-## `externalsPresets`
+## externalsPresets
 
 `object`
 

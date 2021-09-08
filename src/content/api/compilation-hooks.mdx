@@ -31,7 +31,7 @@ compilation.hooks.someHook.tap(/* ... */);
 `compiler`와 마찬가지로 `tapAsync` 및 `tapPromise`도 훅 유형에 따라
 사용할 수 있습니다.
 
-### `buildModule`
+### buildModule
 
 `SyncHook`
 
@@ -48,7 +48,7 @@ compilation.hooks.buildModule.tap(
 );
 ```
 
-### `rebuildModule`
+### rebuildModule
 
 `SyncHook`
 
@@ -56,7 +56,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `module`
 
-### `failedModule`
+### failedModule
 
 `SyncHook`
 
@@ -64,7 +64,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `module` `error`
 
-### `succeedModule`
+### succeedModule
 
 `SyncHook`
 
@@ -72,7 +72,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `module`
 
-### `finishModules`
+### finishModules
 
 `AsyncSeriesHook`
 
@@ -80,7 +80,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `modules`
 
-### `finishRebuildingModule`
+### finishRebuildingModule
 
 `SyncHook`
 
@@ -88,19 +88,19 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `module`
 
-### `seal`
+### seal
 
 `SyncHook`
 
 컴파일이 새로운 모듈을 받는 것이 중지되면 시작됩니다.
 
-### `unseal`
+### unseal
 
 `SyncHook`
 
 컴파일이 새로운 모듈을 받기 시작할 때 시작됩니다.
 
-### `optimizeDependencies`
+### optimizeDependencies
 
 `SyncBailHook`
 
@@ -108,7 +108,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `modules`
 
-### `afterOptimizeDependencies`
+### afterOptimizeDependencies
 
 `SyncHook`
 
@@ -116,13 +116,13 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `modules`
 
-### `optimize`
+### optimize
 
 `SyncHook`
 
 최적화 단계가 시작될 때 트리거됩니다.
 
-### `optimizeModules`
+### optimizeModules
 
 `SyncBailHook`
 
@@ -130,7 +130,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `modules`
 
-### `afterOptimizeModules`
+### afterOptimizeModules
 
 `SyncHook`
 
@@ -138,7 +138,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `modules`
 
-### `optimizeChunks`
+### optimizeChunks
 
 `SyncBailHook`
 
@@ -146,7 +146,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `chunks`
 
-### `afterOptimizeChunks`
+### afterOptimizeChunks
 
 `SyncHook`
 
@@ -154,7 +154,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `chunks`
 
-### `optimizeTree`
+### optimizeTree
 
 `AsyncSeriesHook`
 
@@ -162,7 +162,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `chunks` `modules`
 
-### `afterOptimizeTree`
+### afterOptimizeTree
 
 `SyncHook`
 
@@ -170,7 +170,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `chunks` `modules`
 
-### `optimizeChunkModules`
+### optimizeChunkModules
 
 `SyncBailHook`
 
@@ -178,7 +178,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `chunks` `modules`
 
-### `afterOptimizeChunkModules`
+### afterOptimizeChunkModules
 
 `SyncHook`
 
@@ -186,13 +186,13 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `chunks` `modules`
 
-### `shouldRecord`
+### shouldRecord
 
 `SyncBailHook`
 
 레코드 저장 여부를 결정하기 위해 호출됩니다. `!== false`를 반환하면 다른 모든 "record" 훅이 실행되지 않습니다([`record`](#record), [`recordModules`](#recordmodules), [`recordChunks`](#recordchunks) 그리고 [`recordHash`](#recordhash)).
 
-### `reviveModules`
+### reviveModules
 
 `SyncHook`
 
@@ -200,7 +200,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `modules` `records`
 
-### `beforeModuleIds`
+### beforeModuleIds
 
 `SyncHook`
 
@@ -208,7 +208,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `modules`
 
-### `moduleIds`
+### moduleIds
 
 `SyncHook`
 
@@ -216,7 +216,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `modules`
 
-### `optimizeModuleIds`
+### optimizeModuleIds
 
 `SyncHook`
 
@@ -224,7 +224,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `modules`
 
-### `afterOptimizeModuleIds`
+### afterOptimizeModuleIds
 
 `SyncHook`
 
@@ -232,7 +232,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `modules`
 
-### `reviveChunks`
+### reviveChunks
 
 `SyncHook`
 
@@ -240,7 +240,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `chunks` `records`
 
-### `beforeChunkIds`
+### beforeChunkIds
 
 `SyncHook`
 
@@ -248,7 +248,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `chunks`
 
-### `chunkIds`
+### chunkIds
 
 `SyncHook`
 
@@ -256,7 +256,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `chunks`
 
-### `optimizeChunkIds`
+### optimizeChunkIds
 
 `SyncHook`
 
@@ -264,7 +264,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `chunks`
 
-### `afterOptimizeChunkIds`
+### afterOptimizeChunkIds
 
 `SyncHook`
 
@@ -272,7 +272,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `chunks`
 
-### `recordModules`
+### recordModules
 
 `SyncHook`
 
@@ -280,7 +280,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `modules` `records`
 
-### `recordChunks`
+### recordChunks
 
 `SyncHook`
 
@@ -288,31 +288,31 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `chunks` `records`
 
-### `beforeModuleHash`
+### beforeModuleHash
 
 `SyncHook`
 
 모듈이 해시되기 전에 호출됩니다.
 
-### `afterModuleHash`
+### afterModuleHash
 
 `syncHook`
 
 모듈이 해시 된 후에 호출됩니다.
 
-### `beforeHash`
+### beforeHash
 
 `SyncHook`
 
 컴파일이 해시되기 전에 호출됩니다.
 
-### `afterHash`
+### afterHash
 
 `SyncHook`
 
 컴파일이 해시되기 전에 호출됩니다.
 
-### `recordHash`
+### recordHash
 
 `SyncHook`
 
@@ -320,7 +320,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `records`
 
-### `record`
+### record
 
 `SyncHook`
 
@@ -328,13 +328,13 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `compilation` `records`
 
-### `beforeModuleAssets`
+### beforeModuleAssets
 
 `SyncHook`
 
 모듈 애셋이 생성되기 전에 실행됩니다.
 
-### `additionalChunkAssets`
+### additionalChunkAssets
 
 `SyncHook`
 
@@ -344,19 +344,19 @@ W> `additionalChunkAssets`은 더이상 지원하지 않습니다. 대신 [Compi
 
 - 콜백 파라미터: `chunks`
 
-### `shouldGenerateChunkAssets`
+### shouldGenerateChunkAssets
 
 `SyncBailHook`
 
 청크 애셋을 만들지 결정하기 위해 호출됩니다. `!== false`를 반환하면 청크 애셋을 생성합니다.
 
-### `beforeChunkAssets`
+### beforeChunkAssets
 
 `SyncHook`
 
 청크 애셋을 만들기 전에 실행됩니다.
 
-### `additionalAssets`
+### additionalAssets
 
 `AsyncSeriesHook`
 
@@ -378,7 +378,7 @@ compilation.hooks.additionalAssets.tapAsync('MyPlugin', (callback) => {
 });
 ```
 
-### `optimizeChunkAssets`
+### optimizeChunkAssets
 
 `AsyncSeriesHook`
 
@@ -411,7 +411,7 @@ compilation.hooks.optimizeChunkAssets.tapAsync(
 );
 ```
 
-### `afterOptimizeChunkAssets`
+### afterOptimizeChunkAssets
 
 `SyncHook`
 
@@ -435,7 +435,7 @@ compilation.hooks.afterOptimizeChunkAssets.tap('MyPlugin', (chunks) => {
 });
 ```
 
-### `optimizeAssets`
+### optimizeAssets
 
 `AsyncSeriesHook`
 
@@ -443,7 +443,7 @@ compilation.hooks.afterOptimizeChunkAssets.tap('MyPlugin', (chunks) => {
 
 - 콜백 파라미터: `assets`
 
-### `afterOptimizeAssets`
+### afterOptimizeAssets
 
 `SyncHook`
 
@@ -451,7 +451,7 @@ compilation.hooks.afterOptimizeChunkAssets.tap('MyPlugin', (chunks) => {
 
 - 콜백 파라미터: `assets`
 
-### `processAssets`
+### processAssets
 
 `AsyncSeriesHook`
 
@@ -562,25 +562,25 @@ compilation.hooks.processAssets.tap(
 );
 ```
 
-### `afterProcessAssets`
+### afterProcessAssets
 
 `SyncHook`
 
 [`processAssets`](#processassets) 훅이 에러없이 완료된 후에 호출됩니다.
 
-### `needAdditionalSeal`
+### needAdditionalSeal
 
 `SyncBailHook`
 
 다른 파일을 포함하기 위해 컴파일을 봉인 해제해야 하는지 확인하기 위해 호출됩니다.
 
-### `afterSeal`
+### afterSeal
 
 `AsyncSeriesHook`
 
 `needAdditionalSeal` 바로 뒤에 실행됩니다.
 
-### `chunkHash`
+### chunkHash
 
 `SyncHook`
 
@@ -588,7 +588,7 @@ compilation.hooks.processAssets.tap(
 
 - 콜백 파라미터: `chunk` `chunkHash`
 
-### `moduleAsset`
+### moduleAsset
 
 `SyncHook`
 
@@ -596,7 +596,7 @@ compilation.hooks.processAssets.tap(
 
 - 콜백 파라미터: `module` `filename`
 
-### `chunkAsset`
+### chunkAsset
 
 `SyncHook`
 
@@ -604,7 +604,7 @@ compilation.hooks.processAssets.tap(
 
 - 콜백 파라미터: `chunk` `filename`
 
-### `assetPath`
+### assetPath
 
 `SyncWaterfallHook`
 
@@ -612,13 +612,13 @@ compilation.hooks.processAssets.tap(
 
 - 콜백 파라미터: `path` `options`
 
-### `needAdditionalPass`
+### needAdditionalPass
 
 `SyncBailHook`
 
 애셋이 방출된 후 추가로 처리되어야 하는지 여부를 판별하기 위해 호출됩니다.
 
-### `childCompiler`
+### childCompiler
 
 `SyncHook`
 
@@ -626,6 +626,6 @@ compilation.hooks.processAssets.tap(
 
 - 콜백 파라미터: `childCompiler` `compilerName` `compilerIndex`
 
-### `normalModuleLoader`
+### normalModuleLoader
 
 webpack v5부터 `normalModuleLoader` 훅이 제거되었기 때문에, 이제 로더에 액세스하려면 `NormalModule.getCompilationHooks(compilation).loader`를 사용하세요.

@@ -24,15 +24,15 @@ related:
 
 이 섹션에서는 webpack으로 컴파일된 코드에서 사용할 수 있는 모든 **변수**를 다룹니다. 모듈은 `module` 및 기타 변수를 통해 컴파일 프로세스의 특정 데이터에 접근할 수 있습니다.
 
-## `module.loaded` (NodeJS)
+## module.loaded (NodeJS)
 
 모듈이 현재 실행 중이면 `false`이고, 실행이 완료되면 `true`입니다.
 
-## `module.hot` (webpack-specific)
+## module.hot (webpack-specific)
 
 [Hot Module Replacement](/concepts/hot-module-replacement)가 활성화되었는지 여부를 나타내며 프로세스를 위한 인터페이스를 제공합니다. 자세한 내용은 [HMR API 페이지](/api/hot-module-replacement)를 참고하세요.
 
-## `module.id` (CommonJS)
+## module.id (CommonJS)
 
 현재 모듈의 ID입니다.
 
@@ -40,7 +40,7 @@ related:
 module.id === require.resolve('./file.js');
 ```
 
-## `module.exports` (CommonJS)
+## module.exports (CommonJS)
 
 사용자가 모듈을 `require` 호출할 때 반환할 값을 정의합니다 (기본값은 새 객체).
 
@@ -52,7 +52,7 @@ module.exports = function doSomething() {
 
 W> 이것은 비동기 함수에서 사용할 수 없습니다.
 
-## `exports` (CommonJS)
+## exports (CommonJS)
 
 이 변수는 `module.exports`(즉. 객체)의 기본값과 같습니다. `module.exports`를 덮어쓰면, `exports`를 더 내보내지 않습니다.
 
@@ -66,13 +66,13 @@ exports.aFunction = function doSomething() {
 };
 ```
 
-## `global` (NodeJS)
+## global (NodeJS)
 
 [node.js global](https://nodejs.org/api/globals.html#globals_global)을 참고하세요.
 
 호환성을 위해 webpack은 기본적으로 `global` 변수를 폴리필합니다.
 
-## `__dirname` (NodeJS)
+## \_\_dirname (NodeJS)
 
 `node.__dirname`의 설정 옵션은 다음과 같습니다.
 
@@ -82,7 +82,7 @@ exports.aFunction = function doSomething() {
 
 파서에 의해 파싱되는 표현식 내부에서 사용되는 경우, 설정 옵션은 `true`로 처리됩니다.
 
-## `import.meta.url`
+## import.meta.url
 
 모듈의 절대 `file:` URL을 반환합니다.
 
@@ -92,7 +92,7 @@ exports.aFunction = function doSomething() {
 console.log(import.meta.url); // `file:///path/to/your/project/src/index.js`와 같은 출력
 ```
 
-## `import.meta.webpack`
+## import.meta.webpack
 
 webpack 버전을 반환합니다.
 
@@ -106,7 +106,7 @@ console.log(import.meta.webpack); // webpack 5의 경우 `5` 출력
 
 Webpack 특유의 속성입니다. [`module.hot`](#modulehot-webpack-specific)의 별칭으로, `import.meta.webpackHot`은 [strict ESM](/guides/ecma-script-modules/#flagging-modules-as-esm)에서 사용할 수 있지만 `module.hot`은 할 수 없습니다.
 
-## `__filename` (NodeJS)
+## \_\_filename (NodeJS)
 
 `node.__filename`의 설정 옵션은 다음과 같습니다.
 
@@ -116,7 +116,7 @@ Webpack 특유의 속성입니다. [`module.hot`](#modulehot-webpack-specific)�
 
 파서에 의해 파싱되는 표현식 내부에서 사용되는 경우, 설정 옵션은 `true`로 처리됩니다.
 
-## `__resourceQuery` (webpack-specific)
+## \_\_resourceQuery (webpack-specific)
 
 현재 모듈의 리소스 쿼리입니다. 다음 `require`가 호출된 경우, 쿼리 문자열은 `file.js`에서 사용할 수 있습니다.
 
@@ -130,11 +130,11 @@ require('file.js?test');
 __resourceQuery === '?test';
 ```
 
-## `__webpack_public_path__` (webpack-specific)
+## \_\_webpack_public_path\_\_ (webpack-specific)
 
 설정 옵션의 `output.publicPath`와 동일합니다.
 
-## `__webpack_require__` (webpack-specific)
+## \_\_webpack_require\_\_ (webpack-specific)
 
 원시 요청 함수입니다. 이 표현식은 파서에 의해 의존성이 파싱되지 않습니다.
 
@@ -166,19 +166,19 @@ import('./module-a').then((moduleA) => {
 });
 ```
 
-## `__webpack_modules__` (webpack-specific)
+## \_\_webpack_modules\_\_ (webpack-specific)
 
 모든 모듈의 내부 객체에 대한 접근을 제공합니다.
 
-## `__webpack_hash__` (webpack-specific)
+## \_\_webpack_hash\_\_ (webpack-specific)
 
 컴파일의 해시에 대한 접근을 제공합니다.
 
-## `__non_webpack_require__` (webpack-specific)
+## \_\_non_webpack_require\_\_ (webpack-specific)
 
 webpack에 의해 파싱되지 않는 `require` 함수를 생성합니다. 가능한 경우 전역 요청 함수로 멋진 작업을 수행하는데 사용할 수 있습니다.
 
-## `__webpack_exports_info__` (webpack-specific)
+## \_\_webpack_exports_info\_\_ (webpack-specific)
 
 모듈에서, `__webpack_exports_info__`는 export 내부 검사를 허용하는데 사용할 수 있습니다.
 
@@ -190,19 +190,23 @@ webpack에 의해 파싱되지 않는 `require` 함수를 생성합니다. 가�
 
   - export가 사용되지 않는 경우 `false`
   - export가 사용되는 경우 `true`
-  - export 사용이 런타임 조건에 따라 달라질 수 있는 경우 `null`
+  - export 사용이 런타임 조건에 따라 달라질 수 있는 경우 `null
+
+    `
   - 정보가 없을 경우 `undefined`
 
 - `__webpack_exports_info__.<exportName>.provideInfo`는 다음과 같습니다.
 
   - export가 제공되지 않는 경우 `false`
   - export가 제공되는 경우 `true`
-  - export 규정이 런타임 조건에 따라 달라질 수 있는 경우 `null`
+  - export 규정이 런타임 조건에 따라 달라질 수 있는 경우 `null
+
+    `
   - 정보가 없을 경우 `undefined`
 
 - nested export에서 정보에 접근할 수 있습니다. 예. `__webpack_exports_info__.<exportName>.<exportName>.<exportName>.used`
 
-## `__webpack_is_included__` (webpack-specific)
+## \_\_webpack_is_included\_\_ (webpack-specific)
 
 <Badge text="5.16.0+" />
 
@@ -237,6 +241,6 @@ if (__webpack_is_included__('./module-a.js')) {
 console.log(__webpack_runtime_id__ === 'main');
 ```
 
-## `DEBUG` (webpack-specific)
+## DEBUG (webpack-specific)
 
 설정 옵션 `debug`와 동일합니다.

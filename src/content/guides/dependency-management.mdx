@@ -40,7 +40,7 @@ example_directory
 require('./template/' + name + '.ejs');
 ```
 
-webpack은 `require()` 호출을 구문 분석하고 일부 정보를 추출합니다.
+Webpack은 `require()` 호출을 구문 분석하고 일부 정보를 추출합니다.
 
 ```code
 Directory: ./template
@@ -65,14 +65,14 @@ Regular expression: /^.*\.ejs$/
 
 이것은 동적으로 요청하는 기능이 지원되지만 모든 모듈이 번들에 포함되는 것을 의미합니다.
 
-## `require.context`
+## require.context
 
 `require.context()` 함수로 자신만의 컨텍스트를 만들 수 있습니다.
 
 검색할 디렉터리, 하위 디렉터리를 검색해야 하는지 여부를 나타내는 플래그,
 일치하는 파일의 정규식을 전달할 수 있습니다.
 
-webpack은 빌드 하는 동안 코드에서 `require.context()`를 구문 분석합니다.
+Webpack은 빌드 하는 동안 코드에서 `require.context()`를 구문 분석합니다.
 
 구문은 다음과 같습니다.
 

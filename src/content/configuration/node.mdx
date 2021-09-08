@@ -20,7 +20,7 @@ translators:
 
 W> webpack5 부터, `node` 옵션에서 `global`, `__filename` 또는 `__dirname`만 설정할 수 있습니다. webpack5의 Node.js에서 `fs`를 폴리필할 방법을 찾고 있다면 [resolve.fallback](/configuration/resolve/#resolvefallback)를 참고하세요.
 
-## `node`
+## node
 
 `boolean: false` `object`
 
@@ -39,7 +39,7 @@ module.exports = {
 
 webpack 3.0.0부터, `node` 옵션을 `false`로 설정하여 `NodeStuffPlugin` 플러그인을 완전히 끌 수 있습니다.
 
-## `node.global`
+## node.global
 
 `boolean`
 
@@ -52,7 +52,7 @@ T> 전역변수가 필요한 모듈을 사용하는 경우 `global` 대신 `Prov
 - `true`: 폴리필 제공.
 - `false`: 아무것도 제공하지 않습니다. 이 객체를 예상하는 코드는 `ReferenceError`가 발생할 수 있습니다.
 
-## `node.__filename`
+## node.\_\_filename
 
 `boolean` `string: 'mock' | 'eval-only'`
 
@@ -63,7 +63,7 @@ T> 전역변수가 필요한 모듈을 사용하는 경우 `global` 대신 `Prov
 - `'mock'`: 고정값 `'/index.js'`.
 - `'eval-only'`
 
-## `node.__dirname`
+## node.\_\_dirname
 
 `boolean` `string: 'mock' | 'eval-only'`
 
