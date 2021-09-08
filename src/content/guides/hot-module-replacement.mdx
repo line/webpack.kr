@@ -84,15 +84,15 @@ HMR에 대한 수동 엔트리포인트를 제공할 수도 있습니다.
     entry: {
        app: './src/index.js',
 -      print: './src/print.js',
-+      // Runtime code for hot module replacement
++      // hot module replacement를 위한 런타임 코드
 +      hot: 'webpack/hot/dev-server.js',
-+      // Dev server client for web socket transport, hot and live reload logic
++      // 웹 소켓 전송, hot 및 live 리로드 로직을 위한 개발 서버 클라이언트
 +      client: 'webpack-dev-server/client/index.js?hot=true&live-reload=true',
     },
     devtool: 'inline-source-map',
     devServer: {
       static: './dist',
-+     // Dev server client for web socket transport, hot and live reload logic
++     // 웹 소켓 전송, hot 및 live 리로드 로직을 위한 개발 서버 클라이언트
 +     hot: false,
 +     client: false,
     },
@@ -100,7 +100,7 @@ HMR에 대한 수동 엔트리포인트를 제공할 수도 있습니다.
       new HtmlWebpackPlugin({
         title: 'Hot Module Replacement',
       }),
-+     // Plugin for hot module replacement
++     // hot module replacement를 위한 플러그인
 +     new webpack.HotModuleReplacementPlugin(),
     ],
     output: {
