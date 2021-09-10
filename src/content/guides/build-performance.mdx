@@ -133,7 +133,7 @@ webpack의 watch 모드를 사용하세요. 다른 도구를 사용하여 파일
 
 ### stats.toJson speed
 
-webpack 4는 기본적으로 `stats.toJson()`을 사용하여 많은 양의 데이터를 출력합니다. 증분 단계에서 필요한 경우가 아니면 `stats` 개체의 일부를 찾지 마세요. v3.1.3 이후의 `webpack-dev-server`에는 증분 빌드 단계에서 `stats` 객체에서 검색되는 데이터의 양을 최소화하기 위한 상당한 성능 수정이 포함되었습니다.
+Webpack 4는 기본적으로 `stats.toJson()`을 사용하여 많은 양의 데이터를 출력합니다. 증분 단계에서 필요한 경우가 아니면 `stats` 개체의 일부를 찾지 마세요. v3.1.3 이후의 `webpack-dev-server`에는 증분 빌드 단계에서 `stats` 객체에서 검색되는 데이터의 양을 최소화하기 위한 상당한 성능 수정이 포함되었습니다.
 
 ### Devtool
 
@@ -157,7 +157,7 @@ T> 대부분의 경우 `eval-cheap-module-source-map`이 가장 좋은 옵션입
 
 ### Minimal Entry Chunk
 
-webpack은 파일 시스템에 업데이트된 청크만 내보냅니다. 일부 설정 옵션의 경우(HMR, `output.chunkFilename`,`[fullhash]` 안의 `[name]`/`[chunkhash]`/`[contenthash]`) 변경된 청크와 함께 엔트리 청크가 무효화됩니다.
+Webpack은 파일 시스템에 업데이트된 청크만 내보냅니다. 일부 설정 옵션의 경우(HMR, `output.chunkFilename`,`[fullhash]` 안의 `[name]`/`[chunkhash]`/`[contenthash]`) 변경된 청크와 함께 엔트리 청크가 무효화됩니다.
 
 엔트리 청크를 작게 유지하여 내보내는 비용이 저렴한지 확인하세요. 아래의 설정은 런타임 코드에 대한 추가 청크를 생성하므로 생성 비용이 저렴합니다.
 
@@ -172,7 +172,7 @@ module.exports = {
 
 ### Avoid Extra Optimization Steps
 
-webpack은 크기 및 부하 성능에 대한 출력을 최적화하기 위해 추가 알고리즘 작업을 수행합니다. 이러한 최적화는 작은 코드 베이스에서는 성능이 좋지만 큰 코드에서는 비용이 많이들 수 있습니다.
+Webpack은 크기 및 부하 성능에 대한 출력을 최적화하기 위해 추가 알고리즘 작업을 수행합니다. 이러한 최적화는 작은 코드 베이스에서는 성능이 좋지만 큰 코드에서는 비용이 많이들 수 있습니다.
 
 ```js
 module.exports = {
@@ -187,7 +187,7 @@ module.exports = {
 
 ### Output Without Path Info
 
-webpack은 출력 번들에 경로 정보를 생성하는 기능이 있습니다. 그러나 이것은 수천 개의 모듈을 번들로 묶는 프로젝트에서 가비지 컬렉션에 과부화를 줍니다. `options.output.pathinfo` 설정에서 이 기능을 끄세요.
+Webpack은 출력 번들에 경로 정보를 생성하는 기능이 있습니다. 그러나 이것은 수천 개의 모듈을 번들로 묶는 프로젝트에서 가비지 컬렉션에 과부화를 줍니다. `options.output.pathinfo` 설정에서 이 기능을 끄세요.
 
 ```js
 module.exports = {
@@ -200,7 +200,7 @@ module.exports = {
 
 ### Node.js Versions 8.9.10-9.11.1
 
-Node.js 버전 8.9.10 - 9.11.1의 ES2015 `Map` 및 `Set` 구현에서 [성능 저하](https://github.com/nodejs/node/issues/19769)가 있었습니다. webpack은 이러한 데이터 구조를 자유롭게 사용하므로 이 성능저하는 컴파일 시간에 영향을 줍니다.
+Node.js 버전 8.9.10 - 9.11.1의 ES2015 `Map` 및 `Set` 구현에서 [성능 저하](https://github.com/nodejs/node/issues/19769)가 있었습니다. Webpack은 이러한 데이터 구조를 자유롭게 사용하므로 이 성능저하는 컴파일 시간에 영향을 줍니다.
 
 이전 및 이후 Node.js 버전은 영향을 받지 않습니다.
 

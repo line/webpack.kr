@@ -17,13 +17,14 @@ contributors:
   - anikethsaha
   - chenxsan
   - jamesgeorge007
+  - snitin315
 translators:
   - limong
 ---
 
 이 옵션은 모듈을 해석하는 방식을 변경 할 수 있습니다. webpack은 알맞은 기본값을 제공하지만, 상세하게 해석 방식을 변경할 수 있습니다. 리졸버의 동작 방식에 대한 자세한 설명은 [Module Resolution](/concepts/module-resolution)을 참고하세요.
 
-## `resolve`
+## resolve
 
 `object`
 
@@ -40,7 +41,7 @@ module.exports = {
 };
 ```
 
-### `resolve.alias`
+### resolve.alias
 
 `object`
 
@@ -154,7 +155,7 @@ module.exports = {
 };
 ```
 
-### `resolve.aliasFields`
+### resolve.aliasFields
 
 `[string]: ['browser']`
 
@@ -171,7 +172,7 @@ module.exports = {
 };
 ```
 
-### `resolve.cacheWithContext`
+### resolve.cacheWithContext
 
 `boolean` (since webpack 3.1.0)
 
@@ -194,7 +195,7 @@ module.exports = {
 };
 ```
 
-### `resolve.descriptionFiles`
+### resolve.descriptionFiles
 
 `[string] = ['package.json']`
 
@@ -211,7 +212,7 @@ module.exports = {
 };
 ```
 
-### `resolve.enforceExtension`
+### resolve.enforceExtension
 
 `boolean = false`
 
@@ -315,7 +316,7 @@ module.exports = {
 };
 ```
 
-### `resolve.mainFields`
+### resolve.mainFields
 
 `[string]`
 
@@ -358,7 +359,7 @@ module.exports = {
 
 `import * as Upstream from 'upstream'`을 실행하면 실제로 `browser` 속성의 파일로 해석됩니다. `browser` 속성은 `mainFields`의 첫번째 항목이기 때문에 우선하여 해석합니다. 한편, webpack에 의해 번들된 Node.js 애플리케이션은 먼저 `module` 필드의 파일을 사용하여 해석하려고 시도합니다.
 
-### `resolve.mainFiles`
+### resolve.mainFiles
 
 `[string] = ['index']`
 
@@ -375,7 +376,7 @@ module.exports = {
 };
 ```
 
-### `resolve.exportsFields`
+### resolve.exportsFields
 
 `[string] = ['exports']`
 
@@ -392,7 +393,7 @@ module.exports = {
 };
 ```
 
-### `resolve.modules`
+### resolve.modules
 
 `[string] = ['node_modules']`
 
@@ -430,7 +431,7 @@ module.exports = {
 };
 ```
 
-### `resolve.unsafeCache`
+### resolve.unsafeCache
 
 `RegExp` `[RegExp]` `boolean: true`
 
@@ -462,7 +463,7 @@ module.exports = {
 
 W> 캐시된 경로를 변경하는 것은 간혹 실패의 원인이 될 수 있습니다.
 
-### `resolve.plugins`
+### resolve.plugins
 
 [`[Plugin]`](/plugins/)
 
@@ -479,7 +480,7 @@ module.exports = {
 };
 ```
 
-### `resolve.preferRelative`
+### resolve.preferRelative
 
 `boolean`
 
@@ -508,7 +509,7 @@ const b = new URL('module/path', import.meta.url);
 const a = new URL('./module/path', import.meta.url);
 ```
 
-### `resolve.preferAbsolute`
+### resolve.preferAbsolute
 
 `boolean`
 
@@ -527,7 +528,7 @@ module.exports = {
 };
 ```
 
-### `resolve.symlinks`
+### resolve.symlinks
 
 `boolean = true`
 
@@ -546,7 +547,7 @@ module.exports = {
 };
 ```
 
-### `resolve.cachePredicate`
+### resolve.cachePredicate
 
 `function(module) => boolean`
 
@@ -566,7 +567,7 @@ module.exports = {
 };
 ```
 
-### `resolve.restrictions`
+### resolve.restrictions
 
 `[string, RegExp]`
 
@@ -583,7 +584,7 @@ module.exports = {
 };
 ```
 
-### `resolve.roots`
+### resolve.roots
 
 `[string]`
 
@@ -601,7 +602,7 @@ module.exports = {
 };
 ```
 
-### `resolve.importsFields`
+### resolve.importsFields
 
 `[string]`
 
@@ -644,7 +645,7 @@ module.exports = {
   };
   ```
 
-## `resolveLoader`
+## resolveLoader
 
 `object { modules [string] = ['node_modules'], extensions [string] = ['.js', '.json'], mainFields [string] = ['loader', 'main']}`
 

@@ -28,7 +28,7 @@ T> [시작하기](/guides/getting-started), [출력 관리](/guides/output-manag
 
 ## Output Filenames
 
-`output.filename` [substitutions](/configuration/output/#outputfilename) 설정을 사용하여 출력 파일의 이름을 정의할 수 있습니다. webpack은 **substitutions** 이라고 하는 대괄호 문자열을 사용하여 파일 이름을 템플릿화하는 방법을 제공합니다. `[contenthash]` substitution은 애셋의 콘텐츠에 따라 고유한 해시를 추가합니다. 애셋의 콘텐츠가 변경되면 `[contenthash]`도 변경됩니다.
+`output.filename` [substitutions](/configuration/output/#outputfilename) 설정을 사용하여 출력 파일의 이름을 정의할 수 있습니다. Webpack은 **substitutions** 이라고 하는 대괄호 문자열을 사용하여 파일 이름을 템플릿화하는 방법을 제공합니다. `[contenthash]` substitution은 애셋의 콘텐츠에 따라 고유한 해시를 추가합니다. 애셋의 콘텐츠가 변경되면 `[contenthash]`도 변경됩니다.
 
 `index.html` 파일을 수동으로 관리할 필요가 없도록 [출력 관리의](/guides/output-management) `플러그인`과 [시작하기의](/guides/getting-started) 예제를 사용하여 프로젝트를 설정해 보겠습니다.
 
@@ -93,7 +93,7 @@ W> 현재 webpack 버전에 따라 출력이 다를 수 있습니다. 최신 버
 
 ## Extracting Boilerplate
 
-[코드 스플릿팅](/guides/code-splitting)에서 배운 것처럼 [`SplitChunksPlugin`](/plugins/split-chunks-plugin/)을 사용하여 모듈을 별도의 번들로 분할 할 수 있습니다. webpack은 [`optimization.runtimeChunk`](/configuration/optimization/#optimizationruntimechunk) 옵션을 사용하여 런타임 코드를 별도의 청크로 분할하는 최적화 기능을 제공합니다. 모든 청크에 대해 단일 런타임 번들을 생성하려면 `single`로 설정합니다.
+[코드 스플릿팅](/guides/code-splitting)에서 배운 것처럼 [`SplitChunksPlugin`](/plugins/split-chunks-plugin/)을 사용하여 모듈을 별도의 번들로 분할 할 수 있습니다. Webpack은 [`optimization.runtimeChunk`](/configuration/optimization/#optimizationruntimechunk) 옵션을 사용하여 런타임 코드를 별도의 청크로 분할하는 최적화 기능을 제공합니다. 모든 청크에 대해 단일 런타임 번들을 생성하려면 `single`로 설정합니다.
 
 **webpack.config.js**
 

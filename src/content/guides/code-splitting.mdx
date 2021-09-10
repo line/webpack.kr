@@ -208,7 +208,7 @@ webpack 5.4.0 compiled successfully in 249 ms
 
 webpack은 하나의 페이지에 여러 엔트리 포인트를 허용하지만, 가능하다면 `entry: { page: ['./analytics', './app'] }`처럼 여러 개의 import가 포함된 엔트리 포인트 사용을 피해야 합니다. 이는 `async` 스크립트 태그를 사용할 때 최적화에 용이하며 일관된 순서로 실행할 수 있도록 합니다.
 
-### `SplitChunksPlugin`
+### SplitChunksPlugin
 
 [`SplitChunksPlugin`](/plugins/split-chunks-plugin/)을 사용하면 기존 엔트리 청크 또는 완전히 새로운 청크로 공통 의존성을 추출할 수 있습니다. 이를 활용하여 이전 예제의 `lodash` 중복을 제거해 보겠습니다.
 
@@ -382,7 +382,7 @@ T> 나중에 계산된 변수를 기반으로 특정 모듈을 가져와야 할 
 
 ## Prefetching/Preloading modules
 
-webpack 4.6.0+에서 프리페치 및 프리로드에 대한 지원이 추가되었습니다.
+Webpack 4.6.0+에서 프리페치 및 프리로드에 대한 지원이 추가되었습니다.
 
 모듈을 가져올 때 인라인 지시문을 사용하면 webpack이 브라우저에 아래와 같은 "리소스 힌트"를 줄 수 있습니다.
 

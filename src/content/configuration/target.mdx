@@ -15,15 +15,15 @@ translators:
   - limong
 ---
 
-webpack은 다양한 환경과 _target을_ 컴파일합니다. `target`이 무엇인지 자세히 이해하고 싶다면 [target의 개념에 대한 페이지](/concepts/targets/)를 읽어보세요.
+Webpack은 다양한 환경과 _target을_ 컴파일합니다. `target`이 무엇인지 자세히 이해하고 싶다면 [target의 개념에 대한 페이지](/concepts/targets/)를 읽어보세요.
 
-## `target`
+## target
 
 `string` `[string]` `false`
 
 특정 환경을 대상으로 하도록 webpack에 지정합니다. browserslist 설정이 없으면 `'browserslist'` 혹은 `'web'`으로 설정됩니다.
 
-### `string`
+### string
 
 다음의 문자열은 [`WebpackOptionsApply`](https://github.com/webpack/webpack/blob/master/lib/WebpackOptionsApply.js)를 통해서 지원됩니다.
 
@@ -56,7 +56,7 @@ module.exports = {
 
 런타임 코드를 생성하는데 사용할 수 있는 ES 기능의 결정에 도움을 줍니다. (모든 청크와 모듈은 런타임 코드로 래핑 됩니다)
 
-#### `browserslist`
+#### browserslist
 
 프로젝트에 browserslist 설정이 있으면, webpack은 이 설정을 사용합니다.
 
@@ -71,7 +71,7 @@ module.exports = {
 - `browserslist:/path/to/config` - browserslist 설정을 지정할 수 있음
 - `browserslist:/path/to/config:modern` - browserslist 설정 및 환경을 명시적으로 지정
 
-### `[string]`
+### [string]
 
 복수의 target을 작성하면 기능의 공통적인 하위 집합이 사용됩니다.
 
@@ -84,7 +84,7 @@ module.exports = {
 };
 ```
 
-webpack은 웹 플랫폼을 위해 런타임 코드를 생성하고 ES5 기능만 사용합니다.
+Webpack은 웹 플랫폼을 위해 런타임 코드를 생성하고 ES5 기능만 사용합니다.
 
 현재로서는 모든 target을 같이 혼용하여 사용하지 못합니다.
 
@@ -99,7 +99,7 @@ module.exports = {
 
 에러의 원인이 됩니다. 현재 webpack은 범용적인 target을 지원하지 않습니다.
 
-### `false`
+### false
 
 `target`을 `false`로 설정하면, 위 목록에서 미리 정의된 target 중에 원하는 target이 없으면 플러그인이 적용되지 않습니다.
 
