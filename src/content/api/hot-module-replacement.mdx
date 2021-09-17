@@ -17,7 +17,7 @@ translators:
   - choilim
 ---
 
-[Hot Module Replacement](/concepts/hot-module-replacement)가 [`HotModuleReplacementPlugin`](/plugins/hot-module-replacement-plugin)를 통해 활성화된 경우, 이것의 인터페이스는 [`import.meta.webpackHot`](/api/module-variables/#importmetawebpackhot)프로퍼티 뿐만 아니라 [`module.hot`](/api/module-variables/#modulehot-webpack-specific)프로퍼티 아래 노출됩니다. [strict ESM](/guides/ecma-script-modules/#flagging-modules-as-esm)에서는 `import.meta.webpackHot`만 사용할 수 있습니다.
+[Hot Module Replacement](/concepts/hot-module-replacement)가 [`HotModuleReplacementPlugin`](/plugins/hot-module-replacement-plugin)를 통해 활성화된 경우, 해당 인터페이스는 [`import.meta.webpackHot`](/api/module-variables/#importmetawebpackhot)프로퍼티 뿐만 아니라 [`module.hot`](/api/module-variables/#modulehot-webpack-specific)프로퍼티 아래 노출됩니다. [strict ESM](/guides/ecma-script-modules/#flagging-modules-as-esm)에서는 `import.meta.webpackHot`만 사용할 수 있습니다.
 
 일반적으로, 사용자는 인터페이스에 접근할 수 있는지 확인한 후, 작업을 시작합니다. 예를 들어, 업데이트된 모듈을 `accept` 하는 방법은 다음과 같습니다.
 
