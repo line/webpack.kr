@@ -356,14 +356,13 @@ module.exports = function (source) {
 
 `this.importModule(request, options, [callback]): Promise`
 
-빌드 시 요청을 컴파일하고 실행하기 위한 자식 컴파일러를 위한 대체 경량 솔루션입니다.
-[`experiments.executeModule`](/configuration/experiments/#experimentsexecutemodule)를 통해 활성화할 수 있습니다.
+자식 컴파일러가 빌드 시 요청을 컴파일하고 실행하기 위한 대체 경량 솔루션입니다.
 
 - `request`: 모듈을 로드할 요청 문자열입니다
 - `options`:
   - `layer`: 이 모듈이 배치/컴파일되는 레이어를 지정합니다
   - `publicPath`: 빌드된 모듈에 사용되는 공개 경로입니다
-- `callback`: export를 반환하는 선택적 함수입니다. 콜백을 제공하지 않으면 `importModule`이 Promise를 리턴합니다.
+- `callback`: 모듈의 export 또는 ESM용 네임스페이스 객체를 리턴하는 Node.js 스타일의 옵셔널 콜백 함수입니다. 콜백을 제공하지 않으면 `importModule`이 Promise를 리턴합니다.
 
 **webpack.config.js**
 
