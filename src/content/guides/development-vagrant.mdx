@@ -22,10 +22,10 @@ Vagrant.configure("2") do |config|
 end
 ```
 
-다음으로, 프로젝트에 `webpack`과 `webpack-dev-server`를 설치하세요.
+다음으로, 프로젝트에 `webpack`, `webpack-cli`, `@webpack-cli/serve`, `webpack-dev-server` 를 설치하세요.
 
 ```bash
-npm install --save-dev webpack webpack-dev-server
+npm install --save-dev webpack webpack-cli @webpack-cli/serve webpack-dev-server
 ```
 
 `webpack.config.js` 파일이 있는지 확인하세요. 만약 파일이 없다면 다음을 최소한의 예제로 사용해 시작하세요.
@@ -58,15 +58,15 @@ module.exports = {
 이제, 서버를 실행하세요.
 
 ```bash
-webpack serve --host 0.0.0.0 --public 10.10.10.61:8080 --watch-poll
+webpack serve --host 0.0.0.0 --client-web-socket-url ws://10.10.10.61:8080/ws --watch-options-poll
 ```
 
 기본적으로, 서버는 로컬 호스트에서만 접근할 수 있습니다. 호스트 PC에서 접근할 것이므로, 이를 허용하려면 `--host`를 변경해야 합니다.
 
 `webpack-dev-server`는 파일이 변경될 때 다시 로드하기 위해 WebSocket에 연결하는 스크립트를 번들에 포함합니다.
-`--public` 플래그는 스크립트가 WebSocket을 찾을 위치를 알고 있는지 확인합니다. 서버는 기본적으로 `8080` 포트를 사용하므로, 여기에서도 지정해야 합니다.
+`--client-web-socket-url` 플래그는 스크립트가 WebSocket을 찾을 위치를 알고 있는지 확인합니다. 서버는 기본적으로 `8080` 포트를 사용하므로, 여기에서도 지정해야 합니다.
 
-`--watch-poll`은 webpack이 파일의 변경을 감지할 수 있도록 합니다. 기본적으로, webpack은 파일 시스템에 의해 트리거되는 이벤트를 수신하지만, VirtualBox에는 이와 관련된 많은 문제가 있습니다.
+`--watch-options-poll`은 webpack이 파일의 변경을 감지할 수 있도록 합니다. 기본적으로, webpack은 파일 시스템에 의해 트리거되는 이벤트를 수신하지만, VirtualBox에는 이와 관련된 많은 문제가 있습니다.
 
 서버는 이제 `http://10.10.10.61:8080`에서 접근할 수 있습니다. `app.js`를 변경하면 실시간으로 다시 로드됩니다.
 
@@ -98,7 +98,7 @@ server {
 `webpack-dev-server`를 시작하는 명령을 다음과 같이 변경할 수 있습니다.
 
 ```bash
-webpack serve --public 10.10.10.61 --watch-poll
+webpack serve --client-web-socket-url ws://10.10.10.61:8080/ws --watch-options-poll
 ```
 
 이렇게 하면, `127.0.0.1`에서만 서버에 접근할 수 있으며, nginx가 호스트 PC에서 사용할 수 있도록 처리하므로 괜찮습니다.

@@ -699,6 +699,8 @@ module.exports = {
 
 해싱 함수에서 `update` 및 `digest` 메소드를 사용할 수 있는지 확인하세요.
 
+T> `webpack v5.54.0+` 이후로, `hashFunction`은 더 빠른 알고리즘으로 `xxhash64`를 지원하며, [`experiments.futureDefaults`](/configuration/experiments/#experimentsfuturedefaults)가 활성화될 때 기본값으로 사용됩니다.
+
 ## output.hashSalt
 
 Node.JS의 [`hash.update`](https://nodejs.org/api/crypto.html#crypto_hash_update_data_inputencoding)를 통해 해시를 업데이트하기 위해 선택적으로 사용할 수 있는 솔트입니다.
