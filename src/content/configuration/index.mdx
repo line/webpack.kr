@@ -877,12 +877,11 @@ module.exports = {
     proxy: { // 백엔드 개발 서버에 대한 프록시 URL
       '/api': 'http://localhost:3000'
     },
-    static: path.join(__dirname, 'public'), // boolean | string | array, 정적 파일 위치
+    static: path.join(__dirname, 'public'), // boolean | string | array | object, 정적 파일 위치
     compress: true, // gzip 압축 활성화
     historyApiFallback: true, // 404일때 index.html을 표시하려면 true, 복수의 경로를 적용하려면 객체
     hot: true, // hot module replacement. HotModuleReplacementPlugin에 따라 다름
     https: false, // self-signed의 경우 true, 인증 기관의 경우 객체
-    noInfo: true, // hot reload에 대해서만 오류 및 경고
     // ...
   },
   experiments: {

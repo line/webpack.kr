@@ -1,12 +1,16 @@
-const _ = require('lodash');
-const fs = require('fs');
-const path = require('path');
-const { promisify } = require('util');
-const mkdirp = require('mkdirp');
-const fetch = require('node-fetch');
+import _ from 'lodash';
+import fs from 'fs';
+import path from 'path';
+import { promisify } from 'util';
+import mkdirp from 'mkdirp';
+import fetch from 'node-fetch';
+import { fileURLToPath } from 'url';
 
-const yamlHeadmatter = require('./yaml-headmatter.js');
-const processReadme = require('./process-readme.js');
+import yamlHeadmatter from './yaml-headmatter.mjs';
+import processReadme from './process-readme.mjs';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const writeFile = promisify(fs.writeFile);
 const readFile = promisify(fs.readFile);
@@ -17,6 +21,15 @@ const types = ['loaders', 'plugins'];
 const pathMap = {
   loaders: path.resolve(__dirname, '../content/loaders'),
   plugins: path.resolve(__dirname, '../content/plugins'),
+};
+
+const loaderGroup = {
+  'css-loader': 'CSS',
+  'less-loader': 'CSS',
+  'postcss-loader': 'CSS',
+  'sass-loader': 'CSS',
+  'style-loader': 'CSS',
+  'stylus-loader': 'CSS',
 };
 
 async function main() {
@@ -56,13 +69,17 @@ async function main() {
           repo: htmlUrl,
         });
       } else {
-        // TODO we need other categories for loaders
-        headmatter = yamlHeadmatter({
+        let basic = {
           title: title,
           source: url,
           edit: editUrl,
           repo: htmlUrl,
-        });
+        };
+
+        if (loaderGroup[packageName]) {
+          basic.group = loaderGroup[packageName];
+        }
+        headmatter = yamlHeadmatter(basic);
       }
 
       const response = await fetch(url);

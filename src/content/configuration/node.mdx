@@ -41,7 +41,7 @@ webpack 3.0.0부터, `node` 옵션을 `false`로 설정하여 `NodeStuffPlugin` 
 
 ## node.global
 
-`boolean`
+`boolean` `'warn'`
 
 T> 전역변수가 필요한 모듈을 사용하는 경우 `global` 대신 `ProvidePlugin`을 사용하세요.
 
@@ -51,25 +51,28 @@ T> 전역변수가 필요한 모듈을 사용하는 경우 `global` 대신 `Prov
 
 - `true`: 폴리필 제공.
 - `false`: 아무것도 제공하지 않습니다. 이 객체를 예상하는 코드는 `ReferenceError`가 발생할 수 있습니다.
+- `'warn'`: `global`을 사용할 때 경고 표시.
 
 ## node.\_\_filename
 
-`boolean` `string: 'mock' | 'eval-only'`
+`boolean` `'mock' | 'warn-mock' | 'eval-only'`
 
 옵션:
 
 - `true`: [`context` 옵션](/configuration/entry-context/#context)에 상대적인 **입력** 파일의 dirname.
 - `false`: Webpack은 `__filename` 코드를 건드리지 않습니다. 즉 일반적인 Node.js `__filename` 동작이 있음을 의미합니다. Node.js 환경에서 실행할 때 **출력** 파일 이름입니다.
 - `'mock'`: 고정값 `'/index.js'`.
+- `'warn-mock'`: `'/index.js'`의 고정값을 사용하되 경고를 표시합니다.
 - `'eval-only'`
 
 ## node.\_\_dirname
 
-`boolean` `string: 'mock' | 'eval-only'`
+`boolean` `'mock' | 'warn-mock' | 'eval-only'`
 
 옵션:
 
 - `true`: [`context` 옵션](/configuration/entry-context/#context)에 상대적인 **입력** 파일의 dirname.
 - `false`: Webpack은 `__dirname` 코드를 건드리지 않습니다. 즉 일반적인 Node.js `__dirname` 동작이 있음을 의미합니다. Node.js 환경에서 실행할 때 **출력** 파일 이름입니다.
 - `'mock'`: 고정값 `'/'`.
+- `'warn-mock'`: `'/'`의 고정값을 사용하되 경고를 표시합니다.
 - `'eval-only'`

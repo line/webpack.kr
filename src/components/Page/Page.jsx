@@ -14,6 +14,7 @@ import AdjacentPages from './AdjacentPages';
 
 // Load Styling
 import './Page.scss';
+import Link from '../Link/Link';
 export default function Page(props) {
   const {
     title,
@@ -61,9 +62,10 @@ export default function Page(props) {
     }
   }, [contentLoaded, pathname, hash]);
 
+  const numberOfContributors = contributors.length;
   const loadRelated = contentLoaded && related && related.length !== 0;
   const loadContributors =
-    contentLoaded && contributors && contributors.length !== 0;
+    contentLoaded && contributors && numberOfContributors !== 0;
   const loadTranslators =
     contentLoaded && translators && translators.length !== 0;
 
@@ -103,7 +105,7 @@ export default function Page(props) {
             <ul>
               {related.map((link, index) => (
                 <li key={index}>
-                  <a href={link.url}>{link.title}</a>
+                  <Link to={link.url}>{link.title}</Link>
                 </li>
               ))}
             </ul>
@@ -117,8 +119,11 @@ export default function Page(props) {
         )}
 
         {loadContributors && (
-          <div className="contributors__section">
-            <h3>Contributors</h3>
+          <div data-testid="contributors" className="print:hidden">
+            <h2 className="!font-sans !font-normal">
+              {numberOfContributors}{' '}
+              {numberOfContributors === 1 ? 'Contributor' : 'Contributors'}
+            </h2>
             <Contributors contributors={contributors} />
           </div>
         )}

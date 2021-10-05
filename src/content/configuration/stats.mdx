@@ -282,6 +282,21 @@ module.exports = {
 };
 ```
 
+### stats.groupAssetsByExtension
+
+`boolean`
+
+확장자로 애셋을 그룹화할지 여부를 `stats`에 알려줍니다.
+
+```javascript
+module.exports = {
+  //...
+  stats: {
+    groupAssetsByExtension: false,
+  },
+};
+```
+
 ### stats.groupAssetsByInfo
 
 `boolean`
@@ -293,6 +308,21 @@ module.exports = {
   //...
   stats: {
     groupAssetsByInfo: false,
+  },
+};
+```
+
+### stats.groupAssetsByPath
+
+`boolean`
+
+애셋 경로별로 애셋을 그룹화할지 여부를 `stats`에 알려줍니다.
+
+```javascript
+module.exports = {
+  //...
+  stats: {
+    groupAssetsByPath: false,
   },
 };
 ```
@@ -756,6 +786,21 @@ module.exports = {
   //...
   stats: {
     moduleTrace: false,
+  },
+};
+```
+
+### stats.optimizationBailout
+
+`boolean`
+
+모듈에 대한 최적화가 중단된 이유를 보여주기 위해 `stats`에 알려줍니다.
+
+```javascript
+module.exports = {
+  //...
+  stats: {
+    optimizationBailout: false,
   },
 };
 ```
