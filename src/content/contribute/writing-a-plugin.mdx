@@ -1,5 +1,5 @@
 ---
-title: Writng a Plugin
+title: Writing a Plugin
 sort: 3
 contributors:
   - slavafomin
@@ -22,18 +22,18 @@ translators:
 
 Webpack용 plugin은 다음과 같이 구성됩니다.:
 
-- JavaScript function or a JavaScript class로 이름을 붙인다.
-- 프로토타입에서 `apply` 메소드를 정의한다.
-- 특정한 [event hook](/api/compiler-hooks/) 로 지정한다.
-- Webpack 내부에 있는 인스턴스의 특정한 데이터를 처리한다.
-- 기능적으로 완벽해지면 Webpack에서 제공하는 callback을 호출한다.
+- JavaScript function or a JavaScript class로 이름을 붙입니다.
+- 프로토타입에서 `apply` 메소드를 정의합니다.
+- 특정한 [event hook](/api/compiler-hooks/) 로 지정합니다.
+- Webpack 내부에 있는 인스턴스의 특정한 데이터를 처리합니다.
+- 기능적으로 완벽해지면 Webpack에서 제공하는 callback을 호출합니다.
 
 ```javascript
 // A JavaScript class.
 class MyExampleWebpackPlugin {
   // `apply`를 compiler를 argument로 받는 프로토타입 메소드로 정의합니다.
   apply(compiler) {
-    // attach할 이벤트 훅을 지정합니다.
+    // attach할 이벤트 hook을 지정합니다.
     compiler.hooks.emit.tapAsync(
       'MyExampleWebpackPlugin',
       (compilation, callback) => {
@@ -63,7 +63,7 @@ class HelloWorldPlugin {
     compiler.hooks.done.tap(
       'Hello World Plugin',
       (
-        stats /* 훅이 탭이 끝나면 stats는 인자로 통과됩니다.*/
+        stats /* hook이 탭이 끝나면 stats는 인자로 통과됩니다.*/
       ) => {
         console.log('Hello World!');
       }
@@ -74,7 +74,7 @@ class HelloWorldPlugin {
 module.exports = HelloWorldPlugin;
 ```
 
-그런 다음에 플러그인을 사용하려면 webpack의 설정인 `plugins` 배열에 인스턴스를 포함하자.
+그런 다음에 플러그인을 사용하려면 webpack의 설정인 `plugins` 배열에 인스턴스를 포함해야합니다.
 
 ```javascript
 // webpack.config.js
