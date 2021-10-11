@@ -46,11 +46,11 @@ module.exports = {
 }
 ```
 
-T> `'development'` 모드와 `'production'` 모드는 다릅니다. [배포 안내서](/guides/production/#setup)와 같이 `webpack-merge`를 사용해 설정을 최적화할 수 있습니다.
+T> `'development'` 모드와 `'production'` 모드는 다릅니다. [상용 안내서](/guides/production/#setup)와 같이 `webpack-merge`를 사용해 설정을 최적화할 수 있습니다.
 
 ## Deprecated/Removed plugins
 
-이러한 플러그인은 배포에서 기본 제공되므로 설정에서 제거할 수 있습니다.
+이러한 플러그인은 production 에서 기본 제공되므로 설정에서 제거할 수 있습니다.
 예시 :
 
 **webpack.config.js**
@@ -67,7 +67,7 @@ module.exports = {
 }
 ```
 
-이러한 플러그인은 배포 모드에서 기본으로 제공됩니다.
+이러한 플러그인은 production 모드에서 기본으로 제공됩니다.
 
 **webpack.config.js**
 
@@ -105,7 +105,7 @@ T> `stats`에서 HTML을 생성할때, 대개 최적의 설정인 `optimization.
 
 ## import() and CommonJS
 
-non-ESM을 불러오기 위해 `import()`을 사용할 때, webpack 4에서 결과는 바뀝니다. 그래서 `module.exports`의 값을 얻기 위해 `default` 특성에 접근할 필요가 있습니다.
+non-ESM을 불러오기 위해 `import()`을 사용할 때, webpack 4에서 결과는 바뀝니다. 그래서 `module.exports`의 값을 얻기 위해 `default` 프토퍼티에 접근할 필요가 있습니다.
 
 **non-esm.js**
 
@@ -129,7 +129,7 @@ function sayHello() {
 
 ## json and loaders
 
-`.json` 파일을 변환하기 위해 사용자 지정 로더를 사용할 때, `type` 모듈을 바꿔야 합니다.
+`.json` 파일을 변환하기 위해 커스 로더를 사용할 때, `type` 모듈을 바꿔야 합니다.
 예시 :
 
 **webpack.config.js**
