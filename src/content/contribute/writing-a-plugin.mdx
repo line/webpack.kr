@@ -237,7 +237,8 @@ class FileListPlugin {
           // 객체의 key는 애셋의 경로 이름입니다.
           // 그리고 values 파일 소스입니다.
 
-          // 모든 애셋을 거쳐 반복하고 Markdown 파일로 내용을 생성합니다.
+          // 모든 애셋을 거쳐 반복하고 
+          // Markdown 파일로 내용을 생성합니다.
           const content =
             '# In this build:\n\n' +
             Object.keys(assets)
@@ -281,6 +282,7 @@ module.exports = {
   ],
 };
 ```
+
 이렇게 하면 다음과 같은 이름을 가진 마크다운 파일이 생성됩니다.
 
 ```markdown
