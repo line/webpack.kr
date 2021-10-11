@@ -70,7 +70,7 @@ webpack 5는 이제는 사용되지 않는 기능을 모두 제거하므로 계�
 
 ### Test webpack 5 compatibility
 
-webpack 4 구성에서 다음 옵션을 설정하고 빌드가 여전히 올바르게 작동하는지 확인하세요.
+webpack 4 설정에서 다음 옵션을 설정하고 빌드가 여전히 올바르게 작동하는지 확인하세요.
 
 ```javascript
 module.exports = {
@@ -82,9 +82,9 @@ module.exports = {
 };
 ```
 
-webpack 5의 구성을 업그레이드할 때 이 옵션을 다시 제거해야 합니다.
+webpack 5의 설정을 업그레이드할 때 이 옵션을 다시 제거해야 합니다.
 
-T> webpack 5는 구성 스키마에서 이러한 옵션을 제거하고 항상 `false`를 사용합니다.
+T> webpack 5는 설정 스키마에서 이러한 옵션을 제거하고 항상 `false`를 사용합니다.
 
 ## Upgrade webpack to 5
 
@@ -96,9 +96,9 @@ T> webpack 5는 구성 스키마에서 이러한 옵션을 제거하고 항상 `
 
 ### Clean up configuration
 
-- webpack 구성에서 `optimization.moduleIds` 및 `optimization.chunkIds` 제거를 고려하세요. 기본값은 [`production mode`](/configuration/mode/#mode-production)에서 장기 캐싱을 지원하고 [`development` mode](/configuration/mode/#mode-development)에서 디버깅을 지원하기 때문에 더 나을 수 있습니다.
-- webpack 구성에서 `[hash]` placeholder를 사용할 때 `[contenthash]`로 변경하는 것이 좋습니다. 동일하지는 않지만, 더 효과적인 것으로 입증되었습니다.
-- Yarn의 PnP 및 `pnp-webpack-plugin`을 사용하는 경우 좋은 소식이 있습니다. 이제 기본적으로 지원됩니다. 구성에서 제거해야 합니다.
+- webpack 설정에서 `optimization.moduleIds` 및 `optimization.chunkIds` 제거를 고려하세요. 기본값은 [`production mode`](/configuration/mode/#mode-production)에서 장기 캐싱을 지원하고 [`development` mode](/configuration/mode/#mode-development)에서 디버깅을 지원하기 때문에 더 나을 수 있습니다.
+- webpack 설정에서 `[hash]` placeholder를 사용할 때 `[contenthash]`로 변경하는 것이 좋습니다. 동일하지는 않지만, 더 효과적인 것으로 입증되었습니다.
+- Yarn의 PnP 및 `pnp-webpack-plugin`을 사용하는 경우 좋은 소식이 있습니다. 이제 기본적으로 지원됩니다. 설정에서 제거해야 합니다.
 - 정규 표현식과 함께 `IgnorePlugin`을 인수로 사용하는 경우 이제 `options` object를 사용합니다. `new IgnorePlugin({ resourceRegExp: /regExp/ })`.
 - `node.fs: 'empty'`와 같은 것을 사용하는 경우 `resolve.fallback.fs: false`로 교체하세요.
 - webpack Node.js API에서 `watch: true`를 사용하는 경우 제거하세요. 호출하는 컴파일러 메서드가 나타내는 대로 설정할 필요가 없습니다. `watch()`의 경우 `true` 또는 `run()`의 경우 `false` 입니다.
@@ -128,7 +128,7 @@ import를 통해 WebAssembly를 사용하는 경우 다음 두 단계 프로세�
 `optimization.splitChunks` 를 재고하세요.
 
 - 기본값 또는 `optimization.splitChunks: { chunks: 'all' }`을 사용하는 것을 권장합니다.
-- 사용자 정의 구성을 사용할 때 `name: false`를 삭제하고 `name: string | function`을 `idHint: string | function`로 교체하세요.
+- 사용자 정의 설정을 사용할 때 `name: false`를 삭제하고 `name: string | function`을 `idHint: string | function`로 교체하세요.
 - `Optimization.splitChunks.cacheGroups: { default: false, vendors: false }`를 설정하여 기본값을 끌(turn off) 수 있었습니다. 우리는 이것을 권장하지 않지만, webpack 5에서 같은 효과를 얻고 싶다면 `optimization.splitChunks.cacheGroups: { default: false, defaultVendors: false }`를 사용할 수 있습니다.
 
 기본값 제거를 고려하세요.
@@ -139,12 +139,12 @@ import를 통해 WebAssembly를 사용하는 경우 다음 두 단계 프로세�
 
 ### Need to support an older browser like IE 11?
 
-- 프로젝트에 대해 [browserslist](https://github.com/browserslist/browserslist)를 활성화한 경우 webpack 5는 `browserslist` 구성을 재사용하여 런타임 코드에 대해 내보낼 코드 스타일을 결정합니다.
+- 프로젝트에 대해 [browserslist](https://github.com/browserslist/browserslist)를 활성화한 경우 webpack 5는 `browserslist` 설정을 재사용하여 런타임 코드에 대해 내보낼 코드 스타일을 결정합니다.
 
   확실히 할 것들:
 
   1. [`target`](/configuration/target/#root)을 `browserslist`으로 설정하거나 webpack이 자동으로 `browserslist`을 설정하도록 `target`을 제거합니다.
-  2. `IE 11`을 browserslist 구성에 추가합니다.
+  2. `IE 11`을 browserslist 설정에 추가합니다.
 
 - `browserslist`가 없으면 webpack의 런타임 코드는 ES2015 구문(예: 화살표 함수)을 사용하여 더 작은 번들을 빌드합니다. 따라서 ES2015 구문을 지원하지 않는 브라우저(예: IE11)에 ES5 구문을 사용하려면 `target: ['web', 'es5']`를 설정해야 합니다.
 - Node.js의 경우 빌드에는 `target` option에 지원되는 Node.js 버전이 포함되며 webpack은 지원되는 구문을 자동으로 파악합니다. 예를 들어`target: 'node8.6'`.
@@ -213,7 +213,7 @@ console.log(pkg.version);
     - 브라우저 사용을 지원하고 싶으십니까? 환경에 따라 다른 코드를 사용하려면 `export` 또는 `imports` package.json 필드를 사용하세요.
       - 또한 이전 번들러를 지원하려면 `browser` 필드를 사용합니다.
       - 대안: `typeof process` 검사로 코드 블록을 래핑 합니다. 이는 번들 크기에 부정적인 영향을 미칩니다.
-    - `process.env.VARIABLE`과 함께 환경 변수를 사용하고 싶으십니까? 구성에서 이러한 변수를 정의하려면 `DefinePlugin` 또는 `EnvironmentPlugin`을 사용해야 합니다.
+    - `process.env.VARIABLE`과 함께 환경 변수를 사용하고 싶으십니까? 설정에서 이러한 변수를 정의하려면 `DefinePlugin` 또는 `EnvironmentPlugin`을 사용해야 합니다.
       - 그것 대신 `VARIABLE` 사용을 고려하고 `typeof VARIABLE !== 'undefined'`도 확인하세요. `process.env`는 Node.js에 따라 다르며 프론트엔드 코드에서는 피해야 합니다.
   - `auto`가 포함된 URL을 가리키는 404 오류
     - 모든 생태계 도구가 `output.publicPath: "auto"`를 통한 새로운 기본 자동 `publicPath`에 대해 준비된 것은 아닙니다
