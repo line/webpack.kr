@@ -22,7 +22,7 @@ translators:
 
 Webpack용 plugin은 다음과 같이 구성됩니다.:
 
-- JavaScript function or a JavaScript class로 이름을 붙입니다.
+- JavaScript function 또는 JavaScript class로 이름을 붙입니다.
 - 프로토타입에서 `apply` 메소드를 정의합니다.
 - 특정한 [event hook](/api/compiler-hooks/) 로 지정합니다.
 - Webpack 내부에 있는 인스턴스의 특정한 데이터를 처리합니다.
@@ -86,7 +86,7 @@ module.exports = {
 };
 ```
 
-플러그인 옵션을 통해 전달되는 옵션의 유효성을 확인하려면 [`schema-utils`](https://github.com/webpack/schema-utils)를 사용하라 다음은 사용 예제입니다.
+플러그인 옵션을 통해 전달되는 옵션의 유효성을 확인하려면 [`schema-utils`](https://github.com/webpack/schema-utils)를 사용하세요. 다음은 사용 예제입니다.
 
 ```javascript
 import { validate } from 'schema-utils';
@@ -115,7 +115,7 @@ export default class HelloWorldPlugin {
 
 ## Compiler and Compilation
 
-플러그인 개발 중 가장 중요한 두 개의 리소스는 [`compiler`](/api/node/#compiler-instance) 과  [`compilation`](/api/compilation-hooks/) 객체입니다. 이 두 가지의 역할을 이해하는 것은 webpack 엔진을 확장하는데 첫 번째 단계입니다.
+플러그인 개발 중 가장 중요한 두 개의 리소스는 [`compiler`](/api/node/#compiler-instance) 과  [`compilation`](/api/compilation-hooks/) 객체입니다. 이 두 가지의 역할을 이해하는 것은 webpack 엔진을 확장하는 첫 번째 단계입니다.
 
 ```javascript
 class HelloCompilationPlugin {
@@ -295,7 +295,7 @@ module.exports = {
 
 T> 위의 예에서 비동기식 동작으로 수행할 필요가 없기 때문에 동기식 `tap()` 메소드로 `processAssets`을 탭 합니다. 그러나 `processAssets` 훅은 비동기식이므로 필요하다면 `tapPromise()` 또는 `tapAsync()`를 사용할 수도 있습니다.
 
-T> [`processAssets`](/api/compilation-hooks/#processassets) 훅은 지정한 단계를 실행하기 전에 다른 플러그인에 의하여 추가된 애셋 뿐만 아니라 나중에 추가된 애셋을 가로챌 수도 있는 `additionalAssets` 프로퍼티도 지원합니다. 이는 compilation의 일부분인 애셋을 완전히 가로 챌 수도 있습니다. 그러나 이 예시에서 이전 단계에서 생성된 모든 애셋을 캡쳐하기 위한 단계인 `SUMMARIZE`를 사용하는 것이 좋습니다.(이는 일반적으로  모든 애셋을 설명합니다.)
+T> [`processAssets`](/api/compilation-hooks/#processassets) 훅은 지정한 단계를 실행하기 전에 다른 플러그인에 의하여 추가된 애셋 뿐만 아니라 나중에 추가된 애셋을 가로챌 수도 있는 `additionalAssets` 프로퍼티도 지원합니다. 이는 compilation의 일부분인 애셋을 완전히 가로 챌 수도 있습니다. 그러나 이 예시에서 이전 단계에서 생성된 모든 애셋을 캡쳐하기 위한 단계인 `SUMMARIZE`를 사용하는 것이 좋습니다.(이는 일반적으로 모든 애셋을 설명합니다.)
 
 ## Different Plugin Shapes
 
