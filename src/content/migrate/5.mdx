@@ -110,7 +110,7 @@ T> webpack 5는 설정 스키마에서 이러한 옵션을 제거하고 항상 `
   {
       target: WebExtensionTarget(nodeConfig)
   }
-  
+
   // for webpack 5
   {
       target: false,
@@ -217,7 +217,7 @@ console.log(pkg.version);
       - 그것 대신 `VARIABLE` 사용을 고려하고 `typeof VARIABLE !== 'undefined'`도 확인하세요. `process.env`는 Node.js에 따라 다르며 프론트엔드 코드에서는 피해야 합니다.
   - `auto`가 포함된 URL을 가리키는 404 오류
     - 모든 생태계 도구가 `output.publicPath: "auto"`를 통한 새로운 기본 자동 `publicPath`에 대해 준비된 것은 아닙니다
-      - 대신 static `output.publicPath: ""`를 사용하세요.
+      - 대신 고정값 `output.publicPath: ""`를 사용하세요.
 
 - Level 6: **Deprecation Warnings**.
 
