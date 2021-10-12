@@ -105,20 +105,20 @@ T> webpack 5는 설정 스키마에서 이러한 옵션을 제거하고 항상 `
 - `raw-loader`, `url-loader` 또는 `file-loader`를 사용하여 애셋들을 load 하기 위해 정의된 `rules`가 있는 경우 가까운 장래에 사용되지 않을 것이므로 [Asset Modules](/guides/asset-modules/) 을 대신 사용하세요.
 - `target`이 함수로 설정되어 있으면 `false`로 업데이트하고 `plugins` option 내에서 해당 함수를 적용하세요. 아래 예를 참조하세요.
 
-```json
-// for webpack 4
-{
-    target: WebExtensionTarget(nodeConfig)
-}
-
-// for webpack 5
-{
-    target: false,
-    plugins: [
-        WebExtensionTarget(nodeConfig)
-    ]
-}
-```
+  ```json
+  // for webpack 4
+  {
+      target: WebExtensionTarget(nodeConfig)
+  }
+  
+  // for webpack 5
+  {
+      target: false,
+      plugins: [
+          WebExtensionTarget(nodeConfig)
+      ]
+  }
+  ```
 
 import를 통해 WebAssembly를 사용하는 경우 다음 두 단계 프로세스를 따라야 합니다.
 
