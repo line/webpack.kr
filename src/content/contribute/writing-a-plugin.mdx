@@ -16,7 +16,7 @@ translators:
   - kwYoohae
 ---
 
-플러그인은 서드파티 개발자들에게 webpck 엔진의 모든 잠재력을 보여준다. 단계별로 빌드 callback을 사용하여 개발자들은 webpack의 빌드 프로세스에 자신만의 행동을 도입할 수 있습니다. 플러그인을 빌드하는 것은 로더를 빌딩 하는 것보다 조금 더 진보되었습니다. 왜냐하면, 플러그인은 몇몇 webpack의 low-level에 내장된 hook을 이해할 필요가 있기 때문입니다. 이제 소스 코드를 읽어볼 준비를 해봅시다!
+플러그인은 서드파티 개발자들에게 webpck 엔진의 모든 잠재력을 보여준다. 단계별로 빌드 callback을 사용하여 개발자들은 webpack의 빌드 프로세스에 자신만의 행동을 도입할 수 있습니다. 플러그인을 빌드하는 것은 로더를 빌딩 하는 것보다 조금 더 진보되었습니다. 왜냐하면, 플러그인은 몇몇 webpack의 low-level에 내장된 훅을 이해할 필요가 있기 때문입니다. 이제 소스 코드를 읽어볼 준비를 해봅시다!
 
 ## Creating a Plugin
 
@@ -33,7 +33,7 @@ Webpack용 plugin은 다음과 같이 구성됩니다.:
 class MyExampleWebpackPlugin {
   // `apply`를 compiler를 argument로 받는 프로토타입 메소드로 정의합니다.
   apply(compiler) {
-    // attach할 이벤트 hook을 지정합니다.
+    // attach할 이벤트 훅을 지정합니다.
     compiler.hooks.emit.tapAsync(
       'MyExampleWebpackPlugin',
       (compilation, callback) => {
@@ -63,7 +63,7 @@ class HelloWorldPlugin {
     compiler.hooks.done.tap(
       'Hello World Plugin',
       (
-        stats /* hook이 탭이 끝나면 stats는 인자로 통과됩니다.*/
+        stats /* 훅이 탭이 끝나면 stats는 인자로 통과됩니다.*/
       ) => {
         console.log('Hello World!');
       }
@@ -120,9 +120,9 @@ export default class HelloWorldPlugin {
 ```javascript
 class HelloCompilationPlugin {
   apply(compiler) {
-    // callback 함수에 argument로 compilation을 제공하는 hook으로 compliation hook을 탭 합니다.
+    // callback 함수에 argument로 compilation을 제공하는 훅으로 compliation 훅을 탭 합니다.
     compiler.hooks.compilation.tap('HelloCompilationPlugin', (compilation) => {
-      //이제 우리는 컴파일을 통해 이용할 수 있는 다양한 hook들을 이용할 수 있습니다.
+      //이제 우리는 컴파일을 통해 이용할 수 있는 다양한 훅들을 이용할 수 있습니다.
       compilation.hooks.optimize.tap('HelloCompilationPlugin', () => {
         console.log('Assets are being optimized.');
       });
@@ -133,11 +133,11 @@ class HelloCompilationPlugin {
 module.exports = HelloCompilationPlugin;
 ```
 
-`compiler`, `compilation` 그리고 다른 중요한 객체에서 사용 가능한 hook들은 [plugins API](/api/plugins/) 문서를 참고해 주세요.
+`compiler`, `compilation` 그리고 다른 중요한 객체에서 사용 가능한 훅들은 [plugins API](/api/plugins/) 문서를 참고해 주세요.
 
 ## Async event hooks
 
-일부 플러그인 hook은 비동기입니다. 이를 탭 하려면, 동기로 동작하는 `tap` 메소드를 사용하거나 비동기 메소드인 `tapAsync` 또는 `tapPromise` 메소드를 사용할 수 있습니다.
+일부 플러그인 훅은 비동기입니다. 이를 탭 하려면, 동기로 동작하는 `tap` 메소드를 사용하거나 비동기 메소드인 `tapAsync` 또는 `tapPromise` 메소드를 사용할 수 있습니다.
 
 ### tapAsync
 
@@ -221,7 +221,7 @@ class FileListPlugin {
     const { RawSource } = webpack.sources;
 
     // 이전 단계에서 compilation 프로세스를 추가로 탭하기 위해서는 
-    // "thisCompilation" hook을 탭해야합니다.
+    // "thisCompilation" 훅을 탭해야합니다.
     compiler.hooks.thisCompilation.tap(pluginName, (compilation) => {
       // 특정 단계에서 애셋 처리 파이프라인으로 탭합니다.
       compilation.hooks.processAssets.tap(
@@ -293,13 +293,13 @@ module.exports = {
 - index.html
 ```
 
-T> 위의 예에서 비동기식 동작으로 수행할 필요가 없기 때문에 동기식 `tap()` 메소드로 `processAssets`을 탭 합니다. 그러나 `processAssets` hook은 비동기식이므로 필요하다면 `tapPromise()` 또는 `tapAsync()`를 사용할 수도 있습니다.
+T> 위의 예에서 비동기식 동작으로 수행할 필요가 없기 때문에 동기식 `tap()` 메소드로 `processAssets`을 탭 합니다. 그러나 `processAssets` 훅은 비동기식이므로 필요하다면 `tapPromise()` 또는 `tapAsync()`를 사용할 수도 있습니다.
 
-T> [`processAssets`](/api/compilation-hooks/#processassets) hook은 지정한 단계를 실행하기 전에 다른 플러그인에 의하여 추가된 애셋 뿐만 아니라 나중에 추가된 애셋을 가로챌 수도 있는 `additionalAssets` 프로퍼티도 지원합니다. 이는 compilation의 일부분인 애셋을 완전히 가로 챌 수도 있습니다. 그러나 이 예시에서 이전 단계에서 생성된 모든 애셋을 캡쳐하기 위한 단계인 `SUMMARIZE`를 사용하는 것이 좋습니다.(이는 일반적으로  모든 애셋을 설명합니다.)
+T> [`processAssets`](/api/compilation-hooks/#processassets) 훅은 지정한 단계를 실행하기 전에 다른 플러그인에 의하여 추가된 애셋 뿐만 아니라 나중에 추가된 애셋을 가로챌 수도 있는 `additionalAssets` 프로퍼티도 지원합니다. 이는 compilation의 일부분인 애셋을 완전히 가로 챌 수도 있습니다. 그러나 이 예시에서 이전 단계에서 생성된 모든 애셋을 캡쳐하기 위한 단계인 `SUMMARIZE`를 사용하는 것이 좋습니다.(이는 일반적으로  모든 애셋을 설명합니다.)
 
 ## Different Plugin Shapes
 
-플러그인은 탭 하는 이벤트 hook에 따라 타입으로 분류될 수 있습니다. 모든 이벤트 hook은  동기 또는 비동기 waterfall 또는 병렬 hook으로 사전에 정의되어 있고 hook은 내부적으로 call/callAsync 메소드를 사용하여 호출됩니다. 지원되거나 탭이 된 hook의 목록은 일반적으로 `this.hooks` 프로퍼티에 명시되어 있습니다.
+플러그인은 탭 하는 이벤트 훅에 따라 타입으로 분류될 수 있습니다. 모든 이벤트 훅은  동기 또는 비동기 waterfall 또는 병렬 훅으로 사전에 정의되어 있고 훅은 내부적으로 call/callAsync 메소드를 사용하여 호출됩니다. 지원되거나 탭이 된 훅의 목록은 일반적으로 `this.hooks` 프로퍼티에 명시되어 있습니다.
 
 예시는 다음과 같습니다.
 
@@ -309,9 +309,9 @@ this.hooks = {
 };
 ```
 
-이것은 `SyncBailHook` 타입의 hook인 `shouldEmit`만이 지원되는 hook이고 `shouldEmit` hook에 탭 되는 플러그인에 전달되는 유일한 파라미터는 `compilation`입니다.
+이것은 `SyncBailHook` 타입의 훅인 `shouldEmit`만이 지원되는 훅이고 `shouldEmit` 훅에 탭 되는 플러그인에 전달되는 유일한 파라미터는 `compilation`입니다.
 
-지원되는 다양한 hook의 타입은 다음과 같습니다.
+지원되는 다양한 훅의 타입은 다음과 같습니다.
 
 ### Synchronous Hooks
 
@@ -327,7 +327,7 @@ this.hooks = {
   - `tap` 메소드를 사용하여 탭 됩니다.
   - `call(...params)` 메소드를 사용하여 호출됩니다.
 
-  Bail Hook 타입의 hook들은, 각각의 callback 플러그인이 특정한 `args`를 사용하여 차례로 호출됩니다. 만약 플러그인에 의해 정의되지 않은 값을 제외하고 값이 반환된다면 hook에 의해 값이 반환되고 추가 플러그인 callback은 호출되지 않습니다. 많은 유용한 `optimizeChunks`, `optimizeChunkModules`와 같은 이벤트는 SyncBailHooks입니다.
+  Bail Hook 타입의 훅들은, 각각의 callback 플러그인이 특정한 `args`를 사용하여 차례로 호출됩니다. 만약 플러그인에 의해 정의되지 않은 값을 제외하고 값이 반환된다면 훅에 의해 값이 반환되고 추가 플러그인 callback은 호출되지 않습니다. 많은 유용한 `optimizeChunks`, `optimizeChunkModules`와 같은 이벤트는 SyncBailHooks입니다.
 
 - **Waterfall Hooks**
 
