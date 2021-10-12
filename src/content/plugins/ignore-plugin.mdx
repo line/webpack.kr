@@ -11,7 +11,7 @@ contributors:
   - chenxsan
 ---
 
-`IgnorePlugin`은 정규 표현식 또는 필터 함수와 일치하는 `import` 또는 `require` 호출에 대한 모듈 생성을 방지합니다.
+IgnorePlugin은 정규 표현식 또는 필터 함수와 일치하는 `import` 또는 `require` 호출에 대한 모듈 생성을 방지합니다.
 
 ## Using regular expressions
 
@@ -24,7 +24,7 @@ new webpack.IgnorePlugin({ resourceRegExp, contextRegExp });
 
 ## Using filter functions
 
-- `checkResource (resource, context)`는 `resource`와 `context`를 인수로 받는 필터 함수로, 불리언 값을 반환합니다.
+- `checkResource (resource, context)`는 `resource`와 `context`를 인수로 받는 필터 함수로, 불리언 값을 반환해야 합니다.
 
 ```javascript
 new webpack.IgnorePlugin({
@@ -37,9 +37,9 @@ new webpack.IgnorePlugin({
 
 ## Example of ignoring Moment Locales
 
-[moment](https://momentjs.com/) 2.18 일자에 따라, 모든 로케일은 코어 라이브러리와 함께 번들되어 있습니다 ([깃허브 이슈](https://github.com/moment/moment/issues/2373)를 참고하세요).
+[moment](https://momentjs.com/) 2.18 부터, 모든 로케일이 코어 라이브러리와 함께 번들로 제공됩니다 ([깃허브 이슈](https://github.com/moment/moment/issues/2373)를 참고하세요).
 
-`IgnorePlugin`에 전달된 `resourceRegExp` 파라미터는 import 또는 require 되는 해석된 파일 혹은 절대 모듈 명에 대해 테스트 되지 않고, _가져오기가 실행되는 소스 코드 내에서_ `require` 또는 `import`로 전달된 _문자열_ 에 대해 테스트 됩니다. 예를 들어 `node_modules/moment/locale/*.js`를 제외하려는 경우 다음과 같은 작업이 수행되지 않습니다.
+`IgnorePlugin`에 전달된 `resourceRegExp` 파라미터는 import 또는 require 되는 해석된 파일 이름 혹은 절대 모듈 이름에 대해 테스트 되지 않고, _가져오기가 실행되는 소스 코드 내에서_ `require` 또는 `import`로 전달된 _문자열_ 에 대해 테스트 됩니다. 예를 들어 `node_modules/moment/locale/*.js`를 제외하려는 경우 다음과 같은 작업이 수행되지 않습니다.
 
 ```diff
 -new webpack.IgnorePlugin({ resourceRegExp: /moment\/locale\// });
