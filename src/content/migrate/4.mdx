@@ -16,7 +16,7 @@ related:
     url: https://medium.com/webpack/webpack-4-migration-guide-for-plugins-loaders-20a79b927202
 ---
 
-이 가이드는 최종 사용자에게 영향을 주는 주요 변경 사항들을 보여줍니다. 더 자세한 사항은 [변경 사항](https://github.com/webpack/webpack/releases)을 참조하세요.
+이 가이드는 최종 사용자에게 영향을 주는 주요 변경 사항들을 보여줍니다. 더 자세한 사항은 [변경 사항](https://github.com/webpack/webpack/releases)을 참고하세요.
 
 ## Node.js v4
 
@@ -26,9 +26,9 @@ Node.js의 버전을 업그레이드 하기 위한 지침 사항들은 [이곳](
 
 ## CLI
 
-CLI는 분리된 패키지(webpack-cli)로 옮겼습니다. webpack을 사용하기 전에 CLI를 설치해야합니다. [기본 설정](/guides/getting-started/#basic-setup)을 참조하세요.
+CLI는 분리된 패키지(webpack-cli)로 옮겼습니다. webpack을 사용하기 전에 CLI를 설치해야합니다. [기본 설정](/guides/getting-started/#basic-setup)을 참고하세요.
 
-설치 는 [이곳](/guides/installation)에서 찾을 수 있습니다.
+설치는 [이곳](/guides/installation)에서 찾을 수 있습니다.
 
 ## Update plugins
 
@@ -36,7 +36,7 @@ CLI는 분리된 패키지(webpack-cli)로 옮겼습니다. webpack을 사용하
 
 ## mode
 
-당신의 설정에 새로운 [`mode`](/configuration/mode/) 옵션을 추가하세요. 본인의 설정 타입에 따라 `'production'`, `'development'` 혹은 `'none'`으로 설정하세요.
+설정에 새로운 [`mode`](/configuration/mode/) 옵션을 추가하세요. 설정 타입에 따라 `'production'`, `'development'` 혹은 `'none'`으로 설정하세요.
 
 **webpack.config.js**
 
@@ -100,7 +100,7 @@ module.exports = {
 
 'CommonsChunkPlugin'은 삭제되었습니다. 대신 [`optimization.splitChunks`](/configuration/optimization/#optimizationsplitchunks)을 사용할 수 있습니다.
 
-더 자세한 사항은 [`optimization.splitChunks`](/configuration/optimization/#optimizationsplitchunks) 문서에서 찾을 수 있습니다. 기본 설정은 이미 당신의 요구사항을 충족할 것입니다.
+더 자세한 사항은 [`optimization.splitChunks`](/configuration/optimization/#optimizationsplitchunks) 문서에서 찾을 수 있습니다. 기본 설정은 이미 요구사항을 충족할 것입니다.
 
 T> `stats`에서 HTML을 생성할때, 대개 최적의 설정인 `optimization.splitChunks.chunks: "all"`을 사용할 수 있습니다.
 
