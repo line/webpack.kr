@@ -45,7 +45,7 @@ new webpack.ProgressPlugin(handler);
 - `entries` (`boolean = true`): entries 수를 진행 메세지로 보여줍니다.
 - `handler` ([Providing function](#providing-function)을 보세요)
 - `modules` (`boolean = true`): 모듈 수를 진행 메세지로 보여줍니다.
-- `modulesCount` (`number = 5000`): 시작할 modules 수의 최솟값이며 `modules` 속성이 활성화되면 적용됩니다.
+- `modulesCount` (`number = 5000`): 시작할 모듈 수의 최솟값이며 `modules` 속성이 활성화되면 적용됩니다.
 - `profile` (`boolean = false`): 진행 단계의 프로필 정보를 수집하도록 `ProgressPlugin`에게 알려줍니다.
 - `dependencies` (`boolean = true`): dependencies 수를 진행 메세지로 보여줍니다.
 - `dependenciesCount` (`number = 10000`): 시작할 dependencies 수의 최솟값이며 `dependencies` 속성이 활성화되면 적용됩니다.
@@ -69,11 +69,11 @@ new webpack.ProgressPlugin({
 
 ## Percentage calculation
 
-기본적으로 진행률은 빌드된 modules 수와 총 modules 수를 기반으로 계산됩니다: `built / total`
+기본적으로 진행률은 빌드된 모듈 수와 총 모듈 수를 기반으로 계산됩니다: `built / total`
 
-총 modules 수는 사전에는 알 수 없고 빌드를 거치면서 변합니다. 이는 부정확한 진행률을 야기할 수 있습니다.
+총 모듈 수는 사전에는 알 수 없고 빌드를 거치면서 변합니다. 이는 부정확한 진행률을 야기할 수 있습니다.
 
-이러한 문제를 해결하기 위해 `ProgressPlugin`은 마지막으로 알려진 총 modules 수를 캐시하여 이 값을 다음 빌드 때 재사용합니다. 첫번째 빌드는 데이터 값을 메모리에 캐시하지만 그 다음 빌드들은 이 값을 사용하고 업데이트합니다.
+이러한 문제를 해결하기 위해 `ProgressPlugin`은 마지막으로 알려진 총 모듈 수를 캐시하여 이 값을 다음 빌드 때 재사용합니다. 첫번째 빌드는 데이터 값을 메모리에 캐시하지만 그 다음 빌드들은 이 값을 사용하고 업데이트합니다.
 
 > [multiple configured 엔트리 포인트](/configuration/entry-context/#entry)가 있는 프로젝트들을 위한 설정에는 `percentBy: 'entries'`를 사용할 것을 추천합니다. 진입점의 양이 사전에 알려져 있기 때문에 확률 계산은 더욱 정확해질 것입니다.
 
