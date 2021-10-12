@@ -75,7 +75,7 @@ new webpack.ProgressPlugin({
 
 이러한 문제를 해결하기 위해 `ProgressPlugin`은 마지막으로 알려진 총 modules 수를 캐시하여 이 값을 다음 빌드 때 재사용합니다. 첫번째 빌드는 데이터 값을 메모리에 캐시하지만 그 다음 빌드들은 이 값을 사용하고 업데이트합니다.
 
-> [multiple configured entry points](/configuration/entry-context/#entry)가 있는 프로젝트들을 위한 설정에는 `percentBy: 'entries'`를 사용할 것을 추천합니다. 진입점의 양이 사전에 알려져 있기 때문에 확률 계산은 더욱 정확해질 것입니다.
+> [multiple configured 엔트리 포인트](/configuration/entry-context/#entry)가 있는 프로젝트들을 위한 설정에는 `percentBy: 'entries'`를 사용할 것을 추천합니다. 진입점의 양이 사전에 알려져 있기 때문에 확률 계산은 더욱 정확해질 것입니다.
 
 ## Supported Hooks
 
