@@ -30,7 +30,7 @@ translators:
 
 ```js
 const handler = (percentage, message, ...args) => {
-  // e.g. Output each progress message directly to the console:
+  // 예를 들어, 각 진행 메세지를 콘솔에 직접 출력
   console.info(percentage, message, ...args);
 };
 
@@ -42,13 +42,13 @@ new webpack.ProgressPlugin(handler);
 `ProgressPlugin`에 `object`를 제공할 때, 다음의 속성이 지원됩니다
 
 - `activeModules` (`boolean = false`): 활성화된 모듈의 수와 활성화된 모듈 하나를 진행 메세지로 보여줍니다.
-- `entries` (`boolean = true`): entries 수를 진행 메세지로 보여줍니다.
+- `entries` (`boolean = true`): 엔트리 수를 진행 메세지로 보여줍니다.
 - `handler` ([Providing function](#providing-function)을 보세요)
 - `modules` (`boolean = true`): 모듈 수를 진행 메세지로 보여줍니다.
 - `modulesCount` (`number = 5000`): 시작할 모듈 수의 최솟값이며 `modules` 속성이 활성화되면 적용됩니다.
 - `profile` (`boolean = false`): 진행 단계의 프로필 정보를 수집하도록 `ProgressPlugin`에게 알려줍니다.
-- `dependencies` (`boolean = true`): dependencies 수를 진행 메세지로 보여줍니다.
-- `dependenciesCount` (`number = 10000`): 시작할 dependencies 수의 최솟값이며 `dependencies` 속성이 활성화되면 적용됩니다.
+- `dependencies` (`boolean = true`): 종속성 수를 진행 메세지로 보여줍니다.
+- `dependenciesCount` (`number = 10000`): 시작할 종속성 수의 최솟값이며 `dependencies` 속성이 활성화되면 적용됩니다.
 - `percentBy` (`string = null: 'entries' | 'dependencies' | 'modules' | null`): 진행률을 계산할 방법을 `ProgressPlugin`에게 알려줍니다.
 
 ```js
@@ -56,7 +56,7 @@ new webpack.ProgressPlugin({
   activeModules: false,
   entries: true,
   handler(percentage, message, ...args) {
-    // custom logic
+    // 사용자 지정 논리
   },
   modules: true,
   modulesCount: 5000,
