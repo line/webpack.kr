@@ -354,6 +354,7 @@ this.hooks = {
   - `AsyncWaterfallHook[params]`를 사용하여 정의됩니다.
   - `tap`/`tapAsync`/`tapPromise` 메소드를 사용하여 탭 됩니다.
   - `callAsync(...params)` 메소드를 사용하여 호출됩니다.
+  
   플러그인 핸들러 함수는  `(err: Error, nextValue: any) -> void.` 서명이 있는 callback 함수와 현재 값으로 호출됩니다. `nextValue`가 호출되면 다음 핸들러의 현재 값이 됩니다. 첫 번째 핸들러의 현재 값은 `init`입니다. 모든 핸들러가 적용된 후 callback은 마지막 값으로 호출됩니다. 만약 어떤 핸들러가 `err` 값을 전달하면 callback은 오류가 호출되고 더이상 핸들러는 호출되지 않습니다.
   이 플러그인 패턴은 `before-resolve`와 `after-resolve`와 같은 이벤트에서 사용할 수 있습니다.
 
