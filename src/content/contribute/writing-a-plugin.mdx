@@ -115,14 +115,14 @@ export default class HelloWorldPlugin {
 
 ## Compiler and Compilation
 
-플러그인 개발 중 가장 중요한 두 개의 리소스는 [`compiler`](/api/node/#compiler-instance) 과  [`compilation`](/api/compilation-hooks/) 객체입니다. 이 두 가지의 역할을 이해하는 것은 webpack 엔진을 확장하는 첫 번째 단계입니다.
+플러그인 개발 중 가장 중요한 두 개의 리소스는 [`compiler`](/api/node/#compiler-instance) 과  [`compilation`](/api/compilation-hooks/) 객체입니다. 두 가지의 역할을 이해하는 것은 webpack 엔진을 확장하는 첫 번째 단계입니다.
 
 ```javascript
 class HelloCompilationPlugin {
   apply(compiler) {
     // callback 함수에 argument로 compilation을 제공하는 훅으로 compliation 훅을 탭 합니다.
     compiler.hooks.compilation.tap('HelloCompilationPlugin', (compilation) => {
-      // 이제 우리는 컴파일을 통해 이용할 수 있는 다양한 훅들을 이용할 수 있습니다.
+      // 이제 컴파일을 통해 이용할 수 있는 다양한 훅들을 이용할 수 있습니다.
       compilation.hooks.optimize.tap('HelloCompilationPlugin', () => {
         console.log('Assets are being optimized.');
       });
@@ -186,7 +186,7 @@ module.exports = HelloAsyncPlugin;
 
 ## Example
 
-일단 우리가 webpack compiler와 각각의 개별적인 compilations를 이해 할 수 있게 되면, engine 자체로 할 수 있는 가능성이 무궁무진해집니다. 기존 파일을 다시 포맷하거나 파생 파일을 만들거나 완전히 새로운 애셋을 만들 수 있습니다.
+일단 webpack compiler와 각각의 개별적인 compilations를 이해 할 수 있게 되면, engine 자체로 할 수 있는 가능성이 무궁무진해집니다. 기존 파일을 다시 포맷하거나 파생 파일을 만들거나 완전히 새로운 애셋을 만들 수 있습니다.
 
 새로운 빌드 파일인 `assets.md`를 생성하는 예제를 작성해봅시다. 내용은 빌드에 있는 모든 애셋 파일을 나열합니다. 이 플러그인은 다음과 같습니다.
 
@@ -293,7 +293,7 @@ module.exports = {
 - index.html
 ```
 
-T> 위의 예에서 비동기식 동작으로 수행할 필요가 없기 때문에 동기식 `tap()` 메소드로 `processAssets`을 탭 합니다. 그러나 `processAssets` 훅은 비동기식이므로 필요하다면 `tapPromise()` 또는 `tapAsync()`를 사용할 수도 있습니다.
+T> 위의 예시에서 비동기식 동작으로 수행할 필요가 없기 때문에 동기식 `tap()` 메소드로 `processAssets`을 탭 합니다. 그러나 `processAssets` 훅은 비동기식이므로 필요하다면 `tapPromise()` 또는 `tapAsync()`를 사용할 수도 있습니다.
 
 T> [`processAssets`](/api/compilation-hooks/#processassets) 훅은 지정한 단계를 실행하기 전에 다른 플러그인에 의하여 추가된 애셋 뿐만 아니라 나중에 추가된 애셋을 가로챌 수도 있는 `additionalAssets` 프로퍼티도 지원합니다. 이는 compilation의 일부분인 애셋을 완전히 가로 챌 수도 있습니다. 그러나 이 예시에서 이전 단계에서 생성된 모든 애셋을 캡쳐하기 위한 단계인 `SUMMARIZE`를 사용하는 것이 좋습니다.(이는 일반적으로 모든 애셋을 설명합니다.)
 
