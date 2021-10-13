@@ -122,7 +122,7 @@ class HelloCompilationPlugin {
   apply(compiler) {
     // callback 함수에 argument로 compilation을 제공하는 훅으로 compliation 훅을 탭 합니다.
     compiler.hooks.compilation.tap('HelloCompilationPlugin', (compilation) => {
-      //이제 우리는 컴파일을 통해 이용할 수 있는 다양한 훅들을 이용할 수 있습니다.
+      // 이제 우리는 컴파일을 통해 이용할 수 있는 다양한 훅들을 이용할 수 있습니다.
       compilation.hooks.optimize.tap('HelloCompilationPlugin', () => {
         console.log('Assets are being optimized.');
       });
