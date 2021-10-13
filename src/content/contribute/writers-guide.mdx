@@ -101,11 +101,11 @@ foo();
 
 ### Tables
 
-| Parameter  | Explanation                                      | Input Type | Default Value |
-| ---------- | ------------------------------------------------ | ---------- | ------------- |
-| --debug    | Switch loaders to debug mode                     | boolean    | false         |
-| --devtool  | Define source map type for the bundled resources | string     | -             |
-| --progress | Print compilation progress in percentage         | boolean    | false         |
+| Parameter  | Explanation                          | Input Type | Default Value |
+| ---------- | ------------------------------------ | ---------- | ------------- |
+| --debug    | 로더를 디버그 모드로 변환            | boolean    | false         |
+| --devtool  | 번들 리소스에 대한 소스 맵 유형 정의 | string     | -             |
+| --progress | 백분율로 컴파일 진행률 출력          | boolean    | false         |
 
 테이블도 알파벳순으로 정렬해야 합니다.
 
@@ -187,7 +187,7 @@ W> 이것은 Warning입니다.
 
 여기서 `(compilation, module, path)`에는 제공된 함수가 수신할 인수를 나열하고 `=> boolean`은 함수의 반환 값이 `boolean`이어야 함을 의미합니다.
 
-플러그인을 사용 가능한 옵션 값 유형으로 표시하려면 'Plugin'의 낙타 대문자 형식의 제목을 사용하세요.
+플러그인을 사용 가능한 옵션 값 유형으로 표시하려면 'Plugin'의 camel-cased 형식의 제목을 사용하세요.
 
 `TerserPlugin` `[TerserPlugin]`
 
