@@ -17,16 +17,16 @@ contributors:
   - EugeneHlushko
   - byzyk
 translators:
-- dlwnsgud8406
+  - dlwnsgud8406
 ---
 
 + 다음 섹션에서는 webpack 1에서 2로의 주요 변경 사항을 설명합니다.
 
-T> V2와 V3 사이에 변경 사항이 훨씬 적으므로 이주가 그렇게 나쁘지 않을 것입니다. 문제가 발생하는 경우, 자세한 내용은 [the changelog](https://github.com/webpack/webpack/releases)를 참조하세요.
+T> webpack 2와 3 사이에 변경 사항이 훨씬 적으므로 이주가 그렇게 나쁘지 않을 것입니다. 문제가 발생하는 경우, 자세한 내용은 [the changelog](https://github.com/webpack/webpack/releases)를 참고하세요.
 
 ## resolve.root, resolve.fallback, resolve.modulesDirectories
 
-위 4개의 파일들 `resolve.modules`하나로 대체되었습니다. 자세한 사용법은 [resolving](/configuration/resolve)을 참조하세요.
+위 3개의 파일들 `resolve.modules`하나로 대체되었습니다. 자세한 사용법은 [resolving](/configuration/resolve)을 참고하세요.
 
 ```diff
   resolve: {
@@ -40,17 +40,17 @@ T> V2와 V3 사이에 변경 사항이 훨씬 적으므로 이주가 그렇게 �
 
 ## resolve.extensions
 
-이 옵션은 더 이상 빈 문자열을 전달하지 않습니다. 이 동작은 `resolve.enforceExtension`로 이동되었습니다. 자세한 사용법은 [resolving](/configuration/resolve) 를 참조하십시오.
+이 옵션은 더 이상 빈 문자열을 전달할 필요가 없습니다. 이 동작은 `resolve.enforceExtension`로 이동되었습니다. 자세한 사용법은 [resolving](/configuration/resolve) 를 참고하십시오.
 
 ## resolve.\*
 
-여기에서 여러 API가 변경되었습니다. 흔히 사용되지 않으므로 자세히 나열하지 않습니다. 자세한 내용은 [resolving](/configuration/resolve)을 참조하세요.
+여기에서 여러 API가 변경되었습니다. 흔히 사용되지 않으므로 자세히 나열하지 않습니다. 자세한 내용은 [resolving](/configuration/resolve)을 참고하세요.
 
 ## module.loaders is now module.rules
 
-이전의 로더 구성은 로더와 그 이상의 구성이 허가되는 강력한규칙 시스템으로 대체 되었습니다.
+이전의 로더 은 로더와 그 이상의 설정이 허가되는 강력한규칙 시스템으로 대체 되었습니다.
 호환성을 위해 이전의 `module.loaders` 구문은 여전히 유효하며 이전 이름은 구문 분석됩니다.
-새로운 이름짓기규칙들이 이해하기 쉬워졌고 `module.rules`를 사용하도록 구성을 업그레이드 해야하는 좋은 이유입니다.
+네이밍 들이 이해하기 쉬워졌고 `module.rules`를 사용하도록 설정을 업그레이드 해야하는 좋은 이유입니다.
 
 ```diff
   module: {
@@ -86,7 +86,7 @@ T> V2와 V3 사이에 변경 사항이 훨씬 적으므로 이주가 그렇게 �
 
 ## Chaining loaders
 
-웹팩 1에서와 같이 로더를 연결하여 로더에서 로더로 결과를 전달할 수 있습니다.
+webpack 1에서와 같이 로더를 연결하여 로더에서 로더로 결과를 전달할 수 있습니다.
 [rule.use](/configuration/module/#ruleuse) 를 사용하여, `use` 를 로더 배열로 설정할 수 있습니다.
 webpack 1에서 로더는 일반적으로 `!`로 연결되었습니다. 이 스타일은 레거시 옵션 `module.loaders` 를 사용하는 경우에만 지원됩니다.
 
@@ -107,7 +107,7 @@ webpack 1에서 로더는 일반적으로 `!`로 연결되었습니다. 이 스�
 
 ## Automatic `-loader` module name extension removed
 
-로더를 참조할 때 `-loader` 확장자를 더 이상 생략할 수 없습니다:
+로더를 참고할 때 `-loader` 확장자를 더 이상 생략할 수 없습니다:
 
 ```diff
   module: {
@@ -126,7 +126,7 @@ webpack 1에서 로더는 일반적으로 `!`로 연결되었습니다. 이 스�
   }
 ```
 
-`resolveLoader.moduleExtensions` 구성 옵션을 사용하여 이전 동작을 계속 선택할 수 있지만 이는 권장되지 않습니다.
+`resolveLoader.moduleExtensions` 설정 옵션을 사용하여 이전 동작을 계속 선택할 수 있지만 이는 권장되지 않습니다.
 
 ```diff
 + resolveLoader: {
@@ -134,11 +134,11 @@ webpack 1에서 로더는 일반적으로 `!`로 연결되었습니다. 이 스�
 + }
 ```
 
-이 변경 이유는 [#2986](https://github.com/webpack/webpack/issues/2986) 을 참조하세요.
+이 변경 이유는 [#2986](https://github.com/webpack/webpack/issues/2986) 을 참고하세요.
 
 ## json-loader is not required anymore
 
-JSON 파일에 대해 구성된 로더가 없으면, webpack은 자동으로 JSON [`json-loader`](https://github.com/webpack-contrib/json-loader) 파일을 로드하려고 시도합니다.
+JSON 파일에 대해 설정된 로더가 없으면, webpack은 자동으로 JSON [`json-loader`](https://github.com/webpack-contrib/json-loader) 파일을 로드하려고 시도합니다.
 
 ```diff
   module: {
@@ -155,11 +155,11 @@ JSON 파일에 대해 구성된 로더가 없으면, webpack은 자동으로 JSO
 
 ## Loaders in configuration resolve relative to context
 
-**webpack 1** 에서, 구성된 로더가 일치하는 파일을 기준으로 확인되어집니다. 하지만, **webpack 2** 에서는, 구성된 로더는 `context` 옵션을 기준으로 확인됩니다.
+**webpack 1** 에서, 된 로더가 일치하는 파일을 기준으로 확인되어집니다. 하지만, **webpack 2** 에서는, 설정된 로더는 `context` 옵션을 기준으로 확인됩니다.
 
-이것은 `npm link` 를 사용하거나 외부 `context` 모듈을 참조할 때 로더에 의해 발생하는 중복 모듈 문제를 해결합니다.
+이것은 `npm link` 를 사용하거나 외부 `context` 모듈을 참고할 때 로더에 의해 발생하는 중복 모듈 문제를 해결합니다.
 
-이 문제를 해결하기 위해 몇 가지 해킹을 제거할 수 있습니다 :
+이 문제를 해결하기 위해 몇 가지 핵을 제거할 수 있습니다 :
 
 ```diff
   module: {
@@ -193,7 +193,7 @@ JSON 파일에 대해 구성된 로더가 없으면, webpack은 자동으로 JSO
 
 ## UglifyJsPlugin sourceMap
 
-`UglifyJsPlugin` 의 `sourceMap` 의 옵션은 `true` 대신 `false` 로 기본 설정됩니다. 즉, 최소화된 코드에 소스 맵을 사용하거나 uglifyjs 경고에 대한 올바른 줄 번호를 원하는 경우 `UglifyJsPlugin`에서 `sourceMap: true`를 설정해야 합니다.
+`UglifyJsPlugin` 의 `sourceMap` 의 옵션은 `true` 대신 `false` 로 기본 설정됩니다. 즉, 최소화된 코드에 소스맵을 사용하거나 uglifyjs 경고에 대한 올바른 줄 번호를 원하는 경우 `UglifyJsPlugin`에서 `sourceMap: true`를 설정해야 합니다.
 
 ```diff
   devtool: "source-map",
@@ -223,7 +223,7 @@ JSON 파일에 대해 구성된 로더가 없으면, webpack은 자동으로 JSO
 ## UglifyJsPlugin minimize loaders
 
 `UglifyJsPlugin` 은 더 이상 로더를 최소화 모드로 전환하지 않습니다. `minimize: true` 설정은 장기적으로 로더 옵션을 통해 전달되어야 합니다. 
-관련 옵션은 로더 문서를 참조하십시오.
+관련 옵션은 로더 문서를 참고하십시오.
 
 로더의 최소화 모드는 webpack 3 이상에서 제거됩니다.
 
@@ -239,7 +239,7 @@ JSON 파일에 대해 구성된 로더가 없으면, webpack은 자동으로 JSO
 
 ## DedupePlugin has been removed
 
-`webpack.optimize.DedupePlugin`은 더 이상 필요하지 않습니다. 구성에서 제거하십시오.
+`webpack.optimize.DedupePlugin`은 더 이상 필요하지 않습니다. 설정에서 제거하십시오.
 
 ## BannerPlugin - breaking change
 
@@ -255,7 +255,7 @@ JSON 파일에 대해 구성된 로더가 없으면, webpack은 자동으로 JSO
 ## OccurrenceOrderPlugin is now on by default
 
 `OccurrenceOrderPlugin`은 이제 기본적으로 활성화되며 이름이 변경되었습니다(webpack 1의 `OccurenceOrderPlugin`).
-따라서 구성에서 플러그인을 제거해야 합니다 :
+따라서 설정에서 플러그인을 제거해야 합니다 :
 
 ```diff
   plugins: [
@@ -272,7 +272,7 @@ JSON 파일에 대해 구성된 로더가 없으면, webpack은 자동으로 JSO
 
 `npm install --save-dev extract-text-webpack-plugin`
 
-이 플러그인의 구성 변경은 주로 구문적입니다.
+이 플러그인의 설정 변경은 주로 구문적입니다.
 
 ### ExtractTextPlugin.extract
 
@@ -316,7 +316,7 @@ plugins: [
 
 ### Using custom arguments in CLI and configuration
 
-CLI를 남용하여 다음과 같이 구성에 사용자 지정 인수를 전달한 경우:
+CLI를 남용하여 다음과 같이 설정에 사용자 지정 인수를 전달한 경우:
 
 `webpack --custom-stuff`
 
@@ -329,7 +329,7 @@ module.exports = config;
 
 이것이 더 이상 허용되지 않음을 알 수 있습니다. 이제 CLI가 더 엄격해졌습니다.
 
-대신 구성에 인수를 전달하기 위한 인터페이스가 있습니다. 대신 사용해야 합니다. 미래의 도구는 이것에 의존할 수 있습니다.
+대신 설정에 인수를 전달하기 위한 인터페이스가 있습니다. 대신 사용해야 합니다. 미래의 도구는 이것에 의존할 수 있습니다.
 
 `webpack --env.customStuff`
 
@@ -351,8 +351,7 @@ module.exports = function (env) {
 
 ## Loader configuration is through `options`
 
-`webpack.config.js`에서 사용자 정의 속성으로 로더를 구성할 수 _더 이상_ 없습니다. `options`을 통해 수행해야 합니다. 
-`ts` 속성이 있는 다음 구성은 더 이상 webpack 2에서 유효하지 않습니다 :
+`webpack.config.js`에서 사용자 정의 속성으로 로더를 설정할 수 _더 이상_ 없습니다. `options`을 통해 수행해야 합니다.`ts` 속성이 있는 다음 설정은 더 이상 webpack 2에서 유효하지 않습니다 :
 
 ```js
 module.exports = {
@@ -372,7 +371,7 @@ module.exports = {
 
 ### What are `options`?
 
-좋은 질문입니다. 음, 엄밀히 말하면 2가지 가능성이 있습니다. 웹팩 로더를 구성하는 두 가지 방법. 고전적으로 `options`은 `query`라고 했으며 로더 이름에 추가할 수 있는 문자열이었습니다. 쿼리 문자열과 매우 유사하지만 실제로는 [더 강력한 기능](https://github.com/webpack/loader-utils#parsequery)입니다:
+좋은 질문입니다. 음, 엄밀히 말하면 2가지 가능성이 있습니다. webpack 로더를 설정하는 두 가지 방법. 고전적으로 `options`은 `query`라고 했으며 로더 이름에 추가할 수 있는 문자열이었습니다. 쿼리 문자열과 매우 유사하지만 실제로는 [더 강력한 기능](https://github.com/webpack/loader-utils#parsequery)입니다:
 
 ```js
 module.exports = {
@@ -407,8 +406,7 @@ module.exports = {
 
 ## LoaderOptionsPlugin context
 
-일부 로더는 컨텍스트 정보가 필요하고 구성에서 이를 읽습니다. 이것은 장기적으로 로더 옵션을 통해 전달되어야 합니다. 
-관련 옵션은 로더 문서를 참조하십시오.
+일부 로더는 컨텍스트 정보가 필요하고 설정에서 이를 읽습니다. 이것은 장기적으로 로더 옵션을 통해 전달되어야 합니다. 관련 옵션은 로더 문서를 참고하십시오.
 
 이전 로더와의 호환성을 유지하기 위해 플러그인을 통해 이 정보를 전달할 수 있습니다 :
 
@@ -424,8 +422,7 @@ module.exports = {
 
 ## debug
 
-`debug` 옵션은 webpack 1에서 로더를 디버그 모드로 전환했습니다. 이것은 장기적으로 로더 옵션을 통해 전달되어야 합니다. 
-관련 옵션은 로더 문서를 참조하십시오.
+`debug` 옵션은 webpack 1에서 로더를 디버그 모드로 전환했습니다. 이것은 장기적으로 로더 옵션을 통해 전달되어야 합니다. 관련 옵션은 로더 문서를 참고하십시오.
 
 로더의 디버그 모드는 webpack 3 이상에서 제거됩니다.
 
@@ -442,7 +439,7 @@ module.exports = {
 
 ## Code Splitting with ES2015
 
-웹팩 1에서는 [`require.ensure()`](/api/module-methods/#requireensure) 를 응용 프로그램의 덩어리를 지연 로드하는 방법으로 사용할 수 있습니다 :
+webpack 1에서는 [`require.ensure()`](/api/module-methods/#requireensure) 를 응용 프로그램의 를 지연 로드하는 방법으로 사용할 수 있습니다 :
 
 ```javascript
 require.ensure([], function (require) {
@@ -520,7 +517,7 @@ Webpack이 사용할 수 있도록 이러한 모듈 기호를 구문 분석하�
 
 ### Template strings
 
-Webpack은 이제 표현식에서 템플릿 문자열을 지원합니다. 이는 웹팩 구성에서 사용할 수 있음을 의미합니다 :
+Webpack은 이제 표현식에서 템플릿 문자열을 지원합니다. 이는 Webpack 설정에서 사용할 수 있음을 의미합니다 :
 
 ```diff
 - require("./templates/" + name);
@@ -529,7 +526,7 @@ Webpack은 이제 표현식에서 템플릿 문자열을 지원합니다. 이는
 
 ### Configuration Promise
 
-Webpack은 이제 구성 파일에서 `Promise` 반환을 지원합니다. 이렇게 하면 구성 파일에서 비동기 처리가 가능합니다.
+Webpack은 이제 설정 파일에서 `Promise` 반환을 지원합니다. 이렇게 하면 설정 파일에서 비동기 처리가 가능합니다.
 
 **webpack.config.js**
 
@@ -606,7 +603,7 @@ module.exports = {
 
 **webpack 2** 는 이제 모든 JS 개체를 로더 옵션으로 지원합니다.
 
-webpack [2.2.1](https://github.com/webpack/webpack/releases/tag/v2.2.1) 이전(즉, 2.0.0에서 2.2.0까지), `ident`를 사용하는 데 필요한 복잡한 옵션을 사용하여 `options` 객체를 사용하여 다른 로더에서 참조할 수 있습니다. **이는 2.2.1에서 제거되었으므로 현재 마이그레이션에서는 `ident` 키를 사용할 필요가 없습니다.
+webpack [2.2.1](https://github.com/webpack/webpack/releases/tag/v2.2.1) 이전(즉, 2.0.0에서 2.2.0까지), `ident`를 사용하는 데 필요한 복잡한 옵션을 사용하여 `options` 객체를 사용하여 다른 로더에서 참고할 수 있습니다. **이는 2.2.1에서 제거되었으므로 현재 마이그레이션에서는 `ident` 키를 사용할 필요가 없습니다.
 
 ```diff
 {
