@@ -27,7 +27,7 @@ Webpack 5는 Node.js 10.13.0 (LTS) 이상의 버전이 필요합니다. 따라�
 
    - webpack >= 4를 사용하는 경우 최신 webpack 4 버전으로 업그레이드할 때 추가 지침이 필요하지 않습니다.
 
-   - webpack 버전 4 미만을 사용하는 경우 [webpack 4 마이그레이션 가이드](https://webpack.kr/migrate/4/)를 참고하세요.
+   - webpack 버전 4 미만을 사용하는 경우 [webpack 4 마이그레이션 가이드](/migrate/4/)를 참고하세요.
 
 2. `webpack-cli` 을 사용한다면 사용 가능한 최신 버전으로 업그레이드하세요.
 
@@ -49,7 +49,7 @@ webpack 5는 이제는 사용되지 않는 기능을 모두 제거하므로 계�
 
 ### Make sure to use `mode`
 
-`mode`를 [production](https://webpack.js.org/configuration/mode/#mode-production) 또는 [develop](https://webpack.js.org/configuration/mode/#mode-development)으로 설정하여 해당 기본값이 설정되어 있는지 확인하세요.
+`mode`를 [production](/configuration/mode/#mode-production) 또는 [develop](/configuration/mode/#mode-development)으로 설정하여 해당 기본값이 설정되어 있는지 확인하세요.
 
 ### Update outdated options
 
@@ -65,8 +65,8 @@ webpack 5는 이제는 사용되지 않는 기능을 모두 제거하므로 계�
 - `optimization.occurrenceOrder: true` → `optimization: { chunkIds: 'total-size', moduleIds: 'size' }`
 - `optimization.splitChunks.cacheGroups.vendors` → `optimization.splitChunks.cacheGroups.defaultVendors`
 - `Compilation.entries` → `Compilation.entryDependencies`
-- `serve` → [`DevServer`](https://webpack.kr/configuration/dev-server/)를 위해 `serve`가 제거되었습니다.
-- [`Rule.query`](https://webpack.kr/configuration/module/#ruleoptions--rulequery) (v3부터 사용 중단됨) → `Rule.options`/`UseEntry.options`
+- `serve` → [`DevServer`](/configuration/dev-server/)를 위해 `serve`가 제거되었습니다.
+- [`Rule.query`](/configuration/module/#ruleoptions--rulequery) (v3부터 사용 중단됨) → `Rule.options`/`UseEntry.options`
 
 ### Test webpack 5 compatibility
 
