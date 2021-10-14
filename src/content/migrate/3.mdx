@@ -40,7 +40,7 @@ T> webpack 2와 3 사이에 변경 사항이 훨씬 적으므로 이주가 그�
 
 ## resolve.extensions
 
-이 옵션은 더 이상 빈 문자열을 전달할 필요가 없습니다. 이 동작은 `resolve.enforceExtension`로 이동되었습니다. 자세한 사용법은 [resolving](/configuration/resolve) 를 참고하십시오.
+이 옵션은 더 이상 빈 문자열을 전달할 필요가 없습니다. 이 동작은 `resolve.enforceExtension`로 이동되었습니다. 자세한 사용법은 [resolving](/configuration/resolve) 를 참고하세요.
 
 ## resolve.\*
 
@@ -151,7 +151,7 @@ JSON 파일에 대해 설정된 로더가 없으면, webpack은 자동으로 JSO
   }
 ```
 
-[우리는 이것을 하기로 결정했습니다.](https://github.com/webpack/webpack/issues/3363) webpack, node.js 및 browserify 간의 환경차이를 없애기 위해서입니다.
+[환경차이를 없애기 위해 그렇게 하기로 결정했습니다.](https://github.com/webpack/webpack/issues/3363) webpack, node.js 및 browserify 간의 환경차이를 없애기 위해서입니다.
 
 ## Loaders in configuration resolve relative to context
 
@@ -222,8 +222,7 @@ JSON 파일에 대해 설정된 로더가 없으면, webpack은 자동으로 JSO
 
 ## UglifyJsPlugin minimize loaders
 
-`UglifyJsPlugin` 은 더 이상 로더를 최소화 모드로 전환하지 않습니다. `minimize: true` 설정은 장기적으로 로더 옵션을 통해 전달되어야 합니다. 
-관련 옵션은 로더 문서를 참고하십시오.
+`UglifyJsPlugin` 은 더 이상 로더를 최소화 모드로 전환하지 않습니다. `minimize: true` 설정은 장기적으로 로더 옵션을 통해 전달되어야 합니다. 관련 옵션은 로더 문서를 참고하세요.
 
 로더의 최소화 모드는 webpack 3 이상에서 제거됩니다.
 
@@ -239,7 +238,7 @@ JSON 파일에 대해 설정된 로더가 없으면, webpack은 자동으로 JSO
 
 ## DedupePlugin has been removed
 
-`webpack.optimize.DedupePlugin`은 더 이상 필요하지 않습니다. 설정에서 제거하십시오.
+`webpack.optimize.DedupePlugin`은 더 이상 필요하지 않습니다. 설정에서 제거하세요.
 
 ## BannerPlugin - breaking change
 
@@ -406,7 +405,7 @@ module.exports = {
 
 ## LoaderOptionsPlugin context
 
-일부 로더는 컨텍스트 정보가 필요하고 설정에서 이를 읽습니다. 이것은 장기적으로 로더 옵션을 통해 전달되어야 합니다. 관련 옵션은 로더 문서를 참고하십시오.
+일부 로더는 컨텍스트 정보가 필요하고 설정에서 이를 읽습니다. 이것은 장기적으로 로더 옵션을 통해 전달되어야 합니다. 관련 옵션은 로더 문서를 참고하세요.
 
 이전 로더와의 호환성을 유지하기 위해 플러그인을 통해 이 정보를 전달할 수 있습니다 :
 
@@ -422,7 +421,7 @@ module.exports = {
 
 ## debug
 
-`debug` 옵션은 webpack 1에서 로더를 디버그 모드로 전환했습니다. 이것은 장기적으로 로더 옵션을 통해 전달되어야 합니다. 관련 옵션은 로더 문서를 참고하십시오.
+`debug` 옵션은 webpack 1에서 로더를 디버그 모드로 전환했습니다. 이것은 장기적으로 로더 옵션을 통해 전달되어야 합니다. 관련 옵션은 로더 문서를 참고하세요.
 
 로더의 디버그 모드는 webpack 3 이상에서 제거됩니다.
 
@@ -563,7 +562,7 @@ module.exports = {
 
 사용할 수 있는 몇 가지 새로운 CLI 옵션이 있습니다:
 
-`--define process.env.NODE_ENV="production"` 는 [`DefinePlugin`](/plugins/define-plugin/)를 참고하시오.
+`--define process.env.NODE_ENV="production"` 는 [`DefinePlugin`](/plugins/define-plugin/)를 참고하세요.
 
 `--display-depth` 는 각 모듈의 진입점까지의 거리를 표시합니다.
 
