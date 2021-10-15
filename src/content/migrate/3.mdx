@@ -48,7 +48,7 @@ T> webpack 2와 3 사이에 변경 사항이 훨씬 적으므로 이주가 그�
 
 ## module.loaders is now module.rules
 
-이전의 로더 은 로더와 그 이상의 설정이 허가되는 강력한규칙 시스템으로 대체 되었습니다.
+이전의 로더구성 은 로더와 그 이상의 설정이 허가되는 강력한규칙 시스템으로 대체 되었습니다.
 호환성을 위해 이전의 `module.loaders` 구문은 여전히 유효하며 이전 이름은 구문 분석됩니다.
 네이밍 컨벤션들이 이해하기 쉬워졌고 `module.rules`를 사용하도록 설정을 업그레이드 해야하는 좋은 이유입니다.
 
@@ -155,7 +155,7 @@ JSON 파일에 대해 설정된 로더가 없으면, webpack은 자동으로 JSO
 
 ## Loaders in configuration resolve relative to context
 
-**webpack 1** 에서, 된 로더가 일치하는 파일을 기준으로 확인되어집니다. 하지만, **webpack 2** 에서는, 설정된 로더는 `context` 옵션을 기준으로 확인됩니다.
+**webpack 1** 에서, 설정된 로더가 일치하는 파일을 기준으로 확인되어집니다. 하지만, **webpack 2** 에서는, 설정된 로더는 `context` 옵션을 기준으로 확인됩니다.
 
 이것은 `npm link` 를 사용하거나 외부 `context` 모듈을 참고할 때 로더에 의해 발생하는 중복 모듈 문제를 해결합니다.
 
@@ -193,7 +193,7 @@ JSON 파일에 대해 설정된 로더가 없으면, webpack은 자동으로 JSO
 
 ## UglifyJsPlugin sourceMap
 
-`UglifyJsPlugin` 의 `sourceMap` 의 옵션은 `true` 대신 `false` 로 기본 설정됩니다. 즉, 최소화된 코드에 소스맵을 사용하거나 uglifyjs 경고에 대한 올바른 줄 번호를 원하는 경우 `UglifyJsPlugin`에서 `sourceMap: true`를 설정해야 합니다.
+`UglifyJsPlugin` 의 `sourceMap` 옵션은 `true` 대신 `false` 로 기본 설정됩니다. 즉, 최소화된 코드에 소스맵을 사용하거나 uglifyjs 경고에 대한 올바른 줄 번호를 원하는 경우 `UglifyJsPlugin`에서 `sourceMap: true`를 설정해야 합니다.
 
 ```diff
   devtool: "source-map",
@@ -350,7 +350,7 @@ module.exports = function (env) {
 
 ## Loader configuration is through `options`
 
-`webpack.config.js`에서 사용자 정의 속성으로 로더를 설정할 수 _더 이상_ 없습니다. `options`을 통해 수행해야 합니다.`ts` 속성이 있는 다음 설정은 더 이상 webpack 2에서 유효하지 않습니다 :
+`webpack.config.js`에서 사용자 정의 속성으로 로더를 _더 이상_ 설정할 수없습니다. `options`을 통해 수행해야 합니다.`ts` 속성이 있는 다음 설정은 더 이상 webpack 2에서 유효하지 않습니다 :
 
 ```js
 module.exports = {
