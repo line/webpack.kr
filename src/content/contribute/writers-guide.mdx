@@ -13,7 +13,7 @@ translators:
 ## Process
 
 1. 글이 링크되어 있다면 관련된 이슈를 확인하세요.
-2. '편집'을 누르고 구조를 확장하세요.
+2. `편집`을 누르고 구조를 확장하세요.
 3. 변경 점들을 Pull Request에 생성하세요.
 
 ## YAML Frontmatter
@@ -35,18 +35,18 @@ related:
 
 각각에 대해 알아보겠습니다.
 
-- `title`: 이 글의 제목입니다.
+- `title`: 글의 제목입니다.
 - `group`: 하위 섹션의 제목입니다.
 - `sort`: 해당 섹션 (또는) 하위 섹션 내에서 이 글의 순서입니다.
 - `contributors`: 이 글에 기여한 사람들이 GitHub username 리스트입니다.
 - `related`: 관련된 읽을거리 또는 유용한 예시입니다.
 
-`related`는 페이지 하단에 **추가 읽기** 섹션을 생성하고 `contributors`는 그 아래에 **Contributors** 섹션을 생성합니다. 글을 편집하고 인정받고 싶다면 주저하지 말고 GitHub 사용자 이름을 'contributors' 목록에 추가하세요.
+`related`는 페이지 하단에 **Further Reading** 섹션을 생성하고 `contributors`는 그 아래에 **Contributors** 섹션을 생성합니다. 글을 편집하고 인정받고 싶다면 주저하지 말고 GitHub 사용자 이름을 'contributors' 목록에 추가하세요.
 
 ## Article Structure
 
-1. 간략한 소개 - 어떤 것을 왜 하였는지에 대한 아이디어를 적은 한두 문장.
-2. 남은 콘텐츠 개요 – 콘텐츠가 표시되는 방식.
+1. 간략한 소개 - 어떤 것을 왜 하였는지에 대한 아이디어를 적은 한두 문단입니다.
+2. 남은 콘텐츠 개요 – 콘텐츠가 표시되는 방식입니다.
 3. 주요 콘텐츠 - 주요 내용들을 말하세요.
 4. 결론 - 내용들을 정리하고 주요 포인트들을 요약합니다.
 
@@ -81,7 +81,7 @@ foo();
 + import webpack from 'webpack';
 ```
 
-백틱 안에서의 예시입니다.
+그리고 아래는 인라인 백틱 안에서의 예시입니다.
 
 **correct**
 
@@ -101,11 +101,11 @@ foo();
 
 ### Tables
 
-| Parameter  | Explanation                          | Input Type | Default Value |
-| ---------- | ------------------------------------ | ---------- | ------------- |
-| --debug    | 로더를 디버그 모드로 변환            | boolean    | false         |
-| --devtool  | 번들 리소스에 대한 소스 맵 유형 정의 | string     | -             |
-| --progress | 백분율로 컴파일 진행률 출력          | boolean    | false         |
+| Parameter  | Explanation                         | Input Type | Default Value |
+| ---------- | ----------------------------------- | ---------- | ------------- |
+| --debug    | 로더를 디버그 모드로 변환           | boolean    | false         |
+| --devtool  | 번들 리소스에 대한 소스맵 유형 정의 | string     | -             |
+| --progress | 백분율로 컴파일 진행률 출력         | boolean    | false         |
 
 테이블도 알파벳순으로 정렬해야 합니다.
 
@@ -123,7 +123,7 @@ foo();
 
 **Syntax: \>**
 
-> 이것은 blockquote입니다.
+> 이것은 Blockquote입니다.
 
 #### Tip
 
@@ -177,7 +177,7 @@ W> 이것은 Warning입니다.
 
 `string` `[string]`
 
-'array'에 여러 유형이 허용되는 경우 쉼표를 사용합니다.
+`array`에 여러 유형이 허용되는 경우 쉼표를 사용합니다.
 
 `string` `[string, RegExp, function(arg) => string]`
 
@@ -193,7 +193,7 @@ W> 이것은 Warning입니다.
 
 이는 옵션이 하나 또는 소수의 `TerserPlugin` 인스턴스를 예상한다는 것을 의미합니다.
 
-숫자를 표시하려면 'number'를 사용하세요.
+숫자를 표시하려면 `number`를 사용하세요.
 
 `number = 15: 5, 15, 30`
 
@@ -209,7 +209,7 @@ W> 이것은 Warning입니다.
 
 객체의 키가 동적이며 사용자 정의된 경우 ``를 사용하여 설명합니다.
 
-`object = { string }`
+`object = { <key> string }`
 
 ### Options shortlists and their typing
 
@@ -220,7 +220,7 @@ W> 이것은 Warning입니다.
 
 W> `:`는 여기에서 필수가 아닙니다. 속성, 유형 및 기본값에 유의하세요.
 
-예제는 [EvalSourceMapDevToolPlugin' page의 `options` 섹션](/plugins/eval-source-map-dev-tool-plugin/#options)에서 찾을 수 있습니다.
+예제는 [EvalSourceMapDevToolPlugin's page의 `options` 섹션](/plugins/eval-source-map-dev-tool-plugin/#options)에서 찾을 수 있습니다.
 
 ### Adding links
 
