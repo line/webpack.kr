@@ -16,16 +16,16 @@ translators:
   - kwYoohae
 ---
 
-플러그인은 서드파티 개발자들에게 webpck 엔진의 모든 잠재력을 보여준다. 단계별로 빌드 callback을 사용하여 개발자들은 webpack의 빌드 프로세스에 자신만의 행동을 도입할 수 있습니다. 플러그인을 빌드하는 것은 로더를 빌딩 하는 것보다 조금 더 진보되었습니다. 왜냐하면, 플러그인은 몇몇 webpack의 low-level에 내장된 훅을 이해할 필요가 있기 때문입니다. 이제 소스 코드를 읽어볼 준비를 해봅시다!
+플러그인은 서드파티 개발자들에게 webpack 엔진의 모든 잠재력을 보여줍니다. 단계별로 빌드 callback을 사용하여 개발자들은 webpack의 빌드 프로세스에 자신만의 행동을 도입할 수 있습니다. 플러그인을 빌드하는 것은 로더를 빌딩 하는 것보다 조금 더 진보되었습니다. 왜냐하면, 플러그인은 몇몇 webpack의 low-level에 내장된 훅을 이해할 필요가 있기 때문입니다. 이제 소스 코드를 읽어볼 준비를 해봅시다!
 
 ## Creating a Plugin
 
-Webpack용 plugin은 다음과 같이 구성됩니다.:
+Webpack용 plugin은 다음과 같이 구성됩니다.
 
 - JavaScript function 또는 JavaScript class로 이름을 붙입니다.
 - 프로토타입에서 `apply` 메소드를 정의합니다.
-- 특정한 [event hook](/api/compiler-hooks/) 로 지정합니다.
-- Webpack 내부에 있는 인스턴스의 특정한 데이터를 처리합니다.
+- 특정한 [event hook](/api/compiler-hooks/)으로 지정합니다.
+- webpack 내부에 있는 인스턴스의 특정한 데이터를 처리합니다.
 - 기능적으로 완벽해지면 Webpack에서 제공하는 callback을 호출합니다.
 
 ```javascript
@@ -55,7 +55,7 @@ class MyExampleWebpackPlugin {
 
 ## Basic plugin architecture
 
-플러그인은 `apply`라는 프로토타입 메소드로 인스턴스 화 된 객체입니다. 이러한 `apply` 메소드는 플러그인을 설치하는 동안 webpack 컴파일러에 의해 한번 호출됩니다. `apply` 메소드는 컴파일러 callback에 대해 접근 권한을 부여하는 기본 webpack 컴파일러에 의해 참조됩니다. 플러그인의 구조는 다음과 같습니다.
+플러그인은 `apply`라는 프로토타입 메소드로 인스턴스화 된 객체입니다. 이러한 `apply` 메소드는 플러그인을 설치하는 동안 webpack 컴파일러에 의해 한번 호출됩니다. `apply` 메소드는 컴파일러 callback에 대해 접근 권한을 부여하는 기본 webpack 컴파일러에 의해 참조됩니다. 플러그인의 구조는 다음과 같습니다.
 
 ```javascript
 class HelloWorldPlugin {
@@ -63,7 +63,7 @@ class HelloWorldPlugin {
     compiler.hooks.done.tap(
       'Hello World Plugin',
       (
-        stats /* 훅이 탭이 끝나면 stats는 인자로 통과됩니다.*/
+        stats /* 훅의 탭이 끝나면 stats는 인자로 통과됩니다.*/
       ) => {
         console.log('Hello World!');
       }
@@ -115,7 +115,7 @@ export default class HelloWorldPlugin {
 
 ## Compiler and Compilation
 
-플러그인 개발 중 가장 중요한 두 개의 리소스는 [`compiler`](/api/node/#compiler-instance) 과  [`compilation`](/api/compilation-hooks/) 객체입니다. 두 가지의 역할을 이해하는 것은 webpack 엔진을 확장하는 첫 번째 단계입니다.
+플러그인 개발 중 가장 중요한 두 개의 리소스는 [`compiler`](/api/node/#compiler-instance) 와  [`compilation`](/api/compilation-hooks/) 객체입니다. 두 가지의 역할을 이해하는 것은 webpack 엔진을 확장하는 첫 번째 단계입니다.
 
 ```javascript
 class HelloCompilationPlugin {
@@ -333,9 +333,9 @@ this.hooks = {
 
   - `SyncWaterfallHook[params]`를 사용하여 정의됩니다.
   - `tap` 메소드를 사용하여 탭 됩니다.
-  - `call(...params)` 메소드를 사용하여 호출됩니다..
+  - `call(...params)` 메소드를 사용하여 호출됩니다.
 
-  여기서 각각 플러그인은 이전 플러그인의 반환 값으로부터 arguments를 차례로 호출합니다. 플러그인은 실생 순서를 반드시 고려해야합니다.
+  여기서 각각 플러그인은 이전 플러그인의 반환 값으로부터 arguments를 차례로 호출합니다. 플러그인은 실행 순서를 반드시 고려해야합니다.
   실행된 이전의 플러그인으로부터 arguments를 반드시 허용해야합니다. 첫 번째 플러그인의 값은 `init`입니다. 따라서 waterfall hooks에는 최소 1개의 parameter를 제공해야 합니다. 이 패턴은 `ModuleTemplate`, `ChunkTemplate` 등과 같은 webpack 템플릿과 관련된 탭 될 수 있는 인스턴스에서 사용됩니다.
 
 ### Asynchronous Hooks
