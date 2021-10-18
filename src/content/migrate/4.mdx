@@ -28,7 +28,7 @@ Node.js의 버전을 업그레이드 하기 위한 지침 사항들은 [이곳](
 
 CLI는 분리된 패키지(webpack-cli)로 옮겼습니다. webpack을 사용하기 전에 CLI를 설치해야합니다. [기본 설정](/guides/getting-started/#basic-setup)을 참고하세요.
 
-설치는 [이곳](/guides/installation)에서 찾을 수 있습니다.
+설치 가이드는 [이곳](/guides/installation)에서 찾을 수 있습니다.
 
 ## Update plugins
 
@@ -47,7 +47,7 @@ module.exports = {
 }
 ```
 
-T> `'development'` 모드와 `'production'` 모드는 다릅니다. [상용 안내서](/guides/production/#setup)와 같이 `webpack-merge`를 사용해 설정을 최적화할 수 있습니다.
+T> `'development'` 모드와 `'production'` 모드는 다릅니다. [프로덕션 안내서](/guides/production/#setup)와 같이 `webpack-merge`를 사용해 설정을 최적화할 수 있습니다.
 
 ## Deprecated/Removed plugins
 
@@ -96,7 +96,7 @@ module.exports = {
 
 ## CommonsChunkPlugin
 
-'CommonsChunkPlugin'은 삭제되었습니다. 대신 [`optimization.splitChunks`](/configuration/optimization/#optimizationsplitchunks)을 사용할 수 있습니다.
+`CommonsChunkPlugin`은 삭제되었습니다. 대신 [`optimization.splitChunks`](/configuration/optimization/#optimizationsplitchunks)을 사용할 수 있습니다.
 
 더 자세한 사항은 [`optimization.splitChunks`](/configuration/optimization/#optimizationsplitchunks) 문서에서 찾을 수 있습니다. 기본 설정은 이미 요구사항을 충족할 것입니다.
 
@@ -146,7 +146,7 @@ module.exports = {
 };
 ```
 
-아직도 `json-loader`을 사용한다면, 이것을 지울 수 있습니다.
+아직도 `json-loader`를 사용한다면, 이것을 지울 수 있습니다.
 
 **webpack.config.js**
 
