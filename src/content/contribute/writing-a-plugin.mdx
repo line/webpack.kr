@@ -26,12 +26,12 @@ Webpack용 plugin은 다음과 같이 구성됩니다.
 - 프로토타입에서 `apply` 메소드를 정의합니다.
 - 특정한 [이벤트 훅](/api/compiler-hooks/)으로 지정합니다.
 - webpack 내부에 있는 인스턴스의 특정한 데이터를 처리합니다.
-- 기능적으로 완벽해지면 Webpack에서 제공하는 callback을 호출합니다.
+- 기능적으로 완벽해지면 webpack에서 제공하는 callback을 호출합니다.
 
 ```javascript
 // A JavaScript class.
 class MyExampleWebpackPlugin {
-  // `apply`를 compiler를 argument로 받는 프로토타입 메소드로 정의합니다.
+  // `apply`를 compiler를 인자로 받는 프로토타입 메소드로 정의합니다.
   apply(compiler) {
     // attach할 이벤트 훅을 지정합니다.
     compiler.hooks.emit.tapAsync(
@@ -91,7 +91,7 @@ module.exports = {
 ```javascript
 import { validate } from 'schema-utils';
 
-// schema의 옵션에 대한 객체
+// options 객체에 대한 schema
 const schema = {
   type: 'object',
   properties: {
@@ -120,7 +120,7 @@ export default class HelloWorldPlugin {
 ```javascript
 class HelloCompilationPlugin {
   apply(compiler) {
-    // callback 함수에 argument로 compilation을 제공하는 훅으로 compliation 훅을 탭 합니다.
+    // callback 함수에 인자로 compilation을 제공하는 훅으로 compliation 훅을 탭 합니다.
     compiler.hooks.compilation.tap('HelloCompilationPlugin', (compilation) => {
       // 이제 컴파일을 통해 이용할 수 있는 다양한 훅들을 이용할 수 있습니다.
       compilation.hooks.optimize.tap('HelloCompilationPlugin', () => {
@@ -141,7 +141,7 @@ module.exports = HelloCompilationPlugin;
 
 ### tapAsync
 
-`tapAsync` 메소드를 사용하여 플러그인을 탭해야 할 경우 함수에서 마지막 argument로 제공되는 callback 함수를 호출해야 할 필요가 있습니다.
+`tapAsync` 메소드를 사용하여 플러그인을 탭해야 할 경우 함수에서 마지막 인자로 제공되는 callback 함수를 호출해야 할 필요가 있습니다.
 
 ```javascript
 class HelloAsyncPlugin {
@@ -186,7 +186,7 @@ module.exports = HelloAsyncPlugin;
 
 ## Example
 
-일단 webpack compiler와 각각의 개별적인 compilations를 이해 할 수 있게 되면, engine 자체로 할 수 있는 가능성이 무궁무진해집니다. 기존 파일을 다시 포맷하거나 파생 파일을 만들거나 완전히 새로운 애셋을 만들 수 있습니다.
+일단 webpack compiler와 각각의 개별적인 compilations를 이해 할 수 있게 되면, 엔진 자체로 할 수 있는 가능성이 무궁무진해집니다. 기존 파일을 다시 포맷하거나 파생 파일을 만들거나 완전히 새로운 애셋을 만들 수 있습니다.
 
 새로운 빌드 파일인 `assets.md`를 생성하는 예제를 작성해봅시다. 내용은 빌드에 있는 모든 애셋 파일을 나열합니다. 이 플러그인은 다음과 같습니다.
 
@@ -197,7 +197,7 @@ class FileListPlugin {
   };
 
   // 어떤 옵션이 플러그인의 생성자에 전달될 때,
-  // (이는 플러그인의 public API이다.)
+  // (이는 플러그인의 public API입니다.)
   constructor(options = {}) {
     // 기본 옵션에 대해 사용자 지정 옵션을 적용하고
     // 병합된 옵션을 플러그인 메소드에 추가로 사용할 수 있게 합니다.
@@ -210,7 +210,7 @@ class FileListPlugin {
 
     // webpack 모듈 인스턴스는 컴파일러 객체로부터 접근할 수 있으며,
     // 이는 사용되는 모듈의 정확한 버전을 보장합니다.
-    // (webpack 또는 직접적으로 어떤 심볼을 require/import 하지 마십시오.)
+    // (webpack 또는 직접적으로 어떤 심볼을 require/import 하지 말아야 합니다.)
     const { webpack } = compiler;
 
     // Compilation 객체는 몇 가지 유용한 상수에 대한 참조를 제공합니다.
@@ -228,8 +228,8 @@ class FileListPlugin {
         {
           name: pluginName,
 
-          // 모든 애셋이 보장된 이전 애셋 처리 단계를 사용하여
-          // 다른 플러그인에 의해 이미 compilation이 이미 추가됬는지 확인합니다.
+          // 이후 애셋 처리 단계 중 하나를 사용하여
+          // 모든 애셋이 이미 다른 플러그인에 의해 compliation에 추가되었는지 확인합니다.
           stage: Compilation.PROCESS_ASSETS_STAGE_SUMMARIZE,
         },
         (assets) => {
@@ -238,7 +238,7 @@ class FileListPlugin {
           // 그리고 values 파일 소스입니다.
 
           // 모든 애셋을 거쳐 반복하고 
-          // Markdown 파일로 내용을 생성합니다.
+          // 마크다운 파일로 내용을 생성합니다.
           const content =
             '# In this build:\n\n' +
             Object.keys(assets)
@@ -317,13 +317,13 @@ this.hooks = {
 
 - **SyncHook**
 
-  - `new SyncHook([params])`를 사용하여 정의됩니다.
+  - `new SyncHook([params])`로 정의됩니다.
   - `tap` 메소드를 사용하여 탭 됩니다.
   - `call(...params)` 메소드를 사용하여 호출됩니다.
 
 - **Bail Hooks**
 
-  - `SyncBailHook[params]`를 사용하여 정의됩니다.
+  - `SyncBailHook[params]`로 정의됩니다.
   - `tap` 메소드를 사용하여 탭 됩니다.
   - `call(...params)` 메소드를 사용하여 호출됩니다.
 
@@ -331,27 +331,27 @@ this.hooks = {
 
 - **Waterfall Hooks**
 
-  - `SyncWaterfallHook[params]`를 사용하여 정의됩니다.
+  - `SyncWaterfallHook[params]`로 정의됩니다.
   - `tap` 메소드를 사용하여 탭 됩니다.
   - `call(...params)` 메소드를 사용하여 호출됩니다.
 
-  여기서 각각 플러그인은 이전 플러그인의 반환 값으로부터 arguments를 차례로 호출합니다. 플러그인은 실행 순서를 반드시 고려해야합니다.
-  실행된 이전의 플러그인으로부터 arguments를 반드시 허용해야합니다. 첫 번째 플러그인의 값은 `init`입니다. 따라서 waterfall hooks에는 최소 1개의 parameter를 제공해야 합니다. 이 패턴은 `ModuleTemplate`, `ChunkTemplate` 등과 같은 webpack 템플릿과 관련된 탭 될 수 있는 인스턴스에서 사용됩니다.
+  여기서 각각 플러그인은 이전 플러그인의 반환 값으로부터 인자들을 차례로 호출합니다. 플러그인은 실행 순서를 반드시 고려해야합니다.
+  실행된 이전의 플러그인으로부터 인자들을 반드시 허용해야합니다. 첫 번째 플러그인의 값은 `init`입니다. 따라서 waterfall hooks에는 최소 1개의 parameter를 제공해야 합니다. 이 패턴은 `ModuleTemplate`, `ChunkTemplate` 등과 같은 webpack 템플릿과 관련된 탭 될 수 있는 인스턴스에서 사용됩니다.
 
 ### Asynchronous Hooks
 
 - **Async Series Hook**
 
-  - `AsyncSeriesHook[params]`를 사용하여 정의됩니다.
+  - `AsyncSeriesHook[params]`로 정의됩니다.
   - `tap`/`tapAsync`/`tapPromise` 메소드를 사용하여 탭 됩니다.
   - `callAsync(...params)` 메소드를 사용하여 호출됩니다.
 
-  플러그인 핸들러 함수는 `(err?: Error) -> void` 서명이 있는 callback 함수와 모든 arguments가 호출됩니다. 핸들러 함수는 등록된 순서대로 호출 됩니다. `callback`은 모든 핸들러가 호출되고 난 뒤 호출됩니다.
+  플러그인 핸들러 함수는 `(err?: Error) -> void` 서명이 있는 callback 함수와 모든 인자들이 호출됩니다. 핸들러 함수는 등록된 순서대로 호출 됩니다. `callback`은 모든 핸들러가 호출되고 난 뒤 호출됩니다.
   Async Series Hook은 또한 `emit`, `run`과 같은 이벤트에 흔히 사용되는 패턴입니다.
 
 - **Async waterfall** 플러그인은 waterfall 방식으로 비동기식으로 적용될 것입니다.
 
-  - `AsyncWaterfallHook[params]`를 사용하여 정의됩니다.
+  - `AsyncWaterfallHook[params]`로 정의됩니다.
   - `tap`/`tapAsync`/`tapPromise` 메소드를 사용하여 탭 됩니다.
   - `callAsync(...params)` 메소드를 사용하여 호출됩니다.
   
@@ -360,16 +360,16 @@ this.hooks = {
 
 - **Async Series Bail**
 
-  - `AsyncSeriesBailHook[params]`를 사용하여 정의됩니다.
+  - `AsyncSeriesBailHook[params]`로 정의됩니다.
   - `tap`/`tapAsync`/`tapPromise` 메소드를 사용하여 탭 됩니다.
   - `callAsync(...params)` 메소드를 사용하여 호출됩니다.
 
 - **Async Parallel**
 
-  - `AsyncParallelHook[params]`를 사용하여 정의됩니다.
+  - `AsyncParallelHook[params]`로 정의됩니다.
   - `tap`/`tapAsync`/`tapPromise` 메소드를 사용하여 탭 됩니다.
   - `callAsync(...params)` 메소드를 사용하여 호출됩니다.
 
 ### Configuration defaults
 
-플러그인의 기본값이 적용된 후 Webpack은 설정의 기본값을 적용합니다. 이를 통해 플러그인은 고유의 기본값을 제공하고 사전에 플러그인의 설정을 만드는 방법을 제공합니다.
+플러그인의 기본값이 적용된 후 webpack은 설정의 기본값을 적용합니다. 이를 통해 플러그인은 고유의 기본값을 제공하고 사전에 플러그인의 설정을 만드는 방법을 제공합니다.
