@@ -5,6 +5,8 @@ contributors:
   - sokra
   - EugeneHlushko
   - Kolhar730
+translators:
+  - KiKi-Daehaksaeng
 related:
   - title: 'To v2 or v3 from v1'
     url: https://webpack.js.org/migrate/3/
@@ -14,27 +16,27 @@ related:
     url: https://medium.com/webpack/webpack-4-migration-guide-for-plugins-loaders-20a79b927202
 ---
 
-This guide only shows major changes that affect end users. For more details please see [the changelog](https://github.com/webpack/webpack/releases).
+이 가이드는 최종 사용자에게 영향을 주는 주요 변경 사항들을 보여줍니다. 더 자세한 사항은 [변경 사항](https://github.com/webpack/webpack/releases)을 참고하세요.
 
 ## Node.js v4
 
-If you are still using Node.js v4 or lower, you need to upgrade your Node.js installation to Node.js v6 or higher.
+Node.js v4 이하의 버전을 사용하고 있다면, Node.js v6 이상으로 업그레이드할 필요가 있습니다.
 
-Instructions for upgrading your Node.js version can be found [here](https://stackoverflow.com/questions/10075990/upgrading-node-js-to-latest-version).
+Node.js의 버전을 업그레이드 하기 위한 지침 사항들은 [이곳](https://stackoverflow.com/questions/10075990/upgrading-node-js-to-latest-version)에서 찾아볼 수 있습니다.
 
 ## CLI
 
-The CLI has moved to a separate package: webpack-cli. You need to install it before using webpack, see [basic setup](/guides/getting-started/#basic-setup).
+CLI는 분리된 패키지(webpack-cli)로 옮겼습니다. webpack을 사용하기 전에 CLI를 설치해야합니다. [기본 설정](/guides/getting-started/#basic-setup)을 참고하세요.
 
-The installation guide can be found [here](/guides/installation).
+설치 가이드는 [이곳](/guides/installation)에서 찾을 수 있습니다.
 
 ## Update plugins
 
-Many 3rd party plugins need to be updated to the latest versions to be compatible with webpack 4. Links to popular plugins can be found [here](/awesome-webpack/#webpack-plugins).
+대부분의 3rd party 플러그인은 webpack 4와 호환되는 최신 버전으로 업데이트 해야합니다. 잘 알려진 플러그인들에 대한 링크는 [이곳](/awesome-webpack/#webpack-plugins)에서 찾아 볼 수 있습니다.
 
 ## mode
 
-Add the new [`mode`](/configuration/mode/) option to your configuration. Set it to `'production'`, `'development'` or `'none'` depending on your configuration type.
+설정에 새로운 [`mode`](/configuration/mode/) 옵션을 추가하세요. 설정 타입에 따라 `'production'`, `'development'` 혹은 `'none'`으로 설정하세요.
 
 **webpack.config.js**
 
@@ -45,11 +47,11 @@ module.exports = {
 }
 ```
 
-T> The purpose of `'development'` mode and `'production'` mode is different. You can use `webpack-merge` as shown in [production guide](/guides/production/#setup) to optimize configurations.
+T> `'development'` 모드와 `'production'` 모드는 다릅니다. [프로덕션 안내서](/guides/production/#setup)와 같이 `webpack-merge`를 사용해 설정을 최적화할 수 있습니다.
 
 ## Deprecated/Removed plugins
 
-These plugins can be removed from configuration as they are default in production mode:
+이러한 플러그인은 프로덕션 모드에서 기본 제공되므로 설정에서 제거할 수 있습니다.
 
 **webpack.config.js**
 
@@ -65,7 +67,7 @@ module.exports = {
 }
 ```
 
-These plugins are default in development mode
+이러한 플러그인은 프로덕션 모드에서 기본으로 제공됩니다.
 
 **webpack.config.js**
 
@@ -78,7 +80,7 @@ module.exports = {
 }
 ```
 
-These plugins were deprecated and are now removed:
+이러한 플러그인은 더 이상 사용되지 않고, 현재는 삭제되었습니다.
 
 **webpack.config.js**
 
@@ -94,15 +96,15 @@ module.exports = {
 
 ## CommonsChunkPlugin
 
-The `CommonsChunkPlugin` was removed. Instead the [`optimization.splitChunks`](/configuration/optimization/#optimizationsplitchunks) options can be used.
+`CommonsChunkPlugin`은 삭제되었습니다. 대신 [`optimization.splitChunks`](/configuration/optimization/#optimizationsplitchunks)을 사용할 수 있습니다.
 
-See documentation of the [`optimization.splitChunks`](/configuration/optimization/#optimizationsplitchunks) for more details. The default configuration may already suit your needs.
+더 자세한 사항은 [`optimization.splitChunks`](/configuration/optimization/#optimizationsplitchunks) 문서에서 찾을 수 있습니다. 기본 설정은 이미 요구사항을 충족할 것입니다.
 
-T> When generating the HTML from the stats you can use `optimization.splitChunks.chunks: "all"` which is the optimal configuration in most cases.
+T> `stats`에서 HTML을 생성할때, 대개 최적의 설정인 `optimization.splitChunks.chunks: "all"`을 사용할 수 있습니다.
 
 ## import() and CommonJS
 
-When using `import()` to load non-ESM the result has changed in webpack 4. Now you need to access the `default` property to get the value of `module.exports`.
+non-ESM을 불러오기 위해 `import()`을 사용할 때, webpack 4에서 결과는 바뀝니다. 그래서 `module.exports`의 값을 얻기 위해 `default` 프로퍼티에 접근할 필요가 있습니다.
 
 **non-esm.js**
 
@@ -126,7 +128,7 @@ function sayHello() {
 
 ## json and loaders
 
-When using a custom loader to transform `.json` files you now need to change the module `type`:
+`.json` 파일을 변환하기 위해 사용자 지정 로더를 사용할 때, `type` 모듈을 바꿔야 합니다.
 
 **webpack.config.js**
 
@@ -144,7 +146,7 @@ module.exports = {
 };
 ```
 
-When still using the `json-loader`, it can be removed:
+아직도 `json-loader`를 사용한다면, 이것을 지울 수 있습니다.
 
 **webpack.config.js**
 
@@ -162,4 +164,4 @@ module.exports = {
 
 ## module.loaders
 
-`module.loaders` were deprecated since webpack 2 and are now removed in favor of [`module.rules`](/configuration/module/#rule).
+`module.loaders`는 webpack 2부터 사용하지 않으며, 현재는 [`module.rules`](/configuration/module/#rule)에 따라 삭제했습니다.
