@@ -7,9 +7,11 @@ contributors:
   - re-fort
   - byzyk
   - seckin92
+translators:
+  - chopmozzi
 ---
 
-Automatically load modules instead of having to `import` or `require` them everywhere.
+모듈을 `import` 또는 `require` 할 필요 없이 자동으로 로드합니다.
 
 ```js
 new webpack.ProvidePlugin({
@@ -18,7 +20,7 @@ new webpack.ProvidePlugin({
 });
 ```
 
-or
+또는
 
 ```js
 new webpack.ProvidePlugin({
@@ -27,9 +29,9 @@ new webpack.ProvidePlugin({
 });
 ```
 
-By default, module resolution path is current folder (`./**)` and `node_modules`.
+기본적으로, 모듈 해석 경로는 현재 폴더 `(./**)`와 `node_modules`입니다.
 
-It is also possible to specify full path:
+또한 전체 경로도 지정할 수 있습니다.
 
 ```js
 const path = require('path');
@@ -40,13 +42,13 @@ new webpack.ProvidePlugin({
 });
 ```
 
-Whenever the `identifier` is encountered as free variable in a module, the `module` is loaded automatically and the `identifier` is filled with the exports of the loaded `module` (or `property` in order to support named exports).
+모듈에서 자유 변수로 `식별자`를 만날 때마다 `모듈`이 자동으로 로드되고, `식별자`가 로드된 `모듈`의 exports(혹은 지정된 exports를 돕기 위한 `프로퍼티`)로 채워집니다.
 
-For importing the default export of an ES2015 module, you have to specify the default property of module.
+ES2015 모듈의 기본 export를 가져오려면 모듈의 기본 프로퍼티를 지정해야 합니다.
 
 ## Usage: jQuery
 
-To automatically load `jquery` we can point both variables it exposes to the corresponding node module:
+`jquery`를 자동으로 로드하려면 해당 노드 모듈에 노출되는 두 변수를 모두 가리킬 수 있습니다.
 
 ```javascript
 new webpack.ProvidePlugin({
@@ -55,18 +57,18 @@ new webpack.ProvidePlugin({
 });
 ```
 
-Then in any of our source code:
+소스 코드 중 어느 것이라도 동일합니다.
 
 ```javascript
-// in a module
-$('#item'); // <= works
-jQuery('#item'); // <= also works
-// $ is automatically set to the exports of module "jquery"
+// 모듈에서
+$('#item'); // <= 동작합니다.
+jQuery('#item'); // <= 이 또한 동작합니다.
+// $는 모듈 "jquery" exports로 자동 설정되었습니다.
 ```
 
 ## Usage: jQuery with Angular 1
 
-Angular looks for `window.jQuery` in order to determine whether jQuery is present, see the [source code](https://github.com/angular/angular.js/blob/v1.5.9/src/Angular.js#L1821-L1823).
+Angular는 jQuery가 존재하는지 찾기 위해 `window.jQuery`를 찾습니다. 소스 코드를 참고하세요.(https://github.com/angular/angular.js/blob/v1.5.9/src/Angular.js#L1821-L1823).
 
 ```javascript
 new webpack.ProvidePlugin({
