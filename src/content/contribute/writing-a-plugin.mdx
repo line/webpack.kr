@@ -24,7 +24,7 @@ Webpack용 plugin은 다음과 같이 구성됩니다.
 
 - JavaScript function 또는 JavaScript class로 이름을 붙입니다.
 - 프로토타입에서 `apply` 메소드를 정의합니다.
-- 특정한 [event hook](/api/compiler-hooks/)으로 지정합니다.
+- 특정한 [이벤트 훅](/api/compiler-hooks/)으로 지정합니다.
 - webpack 내부에 있는 인스턴스의 특정한 데이터를 처리합니다.
 - 기능적으로 완벽해지면 Webpack에서 제공하는 callback을 호출합니다.
 
@@ -133,7 +133,7 @@ class HelloCompilationPlugin {
 module.exports = HelloCompilationPlugin;
 ```
 
-`compiler`, `compilation` 그리고 다른 중요한 객체에서 사용 가능한 훅들은 [plugins API](/api/plugins/) 문서를 참고해 주세요.
+`compiler`, `compilation` 그리고 다른 중요한 객체에서 사용 가능한 훅들은 [플러그인 API](/api/plugins/) 문서를 참고해 주세요.
 
 ## Async event hooks
 
