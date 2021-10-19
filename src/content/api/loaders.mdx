@@ -18,7 +18,7 @@ translators:
   - 1ilsang
 ---
 
-로더는 함수를 내보내는 자바스크립트 모듈입니다. [로드 러너](https://github.com/webpack/loader-runner)는 이 함수를 호출하여 이전 로더 혹은 리소스 파일의 결과를 전달합니다. 함수의 `this` 컨텍스트는 로더가 호출 스타일을 비동기로 변경하거나 쿼리 매개변수를 가져올 수 있도록 하는 몇 가지 유용한 메소드를 사용하여 webpack과 [로드 러너](https://github.com/webpack/loader-runner)에 의해 채워집니다.
+로더는 함수를 내보내는 자바스크립트 모듈입니다. [로드 러너](https://github.com/webpack/loader-runner)는 이 함수를 호출하여 이전 로더 혹은 리소스 파일의 결과를 전달합니다. 함수의 this 컨텍스트는 webpack과 [로드러너](https://github.com/webpack/loader-runner)에 의해 채워지며, 로더가 호출스타일을 비동기로 변경하거나 쿼리 매개변수를 가져올 수 있도록 하는 몇가지 유용한 메소드를 제공합니다.
 
 첫 번째 로더에는 리소스 파일의 내용이라는 하나의 인수를 넘깁니다. 컴파일러는 마지막 로더의 결과를 기대합니다. 결과는 모듈의 자바스크립트 소스 코드를 나타내는 `String` 또는 `Buffer`(문자열로 변환됨)여야 합니다. 선택적 소스맵 결과(JSON 객체로)도 전달할 수 있습니다.
 
@@ -103,7 +103,7 @@ T> 로더는 원래 Node.js([enhanced-require](https://github.com/webpack/enhanc
 module.exports = function (content) {
   assert(content instanceof Buffer);
   return someSyncOperation(content);
-  // 리턴 값도 `Buffer`가 될 수 있습니다.
+  // 반환 값도 `Buffer`가 될 수 있습니다.
   // 로더가 "raw"가 아닌 경우에도 허용됩니다.
 };
 module.exports.raw = true;
@@ -488,8 +488,8 @@ resolve(context: string, request: string, callback: function(err, result: string
 
 require 표현식과 같은 요청을 resolve(해결)합니다.
 
-- `context`는 디렉터리의 절대 경로여야 합니다. 이 디렉터리는 resolve를 위한 시작 위치로 사용됩니다.
-- `request`는 resolve될 요청입니다. 일반적으로 `./relative`와 같은 상대 요청이나 `module/path`와 같은 모듈이 요청되지만 `/some/path`와 같은 절대 경로도 요청으로 가능합니다.
+- `context`는 디렉터리의 절대 경로여야 합니다. 이 디렉터리는 해석을 위한 시작 위치로 사용됩니다.
+- `request`는 해석될 요청입니다. 일반적으로 `./relative`와 같은 상대 요청이나 `module/path`와 같은 모듈이 요청되지만 `/some/path`와 같은 절대 경로도 요청으로 가능합니다.
 - `callback`은 resolve된 경로를 제공하는 일반 Node.js 스타일 콜백 함수입니다.
 
 resolve 작업의 모든 의존성은 현재 모듈에 대한 의존성으로 자동 추가됩니다.
@@ -589,11 +589,11 @@ Boolean 플래그입니다. 디버그 모드일 때 설정됩니다.
 
 ### this.minimize
 
-결과가 minimize 되어야 하는지 여부를 알려줍니다.
+결과가 최소화 되어야 하는지 여부를 알려줍니다.
 
 ### this.value
 
-다음 로더에 값을 전달합니다. 모듈로 실행했을 때 결과가 무엇을 내보내는지 알고 있다면 여기에서 이 값을 설정(유일한 배열 요소로)하십시오
+다음 로더에 값을 전달합니다. 모듈로 실행했을 때 결과가 무엇을 내보내는지 알고 있다면 여기에서 이 값을 설정(유일한 배열 요소로)하십시오.
 
 ### this.\_module
 
@@ -683,7 +683,7 @@ W> 애플리케이션 코드에서 이 구문을 사용하지 않는 것이 좋�
 
 T> 상대 `matchResource`는 포함하는 모듈의 현재 컨텍스트를 기준으로 해결됩니다.
 
-`matchResource`가 설정되면 원래 리소스 대신 [`module.rules`](/configuration/module/#modulerules)와 일치하는 데 사용됩니다. 이는 리소스에 추가 로더를 적용해야 하거나 모듈 유형을 변경해야 하는 경우에 유용할 수 있습니다. 또한 통계에 포시되며 [`splitChunks`에서 `test`와](/plugins/split-chunks-plugin/#splitchunkscachegroupscachegrouptest) [`Rule.issuer`](/configuration/module/#ruleissuer)를 일치시키는 데 사용됩니다.
+`matchResource`가 설정되면 원래 리소스 대신 [`module.rules`](/configuration/module/#modulerules)와 일치하는 데 사용됩니다. 이는 리소스에 추가 로더를 적용해야 하거나 모듈 유형을 변경해야 하는 경우에 유용할 수 있습니다. 또한 통계에 표시되며 [`splitChunks`에서 `test`와](/plugins/split-chunks-plugin/#splitchunkscachegroupscachegrouptest) [`Rule.issuer`](/configuration/module/#ruleissuer)를 일치시키는 데 사용됩니다.
 
 예제:
 
@@ -739,6 +739,6 @@ module.exports = function (source) {
 
 로깅 API는 webpack 4.37 릴리즈부터 사용할 수 있습니다. [`stats 설정`](/configuration/stats/#statslogging)에서 `logging`이 활성화되거나 [`infrastructure 로깅`](/configuration/other-options/#infrastructurelogging)이 활성화되면 로더가 메세지를 기록할 수 있으며 이 메세지는 해당 로거 형식(stats, infrastructure)으로 출력됩니다.
 
-- 로더는 로더 경로 및 처리된 파일과 함께 `compilation.getLogger()`에 대한 바로 가기인 로깅을 위해 `this.getLogger()`를 사용하는 것을 선호해야 합니다. 이러한 종류의 로깅은 stats에 저장되고 그에 따라 형식이 지정됩니다. webpack 사용자가 필터링하고 내보낼 수 있습니다.
+- 로더는 `this.getLogger()`를 사용하는 것을 선호해야 합니다. 이는 로더 경로와 처리된 파일을 포함한 `compilation.getLogger()`의 단축어입니다. 이러한 종류의 로깅은 stats에 저장되고 그에 따라 형식이 지정됩니다. webpack 사용자가 필터링하고 내보낼 수 있습니다.
 - 로더는 `this.getLogger('name')`를 사용하여 자식 이름을 가진 독립 로거를 얻을 수 있습니다. 로더 경로 및 처리된 파일은 계속 추가됩니다.
 - 로더는 `getLogger` 방식을 지원하지 않는 이전 webpack 버전이 사용되는 경우 대체 코드를 제공하기 위해 `this.getLogger() ? this.getLogger() : console`를 감지하는 특수한 대체 코드를 사용할 수 있습니다.
