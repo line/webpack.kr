@@ -18,7 +18,7 @@ translators:
   - 1ilsang
 ---
 
-로더는 함수를 내보내는 자바스크립트 모듈입니다. [로드 러너](https://github.com/webpack/loader-runner)는 이 함수를 호출하여 이전 로더 혹은 리소스 파일의 결과를 전달합니다. 함수의 this 컨텍스트는 webpack과 [로드러너](https://github.com/webpack/loader-runner)에 의해 채워지며, 로더가 호출스타일을 비동기로 변경하거나 쿼리 매개변수를 가져올 수 있도록 하는 몇가지 유용한 메소드를 제공합니다.
+로더는 함수를 내보내는 자바스크립트 모듈입니다. [로드 러너](https://github.com/webpack/loader-runner)는 이 함수를 호출하여 이전 로더 혹은 리소스 파일의 결과를 전달합니다. 함수의 `this` 컨텍스트는 webpack과 [로드러너](https://github.com/webpack/loader-runner)에 의해 채워지며, 로더가 호출스타일을 비동기로 변경하거나 쿼리 매개변수를 가져올 수 있도록 하는 몇가지 유용한 메소드를 제공합니다.
 
 첫 번째 로더에는 리소스 파일의 내용이라는 하나의 인수를 넘깁니다. 컴파일러는 마지막 로더의 결과를 기대합니다. 결과는 모듈의 자바스크립트 소스 코드를 나타내는 `String` 또는 `Buffer`(문자열로 변환됨)여야 합니다. 선택적 소스맵 결과(JSON 객체로)도 전달할 수 있습니다.
 
@@ -262,7 +262,7 @@ clearDependencies();
 
 ### this.context
 
-**모듈의 디렉터리.** 다른 것을 해결하기 위한 컨텍스트로 사용할 수 있습니다.
+**모듈의 디렉터리.** 다른 것을 해석하기 위한 컨텍스트로 사용할 수 있습니다.
 
 [이 예제](#example-for-the-loader-context)에서 `resource.js`가 이 디렉터리에 있기 때문에 `/abc`가 됩니다.
 
@@ -335,9 +335,9 @@ resolve(context: string, request: string): Promise<string>
 
 Webpack [`resolve` 옵션](/configuration/resolve/#resolve) 아래의 모든 옵션이 가능합니다. 설정된 `resolve` 옵션과 병합됩니다. `"..."`는 `resolve` 옵션에서 값을 확장하기 위해 배열에서 사용할 수 있습니다(예: `{ extensions: [".sass", "..."] }`).
 
-`options.dependencyType`은 추가 옵션입니다. 이는 우리가 `resolve` 옵션에서 `byDependency`를 resolve 하는 데 사용되는 의존성 타입을 지정할 수 있도록 합니다.
+`options.dependencyType`은 추가 옵션입니다. 이는 우리가 `resolve` 옵션에서 `byDependency`를 해석하는 데 사용되는 의존성 타입을 지정할 수 있도록 합니다.
 
-resolve 작업의 모든 의존성은 현재 모듈에 대한 의존성으로 자동 추가됩니다.
+해석 작업의 모든 의존성은 현재 모듈에 대한 의존성으로 자동 추가됩니다.
 
 ### this.hot
 
@@ -432,7 +432,7 @@ import stylesheet from './stylesheet.js';
 loadModule(request: string, callback: function(err, source, sourceMap, module))
 ```
 
-모듈에 대한 주어진 요청을 해결하고 설정된 모든 로더를 적용하고 생성된 소스, 소스맵 및 모듈 인스턴스(일반적으로 [`NormalModule`](https://github.com/webpack/webpack/blob/master/lib/NormalModule.js)의 인스턴스)로 콜백합니다. 결과를 생성하기 위해 다른 모듈의 소스 코드를 알아야 하는 경우 이 기능을 사용합니다.
+모듈에 대한 주어진 요청을 해석하고 설정된 모든 로더를 적용하고 생성된 소스, 소스맵 및 모듈 인스턴스(일반적으로 [`NormalModule`](https://github.com/webpack/webpack/blob/master/lib/NormalModule.js)의 인스턴스)로 콜백합니다. 결과를 생성하기 위해 다른 모듈의 소스 코드를 알아야 하는 경우 이 기능을 사용합니다.
 
 로더 컨텍스트의 `this.loadModule`은 기본적으로 CommonJS 해석 규칙을 사용합니다. `'esm'`, `'commonjs'` 또는 사용자 정의와 같은 다른 해석을 사용하기 전에 적절한 `dependencyType`과 함께 `this.getResolve`를 사용하세요.
 
@@ -486,7 +486,7 @@ resolve된 요청 문자열입니다.
 resolve(context: string, request: string, callback: function(err, result: string))
 ```
 
-require 표현식과 같은 요청을 resolve(해결)합니다.
+require 표현식과 같은 요청을 resolve(해석)합니다.
 
 - `context`는 디렉터리의 절대 경로여야 합니다. 이 디렉터리는 해석을 위한 시작 위치로 사용됩니다.
 - `request`는 해석될 요청입니다. 일반적으로 `./relative`와 같은 상대 요청이나 `module/path`와 같은 모듈이 요청되지만 `/some/path`와 같은 절대 경로도 요청으로 가능합니다.
@@ -681,7 +681,7 @@ W> 애플리케이션 코드에서 이 구문을 사용하지 않는 것이 좋�
 인라인 요청 구문은 로더 생성 코드에서만 사용하기 위한 것입니다.
 이 권장 사항을 따르지 않으면 코드가 webpack에 의존되고 비표준 상태가 됩니다.
 
-T> 상대 `matchResource`는 포함하는 모듈의 현재 컨텍스트를 기준으로 해결됩니다.
+T> 상대 `matchResource`는 포함하는 모듈의 현재 컨텍스트를 기준으로 해석됩니다.
 
 `matchResource`가 설정되면 원래 리소스 대신 [`module.rules`](/configuration/module/#modulerules)와 일치하는 데 사용됩니다. 이는 리소스에 추가 로더를 적용해야 하거나 모듈 유형을 변경해야 하는 경우에 유용할 수 있습니다. 또한 통계에 표시되며 [`splitChunks`에서 `test`와](/plugins/split-chunks-plugin/#splitchunkscachegroupscachegrouptest) [`Rule.issuer`](/configuration/module/#ruleissuer)를 일치시키는 데 사용됩니다.
 
