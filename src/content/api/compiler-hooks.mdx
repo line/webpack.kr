@@ -160,7 +160,7 @@ compiler.hooks.beforeCompile.tapAsync('MyPlugin', (params, callback) => {
 
 `SyncHook`
 
-새 컴파일이 생성되기 전인 `beforeCompile` 바로 뒤에 호출됩니다.
+새 컴파일이 생성되기 전인 `beforeCompile` 바로 뒤에 호출됩니다. 이 훅은 자식 컴파일러에 복사되지 _않습니다._
 
 - 콜백 파라미터: `compilationParams`
 
@@ -168,7 +168,7 @@ compiler.hooks.beforeCompile.tapAsync('MyPlugin', (params, callback) => {
 
 `SyncHook`
 
-컴파일을 초기화하는 동안 `compilation` 이벤트를 생성하기 직전에 실행됩니다.
+컴파일을 초기화하는 동안 `compilation` 이벤트를 생성하기 직전에 실행됩니다. 이 훅은 자식 컴파일러에 복사되지 _않습니다._
 
 - 콜백 파라미터: `compilation`, `compilationParams`
 
@@ -184,7 +184,7 @@ compiler.hooks.beforeCompile.tapAsync('MyPlugin', (params, callback) => {
 
 `AsyncParallelHook`
 
-컴파일을 완료하기 전에 실행됩니다.
+컴파일을 완료하기 전에 실행됩니다. 이 훅은 자식 컴파일러에 복사되지 _않습니다._
 
 - 콜백 파라미터: `compilation`
 
@@ -215,7 +215,7 @@ compiler.hooks.shouldEmit.tap('MyPlugin', (compilation) => {
 
 `AsyncSeriesHook`
 
-애셋을 출력 디렉터리로 방출하기 직전에 실행됩니다.
+애셋을 출력 디렉터리로 방출하기 직전에 실행됩니다. 이 훅은 자식 컴파일러에 복사되지 _않습니다._
 
 - 콜백 파라미터: `compilation`
 
@@ -223,7 +223,7 @@ compiler.hooks.shouldEmit.tap('MyPlugin', (compilation) => {
 
 `AsyncSeriesHook`
 
-출력 디렉터리에 애셋을 내보낸 후 호출됩니다.
+출력 디렉터리에 애셋을 내보낸 후 호출됩니다. 이 훅은 자식 컴파일러에 복사되지 _않습니다._
 
 - 콜백 파라미터: `compilation`
 
@@ -250,7 +250,7 @@ compiler.hooks.assetEmitted.tap(
 
 `AsyncSeriesHook`
 
-컴파일이 완료되면 실행됩니다.
+컴파일이 완료되면 실행됩니다. 이 훅은 자식 컴파일러에 복사되지 _않습니다._
 
 - 콜백 파라미터: `stats`
 
@@ -272,7 +272,7 @@ compiler.hooks.assetEmitted.tap(
 
 `SyncHook`
 
-감시중인 컴파일이 무효가 되었을 때 실행됩니다.
+감시중인 컴파일이 무효가 되었을 때 실행됩니다. 이 훅은 자식 컴파일러에 복사되지 _않습니다._
 
 - 콜백 파라미터: `fileName`, `changeTime`
 

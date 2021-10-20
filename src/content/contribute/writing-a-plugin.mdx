@@ -62,9 +62,7 @@ class HelloWorldPlugin {
   apply(compiler) {
     compiler.hooks.done.tap(
       'Hello World Plugin',
-      (
-        stats /* 훅의 탭이 끝나면 stats는 인자로 통과됩니다.*/
-      ) => {
+      (stats /* 훅의 탭이 끝나면 stats는 인자로 통과됩니다.*/) => {
         console.log('Hello World!');
       }
     );
@@ -115,7 +113,7 @@ export default class HelloWorldPlugin {
 
 ## Compiler and Compilation
 
-플러그인 개발 중 가장 중요한 두 개의 리소스는 [`compiler`](/api/node/#compiler-instance) 와  [`compilation`](/api/compilation-hooks/) 객체입니다. 두 가지의 역할을 이해하는 것은 webpack 엔진을 확장하는 첫 번째 단계입니다.
+플러그인 개발 중 가장 중요한 두 개의 리소스는 [`compiler`](/api/node/#compiler-instance) 와 [`compilation`](/api/compilation-hooks/) 객체입니다. 두 가지의 역할을 이해하는 것은 webpack 엔진을 확장하는 첫 번째 단계입니다.
 
 ```javascript
 class HelloCompilationPlugin {
@@ -220,7 +218,7 @@ class FileListPlugin {
     // 사용해야 하는 "sources" 클래스 중 하나입니다.
     const { RawSource } = webpack.sources;
 
-    // 이전 단계에서 compilation 프로세스를 추가로 탭하기 위해서는 
+    // 이전 단계에서 compilation 프로세스를 추가로 탭하기 위해서는
     // "thisCompilation" 훅을 탭해야합니다.
     compiler.hooks.thisCompilation.tap(pluginName, (compilation) => {
       // 특정 단계에서 애셋 처리 파이프라인으로 탭합니다.
@@ -237,7 +235,7 @@ class FileListPlugin {
           // 객체의 key는 애셋의 경로 이름입니다.
           // 그리고 values 파일 소스입니다.
 
-          // 모든 애셋을 거쳐 반복하고 
+          // 모든 애셋을 거쳐 반복하고
           // 마크다운 파일로 내용을 생성합니다.
           const content =
             '# In this build:\n\n' +
@@ -299,7 +297,7 @@ T> [`processAssets`](/api/compilation-hooks/#processassets) 훅은 지정한 단
 
 ## Different Plugin Shapes
 
-플러그인은 탭 하는 이벤트 훅에 따라 타입으로 분류될 수 있습니다. 모든 이벤트 훅은  동기 또는 비동기 waterfall 또는 병렬 훅으로 사전에 정의되어 있고 훅은 내부적으로 call/callAsync 메소드를 사용하여 호출됩니다. 지원되거나 탭이 된 훅의 목록은 일반적으로 `this.hooks` 프로퍼티에 명시되어 있습니다.
+플러그인은 탭 하는 이벤트 훅에 따라 타입으로 분류될 수 있습니다. 모든 이벤트 훅은 동기 또는 비동기 waterfall 또는 병렬 훅으로 사전에 정의되어 있고 훅은 내부적으로 call/callAsync 메소드를 사용하여 호출됩니다. 지원되거나 탭이 된 훅의 목록은 일반적으로 `this.hooks` 프로퍼티에 명시되어 있습니다.
 
 예시는 다음과 같습니다.
 
@@ -354,8 +352,8 @@ this.hooks = {
   - `AsyncWaterfallHook[params]`로 정의됩니다.
   - `tap`/`tapAsync`/`tapPromise` 메소드를 사용하여 탭 됩니다.
   - `callAsync(...params)` 메소드를 사용하여 호출됩니다.
-  
-  플러그인 핸들러 함수는  `(err: Error, nextValue: any) -> void.` 서명이 있는 callback 함수와 현재 값으로 호출됩니다. `nextValue`가 호출되면 다음 핸들러의 현재 값이 됩니다. 첫 번째 핸들러의 현재 값은 `init`입니다. 모든 핸들러가 적용된 후 callback은 마지막 값으로 호출됩니다. 만약 어떤 핸들러가 `err` 값을 전달하면 callback은 오류가 호출되고 더이상 핸들러는 호출되지 않습니다.
+
+  플러그인 핸들러 함수는 `(err: Error, nextValue: any) -> void.` 서명이 있는 callback 함수와 현재 값으로 호출됩니다. `nextValue`가 호출되면 다음 핸들러의 현재 값이 됩니다. 첫 번째 핸들러의 현재 값은 `init`입니다. 모든 핸들러가 적용된 후 callback은 마지막 값으로 호출됩니다. 만약 어떤 핸들러가 `err` 값을 전달하면 callback은 오류가 호출되고 더이상 핸들러는 호출되지 않습니다.
   이 플러그인 패턴은 `before-resolve`와 `after-resolve`와 같은 이벤트에서 사용할 수 있습니다.
 
 - **Async Series Bail**
