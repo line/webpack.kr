@@ -96,7 +96,7 @@ T> webpack 5는 설정 스키마에서 이러한 옵션을 제거하고 항상 `
 
 ### Clean up configuration
 
-- webpack 설정에서 `optimization.moduleIds` 및 `optimization.chunkIds` 제거를 고려하세요. 기본값은 [`production mode`](/configuration/mode/#mode-production)에서 장기 캐싱을 지원하고 [`development` mode](/configuration/mode/#mode-development)에서 디버깅을 지원하기 때문에 더 나을 수 있습니다.
+- webpack 설정에서 `optimization.moduleIds` 및 `optimization.chunkIds` 제거를 고려하세요. 기본값은 [`production` 모드](/configuration/mode/#mode-production)에서 장기 캐싱을 지원하고 [`development` 모드](/configuration/mode/#mode-development)에서 디버깅을 지원하기 때문에 더 나을 수 있습니다.
 - webpack 설정에서 `[hash]` placeholder를 사용할 때 `[contenthash]`로 변경하는 것이 좋습니다. 동일하지는 않지만, 더 효과적인 것으로 입증되었습니다.
 - Yarn의 PnP 및 `pnp-webpack-plugin`을 사용하는 경우 좋은 소식이 있습니다. 이제 기본적으로 지원됩니다. 설정에서 제거해야 합니다.
 - 정규 표현식과 함께 `IgnorePlugin`을 인수로 사용하는 경우 이제 `options` object를 사용합니다. `new IgnorePlugin({ resourceRegExp: /regExp/ })`.
@@ -129,7 +129,7 @@ import를 통해 WebAssembly를 사용하는 경우 다음 두 단계 프로세�
 
 - 기본값 또는 `optimization.splitChunks: { chunks: 'all' }`을 사용하는 것을 권장합니다.
 - 사용자 정의 설정을 사용할 때 `name: false`를 삭제하고 `name: string | function`을 `idHint: string | function`로 교체하세요.
-- `Optimization.splitChunks.cacheGroups: { default: false, vendors: false }`를 설정하여 기본값을 끌(turn off) 수 있었습니다. 이것을 권장하지 않지만, webpack 5에서 같은 효과를 얻고 싶다면 `optimization.splitChunks.cacheGroups: { default: false, defaultVendors: false }`를 사용할 수 있습니다.
+- `Optimization.splitChunks.cacheGroups: { default: false, vendors: false }`를 설정하여 기본값을 끌 수 있었습니다. 이것을 권장하지 않지만, webpack 5에서 같은 효과를 얻고 싶다면 `optimization.splitChunks.cacheGroups: { default: false, defaultVendors: false }`를 사용할 수 있습니다.
 
 기본값 제거를 고려하세요.
 
@@ -141,13 +141,13 @@ import를 통해 WebAssembly를 사용하는 경우 다음 두 단계 프로세�
 
 - 프로젝트에 대해 [browserslist](https://github.com/browserslist/browserslist)를 활성화한 경우 webpack 5는 `browserslist` 설정을 재사용하여 런타임 코드에 대해 내보낼 코드 스타일을 결정합니다.
 
-  확실히 할 것들:
+  확실히 할 것들.
 
   1. [`target`](/configuration/target/#root)을 `browserslist`으로 설정하거나 webpack이 자동으로 `browserslist`을 설정하도록 `target`을 제거합니다.
   2. `IE 11`을 browserslist 설정에 추가합니다.
 
 - `browserslist`가 없으면 webpack의 런타임 코드는 ES2015 구문(예: 화살표 함수)을 사용하여 더 작은 번들을 빌드합니다. 따라서 ES2015 구문을 지원하지 않는 브라우저(예: IE11)에 ES5 구문을 사용하려면 `target: ['web', 'es5']`를 설정해야 합니다.
-- Node.js의 경우 빌드에는 `target` option에 지원되는 Node.js 버전이 포함되며 webpack은 지원되는 구문을 자동으로 파악합니다. 예를 들어`target: 'node8.6'`.
+- Node.js의 경우 빌드에는 `target` option에 지원되는 Node.js 버전이 포함되며 webpack은 지원되는 구문을 자동으로 파악합니다. 예를 들어 `target: 'node8.6'`와 같이 사용합니다.
 
 ### Cleanup the code
 
@@ -158,7 +158,7 @@ import를 통해 WebAssembly를 사용하는 경우 다음 두 단계 프로세�
 - 여기서 chunk's name은 public 용입니다.
 - 오직 개발을 위한 이름이 아닙니다.
 - Webpack은 이를 사용하여 production 및 development 모드에서 파일 이름을 지정합니다.
-- Webpack 5는 `webpackChunkName`을 사용하지 않는 경우에도 `development` mode에서 유용한 파일 이름을 자동으로 할당합니다.
+- Webpack 5는 `webpackChunkName`을 사용하지 않는 경우에도 `development` 모드에서 유용한 파일 이름을 자동으로 할당합니다.
 
 #### Using named exports from JSON modules
 
@@ -221,7 +221,7 @@ console.log(pkg.version);
 
 - Level 6: **Deprecation Warnings**.
 
-  사용 중단 경고를 많을 수 있습니다. 이것은 직접적인 문제가 아닙니다. 플러그인은 핵심 변경 사항을 따라잡을 시간이 필요합니다. 이러한 지원 중단을 플러그인에 보고하세요. 이러한 지원 중단은 경고일 뿐이며 빌드는 여전히 약간의 단점(예: 성능 저하)으로만 작동합니다.
+  사용 중단 경고가 많을 수 있습니다. 이것은 직접적인 문제가 아닙니다. 플러그인은 핵심 변경 사항을 따라잡을 시간이 필요합니다. 이러한 지원 중단을 플러그인에 보고하세요. 이러한 지원 중단은 경고일 뿐이며 빌드는 여전히 약간의 단점(예: 성능 저하)으로만 작동합니다.
 
   - `--no-deprecation` 플래그와 함께 node를 실행하여 사용 중단 경고를 숨길 수 있습니다(예: `node --no-deprecation node_modules/webpack/bin/webpack.js)`. 이것은 일시적인 해결 방법일 뿐입니다.
   - 플러그인 및 로더 기여자는 사용 중단 메시지의 조언을 따라 코드를 개선할 수 있습니다.
@@ -233,11 +233,11 @@ console.log(pkg.version);
   그리고 상황을 개선하기 위해 다음과 같이 할 수 있습니다.
 
   - 시간이 어디에서 소요되었는지 설명합니다.
-    - `--profile` `--progress`는 이제 간단한 성능 프로필을 표시합니다.
+    - `--profile --progress`는 이제 간단한 성능 프로필을 표시합니다.
     - `node --inspect-brk node_modules/webpack/bin/webpack.js` + [`chrome://inspect`](chrome://inspect) / [`edge://inspect`](edge://inspect) (프로파일러 탭 참고).
       - 이러한 프로필을 파일에 저장하고 이슈에 제공할 수 있습니다.
       - 어떤 경우에는 더 나은 스택 추적을 위해 `--no-turbo-inlining` 플래그를 사용해 보세요.
-  - 증분 빌드에서 모듈을 빌드하는 시간은 webpack 4에서와같이 안전하지 않은 캐싱으로 되돌리면 개선될 수 있습니다.
+  - 증분 빌드에서 모듈을 빌드하는 시간은 webpack 4에서와 같이 안전하지 않은 캐싱으로 되돌리면 개선될 수 있습니다.
     - `module.unsafeCache: true`
     - 그러나 이것은 코드 기반의 일부 변경 사항을 처리하는 기능에 영향을 미칠 수 있습니다.
   - Full build
