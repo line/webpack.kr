@@ -22,11 +22,11 @@ translators:
 
 + 다음 섹션에서는 webpack 1에서 2로의 주요 변경 사항을 설명합니다.
 
-T> webpack 2와 3 사이에 변경 사항이 훨씬 적으므로 이주가 그렇게 나쁘지 않을 것입니다. 문제가 발생하는 경우, 자세한 내용은 [the changelog](https://github.com/webpack/webpack/releases)를 참고하세요.
+T> webpack 2와 3 사이에 변경 사항이 훨씬 적으므로 마이그레이션이 그렇게 나쁘지 않을 것입니다. 문제가 발생하는 경우, 자세한 내용은 [the changelog](https://github.com/webpack/webpack/releases)를 참고하세요.
 
 ## resolve.root, resolve.fallback, resolve.modulesDirectories
 
-위 3개의 파일들 `resolve.modules`하나로 대체되었습니다. 자세한 사용법은 [resolving](/configuration/resolve)을 참고하세요.
+위 3개의 옵션들은 `resolve.modules`로 대체되었습니다. 자세한 사용법은 [resolving](/configuration/resolve)을 참고하세요.
 
 ```diff
   resolve: {
@@ -48,7 +48,7 @@ T> webpack 2와 3 사이에 변경 사항이 훨씬 적으므로 이주가 그�
 
 ## module.loaders is now module.rules
 
-이전의 로더구성 은 로더와 그 이상의 설정이 허가되는 강력한규칙 시스템으로 대체 되었습니다.
+이전의 로더설정은 로더와 그 이상의 설정이 허가되는 강력한 규칙 시스템으로 대체 되었습니다.
 호환성을 위해 이전의 `module.loaders` 구문은 여전히 유효하며 이전 이름은 구문 분석됩니다.
 네이밍 컨벤션들이 이해하기 쉬워졌고 `module.rules`를 사용하도록 설정을 업그레이드 해야하는 좋은 이유입니다.
 
@@ -107,7 +107,7 @@ webpack 1에서 로더는 일반적으로 `!`로 연결되었습니다. 이 스�
 
 ## Automatic `-loader` module name extension removed
 
-로더를 참고할 때 `-loader` 확장자를 더 이상 생략할 수 없습니다:
+로더를 참고할 때 `-loader` 확장자를 더 이상 생략할 수 없습니다.
 
 ```diff
   module: {
@@ -138,7 +138,7 @@ webpack 1에서 로더는 일반적으로 `!`로 연결되었습니다. 이 스�
 
 ## json-loader is not required anymore
 
-JSON 파일에 대해 설정된 로더가 없으면, webpack은 자동으로 JSON [`json-loader`](https://github.com/webpack-contrib/json-loader) 파일을 로드하려고 시도합니다.
+JSON 파일에 대해 설정된 로더가 없으면, webpack은 자동으로 [`json-loader`](https://github.com/webpack-contrib/json-loader)로 JSON 파일을 로드하려고 시도합니다.
 
 ```diff
   module: {
@@ -151,7 +151,7 @@ JSON 파일에 대해 설정된 로더가 없으면, webpack은 자동으로 JSO
   }
 ```
 
-[환경차이를 없애기 위해 그렇게 하기로 결정했습니다.](https://github.com/webpack/webpack/issues/3363) webpack, node.js 및 browserify 간의 환경차이를 없애기 위해서입니다.
+webpack, node.js 및 browserify 간의 [환경차이를 없애기 위해 그렇게 하기로 결정했습니다.](https://github.com/webpack/webpack/issues/3363) 
 
 ## Loaders in configuration resolve relative to context
 
@@ -159,7 +159,7 @@ JSON 파일에 대해 설정된 로더가 없으면, webpack은 자동으로 JSO
 
 이것은 `npm link` 를 사용하거나 외부 `context` 모듈을 참고할 때 로더에 의해 발생하는 중복 모듈 문제를 해결합니다.
 
-이 문제를 해결하기 위해 몇 가지 핵을 제거할 수 있습니다 :
+이 문제를 해결하기 위해 몇 가지 핵을 제거할 수 있습니다.
 
 ```diff
   module: {
@@ -226,7 +226,7 @@ JSON 파일에 대해 설정된 로더가 없으면, webpack은 자동으로 JSO
 
 로더의 최소화 모드는 webpack 3 이상에서 제거됩니다.
 
-이전 로더와의 호환성을 유지하기 위해 플러그인을 통해 로더를 최소화 모드로 전환할 수 있습니다:
+이전 로더와의 호환성을 유지하기 위해 플러그인을 통해 로더를 최소화 모드로 전환할 수 있습니다.
 
 ```diff
   plugins: [
@@ -254,7 +254,7 @@ JSON 파일에 대해 설정된 로더가 없으면, webpack은 자동으로 JSO
 ## OccurrenceOrderPlugin is now on by default
 
 `OccurrenceOrderPlugin`은 이제 기본적으로 활성화되며 이름이 변경되었습니다(webpack 1의 `OccurenceOrderPlugin`).
-따라서 설정에서 플러그인을 제거해야 합니다 :
+따라서 설정에서 플러그인을 제거해야 합니다.
 
 ```diff
   plugins: [
@@ -315,7 +315,7 @@ plugins: [
 
 ### Using custom arguments in CLI and configuration
 
-CLI를 남용하여 다음과 같이 설정에 사용자 지정 인수를 전달한 경우:
+CLI를 남용하여 다음과 같이 설정에 사용자 지정 인수를 전달한 경우.
 
 `webpack --custom-stuff`
 
@@ -350,7 +350,7 @@ module.exports = function (env) {
 
 ## Loader configuration is through `options`
 
-`webpack.config.js`에서 사용자 정의 속성으로 로더를 _더 이상_ 설정할 수없습니다. `options`을 통해 수행해야 합니다.`ts` 속성이 있는 다음 설정은 더 이상 webpack 2에서 유효하지 않습니다 :
+`webpack.config.js`에서 사용자 정의 속성으로 로더를 _더 이상_ 설정할 수없습니다. `options`을 통해 수행해야 합니다. `ts` 속성이 있는 다음 설정은 더 이상 webpack 2에서 유효하지 않습니다 :
 
 ```js
 module.exports = {
@@ -370,7 +370,7 @@ module.exports = {
 
 ### What are `options`?
 
-좋은 질문입니다. 음, 엄밀히 말하면 2가지 가능성이 있습니다. webpack 로더를 설정하는 두 가지 방법. 고전적으로 `options`은 `query`라고 했으며 로더 이름에 추가할 수 있는 문자열이었습니다. 쿼리 문자열과 매우 유사하지만 실제로는 [더 강력한 기능](https://github.com/webpack/loader-utils#parsequery)입니다:
+좋은 질문입니다. 음, 엄밀히 말하면 2가지 가능성이 있습니다. webpack 로더를 설정하는 두 가지 방법. 고전적으로 `options`은 `query`라고 했으며 로더 이름에 추가할 수 있는 문자열이었습니다. 쿼리 문자열과 매우 유사하지만 실제로는 [더 강력한 기능](https://github.com/webpack/loader-utils#parsequery)입니다.
 
 ```js
 module.exports = {
@@ -386,7 +386,7 @@ module.exports = {
 };
 ```
 
-그러나 로더와 함께 제공되는 별도로 지정된 객체일 수도 있습니다 :
+그러나 로더와 함께 제공되는 별도로 지정된 객체일 수도 있습니다.
 
 ```js
 module.exports = {
@@ -407,7 +407,7 @@ module.exports = {
 
 일부 로더는 컨텍스트 정보가 필요하고 설정에서 이를 읽습니다. 이것은 장기적으로 로더 옵션을 통해 전달되어야 합니다. 관련 옵션은 로더 문서를 참고하세요.
 
-이전 로더와의 호환성을 유지하기 위해 플러그인을 통해 이 정보를 전달할 수 있습니다 :
+이전 로더와의 호환성을 유지하기 위해 플러그인을 통해 이 정보를 전달할 수 있습니다.
 
 ```diff
   plugins: [
@@ -425,7 +425,7 @@ module.exports = {
 
 로더의 디버그 모드는 webpack 3 이상에서 제거됩니다.
 
-이전 로더와의 호환성을 유지하기 위해 플러그인을 통해 로더를 디버그 모드로 전환할 수 있습니다:
+이전 로더와의 호환성을 유지하기 위해 플러그인을 통해 로더를 디버그 모드로 전환할 수 있습니다.
 
 ```diff
 - debug: true,
@@ -438,7 +438,7 @@ module.exports = {
 
 ## Code Splitting with ES2015
 
-webpack 1에서는 [`require.ensure()`](/api/module-methods/#requireensure) 를 응용 프로그램의 를 지연 로드하는 방법으로 사용할 수 있습니다 :
+webpack 1에서는 [`require.ensure()`](/api/module-methods/#requireensure) 를 응용 프로그램의 청크를 지연 로드하는 방법으로 사용할 수 있습니다.
 
 ```javascript
 require.ensure([], function (require) {
@@ -479,7 +479,7 @@ function route(path, query) {
 
 ## Mixing ES2015 with AMD and CommonJS
 
-AMD 및 CommonJS의 경우 세 가지 모듈 유형을 모두 자유롭게 혼합할 수 있습니다(동일한 파일 내에서도). 이 경우 Webpack은 babel 및 node-eps와 유사하게 동작합니다 :
+AMD 및 CommonJS의 경우 세 가지 모듈 유형을 모두 자유롭게 혼합할 수 있습니다(동일한 파일 내에서도). 이 경우 Webpack은 babel 및 node-eps와 유사하게 동작합니다.
 
 ```javascript
 // CommonJS consuming ES2015 Module
@@ -516,7 +516,7 @@ Webpack이 사용할 수 있도록 이러한 모듈 기호를 구문 분석하�
 
 ### Template strings
 
-Webpack은 이제 표현식에서 템플릿 문자열을 지원합니다. 이는 Webpack 설정에서 사용할 수 있음을 의미합니다 :
+Webpack은 이제 표현식에서 템플릿 문자열을 지원합니다. 이는 Webpack 설정에서 사용할 수 있음을 의미합니다.
 
 ```diff
 - require("./templates/" + name);
@@ -560,7 +560,7 @@ module.exports = {
 
 ### More CLI options
 
-사용할 수 있는 몇 가지 새로운 CLI 옵션이 있습니다:
+사용할 수 있는 몇 가지 새로운 CLI 옵션이 있습니다.
 
 `--define process.env.NODE_ENV="production"` 는 [`DefinePlugin`](/plugins/define-plugin/)를 참고하세요.
 
