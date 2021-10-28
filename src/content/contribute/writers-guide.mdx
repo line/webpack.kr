@@ -14,7 +14,7 @@ translators:
 
 1. 글이 링크되어 있다면 관련된 이슈를 확인하세요.
 2. `편집`을 누르고 구조를 확장하세요.
-3. 변경 점들을 Pull Request에 생성하세요.
+3. 변경점들을 Pull Request에 생성하세요.
 
 ## YAML Frontmatter
 
@@ -37,11 +37,11 @@ related:
 
 - `title`: 글의 제목입니다.
 - `group`: 하위 섹션의 제목입니다.
-- `sort`: 해당 섹션 (또는) 하위 섹션 내에서 이 글의 순서입니다.
-- `contributors`: 이 글에 기여한 사람들이 GitHub username 리스트입니다.
+- `sort`: 해당 섹션 (또는) 하위 섹션 내에서 글의 순서입니다.
+- `contributors`: 글에 기여한 사람들이 GitHub username 리스트입니다.
 - `related`: 관련된 읽을거리 또는 유용한 예시입니다.
 
-`related`는 페이지 하단에 **Further Reading** 섹션을 생성하고 `contributors`는 그 아래에 **Contributors** 섹션을 생성합니다. 글을 편집하고 인정받고 싶다면 주저하지 말고 GitHub 사용자 이름을 'contributors' 목록에 추가하세요.
+`related`는 페이지 하단에 **Further Reading** 섹션을 생성하고 `contributors`는 그 아래에 **Contributors** 섹션을 생성합니다. 글을 편집하고 인정받고 싶다면 주저하지 말고 GitHub 사용자 이름을 `contributors` 목록에 추가하세요.
 
 ## Article Structure
 
@@ -53,7 +53,7 @@ related:
 ## Typesetting
 
 - Webpack은 문장의 시작 부분에 대문자 W로 작성할 수 있습니다. ([출처](https://github.com/webpack/media#name))
-- 로더는 역 따옴표로 묶여 있으며 [kebab-cased](https://en.wikipedia.org/w/index.php?title=Kebab_case): `css-loader`, `ts-loader`, …
+- 로더는 역 따옴표로 묶여 있으며 [kebab-cased]입니다.(https://en.wikipedia.org/w/index.php?title=Kebab_case): `css-loader`, `ts-loader`, …
 - 플러그인은 백틱 및 [camel-cased](https://en.wikipedia.org/wiki/Camel_case)로 묶입니다: `BannerPlugin`, `NpmInstallWebpackPlugin`, …
 - "webpack 2"를 사용하여 특정 Webpack 버전을 나타냅니다(~~"webpack v2"~~).
 - ES5 사용; ES2015, ES2016, ... ECMAScript 표준 참조(~~ES6~~, ~~ES7~~)
@@ -144,20 +144,20 @@ W> 이것은 Warning입니다.
 문서를 작성할 때 가정하지 마세요.
 
 ```diff
-- You might already know how to optimize bundle for production...
-+ As we've learned in [production guide](/guides/production/)...
+- 프로덕션을 위해 번들을 최적화하는 방법을 이미 알고 있을 수 있습니다....
++ 이미 우리는 [프로덕션 가이드](/guides/production/)에서 배웠습니다...
 ```
 
-모든 것에 단순하다고 가정하지 마세요. 'just', 'simply'와 같은 단어를 피하세요.
+모든 것이 단순하다고 가정하지 마세요. '그냥', '간단하게'와 같은 단어를 피하세요.
 
 ```diff
-- Simply run command...
-+ Run the `command-name` command...
+- 간단히 명령을 실행하세요...
++ `command-name` 명령을 실행하세요...
 ```
 
 ### Configuration defaults and types
 
-문서를 액세스할 수 있고 잘 작성할 수 있도록 항상 모든 문서 옵션에 유형과 기본값을 제공하세요. 저희는 문서화된 옵션에 권한을 부여한 후 유형과 기본값을 추가합니다.
+문서를 쉽게 이해할 수 있고 잘 작성할 수 있도록 항상 모든 문서 옵션에 유형과 기본값을 제공하세요. 저희는 문서화된 옵션은 제목으로 작성한 후 유형과 기본값을 추가합니다.
 
 **configuration.example.option**
 
@@ -187,7 +187,7 @@ W> 이것은 Warning입니다.
 
 여기서 `(compilation, module, path)`에는 제공된 함수가 수신할 인수를 나열하고 `=> boolean`은 함수의 반환 값이 `boolean`이어야 함을 의미합니다.
 
-플러그인을 사용 가능한 옵션 값 유형으로 표시하려면 'Plugin'의 camel-cased 형식의 제목을 사용하세요.
+플러그인을 사용 가능한 옵션 값 유형으로 표시하려면 `Plugin`의 camel-cased 형식의 제목을 사용하세요.
 
 `TerserPlugin` `[TerserPlugin]`
 
@@ -207,7 +207,7 @@ W> 이것은 Warning입니다.
 
 이를 통해 기본값, 열거 및 기타 정보를 표시할 수 있습니다.
 
-객체의 키가 동적이며 사용자 정의된 경우 ``를 사용하여 설명합니다.
+객체의 키가 동적이며 사용자 정의된 경우 `<key>`를 사용하여 설명합니다.
 
 `object = { <key> string }`
 
@@ -220,7 +220,7 @@ W> 이것은 Warning입니다.
 
 W> `:`는 여기에서 필수가 아닙니다. 속성, 유형 및 기본값에 유의하세요.
 
-예제는 [EvalSourceMapDevToolPlugin's page의 `options` 섹션](/plugins/eval-source-map-dev-tool-plugin/#options)에서 찾을 수 있습니다.
+예제는 [EvalSourceMapDevToolPlugin's 페이지의 `options` 섹션](/plugins/eval-source-map-dev-tool-plugin/#options)에서 찾을 수 있습니다.
 
 ### Adding links
 
