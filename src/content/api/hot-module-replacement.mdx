@@ -13,153 +13,155 @@ related:
     url: /concepts/hot-module-replacement
   - title: Guides - Hot Module Replacement
     url: /guides/hot-module-replacement
+translators:
+  - choilim
 ---
 
-If [Hot Module Replacement](/concepts/hot-module-replacement) has been enabled via the [`HotModuleReplacementPlugin`](/plugins/hot-module-replacement-plugin), its interface will be exposed under the [`module.hot`](/api/module-variables/#modulehot-webpack-specific) property as well as [`import.meta.webpackHot`](/api/module-variables/#importmetawebpackhot) property. Note that only `import.meta.webpackHot` can be used in [strict ESM](/guides/ecma-script-modules/#flagging-modules-as-esm).
+[Hot Module Replacement](/concepts/hot-module-replacement)가 [`HotModuleReplacementPlugin`](/plugins/hot-module-replacement-plugin)을 통해 활성화된 경우, 해당 인터페이스는 [`import.meta.webpackHot`](/api/module-variables/#importmetawebpackhot)프로퍼티 뿐만 아니라 [`module.hot`](/api/module-variables/#modulehot-webpack-specific)프로퍼티 아래 노출됩니다. [strict ESM](/guides/ecma-script-modules/#flagging-modules-as-esm)에서는 `import.meta.webpackHot`만 사용할 수 있습니다.
 
-Typically, users will check to see if the interface is accessible, then begin working with it. As an example, here's how you might `accept` an updated module:
+일반적으로, 사용자는 인터페이스에 접근할 수 있는지 확인한 후, 작업을 시작합니다. 예를 들어, 업데이트된 모듈을 `accept` 하는 방법은 다음과 같습니다.
 
 ```js
 if (module.hot) {
   module.hot.accept('./library.js', function () {
-    // Do something with the updated library module...
+    // 업데이트된 라이브러리 모듈로 작업을 수행하세요...
   });
 }
 
 // or
 if (import.meta.webpackHot) {
   import.meta.webpackHot.accept('./library.js', function () {
-    // Do something with the updated library modue…
+    // 업데이트된 라이브러리 모듈로 작업을 수행하세요…
   });
 }
 ```
 
-The following methods are supported...
+지원되는 메서드는 다음과 같습니다...
 
 ## Module API
 
 ### accept
 
-Accept updates for the given `dependencies` and fire a `callback` to react to those updates, in addition, you can attach an optional error handler:
+주어진 `dependencies`에 대한 업데이트를 수락하고 해당 업데이트에 반응하기 위해 `callback`을 실행합니다. 또한, 선택적 에러 핸들러를 연결할 수 있습니다.
 
 ```js
 module.hot.accept(
-  dependencies, // Either a string or an array of strings
-  callback, // Function to fire when the dependencies are updated
+  dependencies, // 문자열 또는 문자열 배열
+  callback, // 의존성이 업데이트될 때 실행할 함수
   errorHandler // (err, {moduleId, dependencyId}) => {}
 );
 
-// or
+// 또는
 import.meta.webpackHot.accept(
-  dependencies, // Either a string or an array of strings
-  callback, // Function to fire when the dependencies are updated
+  dependencies, // 문자열 또는 문자열 배열
+  callback, // 의존성이 업데이트될 때 실행할 함수
   errorHandler // (err, {moduleId, dependencyId}) => {}
 );
 ```
 
-When using ESM `import` all imported symbols from `dependencies` are automatically updated. Note: The dependency string must match exactly with the `from` string in the `import`. In some cases `callback` can even be omitted. Using `require()` in the `callback` doesn't make sense here.
+ESM `import`를 사용하면 `dependencies`에서 가져온 모든 심볼이 자동으로 업데이트됩니다. 참고: 의존성 문자열은 `import`의 `from` 문자열과 정확히 일치해야 합니다. 경우에 따라 `callback`을 생략할 수 있습니다. `callback`에서 `require()`를 사용하는 것은 여기에서 의미가 없습니다.
 
-When using CommonJS you need to update dependencies manually by using `require()` in the `callback`. Omitting the `callback` doesn't make sense here.
+CommonJS를 사용할 때 `callback`에서 `require()`를 사용해서 의존성을 수동으로 업데이트해야 합니다. callback을 생략하는 경우도 있습니다.
 
 #### errorHandler for accept
 
 `(err, {moduleId, dependencyId}) => {}`
 
-- `err`: the error thrown by the callback in second argument or during dependency execution when using ESM dependencies.
-- `moduleId`: the current module id.
-- `dependencyId`: the module id of the (first) changed dependency.
+- `err`: ESM 의존성을 사용할 때 두 번째 인수 또는 의존성 실행 중에 콜백에 의해 발생한 에러.
+- `moduleId`: 현재 모듈 id.
+- `dependencyId`: (첫 번째) 변경된 의존성의 모듈 id.
 
 ### accept (self)
 
-Accept updates for itself.
+자체적으로 업데이트를 수락합니다.
 
 ```js
 module.hot.accept(
-  errorHandler // Function to handle errors when evaluating the new version
+  errorHandler // 새 버전을 평가할 때 에러를 처리하는 함수
 );
 
-// or
+// 또는
 import.meta.webpackHot.accept(
-  errorHandler // Function to handle errors when evaluating the new version
+  errorHandler // 새 버전을 평가할 때 에러를 처리하는 함수
 );
 ```
 
-When this module or dependencies are updated, this module can be disposed and re-evaluated without informing parents. This makes sense if this module has no exports (or exports are updated in another way).
+모듈 또는 의존성이 업데이트되면, 부모에게 알리지 않고 이 모듈을 폐기하고 재평가 할 수 있습니다. 이것은 이 모듈에 내보내기가 없는 경우(또는 내보내기가 다른 방식으로 업데이트되는 경우) 의미가 있습니다.
 
-The `errorHandler` is fired when the evaluation of this module (or dependencies) has thrown an exception.
+이 모듈(또는 의존성)의 평가에서 예외가 발생하면 `errorHandler`가 실행됩니다.
 
 #### errorHandler for self accept
 
 `(err, {moduleId, module}) => {}`
 
-- `err`: the error when evaluating the new version.
-- `moduleId`: the current module id.
-- `module`: the current module instance.
-  - `module.hot`: allow to use the HMR API of the errored module instance. A common scenario is to self accept it again. It also makes sense to add a dispose handler to pass data along. Note that the errored module might be already partially executed, so make sure to not get into a inconsistent state. You can use `module.hot.data` to store partial state.
-  - `module.exports`: can be overridden, but be careful since property names might be mangled in production mode.
+- `err`: 새 버전을 평가할 때 발생한 에러.
+- `moduleId`: 현재 모듈 id.
+- `module`: 현재 모듈 인스턴스.
+  - `module.hot`: 에러가 발생한 모듈 인스턴스의 HMR API를 사용하도록 허용합니다. 일반적인 시나리오는 스스로 그것을 다시 수락하는 것입니다. 또한 데이터를 전달하기 위해 dispose 핸들러를 추가하는 것이 좋습니다. 에러가 발생한 모듈은 이미 부분적으로 실행되었을 수 있음으로, 일관성 없는 상태가 되지 않도록 주의하세요. `module.hot.data`를 사용하여 부분 상태를 저장할 수 있습니다.
+  - `module.exports`: 오버라이드할 수 있지만, 프로덕션 모드에서 프로퍼티 이름이 손상될 수 있음으로 주의하세요.
 
 ### decline
 
-Reject updates for the given `dependencies` forcing the update to fail with a `'decline'` code.
+주어진 `dependencies`에 대한 업데이트를 거부하여 `'decline'` 코드로 업데이트가 실패하도록 합니다.
 
 ```js
 module.hot.decline(
-  dependencies // Either a string or an array of strings
+  dependencies // 문자열 또는 문자열 배열
 );
 
-// or
+// 또는
 import.meta.webpackHot.decline(
-  dependencies // Either a string or an array of strings
+  dependencies // 문자열 또는 문자열 배열
 );
 ```
 
-Flag a dependency as not-update-able. This makes sense when changing exports of this dependency can't be handled or handling is not implemented yet. Depending on your HMR management code, an update to these dependencies (or unaccepted dependencies of it) usually causes a full-reload of the page.
+업데이트 불가능으로 의존성에 플래그를 지정합니다. 이것은 의존성 내보내기 변경을 처리할 수 없거나 처리가 아직 구현되지 않은 경우 의미가 있습니다. HMR 관리 코드에 따라, 이러한 의존성(또는 허용되지 않는 의존성)에 대한 업데이트로 인해 일반적으로 전체 페이지가 다시 로드됩니다.
 
 ### decline (self)
 
-Reject updates for itself.
+자체적으로 업데이트를 거부합니다.
 
 ```js
 module.hot.decline();
 
-// or
+// 또는
 import.meta.webpackHot.decline();
 ```
 
-Flag this module as not-update-able. This makes sense when this module has irreversible side-effects, or HMR handling is not implemented for this module yet. Depending on your HMR management code, an update to this module (or unaccepted dependencies) usually causes a full-reload of the page.
+업데이트 불가능으로 모듈에 플래그를 지정합니다. 이는 이 모듈에 되돌릴 수 없는 사이드 이펙트가 있거나, 이 모듈에 대해 HMR 처리가 아직 구현되지 않은 경우 의미가 있습니다. HMR 관리 코드에 따라, 이러한 모듈(또는 허용되지 않은 의존성)에 대한 업데이트로 인해 일반적으로 전체 페이지가 다시 로드됩니다.
 
 ### dispose (or addDisposeHandler)
 
-Add a handler which is executed when the current module code is replaced. This should be used to remove any persistent resource you have claimed or created. If you want to transfer state to the updated module, add it to the given `data` parameter. This object will be available at `module.hot.data` after the update.
+현재 모듈 코드가 교체될 때 실행되는 핸들러를 추가합니다. 이것은 요청하거나 생성한 영구 리소스를 제거하는 데 사용해야 합니다. 업데이트된 모듈에 상태를 전송하려면, 주어진  `data` 파라미터에 추가하세요. 이 객체는 업데이트 후 `module.hot.data`에서 사용할 수 있습니다.
 
 ```js
 module.hot.dispose((data) => {
-  // Clean up and pass data to the updated module...
+  // 데이터를 정리하고 업데이트된 모듈로 전달합니다.
 });
 
-// or
+// 또는
 import.meta.webpackHot.dispose((data) => {
-  // Clean up and pass data to the updated module...
+  // 데이터를 정리하고 업데이트된 모듈로 전달합니다.
 });
 ```
 
 ### invalidate
 
-Calling this method will invalidate the current module, which disposes and recreates it when the HMR update is applied. This bubbles like a normal update of this module. `invalidate` can't be self-accepted by this module.
+이 메서드를 호출하면 현재 모듈이 무효화 되고, HMR 업데이트가 적용될 때 이를 삭제하고 다시 생성합니다. 버블은 이 모듈의 일반 업데이트와 같습니다. 이 모듈은 `invalidate`를 자체 승인할 수 없습니다.
 
-When called during the `idle` state, a new HMR update will be created containing this module. HMR will enter the `ready` state.
+`idle` 상태에서 호출되면, 이 모듈을 포함하는 새 HMR 업데이트가 생성됩니다. HMR은 `ready` 상태로 들어갑니다.
 
-When called during the `ready` or `prepare` state, this module will be added to the current HMR update.
+`ready` 또는 `prepare` 상태에서 호출되면, 이 모듈은 현재 HMR 업데이트에 추가됩니다.
 
-When called during the `check` state, this module will be added to the update when an update is available. If no update is available it will create a new update. HMR will enter the `ready` state.
+`check` 상태에서 호출되면, 이 모듈은 업데이트를 사용할 수 있을 때 업데이트에 추가됩니다. 사용 가능한 업데이트가 없으면 새 업데이트가 생성됩니다. HMR은 `ready` 상태로 들어갑니다.
 
-When called during the `dispose` or `apply` state, HMR will pick it up after getting out of those states.
+`dispose` 또는 `apply` 상태에서 호출되면, HMR은 해당 상태에서 나온 후 이를 선택합니다.
 
 #### Use Cases
 
 **Conditional Accepting**
 
-A module can accept a dependency, but can call `invalidate` when the change of the dependency is not handleable:
+모듈은 의존성을 받아들일 수 있지만, 의존성 변경을 처리할 수 없는 경우 `invalidate`를 호출할 수 있습니다.
 
 ```js
 import { x, y } from './dep';
@@ -172,18 +174,18 @@ export default processY(y);
 
 module.hot.accept('./dep', () => {
   if (y !== oldY) {
-    // This can't be handled, bubble to parent
+    // 처리할 수 없으며, 부모에게 전달
     module.hot.invalidate();
     return;
   }
-  // This can be handled
+  // 처리할 수 없음
   processX(x);
 });
 ```
 
 **Conditional self accept**
 
-A module can self-accept itself, but can invalidate itself when the change is not handleable:
+모듈은 자체 수용할 수 있지만, 변경 사항을 처리할 수 없을 때 자체를 무효화 할 수 있습니다.
 
 ```javascript
 const VALUE = 'constant';
@@ -216,18 +218,18 @@ if (require.cache[moduleId]) {
 }
 ```
 
-T> When `invalidate` is called, the [`dispose`](#dispose-or-adddisposehandler) handler will be eventually called and fill `module.hot.data`. If [`dispose`](#dispose-or-adddisposehandler) handler is not registered, an empty object will be supplied to `module.hot.data`.
+T> `invalidate`가 호출되면, `dispose`](#dispose-or-adddisposehandler) 핸들러가 호출되어 `module.hot.data`를 채웁니다. [`dispose`](#dispose-or-adddisposehandler) 핸들러가 등록되지 않은 경우, `module.hot.data`에 빈 객체가 제공됩니다.
 
-W> Do not get caught in an `invalidate` loop, by calling `invalidate` again and again. This will result in stack overflow and HMR entering the `fail` state.
+W> `invalidate`를 계속 호출하여, `invalidate` 루프에 걸리지 않도록 합니다. 이로 인해 스택 오버플로우가 발생하고 HMR이 `fail` 상태가 됩니다.
 
 ### removeDisposeHandler
 
-Remove the handler added via `dispose` or `addDisposeHandler`.
+`dispose` 또는 `addDisposeHandler`를 통해 추가된 핸들러를 제거합니다.
 
 ```js
 module.hot.removeDisposeHandler(callback);
 
-// or
+// 또는
 import.meta.webpackHot.removeDisposeHandler(callback);
 ```
 
@@ -235,90 +237,90 @@ import.meta.webpackHot.removeDisposeHandler(callback);
 
 ### status
 
-Retrieve the current status of the hot module replacement process.
+hot module replacement 프로세스의 현재 상태를 검색합니다.
 
 ```js
-module.hot.status(); // Will return one of the following strings...
+module.hot.status(); // 다음 문자열 중 하나를 반환합니다...
 
-// or
+// 또는
 import.meta.webpackHot.status();
 ```
 
 | Status  | Description                                                                         |
 | ------- | ----------------------------------------------------------------------------------- |
-| idle    | The process is waiting for a call to [`check`](#check)                              |
-| check   | The process is checking for updates                                                 |
-| prepare | The process is getting ready for the update (e.g. downloading the updated module)   |
-| ready   | The update is prepared and available                                                |
-| dispose | The process is calling the `dispose` handlers on the modules that will be replaced  |
-| apply   | The process is calling the `accept` handlers and re-executing self-accepted modules |
-| abort   | An update was aborted, but the system is still in its previous state                |
-| fail    | An update has thrown an exception and the system's state has been compromised       |
+| idle    | 프로세스가 [`check`](#check) 호출을 기다리고 있습니다                                        |
+| check   | 프로세스가 업데이트를 확인하는 중입니다                                                       |
+| prepare | 프로세스가 업데이트를 준비 중입니다 (예. 업데이트된 모듈 다운로드)                                  |
+| ready   | 업데이트가 준비되어 사용 가능합니다                                                          |
+| dispose | 프로세스는 교체될 모듈에서 `dispose` 핸들러를 호출합니다                                        |
+| apply   | 프로세스가 `accept` 핸들러를 호출하고 자체 승인된 모듈을 다시 실행합니다                            |
+| abort   | 업데이트가 중단되었지만, 시스템은 여전히 이전 상태입니다                                          |
+| fail    | 업데이트에서 예외가 발생했으며 시스템 상태가 손상되었습니다                                        |
 
 ### check
 
-Test all loaded modules for updates and, if updates exist, `apply` them.
+업데이트를 위해 로드된 모든 모듈을 테스트하고, 업데이트가 있는 경우 이를 `apply` 합니다.
 
 ```js
 module.hot
   .check(autoApply)
   .then((outdatedModules) => {
-    // outdated modules...
+    // outdated 모듈...
   })
   .catch((error) => {
-    // catch errors
+    // 에러 catch
   });
 
-// or
+// 또는
 import.meta.webpackHot
   .check(autoApply)
   .then((outdatedModules) => {
-    // outdated modules...
+    // outdated 모듈...
   })
   .catch((error) => {
-    // catch errors
+    // 에러 catch
   });
 ```
 
-The `autoApply` parameter can either be a boolean or `options` to pass to the `apply` method when called.
+`autoApply` 파라미터는 boolean이거나 호출될 때 `apply`메서드에 전달할 `options`일 수 있습니다.
 
 ### apply
 
-Continue the update process (as long as `module.hot.status() === 'ready'`).
+업데이트 프로세스를 계속합니다.(`module.hot.status() === 'ready'`인 동안)
 
 ```js
 module.hot
   .apply(options)
   .then((outdatedModules) => {
-    // outdated modules...
+    // outdated 모듈...
   })
   .catch((error) => {
-    // catch errors
+    // 에러 catch
   });
 
-// or
+// 또는
 import.meta.webpackHot
   .apply(options)
   .then((outdatedModules) => {
-    // outdated modules...
+    // outdated 모듈...
   })
   .catch((error) => {
-    // catch errors
+    // 에러 catch
   });
 ```
 
-The optional `options` object can include the following properties:
+선택적 `options` 객체에는 다음 프로퍼티가 포함될 수 있습니다.
 
-- `ignoreUnaccepted` (boolean): Ignore changes made to unaccepted modules.
-- `ignoreDeclined` (boolean): Ignore changes made to declined modules.
-- `ignoreErrored` (boolean): Ignore errors thrown in accept handlers, error handlers and while reevaluating module.
-- `onDeclined` (function(info)): Notifier for declined modules
-- `onUnaccepted` (function(info)): Notifier for unaccepted modules
-- `onAccepted` (function(info)): Notifier for accepted modules
-- `onDisposed` (function(info)): Notifier for disposed modules
-- `onErrored` (function(info)): Notifier for errors
+- `ignoreUnaccepted` (boolean): 허용되지 않는 모듈에 대한 변경 사항을 무시합니다.
+- `ignoreDeclined` (boolean): 거부된 모듈에 대한 변경 사항을 무시합니다.
+- `ignoreErrored` (boolean): accept 핸들러, 에러 핸들러 및 모듈을 재평가하는 동안 발생하는 에러를 무시합니다.
+- `onDeclined` (function(info)): 거부된 모듈에 대한 알림
+- `onUnaccepted` (function(info)): 허용되지 않는 모듈에 대한 알림
+- `onAccepted` (function(info)): 허용된 모듈에 대한 알림
+- `onDisposed` (function(info)): 폐기된 모듈에 대한 알림
+- `onErrored` (function(info)): 에러 알림
 
-The `info` parameter will be an object containing some of the following values:
+`info` 파라미터는 다음 값 중 일부를 포함하는 객체입니다.
 
 ```ts
 {
@@ -326,44 +328,44 @@ The `info` parameter will be an object containing some of the following values:
         'unaccepted' | 'accepted' |
         'disposed' | 'accept-errored' |
         'self-accept-errored' | 'self-accept-error-handler-errored',
-  moduleId: 4, // The module in question.
-  dependencyId: 3, // For errors: the module id owning the accept handler.
-  chain: [1, 2, 3, 4], // For declined/accepted/unaccepted: the chain from where the update was propagated.
-  parentId: 5, // For declined: the module id of the declining parent
-  outdatedModules: [1, 2, 3, 4], // For accepted: the modules that are outdated and will be disposed
-  outdatedDependencies: { // For accepted: The location of accept handlers that will handle the update
+  moduleId: 4, // 질문의 모듈.
+  dependencyId: 3, // 에러의 경우: accept 핸들러를 소유한 모듈 id.
+  chain: [1, 2, 3, 4], // 거부/허용/허용되지 않음의 경우: 업데이트가 전파된 체인.
+  parentId: 5, // 거부된 경우: 거부하는 상위의 모듈 ic
+  outdatedModules: [1, 2, 3, 4], // 허용된 경우: 오래되어 폐기될 모듈
+  outdatedDependencies: { // 허용된 경우: 업데이트를 처리할 accept 핸들러의 위치
     5: [4]
   },
-  error: new Error(...), // For errors: the thrown error
+  error: new Error(...), // 에러의 경우: throw 된 에러
   originalError: new Error(...) // For self-accept-error-handler-errored:
-                                // the error thrown by the module before the error handler tried to handle it.
+                                // 에러 핸들러가 처리를 시도하기 전에 모듈에서 발생한 에러.
 }
 ```
 
 ### addStatusHandler
 
-Register a function to listen for changes in `status`.
+`status`의 변경을 수신할 함수 등록합니다.
 
 ```js
 module.hot.addStatusHandler((status) => {
-  // React to the current status...
+  // 현재 상태에 반응...
 });
 
-// or
+// 또는
 import.meta.webpackHot.addStatusHandler((status) => {
-  // React to the current status...
+  // 현재 상태에 반응...
 });
 ```
 
-Bear in mind that when the status handler returns a `Promise`, the HMR system will wait for the `Promise` to resolve before continuing.
+상태 핸들러가 `Promise`를 반환하면, HMR 시스템은 계속하기 전에 `Promise`가 해결될 때까지 기다립니다.
 
 ### removeStatusHandler
 
-Remove a registered status handler.
+등록된 상태 핸들러 제거.
 
 ```js
 module.hot.removeStatusHandler(callback);
 
-// or
+// 또는
 import.meta.webpackHot.removeStatusHandler(callback);
 ```
