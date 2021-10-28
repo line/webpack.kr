@@ -17,11 +17,11 @@ related:
     url: https://github.com/webpack/webpack/blob/master/examples/explicit-vendor-chunk/README.md
 ---
 
-`DllPlugin`과`DllReferencePlugin`은 빌드 시간 성능을 크게 향상시키는 방식으로 번들을 분할하는 수단을 제공합니다. "DLL"이라는 용어는 원래 Microsoft에서 도입한 동적 링크 라이브러리를 나타냅니다.
+`DllPlugin`과 `DllReferencePlugin`은 빌드 시간 성능을 크게 향상시키는 방식으로 번들을 분할하는 수단을 제공합니다. "DLL"이라는 용어는 원래 Microsoft에서 도입한 동적 링크 라이브러리를 나타냅니다.
 
 ## DllPlugin
 
-이 플러그인은 dll 전용 번들을 생성하기 위해 단독으로 별도의 webpack 설정에서 사용됩니다. 의존성을 매핑하기 위해 [`DllReferencePlugin`](#dllreferenceplugin) 에서 사용하는 `manifest.json`파일을 생성합니다.
+이 플러그인은 dll 전용 번들을 생성하기 위해 단독으로 별도의 webpack 설정에서 사용됩니다. 의존성을 매핑하기 위해 [`DllReferencePlugin`](#dllreferenceplugin)에서 사용하는 `manifest.json`파일을 생성합니다.
 
 - `context` (선택): 매니페스트 파일의 요청 컨텍스트 (기본값은 webpack 컨텍스트)
 - `format` (boolean = false): `true`인 경우 매니페스트 json 파일(출력)이 형식화됩니다.
@@ -72,7 +72,7 @@ T> [유효범위 사용의 예제를 살펴보세요.](https://github.com/webpac
 
 #### Mapped Mode
 
-dll의 콘텐츠는 현재 디렉터리에 매핑됩니다. 필요한 파일이 dll의 파일과 (확인 후) 일치하는 경우, dll의 파일이 대신 사용됩니다.
+dll의 콘텐츠는 현재 디렉터리에 매핑됩니다. 필요한 파일이 dll의 파일과 확인 후 일치하는 경우, dll의 파일이 대신 사용됩니다.
 
 이것은 dll 번들의 모든 파일을 해석한 후 발생하기 때문에 dll 번들의 사용자에 대해 동일한 경로를 사용할 수 있어야 합니다. 즉, dll에 `lodash` 가 포함되어 있고 `abc` 파일이 있으면 `require('lodash')` 및`require('./abc')` 가 메인 번들로 빌드되지 않고 dll에서 사용됩니다.
 
