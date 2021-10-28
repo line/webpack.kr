@@ -12,26 +12,28 @@ contributors:
   - snitin315
   - rahul3v
   - jamesgeorge007
+translators:
+  - kwYoohae
 ---
 
-Plugins expose the full potential of the webpack engine to third-party developers. Using staged build callbacks, developers can introduce their own behaviors into the webpack build process. Building plugins is a bit more advanced than building loaders, because you'll need to understand some of the webpack low-level internals to hook into them. Be prepared to read some source code!
+플러그인은 서드파티 개발자들에게 webpack 엔진의 모든 잠재력을 보여줍니다. 단계별로 빌드 callback을 사용하여 개발자들은 webpack의 빌드 프로세스에 자신만의 행동을 도입할 수 있습니다. 플러그인을 빌드하는 것은 로더를 빌딩 하는 것보다 조금 더 진보되었습니다. 왜냐하면, 플러그인은 몇몇 webpack의 low-level에 내장된 훅을 이해할 필요가 있기 때문입니다. 이제 소스 코드를 읽어볼 준비를 해봅시다!
 
 ## Creating a Plugin
 
-A plugin for webpack consists of:
+Webpack용 plugin은 다음과 같이 구성됩니다.
 
-- A named JavaScript function or a JavaScript class.
-- Defines `apply` method in its prototype.
-- Specifies an [event hook](/api/compiler-hooks/) to tap into.
-- Manipulates webpack internal instance specific data.
-- Invokes webpack provided callback after functionality is complete.
+- JavaScript function 또는 JavaScript class로 이름을 붙입니다.
+- 프로토타입에서 `apply` 메소드를 정의합니다.
+- 특정한 [이벤트 훅](/api/compiler-hooks/)으로 지정합니다.
+- webpack 내부에 있는 인스턴스의 특정한 데이터를 처리합니다.
+- 기능적으로 완벽해지면 webpack에서 제공하는 callback을 호출합니다.
 
 ```javascript
 // A JavaScript class.
 class MyExampleWebpackPlugin {
-  // Define `apply` as its prototype method which is supplied with compiler as its argument
+  // `apply`를 compiler를 인자로 받는 프로토타입 메소드로 정의합니다.
   apply(compiler) {
-    // Specify the event hook to attach to
+    // attach할 이벤트 훅을 지정합니다.
     compiler.hooks.emit.tapAsync(
       'MyExampleWebpackPlugin',
       (compilation, callback) => {
@@ -41,7 +43,7 @@ class MyExampleWebpackPlugin {
           compilation
         );
 
-        // Manipulate the build using the plugin API provided by webpack
+        // Webpack에서 제공되는 플러그인 API를 사용하여 빌드를 처리합니다.
         compilation.addModule(/* ... */);
 
         callback();
@@ -53,16 +55,14 @@ class MyExampleWebpackPlugin {
 
 ## Basic plugin architecture
 
-Plugins are instantiated objects with an `apply` method on their prototype. This `apply` method is called once by the webpack compiler while installing the plugin. The `apply` method is given a reference to the underlying webpack compiler, which grants access to compiler callbacks. A plugin is structured as follows:
+플러그인은 `apply`라는 프로토타입 메소드로 인스턴스화 된 객체입니다. 이러한 `apply` 메소드는 플러그인을 설치하는 동안 webpack 컴파일러에 의해 한번 호출됩니다. `apply` 메소드는 컴파일러 callback에 대해 접근 권한을 부여하는 기본 webpack 컴파일러에 의해 참조됩니다. 플러그인의 구조는 다음과 같습니다.
 
 ```javascript
 class HelloWorldPlugin {
   apply(compiler) {
     compiler.hooks.done.tap(
       'Hello World Plugin',
-      (
-        stats /* stats is passed as an argument when done hook is tapped.  */
-      ) => {
+      (stats /* 훅의 탭이 끝나면 stats는 인자로 통과됩니다.*/) => {
         console.log('Hello World!');
       }
     );
@@ -72,24 +72,24 @@ class HelloWorldPlugin {
 module.exports = HelloWorldPlugin;
 ```
 
-Then to use the plugin, include an instance in your webpack configuration `plugins` array:
+그런 다음에 플러그인을 사용하려면 webpack의 설정인 `plugins` 배열에 인스턴스를 포함해야합니다.
 
 ```javascript
 // webpack.config.js
 var HelloWorldPlugin = require('hello-world');
 
 module.exports = {
-  // ... configuration settings here ...
+  // ... 여기서 구성을 설정할 것 ...
   plugins: [new HelloWorldPlugin({ options: true })],
 };
 ```
 
-Use [`schema-utils`](https://github.com/webpack/schema-utils) in order to validate the options being passed through the plugin options. Here is an example:
+플러그인 옵션을 통해 전달되는 옵션의 유효성을 확인하려면 [`schema-utils`](https://github.com/webpack/schema-utils)를 사용하세요. 다음은 사용 예제입니다.
 
 ```javascript
 import { validate } from 'schema-utils';
 
-// schema for options object
+// options 객체에 대한 schema
 const schema = {
   type: 'object',
   properties: {
@@ -113,14 +113,14 @@ export default class HelloWorldPlugin {
 
 ## Compiler and Compilation
 
-Among the two most important resources while developing plugins are the [`compiler`](/api/node/#compiler-instance) and [`compilation`](/api/compilation-hooks/) objects. Understanding their roles is an important first step in extending the webpack engine.
+플러그인 개발 중 가장 중요한 두 개의 리소스는 [`compiler`](/api/node/#compiler-instance) 와 [`compilation`](/api/compilation-hooks/) 객체입니다. 두 가지의 역할을 이해하는 것은 webpack 엔진을 확장하는 첫 번째 단계입니다.
 
 ```javascript
 class HelloCompilationPlugin {
   apply(compiler) {
-    // Tap into compilation hook which gives compilation as argument to the callback function
+    // callback 함수에 인자로 compilation을 제공하는 훅으로 compliation 훅을 탭 합니다.
     compiler.hooks.compilation.tap('HelloCompilationPlugin', (compilation) => {
-      // Now we can tap into various hooks available through compilation
+      // 이제 컴파일을 통해 이용할 수 있는 다양한 훅들을 이용할 수 있습니다.
       compilation.hooks.optimize.tap('HelloCompilationPlugin', () => {
         console.log('Assets are being optimized.');
       });
@@ -131,15 +131,15 @@ class HelloCompilationPlugin {
 module.exports = HelloCompilationPlugin;
 ```
 
-The list of hooks available on the `compiler`, `compilation`, and other important objects, see the [plugins API](/api/plugins/) docs.
+`compiler`, `compilation` 그리고 다른 중요한 객체에서 사용 가능한 훅들은 [플러그인 API](/api/plugins/) 문서를 참고해 주세요.
 
 ## Async event hooks
 
-Some plugin hooks are asynchronous. To tap into them, we can use `tap` method which will behave in synchronous manner or use one of `tapAsync` method or `tapPromise` method which are asynchronous methods.
+일부 플러그인 훅은 비동기입니다. 이를 탭 하려면, 동기로 동작하는 `tap` 메소드를 사용하거나 비동기 메소드인 `tapAsync` 또는 `tapPromise` 메소드를 사용할 수 있습니다.
 
 ### tapAsync
 
-When we use `tapAsync` method to tap into plugins, we need to call the callback function which is supplied as the last argument to our function.
+`tapAsync` 메소드를 사용하여 플러그인을 탭해야 할 경우 함수에서 마지막 인자로 제공되는 callback 함수를 호출해야 할 필요가 있습니다.
 
 ```javascript
 class HelloAsyncPlugin {
@@ -162,13 +162,13 @@ module.exports = HelloAsyncPlugin;
 
 #### tapPromise
 
-When we use `tapPromise` method to tap into plugins, we need to return a promise which resolves when our asynchronous task is completed.
+플러그인에 탭 하기 위해 `tapPromise`를 사용할 때, 동기식 작업이 완료될 때의 해석 promise를 반드시 반환해야 할 필요가 있습니다.
 
 ```javascript
 class HelloAsyncPlugin {
   apply(compiler) {
     compiler.hooks.emit.tapPromise('HelloAsyncPlugin', (compilation) => {
-      // return a Promise that resolves when we are done...
+      // 끝났을 때 해석을 반환해야 합니다..
       return new Promise((resolve, reject) => {
         setTimeout(function () {
           console.log('Done with async work...');
@@ -184,9 +184,9 @@ module.exports = HelloAsyncPlugin;
 
 ## Example
 
-Once we can latch onto the webpack compiler and each individual compilations, the possibilities become endless for what we can do with the engine itself. We can reformat existing files, create derivative files, or fabricate entirely new assets.
+일단 webpack compiler와 각각의 개별적인 compilations를 이해 할 수 있게 되면, 엔진 자체로 할 수 있는 가능성이 무궁무진해집니다. 기존 파일을 다시 포맷하거나 파생 파일을 만들거나 완전히 새로운 애셋을 만들 수 있습니다.
 
-Let's write an example plugin that generates a new build file called `assets.md`, the contents of which will list all of the asset files in our build. This plugin might look something like this:
+새로운 빌드 파일인 `assets.md`를 생성하는 예제를 작성해봅시다. 내용은 빌드에 있는 모든 애셋 파일을 나열합니다. 이 플러그인은 다음과 같습니다.
 
 ```javascript
 class FileListPlugin {
@@ -194,57 +194,57 @@ class FileListPlugin {
     outputFile: 'assets.md',
   };
 
-  // Any options should be passed in the constructor of your plugin,
-  // (this is a public API of your plugin).
+  // 어떤 옵션이 플러그인의 생성자에 전달될 때,
+  // (이는 플러그인의 public API입니다.)
   constructor(options = {}) {
-    // Applying user-specified options over the default options
-    // and making merged options further available to the plugin methods.
-    // You should probably validate all the options here as well.
+    // 기본 옵션에 대해 사용자 지정 옵션을 적용하고
+    // 병합된 옵션을 플러그인 메소드에 추가로 사용할 수 있게 합니다.
+    // 여기서 모든 옵션을 확인해야 합니다.
     this.options = { ...FileListPlugin.defaultOptions, ...options };
   }
 
   apply(compiler) {
     const pluginName = FileListPlugin.name;
 
-    // webpack module instance can be accessed from the compiler object,
-    // this ensures that correct version of the module is used
-    // (do not require/import the webpack or any symbols from it directly).
+    // webpack 모듈 인스턴스는 컴파일러 객체로부터 접근할 수 있으며,
+    // 이는 사용되는 모듈의 정확한 버전을 보장합니다.
+    // (webpack 또는 직접적으로 어떤 심볼을 require/import 하지 말아야 합니다.)
     const { webpack } = compiler;
 
-    // Compilation object gives us reference to some useful constants.
+    // Compilation 객체는 몇 가지 유용한 상수에 대한 참조를 제공합니다.
     const { Compilation } = webpack;
 
-    // RawSource is one of the "sources" classes that should be used
-    // to represent asset sources in compilation.
+    // Rawsource는 compilation에서 애셋 소스를 나타내는데
+    // 사용해야 하는 "sources" 클래스 중 하나입니다.
     const { RawSource } = webpack.sources;
 
-    // Tapping to the "thisCompilation" hook in order to further tap
-    // to the compilation process on an earlier stage.
+    // 이전 단계에서 compilation 프로세스를 추가로 탭하기 위해서는
+    // "thisCompilation" 훅을 탭해야합니다.
     compiler.hooks.thisCompilation.tap(pluginName, (compilation) => {
-      // Tapping to the assets processing pipeline on a specific stage.
+      // 특정 단계에서 애셋 처리 파이프라인으로 탭합니다.
       compilation.hooks.processAssets.tap(
         {
           name: pluginName,
 
-          // Using one of the later asset processing stages to ensure
-          // that all assets were already added to the compilation by other plugins.
+          // 이후 애셋 처리 단계 중 하나를 사용하여
+          // 모든 애셋이 이미 다른 플러그인에 의해 compliation에 추가되었는지 확인합니다.
           stage: Compilation.PROCESS_ASSETS_STAGE_SUMMARIZE,
         },
         (assets) => {
-          // "assets" is an object that contains all assets
-          // in the compilation, the keys of the object are pathnames of the assets
-          // and the values are file sources.
+          // "assets"는 compilation의 모든 애셋을 포함하는 객체이고,
+          // 객체의 key는 애셋의 경로 이름입니다.
+          // 그리고 values 파일 소스입니다.
 
-          // Iterating over all the assets and
-          // generating content for our Markdown file.
+          // 모든 애셋을 거쳐 반복하고
+          // 마크다운 파일로 내용을 생성합니다.
           const content =
             '# In this build:\n\n' +
             Object.keys(assets)
               .map((filename) => `- ${filename}`)
               .join('\n');
 
-          // Adding new asset to the compilation, so it would be automatically
-          // generated by the webpack in the output directory.
+          // 출력 디렉터리 webpack에 의해 자동으로 생성되도록
+          // compilation에 새로운 애셋을 추가합니다.
           compilation.emitAsset(
             this.options.outputFile,
             new RawSource(content)
@@ -263,17 +263,17 @@ module.exports = { FileListPlugin };
 ```javascript
 const { FileListPlugin } = require('./file-list-plugin.js');
 
-// Use the plugin in your webpack configuration:
+// 플러그인에 webpack 설정을 사용합니다.
 module.exports = {
   // …
 
   plugins: [
-    // Adding the plugin with the default options
+    // 기본 옵션을 사용하여 플러그인을 추가합니다.
     new FileListPlugin(),
 
-    // OR:
+    // 또는
 
-    // You can choose to pass any supported options to it:
+    // 지원되는 옵션을 전달하도록 선택할 수 있습니다.
     new FileListPlugin({
       outputFile: 'my-assets.md',
     }),
@@ -281,7 +281,7 @@ module.exports = {
 };
 ```
 
-This will generate a markdown file with chosen name that looks like this:
+이렇게 하면 다음과 같은 이름을 가진 마크다운 파일이 생성됩니다.
 
 ```markdown
 # In this build:
@@ -291,15 +291,15 @@ This will generate a markdown file with chosen name that looks like this:
 - index.html
 ```
 
-T> We are using synchronous `tap()` method to tap into the `processAssets` hook because we don't need to perform any asynchronous operations in the example above. However, the `processAssets` hook is an asynchronous one, so you can also use `tapPromise()` or `tapAsync()` if you actually need to.
+T> 위의 예시에서 비동기식 동작으로 수행할 필요가 없기 때문에 동기식 `tap()` 메소드로 `processAssets`을 탭 합니다. 그러나 `processAssets` 훅은 비동기식이므로 필요하다면 `tapPromise()` 또는 `tapAsync()`를 사용할 수도 있습니다.
 
-T> The [`processAssets`](/api/compilation-hooks/#processassets) hook also supports the `additionalAssets` property, that allows your plugin to intercept not only assets that were added by other plugins prior to the execution of the specified stage, but also for assets that were added on a later stages. This allows to intercept absolutely all the assets which are part of the compilation. However, in our example we are fine with using the `SUMMARIZE` stage to capture all the assets generated on previous stages (this should account for all assets in general case).
+T> [`processAssets`](/api/compilation-hooks/#processassets) 훅은 지정한 단계를 실행하기 전에 다른 플러그인에 의하여 추가된 애셋 뿐만 아니라 나중에 추가된 애셋을 가로챌 수도 있는 `additionalAssets` 프로퍼티도 지원합니다. 이는 compilation의 일부분인 애셋을 완전히 가로 챌 수도 있습니다. 그러나 이 예시에서 이전 단계에서 생성된 모든 애셋을 캡쳐하기 위한 단계인 `SUMMARIZE`를 사용하는 것이 좋습니다.(이는 일반적으로 모든 애셋을 설명합니다.)
 
 ## Different Plugin Shapes
 
-A plugin can be classified into types based on the event hooks it taps into. Every event hook is pre-defined as synchronous or asynchronous or waterfall or parallel hook and hook is called internally using call/callAsync method. The list of hooks that are supported or can be tapped into are generally specified in `this.hooks` property.
+플러그인은 탭 하는 이벤트 훅에 따라 타입으로 분류될 수 있습니다. 모든 이벤트 훅은 동기 또는 비동기 waterfall 또는 병렬 훅으로 사전에 정의되어 있고 훅은 내부적으로 call/callAsync 메소드를 사용하여 호출됩니다. 지원되거나 탭이 된 훅의 목록은 일반적으로 `this.hooks` 프로퍼티에 명시되어 있습니다.
 
-For example:
+예시는 다음과 같습니다.
 
 ```javascript
 this.hooks = {
@@ -307,67 +307,67 @@ this.hooks = {
 };
 ```
 
-It represents that the only hook supported is `shouldEmit` which is a hook of `SyncBailHook` type and the only parameter which will be passed to any plugin that taps into `shouldEmit` hook is `compilation`.
+이것은 `SyncBailHook` 타입의 훅인 `shouldEmit`만이 지원되는 훅이고 `shouldEmit` 훅에 탭 되는 플러그인에 전달되는 유일한 파라미터는 `compilation`입니다.
 
-Various types of hooks supported are :
+지원되는 다양한 훅의 타입은 다음과 같습니다.
 
 ### Synchronous Hooks
 
 - **SyncHook**
 
-  - Defined as `new SyncHook([params])`
-  - Tapped into using `tap` method.
-  - Called using `call(...params)` method.
+  - `new SyncHook([params])`로 정의됩니다.
+  - `tap` 메소드를 사용하여 탭 됩니다.
+  - `call(...params)` 메소드를 사용하여 호출됩니다.
 
 - **Bail Hooks**
 
-  - Defined using `SyncBailHook[params]`
-  - Tapped into using `tap` method.
-  - Called using `call(...params)` method.
+  - `SyncBailHook[params]`로 정의됩니다.
+  - `tap` 메소드를 사용하여 탭 됩니다.
+  - `call(...params)` 메소드를 사용하여 호출됩니다.
 
-  In these type of hooks, each of the plugin callbacks will be invoked one after the other with the specific `args`. If any value is returned except undefined by any plugin, then that value is returned by hook and no further plugin callback is invoked. Many useful events like `optimizeChunks`, `optimizeChunkModules` are SyncBailHooks.
+  Bail Hook 타입의 훅들은, 각각의 callback 플러그인이 특정한 `args`를 사용하여 차례로 호출됩니다. 만약 플러그인에 의해 정의되지 않은 값을 제외하고 값이 반환된다면 훅에 의해 값이 반환되고 추가 플러그인 callback은 호출되지 않습니다. 많은 유용한 `optimizeChunks`, `optimizeChunkModules`와 같은 이벤트는 SyncBailHooks입니다.
 
 - **Waterfall Hooks**
 
-  - Defined using `SyncWaterfallHook[params]`
-  - Tapped into using `tap` method.
-  - Called using `call(...params)` method
+  - `SyncWaterfallHook[params]`로 정의됩니다.
+  - `tap` 메소드를 사용하여 탭 됩니다.
+  - `call(...params)` 메소드를 사용하여 호출됩니다.
 
-  Here each of the plugins are called one after the other with the arguments from the return value of the previous plugin. The plugin must take the order of its execution into account.
-  It must accept arguments from the previous plugin that was executed. The value for the first plugin is `init`. Hence at least 1 param must be supplied for waterfall hooks. This pattern is used in the Tapable instances which are related to the webpack templates like `ModuleTemplate`, `ChunkTemplate` etc.
+  여기서 각각 플러그인은 이전 플러그인의 반환 값으로부터 인자들을 차례로 호출합니다. 플러그인은 실행 순서를 반드시 고려해야합니다.
+  실행된 이전의 플러그인으로부터 인자들을 반드시 허용해야합니다. 첫 번째 플러그인의 값은 `init`입니다. 따라서 waterfall hooks에는 최소 1개의 parameter를 제공해야 합니다. 이 패턴은 `ModuleTemplate`, `ChunkTemplate` 등과 같은 webpack 템플릿과 관련된 탭 될 수 있는 인스턴스에서 사용됩니다.
 
 ### Asynchronous Hooks
 
 - **Async Series Hook**
 
-  - Defined using `AsyncSeriesHook[params]`
-  - Tapped into using `tap`/`tapAsync`/`tapPromise` method.
-  - Called using `callAsync(...params)` method
+  - `AsyncSeriesHook[params]`로 정의됩니다.
+  - `tap`/`tapAsync`/`tapPromise` 메소드를 사용하여 탭 됩니다.
+  - `callAsync(...params)` 메소드를 사용하여 호출됩니다.
 
-  The plugin handler functions are called with all arguments and a callback function with the signature `(err?: Error) -> void`. The handler functions are called in order of registration. `callback` is called after all the handlers are called.
-  This is also a commonly used pattern for events like `emit`, `run`.
+  플러그인 핸들러 함수는 `(err?: Error) -> void` 서명이 있는 callback 함수와 모든 인자들이 호출됩니다. 핸들러 함수는 등록된 순서대로 호출 됩니다. `callback`은 모든 핸들러가 호출되고 난 뒤 호출됩니다.
+  Async Series Hook은 또한 `emit`, `run`과 같은 이벤트에 흔히 사용되는 패턴입니다.
 
-- **Async waterfall** The plugins will be applied asynchronously in the waterfall manner.
+- **Async waterfall** 플러그인은 waterfall 방식으로 비동기식으로 적용될 것입니다.
 
-  - Defined using `AsyncWaterfallHook[params]`
-  - Tapped into using `tap`/`tapAsync`/`tapPromise` method.
-  - Called using `callAsync(...params)` method
+  - `AsyncWaterfallHook[params]`로 정의됩니다.
+  - `tap`/`tapAsync`/`tapPromise` 메소드를 사용하여 탭 됩니다.
+  - `callAsync(...params)` 메소드를 사용하여 호출됩니다.
 
-  The plugin handler functions are called with the current value and a callback function with the signature `(err: Error, nextValue: any) -> void.` When called `nextValue` is the current value for the next handler. The current value for the first handler is `init`. After all handlers are applied, callback is called with the last value. If any handler passes a value for `err`, the callback is called with this error and no more handlers are called.
-  This plugin pattern is expected for events like `before-resolve` and `after-resolve`.
+  플러그인 핸들러 함수는 `(err: Error, nextValue: any) -> void.` 서명이 있는 callback 함수와 현재 값으로 호출됩니다. `nextValue`가 호출되면 다음 핸들러의 현재 값이 됩니다. 첫 번째 핸들러의 현재 값은 `init`입니다. 모든 핸들러가 적용된 후 callback은 마지막 값으로 호출됩니다. 만약 어떤 핸들러가 `err` 값을 전달하면 callback은 오류가 호출되고 더이상 핸들러는 호출되지 않습니다.
+  이 플러그인 패턴은 `before-resolve`와 `after-resolve`와 같은 이벤트에서 사용할 수 있습니다.
 
 - **Async Series Bail**
 
-  - Defined using `AsyncSeriesBailHook[params]`
-  - Tapped into using `tap`/`tapAsync`/`tapPromise` method.
-  - Called using `callAsync(...params)` method
+  - `AsyncSeriesBailHook[params]`로 정의됩니다.
+  - `tap`/`tapAsync`/`tapPromise` 메소드를 사용하여 탭 됩니다.
+  - `callAsync(...params)` 메소드를 사용하여 호출됩니다.
 
 - **Async Parallel**
 
-  - Defined using `AsyncParallelHook[params]`
-  - Tapped into using `tap`/`tapAsync`/`tapPromise` method.
-  - Called using `callAsync(...params)` method
+  - `AsyncParallelHook[params]`로 정의됩니다.
+  - `tap`/`tapAsync`/`tapPromise` 메소드를 사용하여 탭 됩니다.
+  - `callAsync(...params)` 메소드를 사용하여 호출됩니다.
 
 ### Configuration defaults
 
-Webpack applies configuration defaults after plugins defaults are applied. This allows plugins to feature their own defaults and provides a way to create configuration preset plugins.
+플러그인의 기본값이 적용된 후 webpack은 설정의 기본값을 적용합니다. 이를 통해 플러그인은 고유의 기본값을 제공하고 사전에 플러그인의 설정을 만드는 방법을 제공합니다.
