@@ -103,7 +103,7 @@ module.exports = [
 
 ## ignoreWarnings
 
-`RegExp` `function (WebpackError, Compilation) => boolean` `{module?: RegExp, file?: RegExp, message?: RegExp}`
+`[RegExp, function (WebpackError, Compilation) => boolean, {module?: RegExp, file?: RegExp, message?: RegExp}]`
 
 특정 경고를 무시하도록 webpack에 지시합니다. 이것은 `WebpackError` 및 `Compilation`을 인수로 받고 `boolean`를 반환하는 원시 경고 인스턴스를 기반으로 경고를 선택하는 커스텀 `function`, `RegExp` 그리고 아래의 프로퍼티를 가지는 `object`가 될 수 있습니다.
 
@@ -111,7 +111,7 @@ module.exports = [
 - `message` : 경고 메시지를 선택하는 RegExp입니다.
 - `module` : 경고에 대한 원본 모듈을 선택하는 RegExp입니다.
 
-`ignoreWarnings`은 `array` 위 항목 모두를 원소르 가지는 `array`가 될 수 있습니다.
+`ignoreWarnings`은 위의 항목 일부 또는 전체를 갖는 `배열`이어야 합니다.
 
 ```javascript
 module.exports = {
@@ -124,6 +124,7 @@ module.exports = {
       module: /[13]/,
       message: /homepage/,
     },
+    /warning from compiler/,
     (warning) => true,
   ],
 };

@@ -6,29 +6,27 @@ contributors:
   - EugeneHlushko
   - byzyk
   - smelukov
+translators:
+  - jiwoo0629
 ---
 
-`object = { boolean activeModules = true, boolean entries = false, function (number percentage, string message, [string] ...args) handler, boolean modules = true, number modulesCount = 500, boolean profile = false }`
-
-`function (number percentage, string message, [string] ...args)`
-
-The `ProgressPlugin` provides a way to customize how progress is reported during a compilation.
+`ProgressPlugin`은 컴파일 도중에 진행 상황을 보고받을 방법을 자신이 원하는대로 정하는 방법을 제공합니다.
 
 ## Usage
 
-Create an instance of `ProgressPlugin` and provide one of the allowed params.
+`ProgressPlugin`의 인스턴스를 만들고, 허용되는 여러 매개변수 중 하나를 제공합니다.
 
 ### Providing `function`
 
-Provide a handler function which will be called when hooks report progress. `handler` function arguments:
+훅이 진행 상황을 보고할 때 호출될 handler 함수를 제공합니다. 함수 `handler`의 실행 인자:
 
-- `percentage`: a number between 0 and 1 indicating the completion percentage of the compilation
-- `message`: a short description of the currently-executing hook
-- `...args`: zero or more additional strings describing the current progress
+- `percentage`: 컴파일의 성공 확률을 나타내는 0과 1 사이의 숫자
+- `message`: 현재 실행중인 훅에 대한 짧은 설명
+- `...args`: 현재 실행 상황을 묘사하는 0개 이상의 추가적인 문자열
 
 ```js
 const handler = (percentage, message, ...args) => {
-  // e.g. Output each progress message directly to the console:
+  // 예를 들어, 각 진행 메세지를 콘솔에 직접 출력
   console.info(percentage, message, ...args);
 };
 
@@ -37,24 +35,24 @@ new webpack.ProgressPlugin(handler);
 
 ### Providing `object`
 
-When providing an `object` to the `ProgressPlugin`, following properties are supported:
+`ProgressPlugin`에 `object`를 제공할 때, 다음의 속성이 지원됩니다
 
-- `activeModules` (`boolean = false`): Shows active modules count and one active module in progress message.
-- `entries` (`boolean = true`): Shows entries count in progress message.
-- `handler` (See [Providing function](#providing-function))
-- `modules` (`boolean = true`): Shows modules count in progress message.
-- `modulesCount` (`number = 5000`): A minimum modules count to start with. Takes effect when `modules` property is enabled.
-- `profile` (`boolean = false`): Tells `ProgressPlugin` to collect profile data for progress steps.
-- `dependencies` (`boolean = true`): Shows the count of dependencies in progress message.
-- `dependenciesCount` (`number = 10000`): A minimum dependencies count to start with. Takes effect when `dependencies` property is enabled.
-- `percentBy` (`string = null: 'entries' | 'dependencies' | 'modules' | null`): Tells `ProgressPlugin` how to calculate progress percentage.
+- `activeModules` (`boolean = false`): 활성화된 모듈의 수와 활성화된 모듈 하나를 진행 메세지로 보여줍니다.
+- `entries` (`boolean = true`): 엔트리 수를 진행 메세지로 보여줍니다.
+- `handler` ([Providing function](#providing-function)을 보세요)
+- `modules` (`boolean = true`): 모듈 수를 진행 메세지로 보여줍니다.
+- `modulesCount` (`number = 5000`): 시작할 모듈 수의 최솟값이며 `modules` 속성이 활성화되면 적용됩니다.
+- `profile` (`boolean = false`): 진행 단계의 프로필 정보를 수집하도록 `ProgressPlugin`에게 알려줍니다.
+- `dependencies` (`boolean = true`): 종속성 수를 진행 메세지로 보여줍니다.
+- `dependenciesCount` (`number = 10000`): 시작할 종속성 수의 최솟값이며 `dependencies` 속성이 활성화되면 적용됩니다.
+- `percentBy` (`string = null: 'entries' | 'dependencies' | 'modules' | null`): 진행률을 계산할 방법을 `ProgressPlugin`에게 알려줍니다.
 
 ```js
 new webpack.ProgressPlugin({
   activeModules: false,
   entries: true,
   handler(percentage, message, ...args) {
-    // custom logic
+    // 사용자 지정 로직
   },
   modules: true,
   modulesCount: 5000,
@@ -67,19 +65,19 @@ new webpack.ProgressPlugin({
 
 ## Percentage calculation
 
-By default, progress percentage is calculated based on built modules count and total modules count: `built / total`
+기본적으로 진행률은 빌드된 모듈 수와 총 모듈 수를 기반으로 계산됩니다: `built / total`
 
-The total modules count is unknown in advance and changes during the build. This may cause inaccurate progress percentage.
+총 모듈 수는 사전에는 알 수 없고 빌드를 거치면서 변합니다. 이는 부정확한 진행률을 야기할 수 있습니다.
 
-To solve this problem `ProgressPlugin` caches the last known total modules count and reuses this value on the next build. The first build will warm the cache but the following builds will use and update this value.
+이러한 문제를 해결하기 위해 `ProgressPlugin`은 마지막으로 알려진 총 모듈 수를 캐시하여 이 값을 다음 빌드 때 재사용합니다. 첫 번째 빌드는 데이터 값을 메모리에 캐시하지만 그 다음 빌드들은 이 값을 사용하고 업데이트합니다.
 
-> We recommend using `percentBy: 'entries'` setting for projects with [multiple configured entry points](/configuration/entry-context/#entry). Percentage calculation will become more accurate because the amount of entry points is known in advance.
+> [다중 구성된 엔트리 포인트](/configuration/entry-context/#entry)가 있는 프로젝트들을 위한 설정에는 `percentBy: 'entries'`를 사용할 것을 추천합니다. 엔트리 포인트의 개수를 미리 알 수 있기 때문에 확률 계산은 더욱 정확해질 것입니다.
 
 ## Supported Hooks
 
-The following hooks report progress information to `ProgressPlugin`.
+다음 훅은 `ProgressPlugin`에 진행 정보를 보고합니다.
 
-T> _Hooks marked with \* allow plugins to report progress information using `reportProgress`. For more, see [Plugin API: Reporting Progress](/api/plugins/#reporting-progress)_
+T> _\* 표시된 훅은 plugin이 `reportProgress`를 이용하여 진행 정보를 보고하도록 허용합니다. 자세한 내용은 [Plugin API: Reporting Progress](/api/plugins/#reporting-progress)를 참고하세요._
 
 **Compiler**
 
