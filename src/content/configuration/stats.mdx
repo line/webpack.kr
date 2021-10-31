@@ -342,6 +342,51 @@ module.exports = {
 };
 ```
 
+### stats.groupModulesByCacheStatus
+
+`boolean`
+
+캐시 상태(캐시되었는지 혹은 빌드되고 캐시 가능한지)별로 모듈을 그룹화할지 여부를 `stats`에 알려줍니다.
+
+```javascript
+module.exports = {
+  //...
+  stats: {
+    groupModulesByCacheStatus: true,
+  },
+};
+```
+
+### stats.groupModulesByExtension
+
+`boolean`
+
+확장자로 모듈을 그룹화할지 여부를 `stats`에 알려줍니다.
+
+```javascript
+module.exports = {
+  //...
+  stats: {
+    groupModulesByExtension: true,
+  },
+};
+```
+
+### stats.groupModulesByLayer
+
+`boolean`
+
+모듈을 레이어별로 그룹화할지 여부를 `stats`에 알려줍니다.
+
+```javascript
+module.exports = {
+  //...
+  stats: {
+    groupModulesByLayer: true,
+  },
+};
+```
+
 ### stats.groupModulesByPath
 
 `boolean`
@@ -353,6 +398,21 @@ module.exports = {
   //...
   stats: {
     groupModulesByPath: true,
+  },
+};
+```
+
+### stats.groupModulesByType
+
+`boolean`
+
+모듈을 유형별로 그룹화할지 여부를 `stats`에 알려줍니다.
+
+```javascript
+module.exports = {
+  //...
+  stats: {
+    groupModulesByType: true,
   },
 };
 ```
