@@ -13,7 +13,7 @@ translators:
 
 Webpack 내부적으로 사용하는 플러그인의 목록입니다.
 
-W> Webpack 기반으로 나만의 컴파일러를 구축하거나, 내부 검토할 때만 신경써야합니다.
+W> Webpack 기반으로 나만의 컴파일러를 구축하거나, 내부 검토할 때만 신경 써야합니다.
 
 내부 플러그인의 범주:
 
@@ -26,7 +26,7 @@ W> Webpack 기반으로 나만의 컴파일러를 구축하거나, 내부 검토
 
 ## environment
 
-컴파일러의 환경에 영향을 주는 플러그인들입니다.
+컴파일러의 환경에 영향을 주는 플러그인입니다.
 
 ### NodeEnvironmentPlugin
 
@@ -36,7 +36,7 @@ W> Webpack 기반으로 나만의 컴파일러를 구축하거나, 내부 검토
 
 ## compiler
 
-컴파일러에 영향을 주는 플러그인들입니다.
+컴파일러에 영향을 주는 플러그인입니다.
 
 ### MemoryCachePlugin
 
@@ -48,13 +48,13 @@ W> Webpack 기반으로 나만의 컴파일러를 구축하거나, 내부 검토
 
 `ProgressPlugin(handler)`
 
-컴파일러에 훅을 하여 진행 정보들을 추출합니다. `handler`는 `function(percentage, message)`라는 서명이 있어야 합니다. Percentage는 0과 1 사이의 값으로 불립니다. 0은 시작, 1은 끝을 나타냅니다.
+컴파일러에 훅을 하여 진행 정보를 추출합니다. `handler`는 `function(percentage, message)`라는 서명이 있어야 합니다. Percentage는 0과 1 사이의 값으로 불립니다. 0은 시작, 1은 끝을 나타냅니다.
 
 ### RecordIdsPlugin
 
 `RecordIdsPlugin()`
 
-레코드로부터 청크 아이디들과 모듈을 저장하고 복원합니다.
+레코드로부터 청크 아이디와 모듈을 저장하고 복원합니다.
 
 ## entry
 
@@ -80,19 +80,19 @@ W> Webpack 기반으로 나만의 컴파일러를 구축하거나, 내부 검토
 
 청크는 JSONP-calls로 래핑되어 있습니다. 로딩 알고리즘은 엔트리 청크에 포함이 됩니다. `<script>` 태그를 추가함으로써 청크를 로드합니다.
 
-`options` 는 출력 옵션입니다.
+`options`는 출력 옵션입니다.
 
 `options.jsonpFunction`은 JSONP 함수입니다.
 
 `options.publicPath`는 청크를 로딩하기 위한 경로로 사용됩니다.
 
-`options.chunkFilename`는 청크 아래에 있는 파일 이름으로 예상됩니다.
+`options.chunkFilename`는 청크가 예상되는 파일 이름 이름입니다.
 
 ### NodeTemplatePlugin
 
 `node/NodeTemplatePlugin(options)`
 
-청크는 번들 모듈들을 내보내는 Node.js 모듈들로 래핑되어 있습니다. 엔트리 청크는 청크를 요구함으로써 로드됩니다.
+청크는 번들 모듈을 내보내는 Node.js 모듈로 래핑되어 있습니다. 엔트리 청크는 청크를 요구함으로써 로드됩니다.
 
 `options`는 출력 옵션입니다.
 
@@ -102,7 +102,7 @@ W> Webpack 기반으로 나만의 컴파일러를 구축하거나, 내부 검토
 
 `LibraryTemplatePlugin(name, target)`
 
-엔트리 청그들은 `type` 유형의 `name` 라이브러리로부터 꾸며집니다.
+엔트리 청크들은 `type` 유형의 `name` 라이브러리로부터 꾸며집니다.
 
 ### WebWorkerTemplatePlugin
 
@@ -122,13 +122,13 @@ W> Webpack 기반으로 나만의 컴파일러를 구축하거나, 내부 검토
 
 각 청크에 대한 SourceMap을 생성함으로써 템플릿들을 꾸밉니다.
 
-`sourceMapFilename`은 SourceMap의 파일 이름 템플릿입니다. `[hash]`, `[name]`, `[id]`, `[file]` 와 `[filebase]` 는 교체되었습니다. 만약에 인자가 없으면, SourceMap은 DataUrl로 인라인 될 것입니다.
+`sourceMapFilename`은 SourceMap의 파일 이름 템플릿입니다. `[hash]`, `[name]`, `[id]`, `[file]` 와 `[filebase]`는 교체되었습니다. 만약에 인자가 없으면, SourceMap은 DataUrl로 인라인 될 것입니다.
 
 ### HotModuleReplacementPlugin
 
 `HotModuleReplacementPlugin(options)`
 
-hot 모듈 교체에 대한 지원을 추가합니다. 런타임 코드를 추가한 템플릿을 꾸밉니다. `module.hot' API를 추가합니다.
+Hot module replacement 대한 지원을 추가합니다. 런타임 코드를 추가한 템플릿을 꾸밉니다. `module.hot' API를 추가합니다.
 
 `options.hotUpdateChunkFilename`는 hot 업데이트 청크 파일 이름입니다.
 
@@ -138,15 +138,15 @@ hot 모듈 교체에 대한 지원을 추가합니다. 런타임 코드를 추�
 
 ## source
 
-모듈의 소스 코드에 영향을 미치는 플러그인들입니다.
+모듈의 소스 코드에 영향을 미치는 플러그인입니다.
 
 ### APIPlugin
 
-webpack_public_path, webpack_require, webpack_modules 과 webpack_chunk_load에 접근할 수 있도록 설정합니다. `require.valueOf`와 `require.onError`가 다른 플러그인들로 처리되지 않도록 합니다.
+webpack_public_path, webpack_require, webpack_modules 과 webpack_chunk_load에 접근할 수 있도록 설정합니다. `require.valueOf`와 `require.onError`가 다른 플러그인로 처리되지 않도록 합니다.
 
 ### CompatibilityPlugin
 
-현재는 쓸모가 없습니다. 다른 모듈 로더들과의 호환성을 보장합니다.
+현재는 쓸모가 없습니다. 다른 모듈 로더과의 호환성을 보장합니다.
 
 ### ConstPlugin
 
@@ -154,8 +154,8 @@ webpack_public_path, webpack_require, webpack_modules 과 webpack_chunk_load에 
 
 dead branch와 관련하여 프로덕션 모드에는 여러 최적화 들이 있습니다.
 
-- [Terser](https://github.com/fabiosantoscode/terser) 이 수행한 것들입니다.
-- Webpack이 수행한 것들입니다.
+- [Terser](https://github.com/fabiosantoscode/terser) 이 수행한 최적화입니다.
+- Webpack이 수행한 최적화 입니다.
 
 Webpack은 조건문을 평가하려고 할 것입니다. 만약 성공한다면 dead branch가 제거됩니다. Webpck은 컴파일러가 알지 못하는 한 상수 폴딩을 할 수 없습니다. 다음 예시를 봅시다.
 
@@ -169,7 +169,7 @@ if (FOO === 0) {
 }
 ```
 
-위의 예시에서, Webpack은 branch를 자를 수 없지만, Terser는 할 수 있습니다. 그러나 만약 `FOO`가 [DefinePlugin](/plugins/define-plugin/) 를 사용하면, Webpack은 성공할 것입니다.
+위의 예시에서, webpack은 branch를 자를 수 없지만, Terser는 할 수 있습니다. 그러나 만약 `FOO`가 [DefinePlugin](/plugins/define-plugin/) 를 사용하면, Webpack은 성공할 것입니다.
 
 `import { calculateTax } from './tax';`도 제거된다는 점을 언급해야 합니다. 왜냐하면 `calculateTax()` 호출이 dead branch에 있어 제거되었기 때문이다.
 
@@ -191,7 +191,7 @@ Node.js 모듈에서는 일반적으로 사용할 수 있는 항목을 제공합
 
 require.js에서는 일반적으로 사용할 수 있는 항목을 제공합니다.
 
-`require[js].config`는 제거됩니다. `require.version`는 `0.0.0`입니다. `requirejs.onError`눈 `require.onError`에 매핑이 됩니다.
+`require[js].config`는 제거됩니다. `require.version`는 `0.0.0`입니다. `requirejs.onError`는 `require.onError`에 매핑이 됩니다.
 
 ### NodeSourcePlugin
 
@@ -257,7 +257,7 @@ CommonJs 스타일의 `require` 모듈을 제공합니다.
 
 병합 청크의 제한된 청크 수는 `options.maxChunks'보다 작습니다.
 
-각 청크에 대한 오버해드는 `options.chunkOverhead` 또는 기본값인 10000에 의해 제공됩니다. 엔트리 청크의 크기는 `options.entryChunkMultiplicator` (또는 10)에 의해 곱해집니다.
+각 청크에 대한 오버헤드는 `options.chunkOverhead` 또는 기본값인 10000에 의해 제공됩니다. 엔트리 청크의 크기는 `options.entryChunkMultiplicator` (또는 10)에 의해 곱해집니다.
 
 전체적인 크기를 가장 많이 줄인 청크가 첫 번째로 병합됩니다. 만약 여러 조합이 같으면 병합된 크기가 작은 것이 선택됩니다.
 
@@ -281,14 +281,13 @@ CommonJs 스타일의 `require` 모듈을 제공합니다.
 
 ### ModuleConcatenationPlugin
 
-[ModuleConcatenationPlugin page](/plugins/module-concatenation-plugin/)에 대한 구체적인 내용을 보여줍니다.
+[ModuleConcatenationPlugin page](/plugins/module-concatenation-plugin/)에 대한 구체적인 내용을 확인해보세요.
 
 ### FlagIncludedChunksPlugin
 
 `optimize/FlagIncludedChunksPlugin()`
 
 청크에 포함된 청크의 청크 아이디를 추가합니다. 불필요한 청크 로드를 제거할 수 있습니다.
-Adds chunk ids of chunks which are included in the chunk. This eliminates unnecessary chunk loads.
 
 ### RealContentHashPlugin
 
@@ -298,7 +297,7 @@ Adds chunk ids of chunks which are included in the chunk. This eliminates unnece
 
 #### Hook
 
-`RealContentHashPlugin`은 제공합니다. 해시 업데이트를 커스터마이징할 수 있는 훅인 `updateHash` <Badge text='5.8.0+' />를 제공합니다.
+`RealContentHashPlugin`은 해시 업데이트를 커스터마이징할 수 있는 훅인 `updateHash` <Badge text='5.8.0+' />를 제공합니다.
 
 ```js
 const webpack = require('webpack');
