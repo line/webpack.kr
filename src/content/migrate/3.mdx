@@ -16,15 +16,17 @@ contributors:
   - ndelangen
   - EugeneHlushko
   - byzyk
+translators:
+  - dlwnsgud8406
 ---
 
-The following sections describe the major changes from webpack 1 to 2.
++ 다음 섹션에서는 webpack 1에서 2로의 주요 변경 사항을 설명합니다.
 
-T> Note that there were far fewer changes between 2 and 3, so that migration shouldn't be too bad. If you are running into issues, please see [the changelog](https://github.com/webpack/webpack/releases) for details.
+T> webpack 2와 3 사이에 변경 사항이 훨씬 적으므로 마이그레이션이 그렇게 나쁘지 않을 것입니다. 문제가 발생하는 경우, 자세한 내용은 [the changelog](https://github.com/webpack/webpack/releases)를 참고하세요.
 
 ## resolve.root, resolve.fallback, resolve.modulesDirectories
 
-These options were replaced by a single option `resolve.modules`. See [resolving](/configuration/resolve) for more usage.
+위 옵션들은 `resolve.modules` 로 대체되었습니다. 자세한 사용법은 [resolving](/configuration/resolve)을 참고하세요.
 
 ```diff
   resolve: {
@@ -38,17 +40,17 @@ These options were replaced by a single option `resolve.modules`. See [resolving
 
 ## resolve.extensions
 
-This option no longer requires passing an empty string. This behavior was moved to `resolve.enforceExtension`. See [resolving](/configuration/resolve) for more usage.
+이 옵션은 더 이상 빈 문자열을 전달할 필요가 없습니다. 이 동작은 `resolve.enforceExtension`으로 이동되었습니다. 자세한 사용법은 [resolving](/configuration/resolve) 를 참고하세요.
 
 ## resolve.\*
 
-Several APIs were changed here. Not listed in detail as it's not commonly used. See [resolving](/configuration/resolve) for details.
+여기에서 여러 API가 변경되었습니다. 흔히 사용되지 않으므로 자세히 나열하지 않습니다. 자세한 내용은 [resolving](/configuration/resolve)을 참고하세요.
 
 ## module.loaders is now module.rules
 
-The old loader configuration was superseded by a more powerful rules system, which allows configuration of loaders and more.
-For compatibility reasons, the old `module.loaders` syntax is still valid and the old names are parsed.
-The new naming conventions are easier to understand and are a good reason to upgrade the configuration to using `module.rules`.
+이전의 로더설정은 로더와 그 이상의 설정이 허가되는 강력한 규칙 시스템으로 대체 되었습니다.
+호환성을 위해 이전의 `module.loaders` 구문은 여전히 유효하며 이전 이름은 구문 분석됩니다.
+네이밍 컨벤션들이 이해하기 쉬워졌고 `module.rules`를 사용하도록 설정을 업그레이드 해야하는 좋은 이유입니다.
 
 ```diff
   module: {
@@ -84,9 +86,9 @@ The new naming conventions are easier to understand and are a good reason to upg
 
 ## Chaining loaders
 
-Like in webpack 1, loaders can be chained to pass results from loader to loader. Using the [rule.use](/configuration/module/#ruleuse)
-configuration option, `use` can be set to an array of loaders.
-In webpack 1, loaders were commonly chained with `!`. This style is only supported using the legacy option `module.loaders`.
+webpack 1에서와 같이 로더를 연결하여 로더에서 로더로 결과를 전달할 수 있습니다.
+[rule.use](/configuration/module/#ruleuse) 를 사용하여, `use` 를 로더 배열로 설정할 수 있습니다.
+webpack 1에서 로더는 일반적으로 `!`로 연결되었습니다. 이 스타일은 레거시 옵션 `module.loaders` 를 사용하는 경우에만 지원됩니다.
 
 ```diff
   module: {
@@ -105,7 +107,7 @@ In webpack 1, loaders were commonly chained with `!`. This style is only support
 
 ## Automatic `-loader` module name extension removed
 
-It is not possible anymore to omit the `-loader` extension when referencing loaders:
+로더를 참고할 때 `-loader` 확장자를 더 이상 생략할 수 없습니다.
 
 ```diff
   module: {
@@ -124,7 +126,7 @@ It is not possible anymore to omit the `-loader` extension when referencing load
   }
 ```
 
-You can still opt-in to the old behavior with the `resolveLoader.moduleExtensions` configuration option, but this is not recommended.
+`resolveLoader.moduleExtensions` 설정 옵션을 사용하여 이전 동작을 계속 선택할 수 있지만 이는 권장되지 않습니다.
 
 ```diff
 + resolveLoader: {
@@ -132,12 +134,11 @@ You can still opt-in to the old behavior with the `resolveLoader.moduleExtension
 + }
 ```
 
-See [#2986](https://github.com/webpack/webpack/issues/2986) for the reason behind this change.
+이 변경 이유는 [#2986](https://github.com/webpack/webpack/issues/2986) 을 참고하세요.
 
 ## json-loader is not required anymore
 
-When no loader has been configured for a JSON file, webpack will automatically try to load the JSON
-file with the [`json-loader`](https://github.com/webpack-contrib/json-loader).
+JSON 파일에 대해 설정된 로더가 없으면, webpack은 자동으로 [`json-loader`](https://github.com/webpack-contrib/json-loader)로 JSON 파일을 로드하려고 시도합니다.
 
 ```diff
   module: {
@@ -150,16 +151,15 @@ file with the [`json-loader`](https://github.com/webpack-contrib/json-loader).
   }
 ```
 
-[We decided to do this](https://github.com/webpack/webpack/issues/3363) in order to iron out environment differences
-between webpack, node.js and browserify.
+webpack, node.js 및 browserify 간의 [환경차이를 없애기 위해 그렇게 하기로 결정했습니다.](https://github.com/webpack/webpack/issues/3363) 
 
 ## Loaders in configuration resolve relative to context
 
-In **webpack 1**, configured loaders resolve relative to the matched file. However, in **webpack 2**, configured loaders resolve relative to the `context` option.
+**webpack 1** 에서, 설정된 로더가 일치하는 파일을 기준으로 확인되어집니다. 하지만, **webpack 2** 에서는, 설정된 로더는 `context` 옵션을 기준으로 확인됩니다.
 
-This solves some problems with duplicate modules caused by loaders when using `npm link` or referencing modules outside of the `context`.
+이것은 `npm link` 를 사용하거나 외부 `context` 모듈을 참고할 때 로더에 의해 발생하는 중복 모듈 문제를 해결합니다.
 
-You may remove some hacks to work around this:
+이 문제를 해결하기 위해 몇 가지 핵을 제거할 수 있습니다.
 
 ```diff
   module: {
@@ -193,7 +193,7 @@ You may remove some hacks to work around this:
 
 ## UglifyJsPlugin sourceMap
 
-The `sourceMap` option of the `UglifyJsPlugin` now defaults to `false` instead of `true`. This means that if you are using source maps for minimized code or want correct line numbers for uglifyjs warnings, you need to set `sourceMap: true` for `UglifyJsPlugin`.
+`UglifyJsPlugin` 의 `sourceMap` 옵션은 `true` 대신 `false` 로 기본 설정됩니다. 즉, 최소화된 코드에 소스맵을 사용하거나 uglifyjs 경고에 대한 올바른 줄 번호를 원하는 경우 `UglifyJsPlugin`에서 `sourceMap: true`를 설정해야 합니다.
 
 ```diff
   devtool: "source-map",
@@ -206,8 +206,8 @@ The `sourceMap` option of the `UglifyJsPlugin` now defaults to `false` instead o
 
 ## UglifyJsPlugin warnings
 
-The `compress.warnings` option of the `UglifyJsPlugin` now defaults to `false` instead of `true`.
-This means that if you want to see uglifyjs warnings, you need to set `compress.warnings` to `true`.
+`UglifyJsPlugin`의 `compress.warnings` 옵션은 이제 `true` 대신 `false`로 기본 설정됩니다.
+즉, uglifyjs 경고를 보려면 `compress.warnings`를 `true`로 설정해야 합니다.
 
 ```diff
   devtool: "source-map",
@@ -222,11 +222,11 @@ This means that if you want to see uglifyjs warnings, you need to set `compress.
 
 ## UglifyJsPlugin minimize loaders
 
-`UglifyJsPlugin` no longer switches loaders into minimize mode. The `minimize: true` setting needs to be passed via loader options in the long-term. See loader documentation for relevant options.
+`UglifyJsPlugin` 은 더 이상 로더를 최소화 모드로 전환하지 않습니다. `minimize: true` 설정은 장기적으로 로더 옵션을 통해 전달되어야 합니다. 관련 옵션은 로더 문서를 참고하세요.
 
-The minimize mode for loaders will be removed in webpack 3 or later.
+로더의 최소화 모드는 webpack 3 이상에서 제거됩니다.
 
-To keep compatibility with old loaders, loaders can be switched to minimize mode via plugin:
+이전 로더와의 호환성을 유지하기 위해 플러그인을 통해 로더를 최소화 모드로 전환할 수 있습니다.
 
 ```diff
   plugins: [
@@ -238,11 +238,11 @@ To keep compatibility with old loaders, loaders can be switched to minimize mode
 
 ## DedupePlugin has been removed
 
-`webpack.optimize.DedupePlugin` isn't needed anymore. Remove it from your configuration.
+`webpack.optimize.DedupePlugin`은 더 이상 필요하지 않습니다. 설정에서 제거하세요.
 
 ## BannerPlugin - breaking change
 
-`BannerPlugin` no longer accepts two parameters, but a single options object.
+`BannerPlugin`은 더 이상 두 개의 매개변수를 허용하지 않고 단일 옵션 개체를 허용합니다.
 
 ```diff
   plugins: [
@@ -253,8 +253,8 @@ To keep compatibility with old loaders, loaders can be switched to minimize mode
 
 ## OccurrenceOrderPlugin is now on by default
 
-The `OccurrenceOrderPlugin` is now enabled by default and has been renamed (`OccurenceOrderPlugin` in webpack 1).
-Thus make sure to remove the plugin from your configuration:
+`OccurrenceOrderPlugin`은 이제 기본적으로 활성화되며 이름이 변경되었습니다(webpack 1의 `OccurenceOrderPlugin`).
+따라서 설정에서 플러그인을 제거해야 합니다.
 
 ```diff
   plugins: [
@@ -267,11 +267,11 @@ Thus make sure to remove the plugin from your configuration:
 
 ## ExtractTextWebpackPlugin - breaking change
 
-[ExtractTextPlugin](https://github.com/webpack-contrib/extract-text-webpack-plugin) requires version 2 to work with webpack 2.
+[ExtractTextPlugin](https://github.com/webpack-contrib/extract-text-webpack-plugin) 이 webpack 2와 함께 작동하려면 버전 2가 필요합니다.
 
 `npm install --save-dev extract-text-webpack-plugin`
 
-The configuration changes for this plugin are mainly syntactical.
+이 플러그인의 설정 변경은 주로 구문입니다.
 
 ### ExtractTextPlugin.extract
 
@@ -306,15 +306,16 @@ plugins: [
 
 ## Full dynamic requires now fail by default
 
-A dependency with only an expression (i. e. `require(expr)`) will now create an empty context instead of the context of the complete directory.
+표현식(즉, `require(expr)`)만 있는 종속성은 이제 전체 디렉토리의 컨텍스트 대신 빈 컨텍스트를 생성합니다.
 
-Code like this should be refactored as it won't work with ES2015 modules. If this is not possible you can use the `ContextReplacementPlugin` to hint the compiler towards the correct resolving.
+이와 같은 코드는 ES2015 모듈에서 작동하지 않으므로 리팩토링해야 합니다. 
+이것이 가능하지 않다면 `ContextReplacementPlugin`을 사용하여 컴파일러가 올바른 해결을 하도록 힌트를 줄 수 있습니다.
 
-?> Link to an article about dynamic dependencies.
+?> 동적 의존성에 대한 기사 링크.
 
 ### Using custom arguments in CLI and configuration
 
-If you abused the CLI to pass custom arguments to the configuration like so:
+CLI를 남용하여 다음과 같이 설정에 사용자 지정 인수를 전달한 경우.
 
 `webpack --custom-stuff`
 
@@ -325,9 +326,9 @@ var customStuff = process.argv.indexOf('--custom-stuff') >= 0;
 module.exports = config;
 ```
 
-You may notice that this is no longer allowed. The CLI is more strict now.
+이것이 더 이상 허용되지 않음을 알 수 있습니다. 이제 CLI가 더 엄격해졌습니다.
 
-Instead there is an interface for passing arguments to the configuration. This should be used instead. Future tools may rely on this.
+대신 설정에 인수를 전달하기 위한 인터페이스가 있습니다. 대신 사용해야 합니다. 미래의 도구는 이것에 의존할 수 있습니다.
 
 `webpack --env.customStuff`
 
@@ -339,17 +340,17 @@ module.exports = function (env) {
 };
 ```
 
-See [CLI](/api/cli).
+[CLI](/api/cli)를 참고하세요.
 
 ## require.ensure and AMD require are asynchronous
 
-These functions are now always asynchronous instead of calling their callback synchronously if the chunk is already loaded.
+이러한 함수는 이제 청크가 이미 로드된 경우 동기식으로 콜백을 호출하는 대신 항상 비동기식입니다.
 
-**`require.ensure` now depends upon native `Promise`s. If using `require.ensure` in an environment that lacks them then you will need a polyfill.**
+**`require.ensure`는 이제 네이티브 `Promise`에 의존합니다. 그것들이 없는 환경에서 `require.ensure`를 사용한다면 폴리필이 필요할 것입니다.**
 
 ## Loader configuration is through `options`
 
-You can _no longer_ configure a loader with a custom property in the `webpack.config.js`. It must be done through the `options`. The following configuration with the `ts` property is no longer valid with webpack 2:
+`webpack.config.js`에서 사용자 정의 속성으로 로더를 _더 이상_ 설정할 수없습니다. `options`을 통해 수행해야 합니다. `ts` 속성이 있는 다음 설정은 더 이상 webpack 2에서 유효하지 않습니다.
 
 ```js
 module.exports = {
@@ -369,7 +370,7 @@ module.exports = {
 
 ### What are `options`?
 
-Good question. Well, strictly speaking it's 2 possible things; both ways to configure a webpack loader. Classically `options` was called `query` and was a string which could be appended to the name of the loader. Much like a query string but actually with [greater powers](https://github.com/webpack/loader-utils#parsequery):
+좋은 질문입니다. 엄밀히 말하면 2가지로 해석 가능하며, 모두 webpack 로더를 설정하는 방법입니다. 고전적으로 `options`은 `query`라고 했으며 로더 이름에 추가할 수 있는 문자열이었습니다. 쿼리 문자열과 매우 유사하지만 실제로는 [더 강력한 기능](https://github.com/webpack/loader-utils#parsequery)입니다.
 
 ```js
 module.exports = {
@@ -385,7 +386,7 @@ module.exports = {
 };
 ```
 
-But it can also be a separately specified object that's supplied alongside a loader:
+그러나 로더와 함께 제공되는 별도로 지정된 객체일 수도 있습니다.
 
 ```js
 module.exports = {
@@ -404,9 +405,9 @@ module.exports = {
 
 ## LoaderOptionsPlugin context
 
-Some loaders need context information and read them from the configuration. This needs to be passed via loader options in the long-term. See loader documentation for relevant options.
+일부 로더는 컨텍스트 정보가 필요하고 설정에서 이를 읽습니다. 이것은 장기적으로 로더 옵션을 통해 전달되어야 합니다. 관련 옵션은 로더 문서를 참고하세요.
 
-To keep compatibility with old loaders, this information can be passed via plugin:
+이전 로더와의 호환성을 유지하기 위해 플러그인을 통해 이 정보를 전달할 수 있습니다.
 
 ```diff
   plugins: [
@@ -420,11 +421,11 @@ To keep compatibility with old loaders, this information can be passed via plugi
 
 ## debug
 
-The `debug` option switched loaders to debug mode in webpack 1. This needs to be passed via loader options in long-term. See loader documentation for relevant options.
+`debug` 옵션은 webpack 1에서 로더를 디버그 모드로 전환했습니다. 이것은 장기적으로 로더 옵션을 통해 전달되어야 합니다. 관련 옵션은 로더 문서를 참고하세요.
 
-The debug mode for loaders will be removed in webpack 3 or later.
+로더의 디버그 모드는 webpack 3 이상에서 제거됩니다.
 
-To keep compatibility with old loaders, loaders can be switched to debug mode via a plugin:
+이전 로더와의 호환성을 유지하기 위해 플러그인을 통해 로더를 디버그 모드로 전환할 수 있습니다.
 
 ```diff
 - debug: true,
@@ -437,7 +438,7 @@ To keep compatibility with old loaders, loaders can be switched to debug mode vi
 
 ## Code Splitting with ES2015
 
-In webpack 1, you could use [`require.ensure()`](/api/module-methods/#requireensure) as a method to lazily-load chunks for your application:
+webpack 1에서는 [`require.ensure()`](/api/module-methods/#requireensure) 를 응용 프로그램의 청크를 지연 로드하는 방법으로 사용할 수 있습니다.
 
 ```javascript
 require.ensure([], function (require) {
@@ -445,7 +446,7 @@ require.ensure([], function (require) {
 });
 ```
 
-The ES2015 Loader spec defines [`import()`](/api/module-methods/#import-1) as method to load ES2015 Modules dynamically on runtime. Webpack treats `import()` as a split-point and puts the requested module in a separate chunk. `import()` takes the module name as argument and returns a Promise.
+ES2015 로더 사양은 [`import()`](/api/module-methods/#import-1)를 런타임에 동적으로 ES2015 모듈을 로드하는 방법으로 정의합니다. Webpack은 `import()`를 분리점으로 처리하고 요청된 모듈을 별도의 청크에 넣습니다. `import()`는 모듈 이름을 인수로 취하고 Promise를 반환합니다.
 
 ```js
 function onClick() {
@@ -459,13 +460,13 @@ function onClick() {
 }
 ```
 
-Good news: Failure to load a chunk can now be handled because they are `Promise` based.
+좋은 소식: 청크 로드 실패는 `Promise` 기반이기 때문에 이제 처리할 수 있습니다.
 
 ## Dynamic expressions
 
-It's possible to pass a partial expression to `import()`. This is handled similar to expressions in CommonJS (webpack creates a [context](/plugins/context-replacement-plugin/) with all possible files).
+부분 표현식을 `import()`에 전달할 수 있습니다. 이것은 CommonJS의 표현식과 유사하게 처리됩니다(webpack은 가능한 모든 파일과 함께 [context](/plugins/context-replacement-plugin/)을 생성합니다).
 
-`import()` creates a separate chunk for each possible module.
+`import()`는 가능한 각 모듈에 대해 별도의 청크를 생성합니다.
 
 ```js
 function route(path, query) {
@@ -478,7 +479,7 @@ function route(path, query) {
 
 ## Mixing ES2015 with AMD and CommonJS
 
-As for AMD and CommonJS you can freely mix all three module types (even within the same file). Webpack behaves similar to babel and node-eps in this case:
+AMD 및 CommonJS의 경우 세 가지 모듈 유형을 모두 자유롭게 혼합할 수 있습니다(동일한 파일 내에서도). 이 경우 Webpack은 babel 및 node-eps와 유사하게 동작합니다.
 
 ```javascript
 // CommonJS consuming ES2015 Module
@@ -498,7 +499,8 @@ typeof fs.readFileSync === 'function';
 typeof readFileSync === 'function';
 ```
 
-It is important to note that you will want to tell Babel to not parse these module symbols so webpack can use them. You can do this by setting the following in your `.babelrc` or `babel-loader` options.
+Webpack이 사용할 수 있도록 이러한 모듈 기호를 구문 분석하지 않도록 Babel에 지시하는 것이 중요합니다. 
+`.babelrc` 또는 `babel-loader` 옵션에서 다음을 설정하면 됩니다.
 
 **.babelrc**
 
@@ -510,11 +512,11 @@ It is important to note that you will want to tell Babel to not parse these modu
 
 ## Hints
 
-No need to change something, but opportunities
+무언가를 바꿀 필요는 없지만 기회입니다.
 
 ### Template strings
 
-Webpack now supports template strings in expressions. This means you can start using them in webpack constructs:
+Webpack은 이제 표현식에서 템플릿 문자열을 지원합니다. 이는 Webpack 설정에서 사용할 수 있음을 의미합니다.
 
 ```diff
 - require("./templates/" + name);
@@ -523,7 +525,7 @@ Webpack now supports template strings in expressions. This means you can start u
 
 ### Configuration Promise
 
-Webpack now supports returning a `Promise` from the configuration file. This allows async processing in your configuration file.
+Webpack은 이제 설정 파일에서 `Promise` 반환을 지원합니다. 이렇게 하면 설정 파일에서 비동기 처리가 가능합니다.
 
 **webpack.config.js**
 
@@ -539,7 +541,7 @@ module.exports = function () {
 
 ### Advanced loader matching
 
-Webpack now supports more things to match on for loaders.
+Webpack은 이제 로더에 대해 일치시킬 더 많은 항목을 지원합니다.
 
 ```js
 module.exports = {
@@ -558,25 +560,25 @@ module.exports = {
 
 ### More CLI options
 
-There are some new CLI options for you to use:
+사용할 수 있는 몇 가지 새로운 CLI 옵션이 있습니다.
 
-`--define process.env.NODE_ENV="production"` See [`DefinePlugin`](/plugins/define-plugin/).
+`--define process.env.NODE_ENV="production"` [`DefinePlugin`](/plugins/define-plugin/)를 참고하세요.
 
-`--display-depth` displays the distance to the entry point for each module.
+`--display-depth` 는 각 모듈의 진입점까지의 거리를 표시합니다.
 
-`--display-used-exports` display info about which exports are used in a module.
+`--display-used-exports` 는 모듈에서 사용되는 내보내기 정보를 표시합니다.
 
-`--display-max-modules` sets the number for modules displayed in the output (defaults to 15).
+`--display-max-modules` 는 출력에 표시되는 모듈의 수를 설정합니다(기본값은 15).
 
-`-p` also defines `process.env.NODE_ENV` to `"production"` now.
+`-p`는 이제 `process.env.NODE_ENV`를 `"production"`으로 정의합니다.
 
 ## Loader changes
 
-Changes only relevant for loader authors.
+변경 사항은 로더 작성자에게만 해당됩니다.
 
 ### Cacheable
 
-Loaders are now cacheable by default. Loaders must opt-out if they are not cacheable.
+이제 기본적으로 로더를 캐시할 수 있습니다. 로더는 캐시할 수 없는 경우 옵트아웃해야 합니다.
 
 ```diff
   // Cacheable loader
@@ -596,11 +598,11 @@ Loaders are now cacheable by default. Loaders must opt-out if they are not cache
 
 ### Complex options
 
-**webpack 1** only supports `JSON.stringify`-able options for loaders.
+**webpack 1** 은 로더에 대해 `JSON.stringify` 가능 옵션만 지원합니다.
 
-**webpack 2** now supports any JS object as loader options.
+**webpack 2** 는 이제 모든 JS 개체를 로더 옵션으로 지원합니다.
 
-Before webpack [2.2.1](https://github.com/webpack/webpack/releases/tag/v2.2.1) (i.e. from 2.0.0 through 2.2.0), using complex options required using `ident` for the `options` object to allow its reference from other loaders. **This was removed in 2.2.1** and thus current migrations do not require any use of the `ident` key.
+webpack [2.2.1](https://github.com/webpack/webpack/releases/tag/v2.2.1) 이전(즉, 2.0.0에서 2.2.0까지), `ident`를 사용하는 데 필요한 복잡한 옵션을 사용하여 `options` 객체를 사용하여 다른 로더에서 참고할 수 있습니다. **이는 2.2.1에서 제거되었으므로** 현재 마이그레이션에서는 `ident` 키를 사용할 필요가 없습니다.
 
 ```diff
 {
