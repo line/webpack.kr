@@ -62,9 +62,9 @@ Webpack에는 ESM 지원을 개선할 수 있는 여러 영역이 있습니다.
 
 #### ESM as chunk loading mechanism
 
-웹 webpack을 대상으로 할 때 `script` 태그를 통해 청크를 로드합니다.
-node.js webpack을 대상으로 할 때 `require` 또는 `fs` + `vm`을 통해 청크를 로드합니다.
-웹워커 webpack을 대상으로 할 때 `importScripts`를 통해 청크를 로드합니다.
+웹을 대상으로 할 때, webpack은 `script` 태그를 통해 청크를 로드합니다.
+node.js를 대상으로 할 때, webpack은 `require` 또는 `fs` + `vm`을 통해 청크를 로드합니다.
+웹워커를 대상으로 할 때, webpack은 `importScripts`를 통해 청크를 로드합니다.
 
 머지않은 미래에 이러한 모든 환경은 ESM과 더 중요한 동적 `import()`기능을 지원합니다.
 따라서 `import()`를 기반으로 하는 청크 로딩 메커니즘은 이러한 모든 환경을 통합하면서 더 적은 런타임 코드가 필요합니다.
