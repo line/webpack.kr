@@ -40,6 +40,8 @@ W> **HMR**은 프로덕션용이 아니므로 개발용으로만 사용해야 �
 
 이 기능은 생산성에 많은 도움을 줍니다. [webpack-dev-server](https://github.com/webpack/webpack-dev-server) 설정을 업데이트하고 webpack의 내장 HMR 플러그인을 사용하면 됩니다. `index.js` 모듈에서 사용될 것이므로 `print.js`의 엔트리 포인트도 제거합니다.
 
+`webpack-dev-server` v4.0.0부터 Hot Module Replacement가 기본적으로 활성화되어 있습니다.
+
 T> `webpack-dev-server` 대신 `webpack-dev-middleware`를 사용한다면 [`webpack-hot-middleware`](https://github.com/webpack-contrib/webpack-hot-middleware) 패키지를 사용하여 커스텀 서버 또는 애플리케이션에서 HMR을 활성화하세요.
 
 **webpack.config.js**
