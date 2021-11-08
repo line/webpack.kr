@@ -18,7 +18,7 @@ translators:
 
 다른 타입의 로더와 사용법과 예시를 살펴보기 전에, 로컬에서 개발하고 테스트할 수 있는 세 가지 방법을 봅시다.
 
-단일일 로더를 테스트하기 위해, rule object 내의 로컬 파일을 `resolve`하기 위해 `path`를 사용할 수 있습니다. 
+단일 로더를 테스트하기 위해, rule object 내의 로컬 파일을 `resolve`하기 위해 `path`를 사용할 수 있습니다. 
 
 **webpack.config.js**
 
@@ -45,7 +45,7 @@ module.exports = {
 };
 ```
 
-다중 로더를 테스트하기 위해, webpack이 로더를 검색할 위치를 업데이트하기 위해 `resolveLoader.modules` 설정을 활용할 수 있습니다. 예를 들어, 프로젝트에서 로컬 `/loaders` 디렉터리를 가지고 있다면:
+다중 로더를 테스트하기 위해, webpack이 로더를 검색할 위치를 업데이트하기 위해 `resolveLoader.modules` 설정을 활용할 수 있습니다. 예를 들어, 프로젝트에서 로컬 `/loaders` 디렉터리를 생성했다고 가정해봅시다.:
 
 **webpack.config.js**
 
@@ -62,15 +62,15 @@ module.exports = {
 
 그런데, 이미 로더에 대한 독립된 저장소와 패키지를 생성했다면, 테스트하려는 프로젝트와 [`npm link`](https://docs.npmjs.com/cli/link)해줄 수 있습니다.
 
-T> 로더 작성을 시작하는데 필요한 보일러플레이트 코드를 생성하기 위해 [`webpack-defaults` package](https://github.com/webpack-contrib/webpack-defaults)을 사용할 수 있습니다.
+T> 로더 작성을 시작하는데 필요한 보일러플레이트 코드를 생성하기 위해 [`webpack-defaults` package](https://github.com/webpack-contrib/webpack-defaults)를 사용할 수 있습니다.
 
 ## Simple Usage
 
 단일 로더가 리소스에 적용되었을 때, 로더는 오직 하나의 매개 변수(리소스 파일의 콘텐츠를 담고 있는 string)와 호출됩니다.
 
-동기 로더는 변형된 모듈을 대표하는 하나의 값을 `return`할 수 있습니다. 더 복잡한 경우에서, 로더는 `this.callback(err, values...)` 함수를 사용함으로써 여러 값ㅇ르 반환할 수 있습니다. 에러는 `this.callback` 함수를 통과하거나 동기 로더에 throw 됩니다.
+동기 로더는 변형된 모듈을 대표하는 하나의 값을 `return`할 수 있습니다. 더 복잡한 경우에서, 로더는 `this.callback(err, values...)` 함수를 사용함으로써 여러 값을 반환할 수 있습니다. 에러는 `this.callback` 함수를 통과하거나 동기 로더에 throw 됩니다.
 
-로더는 하나 혹은 두 개의 값을 반환해야 합니다. 첫 값은 문자열 혹은 버퍼로서의 JavaScript 코드의 결과입니다. 두 번째 선택적 값은 JavaScript 객체로서 SourceMap입니다.
+로더는 하나 혹은 두 개의 값을 반환해야 합니다. 첫 값은 문자열 혹은 버퍼로서의 JavaScript 코드의 결과입니다. 두 번째 선택적 값은 JavaScript 객체인 SourceMap입니다.
 
 ## Complex Usage
 
@@ -139,7 +139,7 @@ T> 로더가 연결될 수 있다는 사실은 로더들이 JavaScript를 출력
 
 ### Loader Utilities
 
-[`loader-utils`](https://github.com/webpack/loader-utils) 패키지를 활용하세요. 다양한 유용한 도구를 제공하지만 가장 흔한 것 중 하나는 로더로 통하는 옵션을 검색하는 것이다. `loader-utils`과 함께, [`schema-utils`](https://github.com/webpack-contrib/schema-utils) 패키지는 로더 옵션 유효성에 기반한 일관된 JSON 스키마를 위해 사용돼야 합니다. 여기 둘 다 활용하는 간단한 예시가 있습니다:
+[`loader-utils`](https://github.com/webpack/loader-utils) 패키지를 활용하세요. 다양한 유용한 도구를 제공하지만 가장 흔한 것 중 하나는 로더로 통하는 옵션을 검색하는 것입니다. `loader-utils`과 함께, [`schema-utils`](https://github.com/webpack-contrib/schema-utils) 패키지는 로더 옵션 유효성에 기반한 일관된 JSON 스키마를 위해 사용돼야 합니다. 여기 둘 다 활용하는 간단한 예시가 있습니다:
 
 **loader.js**
 
@@ -203,7 +203,7 @@ export default function (source) {
 
 `css-loader`는 처음 방법의 좋은 예시입니다. 다른 스타일시트에 대해서 `@import`구문을 `require`로 대체하고, 참조된 파일에 대해서 `url(...)`을 `require`로 바꿈으로써, 의존성들을 `require`으로 변형합니다.
 
-`less-loader`의 예시에서, 모든 `.less`파일은 변수와 믹스인 추정을 위해 반드시 한 번에 컴파일되어야 하기 때문에 각 `@import`을 `require`로 바꿀 수 없습니다. 그러므로, `less-loader`는 사용자 경로 해석 로직으로 더 적은 컴파일러를 확장합니다. 그런 다음 두 번째 접근 방식인 `this.resolve`를 활용하여 webpack을 통해 의존성을 해결할 수 있습니다. 
+`less-loader`의 예시에서, 모든 `.less`파일은 변수와 믹스인 추정을 위해 반드시 한 번에 컴파일되어야 하기 때문에 각 `@import`를 `require`로 바꿀 수 없습니다. 그러므로, `less-loader`는 사용자 경로 해석 로직으로 더 적은 컴파일러를 확장합니다. 그런 다음 두 번째 접근 방식인 `this.resolve`를 활용하여 webpack을 통해 의존성을 해결할 수 있습니다. 
 
 T> 언어가 오직 상대 경로(예를 들어, `url(file)`은 항상 `./file`을 나타냅니다.)만 수용한다면, 설치된 모듈(예를 들어 `node_modules` 안에 있는 것들)에 대한 참조를 지정하기 위한 `~` 규칙을 사용할 수 있습니다. `url`의 경우, `url('~some-library/image.jpg')`처럼 보일 것입니다.
 
@@ -281,7 +281,7 @@ module.exports = {
 };
 ```
 
-로더가 `.txt`파일을 처리하고 어느 인스턴스의 `[이름]`이든지 로더에 주어진 `name` 옵션으로 바꿀 것입니다. 그러고 나서, 기본 출력으로써 문자를 담고 있는 유효한 JavaScript 모듈을 출력할 것입니다:
+로더가 `.txt`파일을 처리하고 어느 인스턴스의 `[name]`을 로더에 주어진 `name` 옵션으로 바꿀 것입니다. 그러고 나서, 기본 출력으로써 문자를 담고 있는 유효한 JavaScript 모듈을 출력할 것입니다:
 
 **src/loader.js**
 
