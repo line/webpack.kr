@@ -122,7 +122,7 @@ W> Webpack 기반으로 나만의 컴파일러를 구축하거나, 내부 검토
 
 각 청크에 대한 소스맵을 생성함으로써 템플릿들을 꾸밉니다.
 
-`sourceMapFilename`은 소스맵의 파일 이름 템플릿입니다. `[hash]`, `[name]`, `[id]`, `[file]` 와 `[filebase]`는 교체되었습니다. 만약에 인자가 없으면, 소스맵은 DataUrl로 인라인 될 것입니다.
+`sourceMapFilename`은 소스맵의 파일 이름 템플릿입니다. `[hash]`, `[name]`, `[id]`, `[file]` 과 `[filebase]`는 교체되었습니다. 만약에 인자가 없으면, 소스맵은 DataUrl로 인라인 될 것입니다.
 
 ### HotModuleReplacementPlugin
 
@@ -130,9 +130,9 @@ W> Webpack 기반으로 나만의 컴파일러를 구축하거나, 내부 검토
 
 Hot module replacement 대한 지원을 추가합니다. 런타임 코드를 추가한 템플릿을 꾸밉니다. `module.hot' API를 추가합니다.
 
-`options.hotUpdateChunkFilename`는 hot 업데이트 청크 파일 이름입니다.
+`options.hotUpdateChunkFilename`은 hot 업데이트 청크 파일 이름입니다.
 
-`options.hotUpdateMainFilename`는 hot 업데이트 매니페스트 파일 이름입니다.
+`options.hotUpdateMainFilename`은 hot 업데이트 매니페스트 파일 이름입니다.
 
 `options.hotUpdateFunction`는 hot 업데이트의 JSON 함수 이름입니다.
 
@@ -169,7 +169,7 @@ if (FOO === 0) {
 }
 ```
 
-위의 예시에서, webpack은 branch를 자를 수 없지만, Terser는 할 수 있습니다. 그러나 만약 `FOO`가 [DefinePlugin](/plugins/define-plugin/) 를 사용하면, Webpack은 성공할 것입니다.
+위의 예시에서, webpack은 branch를 자를 수 없지만, Terser는 할 수 있습니다. 그러나 만약 `FOO`가 [DefinePlugin](/plugins/define-plugin/) 을 사용하면, webpack은 성공할 것입니다.
 
 `import { calculateTax } from './tax';`도 제거된다는 점을 언급해야 합니다. 왜냐하면 `calculateTax()` 호출이 dead branch에 있어 제거되었기 때문입니다.
 
@@ -191,7 +191,7 @@ Node.js 모듈에서는 일반적으로 사용할 수 있는 항목을 제공합
 
 require.js에서는 일반적으로 사용할 수 있는 항목을 제공합니다.
 
-`require[js].config`는 제거됩니다. `require.version`는 `0.0.0`입니다. `requirejs.onError`는 `require.onError`에 매핑이 됩니다.
+`require[js].config`는 제거됩니다. `require.version`은 `0.0.0`입니다. `requirejs.onError`는 `require.onError`에 매핑이 됩니다.
 
 ### NodeSourcePlugin
 
@@ -293,7 +293,7 @@ CommonJs 스타일의 `require` 모듈을 제공합니다.
 
 `optimize/RealContentHashPlugin()`
 
-[`optimization.realContentHash`](/configuration/optimization/#optimizationrealcontenthash) 옵션이 활성화 될 때, Webpack은 내부적으로 `RealContentHashPlugin`을 컴파일러에 추가합니다.
+[`optimization.realContentHash`](/configuration/optimization/#optimizationrealcontenthash) 옵션이 활성화 될 때, webpack은 내부적으로 `RealContentHashPlugin`을 컴파일러에 추가합니다.
 
 #### Hook
 
