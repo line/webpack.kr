@@ -204,7 +204,7 @@ export default function (source) {
 
 `css-loader`는 처음 방법의 좋은 예시입니다. 다른 스타일시트에 대해서 `@import` 구문을 `require`로 대체하고, 참조된 파일에 대해서 `url(...)`을 `require`로 바꿈으로써, 의존성들을 `require`으로 변형합니다.
 
-`less-loader`의 예시에서, 모든 `.less`파일은 변수와 믹스인 추정을 위해 반드시 한 번에 컴파일되어야 하기 때문에 각 `@import`를 `require`로 바꿀 수 없습니다. 그러므로, `less-loader`는 사용자 경로 해석 로직으로 더 적은 컴파일러를 확장합니다. 그런 다음 두 번째 접근 방식인 `this.resolve`를 활용하여 webpack을 통해 의존성을 해결할 수 있습니다. 
+`less-loader`의 예시에서, 모든 `.less`파일은 변수와 믹스인 추정을 위해 반드시 한 번에 컴파일되어야 하므로 각 `@import`를 `require`로 바꿀 수 없습니다. 그러므로, `less-loader`는 사용자 경로 해석 로직으로 더 적은 컴파일러를 확장합니다. 그런 다음 두 번째 접근 방식인 `this.resolve`를 활용하여 webpack을 통해 의존성을 해결할 수 있습니다. 
 
 T> 언어가 오직 상대 경로(예를 들어, `url(file)`은 항상 `./file`을 나타냅니다.)만 수용한다면, 설치된 모듈(예를 들어 `node_modules` 안에 있는 것들)에 대한 참조를 지정하기 위한 `~` 규칙을 사용할 수 있습니다. `url`의 경우, `url('~some-library/image.jpg')`처럼 보일 것입니다.
 
