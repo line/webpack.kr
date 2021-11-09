@@ -23,6 +23,187 @@ related:
 
 webpack의 버전4 부터는 선택된 [`모드`](/configuration/mode/)에 따라 최적화를 실행하기 때문에, 여전히 모든 최적화는 수동 구성 및 재정의에 사용할 수 있습니다.
 
+## optimization.chunkIds
+
+`boolean = false` `string: 'natural' | 'named' | 'size' | 'total-size' | 'deterministic'`
+
+청크 ID를 선택할 때 사용할 알고리즘을 결정합니다. `optimization.chunkIds`를 `false`로 설정하면, 플러그인을 통해 사용자 정의 알고리즘이 제공될 수 있으므로 내장 알고리즘을 사용해서는 안 된다고 webpack에 알립니다. `optimization.chunkIds`에 대한 몇 가지 기본값이 있습니다.
+
+- 또한 개발 환경인 경우 `optimization.chunkIds`는` 'named'`로 설정되고 프로덕션 환경에서는 `'deterministic'`으로 설정됩니다.
+- 위의 어느 것도 해당하지 않으면 `optimization.chunkIds`는 `'natural'`로 기본 설정됩니다.
+
+다음 문자열 값이 지원됩니다.
+
+| 옵션              | 설명                                                                                                           |
+| ----------------- | -------------------------------------------------------------------------------------------------------------- | --- |
+| `'natural'`       | 사용 순서에 따른 숫자 ID입니다.                                                                                |
+| `'named'`         | 디버깅을 위한 식별 가능한 ID입니다.                                                                            |
+| `'deterministic'` | 컴파일 간에 변경되지 않는 짧은 숫자 ID입니다. 장기 캐싱에 유용합니다. 프로덕션 모드에서 기본으로 활성화됩니다. |
+| `'size'`          | 최소 초기 다운로드 크기에 초점을 맞춘 숫자 ID입니다.                                                           |
+| `'total-size'`    | 최소 전체 다운로드 크기에 초점을 맞춘 숫자 ID입니다.                                                           |     |
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  //...
+  optimization: {
+    chunkIds: 'named',
+  },
+};
+```
+
+기본적으로 `optimization.chunkIds`가` 'deterministic'`으로 설정된 경우 최소 3자리 숫자가 사용됩니다. 기본 동작을 오버라이드하려면 `optimization.chunkIds`를 `false`로 설정하고 `webpack.ids.DeterministicChunkIdsPlugin`을 사용하세요.
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  //...
+  optimization: {
+    chunkIds: false,
+  },
+  plugins: [
+    new webpack.ids.DeterministicChunkIdsPlugin({
+      maxLength: 5,
+    }),
+  ],
+};
+```
+
+## optimization.concatenateModules
+
+`boolean`
+
+단일 모듈로 안전하게 연결할 수 있는 모듈 그래프의 세그먼트를 찾습니다. [`optimization.providedExports`](#optimizationprovidedexports) 및 [`optimization.usedExports`](#optimizationusedexports)에 의존합니다.
+기본적으로 `optimization.concatenateModules`는 `production` [mode](/configuration/mode/)에서 활성화되고 그 외에는 비활성화됩니다.
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  //...
+  optimization: {
+    concatenateModules: true,
+  },
+};
+```
+
+## optimization.emitOnErrors
+
+`boolean = false`
+
+컴파일 중 오류가 발생할 때마다 애셋을 내보내려면 `optimization.emitOnErrors`를 사용하세요. 이렇게 하면 오류가 있는 애셋이 방출됩니다. 심각한 오류는 생성된 코드로 내보내지고 런타임에 오류를 발생시킵니다.
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  //...
+  optimization: {
+    emitOnErrors: true,
+  },
+};
+```
+
+W> webpack [CLI](/api/cli/)를 사용한다면, 이 플러그인이 활성화되어있는 동안 webpack 프로세스가 오류 코드와 함께 종료되지 않습니다. CLI를 사용할 때 webpack이 "실패"하게 하려면 [`bail` 옵션](/api/cli/#advanced-options)을 확인하세요.
+
+## optimization.flagIncludedChunks
+
+`boolean`
+
+더 큰 청크가 이미 로드된 경우, 다른 청크의 하위집합인 청크를 확인하고 하위집합을 로드하지 않는 방식으로 플래그를 지정합니다. 기본적으로 `optimization.flagIncludedChunks`는 `production` [mode](/configuration/mode/)에서 활성화되고 그 외에는 비활성화됩니다.
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  //...
+  optimization: {
+    flagIncludedChunks: true,
+  },
+};
+```
+
+## optimization.innerGraph
+
+`boolean = true`
+
+`optimization.innerGraph`는 사용되지 않은 export에 대해 내부 그래프 분석을 수행할지를 결정합니다.
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  //...
+  optimization: {
+    innerGraph: false,
+  },
+};
+```
+
+## optimization.mangleExports
+
+`boolean` `string: 'deterministic' | 'size'`
+
+`optimization.mangleExports`를 사용하면 export 맹글링을 제어할 수 있습니다.
+
+기본적으로 `optimization.mangleExports: 'deterministic'`은 `production` [mode](/configuration/mode/)에서 활성화되고 그 외에는 비활성화됩니다.
+
+다음 값이 지원됩니다.
+
+| 옵션              | 설명                                                                                                     |
+| ----------------- | -------------------------------------------------------------------------------------------------------- |
+| `'size'`          | 짧은 이름(보통 단일 문자). 최소 다운로드 사이즈에 초점을 맞춥니다.                                       |
+| `'deterministic'` | 짧은 이름(보통 두 개의 문자). export를 추가하거나 제거할 때도 변경되지 않습니다. 장기 캐싱에 유용합니다. |
+| `true`            | `'deterministic'`과 동일합니다.                                                                          |
+| `false`           | 원래 이름을 유지합니다. 가독성과 디버깅에 유용합니다                                                     |
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  //...
+  optimization: {
+    mangleExports: true,
+  },
+};
+```
+
+## optimization.mangleWasmImports
+
+`boolean = false`
+
+`true`로 설정하면 import를 짧은 문자열로 변경하여 WASM 크기를 줄입니다. 모듈 및 export 이름이 맹글됩니다.
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  //...
+  optimization: {
+    mangleWasmImports: true,
+  },
+};
+```
+
+## optimization.mergeDuplicateChunks
+
+`boolean = true`
+
+동일한 모듈을 포함하는 청크를 병합합니다. `optimization.mergeDuplicateChunks`를 `false`로 설정하면 이 최적화가 비활성화됩니다.
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  //...
+  optimization: {
+    mergeDuplicateChunks: false,
+  },
+};
+```
+
 ## optimization.minimize
 
 `boolean = true`
@@ -44,7 +225,7 @@ T> [mode](/configuration/mode/)가 어떻게 동작하는지 알아보세요.
 
 ## optimization.minimizer
 
-`[TerserPlugin]` 및 또는`[function (compiler)]`
+`[TerserPlugin]` and or `[function (compiler)]`
 
 하나 이상의 다른 [TerserPlugin](/plugins/terser-webpack-plugin/) 인스턴스를 제공하여 기본 최소화 도구를 다시 설정할 수 있습니다.
 
@@ -58,7 +239,6 @@ module.exports = {
     minimizer: [
       new TerserPlugin({
         parallel: true,
-        sourceMap: true, // 프로덕션에서 소스 맵을 사용하는 경우 true로 설정해야 합니다.
         terserOptions: {
           // https://github.com/webpack-contrib/terser-webpack-plugin#terseroptions
         },
@@ -95,11 +275,166 @@ module.exports = {
 };
 ```
 
-## optimization.splitChunks
+## optimization.moduleIds
 
-`object`
+`boolean: false` `string: 'natural' | 'named' | 'deterministic' | 'size'`
 
-webpack v4+에서는 동적으로 가져온 모듈에 새로운 공통 청크 전략을 바로 사용할 수 있습니다. [SplitChunksPlugin](/plugins/split-chunks-plugin/) 페이지에서 이 동작을 설정할 때 사용 가능한 옵션을 확인해보세요.
+모듈 ID를 선택할 때 사용할 알고리즘을 결정합니다. `optimization.moduleIds`를 `false`로 설정하면, 플러그인을 통해 사용자 정의 알고리즘이 제공될 수 있으므로 내장 알고리즘을 사용해서는 안 된다고 webpack에 알립니다.
+
+다음 문자열 값이 지원됩니다.
+
+| 옵션            | 설명                                                 |
+| --------------- | ---------------------------------------------------- |
+| `natural`       | 사용 순서에 따른 숫자 ID입니다.                      |
+| `named`         | 디버깅을 위한 식별 가능한 ID입니다.                  |
+| `deterministic` | 모듈 이름을 작은 숫자 값으로 해시합니다.             |
+| `size`          | 최소 초기 다운로드 크기에 초점을 맞춘 숫자 ID입니다. |
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  //...
+  optimization: {
+    moduleIds: 'deterministic',
+  },
+};
+```
+
+`deterministic` 옵션은 장기 캐싱에 유용하지만 `hashed` 옵션에 비해 더 작은 번들을 생성합니다. 숫자 값의 길이는 ID 스페이스의 최대 80%를 채우게 됩니다. `optimization.moduleIds`가 `deterministic`으로 설정된 경우 기본적으로 최소 3자리 숫자가 사용됩니다. 기본 동작을 오버라이드하려면 `optimization.moduleIds`를 `false`로 설정하고 `webpack.ids.DeterministicModuleIdsPlugin`을 사용하세요.
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  //...
+  optimization: {
+    moduleIds: false,
+  },
+  plugins: [
+    new webpack.ids.DeterministicModuleIdsPlugin({
+      maxLength: 5,
+    }),
+  ],
+};
+```
+
+W> `moduleIds: 'deterministic'`은 webpack 5에 추가되었으며, 이로 인해 `moduleIds: 'hashed'`는 더 이상 사용되지 않습니다.
+
+W> `moduleIds: total-size`는 webpack 5에서 제거되었습니다.
+
+## optimization.nodeEnv
+
+`boolean = false` `string`
+
+webpack이 `process.env.NODE_ENV`를 주어진 문자열 값으로 설정하도록 합니다. `optimization.nodeEnv`를 `false`로 설정하지 않는 한 [DefinePlugin](/plugins/define-plugin/)을 사용합니다. 만약 [mode](/configuration/mode/)가 설정되었다면 `optimization.nodeEnv`는 그 값을 **기본으로 사용하고**, 그렇지 않으면 `'production'`으로 폴백합니다.
+
+사용 가능한 값은 아래와 같습니다.
+
+- 모든 문자열: `process.env.NODE_ENV`를 설정하는 값입니다.
+- false: `process.env.NODE_ENV`값을 수정하거나 설정하지 않습니다.
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  //...
+  optimization: {
+    nodeEnv: 'production',
+  },
+};
+```
+
+T> [mode](/configuration/mode/)가 `'none'`일 때는 `optimization.nodeEnv`는 `false`가 됩니다.
+
+## optimization.portableRecords
+
+`boolean`
+
+`optimization.portableRecords`는 컨텍스트 폴더를 이동할 수 있도록 상대 경로가 있는 레코드를 생성하도록 합니다.
+
+기본적으로 `optimization.portableRecords`는 비활성화되어 있습니다. 다음 레코드 옵션중 하나라도 webpack 설정에 제공되면 자동으로 활성화됩니다. [`recordsPath`](/configuration/other-options/#recordspath), [`recordsInputPath`](/configuration/other-options/#recordsinputpath), [`recordsOutputPath`](/configuration/other-options/#recordsoutputpath).
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  //...
+  optimization: {
+    portableRecords: true,
+  },
+};
+```
+
+## optimization.providedExports
+
+`boolean`
+
+`export * from ...`에서 보다 효율적인 코드를 생성하기 위해 모듈에서 어떤 export가 제공되는지 파악합니다. 기본적으로 `optimization.providedExports`가 활성화됩니다.
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  //...
+  optimization: {
+    providedExports: false,
+  },
+};
+```
+
+## optimization.realContentHash
+
+`boolean = true`
+
+애셋이 처리된 후 올바른 애셋 콘텐츠 해시를 얻기 위해 추가 해시 컴파일 패스를 추가합니다. `realContentHash`를 `false`로 설정하면 내부 데이터를 사용하여 해시를 산출하며 이는 애셋이 동일한 경우 변경될 수 있습니다.
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  //...
+  optimization: {
+    realContentHash: false,
+  },
+};
+```
+
+## optimization.removeAvailableModules
+
+`boolean = false`
+
+모듈이 이미 모든 상위에 포함되어있는 경우 청크에서 해당 모듈을 감지하고 제거합니다. `optimization.removeAvailableModules`를 `true`로 설정하면 이 최적화가 활성화됩니다. [`production` mode](/configuration/mode/)에서 기본적으로 사용됩니다.
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  //...
+  optimization: {
+    removeAvailableModules: true,
+  },
+};
+```
+
+W> `optimization.removeAvailableModules`는 webpack의 성능을 저하시키며 다음 메이저 릴리스의 `production` 모드에서 기본적으로 비활성화됩니다. 추가 빌드 성능 향상을 원한다면 `production`모드에서 이 옵션을 비활성화하세요.
+
+## optimization.removeEmptyChunks
+
+`boolean = true`
+
+빈 청크를 감지하고 제거합니다. `optimization.removeEmptyChunks`를 `false`로 설정하면 이 최적화가 비활성화됩니다.
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  //...
+  optimization: {
+    removeEmptyChunks: false,
+  },
+};
+```
 
 ## optimization.runtimeChunk
 
@@ -154,296 +489,6 @@ module.exports = {
 };
 ```
 
-## optimization.emitOnErrors
-
-`boolean = false`
-
-컴파일 중 오류가 발생할 때마다 애셋을 내보내려면 `optimization.emitOnErrors`를 사용하세요. 이렇게 하면 오류가 있는 애셋이 방출됩니다. 심각한 오류는 생성된 코드로 내보내지고 런타임에 오류를 발생시킵니다.
-
-**webpack.config.js**
-
-```js
-module.exports = {
-  //...
-  optimization: {
-    emitOnErrors: true,
-  },
-};
-```
-
-W> webpack [CLI](/api/cli/)를 사용한다면, 이 플러그인이 활성화되어있는 동안 webpack 프로세스가 오류 코드와 함께 종료되지 않습니다. CLI를 사용할 때 webpack이 "실패"하게 하려면 [`bail` 옵션](/api/cli/#advanced-options)을 확인하세요.
-
-## optimization.moduleIds
-
-`boolean: false` `string: 'natural' | 'named' | 'deterministic' | 'size'`
-
-모듈 ID를 선택할 때 사용할 알고리즘을 결정합니다. `optimization.moduleIds`를 `false`로 설정하면, 플러그인을 통해 사용자 정의 알고리즘이 제공될 수 있으므로 내장 알고리즘을 사용해서는 안 된다고 webpack에 알립니다.
-
-다음 문자열 값이 지원됩니다.
-
-| 옵션            | 설명                                                 |
-| --------------- | ---------------------------------------------------- |
-| `natural`       | 사용 순서에 따른 숫자 ID입니다.                      |
-| `named`         | 디버깅을 위한 식별 가능한 ID입니다.                  |
-| `deterministic` | 모듈 이름을 작은 숫자 값으로 해시합니다.             |
-| `size`          | 최소 초기 다운로드 크기에 초점을 맞춘 숫자 ID입니다. |
-
-**webpack.config.js**
-
-```js
-module.exports = {
-  //...
-  optimization: {
-    moduleIds: 'deterministic',
-  },
-};
-```
-
-`deterministic` 옵션은 장기 캐싱에 유용하지만 `hashed` 옵션에 비해 더 작은 번들을 생성합니다. 숫자 값의 길이는 ID 스페이스의 최대 80%를 채우게 됩니다. `optimization.moduleIds`가 `deterministic`으로 설정된 경우 기본적으로 최소 3자리 숫자가 사용됩니다. 기본 동작을 오버라이드하려면 `optimization.moduleIds`를 `false`로 설정하고 `webpack.ids.DeterministicModuleIdsPlugin`을 사용하세요.
-
-**webpack.config.js**
-
-```js
-module.exports = {
-  //...
-  optimization: {
-    moduleIds: false,
-  },
-  plugins: [
-    new webpack.ids.DeterministicModuleIdsPlugin({
-      maxLength: 5,
-    }),
-  ],
-};
-```
-
-W> `moduleIds: 'deterministic'`은 webpack 5에 추가되었으며, 이로 인해 `moduleIds: 'hashed'`는 더 이상 사용되지 않습니다.
-
-W> `moduleIds: total-size`는 webpack 5에서 제거되었습니다.
-
-## optimization.chunkIds
-
-`boolean = false` `string: 'natural' | 'named' | 'size' | 'total-size' | 'deterministic'`
-
-청크 ID를 선택할 때 사용할 알고리즘을 결정합니다. `optimization.chunkIds`를 `false`로 설정하면, 플러그인을 통해 사용자 정의 알고리즘이 제공될 수 있으므로 내장 알고리즘을 사용해서는 안 된다고 webpack에 알립니다. `optimization.chunkIds`에 대한 몇 가지 기본값이 있습니다.
-
-- 또한 개발 환경인 경우 `optimization.chunkIds`는` 'named'`로 설정되고 프로덕션 환경에서는 `'deterministic'`으로 설정됩니다.
-- 위의 어느 것도 해당하지 않으면 `optimization.chunkIds`는 `'natural'`로 기본 설정됩니다.
-
-다음 문자열 값이 지원됩니다.
-
-| 옵션              | 설명                                                                                                           |
-| ----------------- | -------------------------------------------------------------------------------------------------------------- |
-| `'natural'`       | 사용 순서에 따른 숫자 ID입니다.                                                                                |
-| `'named'`         | 디버깅을 위한 식별 가능한 ID입니다.                                                                            |
-| `'deterministic'` | 컴파일 간에 변경되지 않는 짧은 숫자 ID입니다. 장기 캐싱에 유용합니다. 프로덕션 모드에서 기본으로 활성화됩니다. |
-| `'size'`          | 최소 초기 다운로드 크기에 초점을 맞춘 숫자 ID입니다.                                                           |
-| `'total-size'`    | 최소 전체 다운로드 크기에 초점을 맞춘 숫자 ID입니다.                                                           |
-
-**webpack.config.js**
-
-```js
-module.exports = {
-  //...
-  optimization: {
-    chunkIds: 'named',
-  },
-};
-```
-
-기본적으로 `optimization.chunkIds`가` 'deterministic'`으로 설정된 경우 최소 3자리 숫자가 사용됩니다. 기본 동작을 오버라이드하려면 `optimization.chunkIds`를 `false`로 설정하고 `webpack.ids.DeterministicChunkIdsPlugin`을 사용하세요.
-
-**webpack.config.js**
-
-```js
-module.exports = {
-  //...
-  optimization: {
-    chunkIds: false,
-  },
-  plugins: [
-    new webpack.ids.DeterministicChunkIdsPlugin({
-      maxLength: 5,
-    }),
-  ],
-};
-```
-
-## optimization.nodeEnv
-
-`boolean = false` `string`
-
-webpack이 `process.env.NODE_ENV`를 주어진 문자열 값으로 설정하도록 합니다. `optimization.nodeEnv`를 `false`로 설정하지 않는 한 [DefinePlugin](/plugins/define-plugin/)을 사용합니다. 만약 [mode](/configuration/mode/)가 설정되었다면 `optimization.nodeEnv`는 그 값을 **기본으로 사용하고**, 그렇지 않으면 `'production'`으로 폴백합니다.
-
-사용 가능한 값은 아래와 같습니다.
-
-- 모든 문자열: `process.env.NODE_ENV`를 설정하는 값입니다.
-- false: `process.env.NODE_ENV`값을 수정하거나 설정하지 않습니다.
-
-**webpack.config.js**
-
-```js
-module.exports = {
-  //...
-  optimization: {
-    nodeEnv: 'production',
-  },
-};
-```
-
-T> [mode](/configuration/mode/)가 `'none'`일 때는 `optimization.nodeEnv`는 `false`가 됩니다.
-
-## optimization.mangleWasmImports
-
-`boolean = false`
-
-`true`로 설정하면 import를 짧은 문자열로 변경하여 WASM 크기를 줄입니다. 모듈 및 export 이름이 맹글됩니다.
-
-**webpack.config.js**
-
-```js
-module.exports = {
-  //...
-  optimization: {
-    mangleWasmImports: true,
-  },
-};
-```
-
-## optimization.removeAvailableModules
-
-`boolean = false`
-
-모듈이 이미 모든 상위에 포함되어있는 경우 청크에서 해당 모듈을 감지하고 제거합니다. `optimization.removeAvailableModules`를 `true`로 설정하면 이 최적화가 활성화됩니다. [`production` mode](/configuration/mode/)에서 기본적으로 사용됩니다.
-
-**webpack.config.js**
-
-```js
-module.exports = {
-  //...
-  optimization: {
-    removeAvailableModules: true,
-  },
-};
-```
-
-W> `optimization.removeAvailableModules`는 webpack의 성능을 저하시키며 다음 메이저 릴리스의 `production` 모드에서 기본적으로 비활성화됩니다. 추가 빌드 성능 향상을 원한다면 `production`모드에서 이 옵션을 비활성화하세요.
-
-## optimization.removeEmptyChunks
-
-`boolean = true`
-
-빈 청크를 감지하고 제거합니다. `optimization.removeEmptyChunks`를 `false`로 설정하면 이 최적화가 비활성화됩니다.
-
-**webpack.config.js**
-
-```js
-module.exports = {
-  //...
-  optimization: {
-    removeEmptyChunks: false,
-  },
-};
-```
-
-## optimization.mergeDuplicateChunks
-
-`boolean = true`
-
-동일한 모듈을 포함하는 청크를 병합합니다. `optimization.mergeDuplicateChunks`를 `false`로 설정하면 이 최적화가 비활성화됩니다.
-
-**webpack.config.js**
-
-```js
-module.exports = {
-  //...
-  optimization: {
-    mergeDuplicateChunks: false,
-  },
-};
-```
-
-## optimization.flagIncludedChunks
-
-`boolean`
-
-더 큰 청크가 이미 로드된 경우, 다른 청크의 하위집합인 청크를 확인하고 하위집합을 로드하지 않는 방식으로 플래그를 지정합니다. 기본적으로 `optimization.flagIncludedChunks`는 `production` [mode](/configuration/mode/)에서 활성화되고 그 외에는 비활성화됩니다.
-
-**webpack.config.js**
-
-```js
-module.exports = {
-  //...
-  optimization: {
-    flagIncludedChunks: true,
-  },
-};
-```
-
-## optimization.providedExports
-
-`boolean`
-
-`export * from ...`에서 보다 효율적인 코드를 생성하기 위해 모듈에서 어떤 export가 제공되는지 파악합니다. 기본적으로 `optimization.providedExports`가 활성화됩니다.
-
-**webpack.config.js**
-
-```js
-module.exports = {
-  //...
-  optimization: {
-    providedExports: false,
-  },
-};
-```
-
-## optimization.usedExports
-
-`boolean = true` `string: 'global'`
-
-각 모듈에서 사용된 export를 확인합니다. 이는 [`optimization.providedExports`](#optimizationprovidedexports)에 의존합니다. `optimization.usedExports`에 의해 수집된 정보는 다른 최적화 또는 코드 생성에 사용됩니다. 즉, 사용하지 않은 export는 생성되지 않으며, 모든 사용이 호환되는 경우 export 이름이 단일 식별자로 변경됩니다.
-최소화 도구로 데드 코드 제거 시 이로 인해 사용하지 않은 export를 제거 할 수 있습니다.
-
-**webpack.config.js**
-
-```js
-module.exports = {
-  //...
-  optimization: {
-    usedExports: false,
-  },
-};
-```
-
-런타임 당 사용된 export 분석에서 제외하려면 아래와 같이 사용하세요.
-
-```js
-module.exports = {
-  //...
-  optimization: {
-    usedExports: 'global',
-  },
-};
-```
-
-## optimization.concatenateModules
-
-`boolean`
-
-단일 모듈로 안전하게 연결할 수 있는 모듈 그래프의 세그먼트를 찾습니다. [`optimization.providedExports`](#optimizationprovidedexports) 및 [`optimization.usedExports`](#optimizationusedexports)에 의존합니다.
-기본적으로 `optimization.concatenateModules`는 `production` [mode](/configuration/mode/)에서 활성화되고 그 외에는 비활성화됩니다.
-
-**webpack.config.js**
-
-```js
-module.exports = {
-  //...
-  optimization: {
-    concatenateModules: true,
-  },
-};
-```
-
 ## optimization.sideEffects
 
 `boolean = true` `string: 'flag'`
@@ -490,13 +535,18 @@ module.exports = {
 
 T> 또한 `optimization.sideEffects`는 사이드 이펙트가 없는 구문만 포함된 모듈을 사이드 이펙트 없음으로 플래그합니다.
 
-## optimization.portableRecords
+## optimization.splitChunks
 
-`boolean`
+`object`
 
-`optimization.portableRecords`는 컨텍스트 폴더를 이동할 수 있도록 상대 경로가 있는 레코드를 생성하도록 합니다.
+webpack v4+에서는 동적으로 가져온 모듈에 새로운 공통 청크 전략을 바로 사용할 수 있습니다. [SplitChunksPlugin](/plugins/split-chunks-plugin/) 페이지에서 이 동작을 설정할 때 사용 가능한 옵션을 확인해보세요.
 
-기본적으로 `optimization.portableRecords`는 비활성화되어 있습니다. 다음 레코드 옵션중 하나라도 webpack 설정에 제공되면 자동으로 활성화됩니다. [`recordsPath`](/configuration/other-options/#recordspath), [`recordsInputPath`](/configuration/other-options/#recordsinputpath), [`recordsOutputPath`](/configuration/other-options/#recordsoutputpath).
+## optimization.usedExports
+
+`boolean = true` `string: 'global'`
+
+각 모듈에서 사용된 export를 확인합니다. 이는 [`optimization.providedExports`](#optimizationprovidedexports)에 의존합니다. `optimization.usedExports`에 의해 수집된 정보는 다른 최적화 또는 코드 생성에 사용됩니다. 즉, 사용하지 않은 export는 생성되지 않으며, 모든 사용이 호환되는 경우 export 이름이 단일 식별자로 변경됩니다.
+최소화 도구로 데드 코드 제거 시 이로 인해 사용하지 않은 export를 제거 할 수 있습니다.
 
 **webpack.config.js**
 
@@ -504,69 +554,18 @@ T> 또한 `optimization.sideEffects`는 사이드 이펙트가 없는 구문만 
 module.exports = {
   //...
   optimization: {
-    portableRecords: true,
+    usedExports: false,
   },
 };
 ```
 
-## optimization.mangleExports
-
-`boolean` `string: 'deterministic' | 'size'`
-
-`optimization.mangleExports`를 사용하면 export 맹글링을 제어할 수 있습니다.
-
-기본적으로 `optimization.mangleExports: 'deterministic'`은 `production` [mode](/configuration/mode/)에서 활성화되고 그 외에는 비활성화됩니다.
-
-다음 값이 지원됩니다.
-
-| 옵션              | 설명                                                                                                     |
-| ----------------- | -------------------------------------------------------------------------------------------------------- |
-| `'size'`          | 짧은 이름(보통 단일 문자). 최소 다운로드 사이즈에 초점을 맞춥니다.                                       |
-| `'deterministic'` | 짧은 이름(보통 두 개의 문자). export를 추가하거나 제거할 때도 변경되지 않습니다. 장기 캐싱에 유용합니다. |
-| `true`            | `'deterministic'`과 동일합니다.                                                                          |
-| `false`           | 원래 이름을 유지합니다. 가독성과 디버깅에 유용합니다                                                     |
-
-**webpack.config.js**
+런타임 당 사용된 export 분석에서 제외하려면 아래와 같이 사용하세요.
 
 ```js
 module.exports = {
   //...
   optimization: {
-    mangleExports: true,
-  },
-};
-```
-
-## optimization.innerGraph
-
-`boolean = true`
-
-`optimization.innerGraph`는 사용되지 않은 export에 대해 내부 그래프 분석을 수행할지를 결정합니다.
-
-**webpack.config.js**
-
-```js
-module.exports = {
-  //...
-  optimization: {
-    innerGraph: false,
-  },
-};
-```
-
-## optimization.realContentHash
-
-`boolean = true`
-
-애셋이 처리된 후 올바른 애셋 콘텐츠 해시를 얻기 위해 추가 해시 컴파일 패스를 추가합니다. `realContentHash`를 `false`로 설정하면 내부 데이터를 사용하여 해시를 산출하며 이는 애셋이 동일한 경우 변경될 수 있습니다.
-
-**webpack.config.js**
-
-```js
-module.exports = {
-  //...
-  optimization: {
-    realContentHash: false,
+    usedExports: 'global',
   },
 };
 ```

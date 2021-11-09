@@ -10,73 +10,75 @@ contributors:
   - byzyk
   - EugeneHlushko
   - EslamHiko
+translators:
+  - moonheekim0118
 related:
   - title: Code Splitting Example
     url: https://github.com/webpack/webpack/blob/master/examples/explicit-vendor-chunk/README.md
 ---
 
-The `DllPlugin` and `DllReferencePlugin` provide means to split bundles in a way that can drastically improve build time performance. The term "DLL" stands for Dynamic-link library which was originally introduced by Microsoft.
+`DllPlugin`과 `DllReferencePlugin`은 빌드 시간 성능을 크게 향상시키는 방식으로 번들을 분할하는 수단을 제공합니다. "DLL"이라는 용어는 원래 Microsoft에서 도입한 동적 링크 라이브러리를 나타냅니다.
 
 ## DllPlugin
 
-This plugin is used in a separate webpack configuration exclusively to create a dll-only-bundle. It creates a `manifest.json` file, which is used by the [`DllReferencePlugin`](#dllreferenceplugin) to map dependencies.
+이 플러그인은 dll 전용 번들을 생성하기 위해 단독으로 별도의 webpack 설정에서 사용됩니다. 의존성을 매핑하기 위해 [`DllReferencePlugin`](#dllreferenceplugin)에서 사용하는 `manifest.json`파일을 생성합니다.
 
-- `context` (optional): context of requests in the manifest file (defaults to the webpack context.)
-- `format` (boolean = false): If `true`, manifest json file (output) will be formatted.
-- `name`: name of the exposed dll function ([TemplatePaths](https://github.com/webpack/webpack/blob/master/lib/TemplatedPathPlugin.js): `[fullhash]` & `[name]` )
-- `path`: **absolute path** to the manifest json file (output)
-- `entryOnly` (boolean = true): if `true`, only entry points will be exposed
-- `type`: type of the dll bundle
+- `context` (선택): 매니페스트 파일의 요청 컨텍스트 (기본값은 webpack 컨텍스트)
+- `format` (boolean = false): `true`인 경우 매니페스트 json 파일(출력)이 형식화됩니다.
+- `name`: 노출된 dll 함수의 이름 ([TemplatePaths](https://github.com/webpack/webpack/blob/master/lib/TemplatedPathPlugin.js): `[fullhash]` & `[name]` )
+- `path`: 매니페스트 json 파일의 **절대 경로** (출력)
+- `entryOnly` (boolean = true): `true`인 경우 엔트리 포인트만 노출됩니다.
+- `type`: dll 번들의 유형
 
 ```javascript
 new webpack.DllPlugin(options);
 ```
 
-W> We recommend using DllPlugin only with `entryOnly: true`, otherwise tree shaking in the DLL won't work as all the exports might be used.
+W> DllPlugin을 `entryOnly: true`와 함께 사용하는 것을 권장합니다. 그렇지 않으면 모든 export가 사용될 수 있으므로 DLL에서 트리 쉐이킹이 작동하지 않습니다.
 
-Creates a `manifest.json` which is written to the given `path`. It contains mappings from require and import requests to module ids. It is used by the `DllReferencePlugin`.
+주어진 `경로`에 기록되는 `manifest.json`을 생성합니다. 여기에는 require와 import 요청에서 모듈 id로의 매핑이 포함됩니다. 이는 `DllReferencePlugin` 에서 사용됩니다.
 
-Combine this plugin with [`output.library`](/configuration/output/#outputlibrary) option to expose (aka, put into the global scope) the dll function.
+이 플러그인을 [`output.library`](/configuration/output/#outputlibrary)옵션과 결합하여 dll 함수를 노출(전역 범위로 확대)합니다.
 
 ## DllReferencePlugin
 
-This plugin is used in the primary webpack config, it references the dll-only-bundle(s) to require pre-built dependencies.
+이 플러그인은 기본 webpack 설정에서 사용되며, 사전 빌드된 의존성을 require 하기 위해 dll 전용 번들을 참조합니다.
 
-- `context`: (**absolute path**) context of requests in the manifest (or content property)
-- `extensions`: Extensions used to resolve modules in the dll bundle (only used when using 'scope').
-- `manifest` : an object containing `content` and `name` or a string to the absolute path of the JSON manifest to be loaded upon compilation
-- `content` (optional): the mappings from request to module id (defaults to `manifest.content`)
-- `name` (optional): an identifier where the dll is exposed (defaults to `manifest.name`) (see also [`externals`](/configuration/externals/))
-- `scope` (optional): prefix which is used for accessing the content of the dll
-- `sourceType` (optional): how the dll is exposed ([libraryTarget](/configuration/output/#outputlibrarytarget))
+- `context`: 매니페스트(또는 콘텐츠 프로퍼티)에 있는 요청의 (**절대 경로**) 컨텍스트
+- `extensions`: dll 번들의 모듈을 해결하는데 사용되는 확장입니다(‘유효범위’를 사용할 때만 사용).
+- `manifest` : `content` 및 `name`을 포함하는 객체 또는 컴파일 시 로드될 JSON 매니페스트의 절대 경로에 대한 문자열
+- `content` (선택): 요청에서 모듈 id 로의 매핑(기본값은 `manifest.content`)
+- `name` (선택): dll이 노출되는 식별자(기본값은 `manifest.name`)([`externals`](/configuration/externals/) 참조)
+- `scope` (선택): dll의 콘텐츠에 접근하는데 사용되는 접두사
+- `sourceType` (선택): dll이 노출되는 방법([libraryTarget](/configuration/output/#outputlibrarytarget))
 
 ```javascript
 new webpack.DllReferencePlugin(options);
 ```
 
-References a dll manifest file to map dependency names to module ids, then requires them as needed using the internal `__webpack_require__` function.
+dll 매니페스트 파일을 참조하여 의존성 이름을 모듈 id에 매핑한 다음, 내부 `__webpack_require__`함수를 사용하여 필요에 따라 요청합니다.
 
-W> Keep the `name` consistent with [`output.library`](/configuration/output/#outputlibrary).
+W> `name`을 [`output.library`](/configuration/output/#outputlibrary)와 일관되게 유지합니다.
 
 ### Modes
 
-This plugin can be used in two different modes, _scoped_ and _mapped_.
+이 플러그인은 _scoped_ 와 _mapped_ 두 가지 모드에서 사용할 수 있습니다.
 
 #### Scoped Mode
 
-The content of the dll is accessible under a module prefix. i.e. with `scope = 'xyz'` a file `abc` in the dll can be access via `require('xyz/abc')`.
+dll의 콘텐츠는 모듈 접두사 아래에서 접근 가능합니다. 즉, `scope = 'xyz'`로 dll의 파일 `abc` 는 `require('xyz/abc')`를 통해 접근할 수 있습니다.
 
-T> [See an example use of scope](https://github.com/webpack/webpack/tree/master/examples/dll-user)
+T> [유효범위 사용의 예제를 살펴보세요.](https://github.com/webpack/webpack/tree/master/examples/dll-user)
 
 #### Mapped Mode
 
-The content of the dll is mapped to the current directory. If a required file matches a file in the dll (after resolving), then the file from the dll is used instead.
+dll의 콘텐츠는 현재 디렉터리에 매핑됩니다. 필요한 파일이 dll의 파일과 확인 후 일치하는 경우, dll의 파일이 대신 사용됩니다.
 
-Because this happens after resolving every file in the dll bundle, the same paths must be available for the consumer of the dll bundle. i.e. if the dll contains `lodash` and the file `abc`, `require('lodash')` and `require('./abc')` will be used from the dll, rather than building them into the main bundle.
+이것은 dll 번들의 모든 파일을 해석한 후 발생하기 때문에 dll 번들의 사용자에 대해 동일한 경로를 사용할 수 있어야 합니다. 즉, dll에 `lodash` 가 포함되어 있고 `abc` 파일이 있으면 `require('lodash')` 및`require('./abc')` 가 메인 번들로 빌드되지 않고 dll에서 사용됩니다.
 
 ## Usage
 
-W> `DllReferencePlugin` and `DllPlugin` are used in _separate_ webpack configs.
+W> `DllReferencePlugin`과 `DllPlugin`은 _별도의_ wepback 설정에서 사용됩니다.
 
 **webpack.vendor.config.js**
 
@@ -103,11 +105,11 @@ new webpack.DllReferencePlugin({
 
 ## Examples
 
-[Vendor](https://github.com/webpack/webpack/tree/master/examples/dll) and [User](https://github.com/webpack/webpack/tree/master/examples/dll-user)
+[Vendor](https://github.com/webpack/webpack/tree/master/examples/dll) 와 [User](https://github.com/webpack/webpack/tree/master/examples/dll-user)
 
-_Two separate example folders. Demonstrates scope and context._
+_두 개의 개별 예제 폴더로, 유효범위와 컨텍스트를 보여줍니다._
 
-T> Multiple `DllPlugins` and multiple `DllReferencePlugins`.
+T> 다중 `DllPlugins`과 다중 `DllReferencePlugins`
 
 ## References
 
