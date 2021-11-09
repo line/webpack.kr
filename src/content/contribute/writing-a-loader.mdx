@@ -145,7 +145,7 @@ T> 로더가 연결될 수 있다는 사실은 로더들이 JavaScript를 출력
 **loader.js**
 
 ```js
-import { urlToRequest } from 'loader-utils';
+import { getOptions } from 'loader-utils';
 import { validate } from 'schema-utils';
 
 const schema = {
@@ -158,14 +158,12 @@ const schema = {
 };
 
 export default function (source) {
-  const options = this.getOptions();
+  const options = getOptions(this);
 
   validate(schema, options, {
     name: 'Example Loader',
     baseDataPath: 'options',
   });
-
-console.log('The request path', urlToRequest(this.resourcePath));
 
   // 소스에 몇 가지의 변형을 적용하세요...
 
@@ -289,8 +287,10 @@ module.exports = {
 **src/loader.js**
 
 ```js
+import { getOptions } from 'loader-utils';
+
 export default function loader(source) {
-  const options = this.getOptions();
+  const options = getOptions(this);
 
   source = source.replace(/\[name\]/g, options.name);
 
