@@ -9,7 +9,7 @@ translators:
   - KiKi-Daehaksaeng
 ---
 
-[읽기 모드](/configuration/watch)인 경우, 제공된 경로나 정규 표현식같은 지정된 파일을 무시하세요.
+[watch 모드](/configuration/watch)인 경우, 제공된 경로나 정규 표현식에 해당되는 특정정 파일을 무시합니다다.
 
 ```javascript
 new webpack.WatchIgnorePlugin({ paths });
@@ -17,4 +17,4 @@ new webpack.WatchIgnorePlugin({ paths });
 
 ## Options
 
-- `paths` (`Array<string | RegExp>`): 정규 표현식이나 절대 경로의 목록에서 디렉터리나 무시되어야 할 파일까지의 경로.
+- `paths` (`Array<string | RegExp>`): 정규 표현식 또는 무시되어야 하는 디렉터리나 파일까지의 경로 목록.
