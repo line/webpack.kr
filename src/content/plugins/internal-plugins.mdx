@@ -306,7 +306,7 @@ const RealContentHashPlugin = webpack.optimize.RealContentHashPlugin;
 compiler.hooks.compilation.tap('MyPlugin', (compilation) => {
   const hooks = RealContentHashPlugin.getCompilationHooks(compilation);
   hooks.updateHash.tap('MyPlugin', (content, oldHash) => {
-    // you can calculate the hash here as you wish
+    // 이곳에서 원하는데로 해시를 계산할 수 있습니다.
   });
 });
 ```
