@@ -7,13 +7,15 @@ contributors:
   - ooflorent
   - Legends
   - chenxsan
+translators:
+  - kwYoohae
 ---
 
-This is a list of plugins which are used by webpack internally.
+Webpack 내부적으로 사용하는 플러그인의 목록입니다.
 
-W> You should only care about them if you are building your own compiler based on webpack, or introspect the internals.
+W> Webpack 기반으로 나만의 컴파일러를 구축하거나, 내부 검토할 때만 신경 써야합니다.
 
-Categories of internal plugins:
+내부 플러그인의 범주:
 
 - [environment](#environment)
 - [compiler](#compiler)
@@ -24,51 +26,51 @@ Categories of internal plugins:
 
 ## environment
 
-Plugins affecting the environment of the compiler.
+컴파일러의 환경에 영향을 주는 플러그인입니다.
 
 ### NodeEnvironmentPlugin
 
 `webpack.node.NodeEnvironmentPlugin()`
 
-Applies Node.js style filesystem to the compiler.
+컴파일러에 Node.js 스타일의 파일 시스템을 적용합니다.
 
 ## compiler
 
-Plugins affecting the compiler
+컴파일러에 영향을 주는 플러그인입니다.
 
 ### MemoryCachePlugin
 
 `MemoryCachePlugin()`
 
-Adds a cache to the compiler, where modules are cached in memory.
+모듈이 메모리에 캐시되는 컴파일러에 캐시를 추가합니다.
 
 ### ProgressPlugin
 
 `ProgressPlugin(handler)`
 
-Hook into the compiler to extract progress information. The `handler` must have the signature `function(percentage, message)`. Percentage is called with a value between 0 and 1, where 0 indicates the start and 1 the end.
+컴파일러에 훅을 하여 진행 정보를 추출합니다. `handler`는 `function(percentage, message)`라는 서명이 있어야 합니다. Percentage는 0과 1 사이의 값으로 불립니다. 0은 시작, 1은 끝을 나타냅니다.
 
 ### RecordIdsPlugin
 
 `RecordIdsPlugin()`
 
-Saves and restores module and chunk ids from records.
+레코드로부터 청크 아이디와 모듈을 저장하고 복원합니다.
 
 ## entry
 
-Plugins, which add entry chunks to the compilation.
+컴파일에 엔트리 청크를 포함하는 플러그인입니다.
 
 ### EntryPlugin
 
 `EntryPlugin(context, entry, options)`
 
-Adds an entry chunk on compilation. The chunk is named `options.name` and contains only one module (plus dependencies). The module is resolved from `entry` in `context` (absolute path).
+컴파일에 엔트리 청크를 추가합니다. 청크의 이름은 `options.name`이고 오직 하나의 모듈만 포함합니다(의존성 추가). 모듈은 `context` (절대 경로)의 `entry`에서 확인됩니다.
 
 ### PrefetchPlugin
 
 `PrefetchPlugin(context, request)`
 
-Prefetches `request` and dependencies to enable a more parallel compilation. It doesn't create any chunk. The module is resolved from `request` in `context` (absolute path).
+병렬 컴파일을 더 사용하기 위해서 의존성과 `request`를 프리페치합니다. 어떤 청크도 생성되지 않습니다. 모듈은 `context` (절대 경로)의 `request`에서 확인됩니다.
 
 ## output
 
@@ -76,86 +78,86 @@ Prefetches `request` and dependencies to enable a more parallel compilation. It 
 
 `JsonpTemplatePlugin(options)`
 
-Chunks are wrapped into JSONP-calls. A loading algorithm is included in entry chunks. It loads chunks by adding a `<script>` tag.
+청크는 JSONP-calls로 래핑되어 있습니다. 로딩 알고리즘은 엔트리 청크에 포함이 됩니다. `<script>` 태그를 추가함으로써 청크를 로드합니다.
 
-`options` are the output options.
+`options`는 출력 옵션입니다.
 
-`options.jsonpFunction` is the JSONP function.
+`options.jsonpFunction`은 JSONP 함수입니다.
 
-`options.publicPath` is used as path for loading the chunks.
+`options.publicPath`는 청크를 로딩하기 위한 경로로 사용됩니다.
 
-`options.chunkFilename` is the filename under that chunks are expected.
+`options.chunkFilename`는 청크가 예상되는 파일 이름 이름입니다.
 
 ### NodeTemplatePlugin
 
 `node/NodeTemplatePlugin(options)`
 
-Chunks are wrapped into Node.js modules exporting the bundled modules. The entry chunks loads chunks by requiring them.
+청크는 번들 모듈을 내보내는 Node.js 모듈로 래핑되어 있습니다. 엔트리 청크는 청크를 요구함으로써 로드됩니다.
 
-`options` are the output options.
+`options`는 출력 옵션입니다.
 
-`options.chunkFilename` is the filename under that chunks are expected.
+`options.chunkFilename`는 청크를 로딩하기 위한 경로로 사용됩니다.
 
 ### LibraryTemplatePlugin
 
 `LibraryTemplatePlugin(name, target)`
 
-The entries chunks are decorated to form a library `name` of type `type`.
+엔트리 청크들은 `type` 유형의 `name` 라이브러리로부터 꾸며집니다.
 
 ### WebWorkerTemplatePlugin
 
 `webworker/WebWorkerTemplatePlugin(options)`
 
-Chunks are loaded by `importScripts`. Else it's similar to [`JsonpTemplatePlugin`](#jsonptemplateplugin).
+청크는 `importScripts`에 의해 로드됩니다. 그렇지 않다면 [`JsonpTemplatePlugin`](#jsonptemplateplugin)과 비슷합니다.
 
-`options` are the output options.
+`options`은 출력 옵션입니다.
 
 ### EvalDevToolModulePlugin
 
-Decorates the module template by wrapping each module in a `eval` annotated with `// @sourceURL`.
+`// @sourceURL`로 주석이 달린 `eval`로 각각의 모듈을 래핑함으로써 모듈 템플릿을 꾸밉니다.
 
 ### SourceMapDevToolPlugin
 
 `SourceMapDevToolPlugin(sourceMapFilename, sourceMappingURLComment, moduleFilenameTemplate, fallbackModuleFilenameTemplate)`
 
-Decorates the templates by generating a SourceMap for each chunk.
+각 청크에 대한 소스맵을 생성함으로써 템플릿들을 꾸밉니다.
 
-`sourceMapFilename` the filename template of the SourceMap. `[hash]`, `[name]`, `[id]`, `[file]` and `[filebase]` are replaced. If this argument is missing, the SourceMap will be inlined as DataUrl.
+`sourceMapFilename`은 소스맵의 파일 이름 템플릿입니다. `[hash]`, `[name]`, `[id]`, `[file]` 과 `[filebase]`는 교체되었습니다. 만약에 인자가 없으면, 소스맵은 DataUrl로 인라인 될 것입니다.
 
 ### HotModuleReplacementPlugin
 
 `HotModuleReplacementPlugin(options)`
 
-Add support for hot module replacement. Decorates the templates to add runtime code. Adds `module.hot` API.
+Hot module replacement 대한 지원을 추가합니다. 런타임 코드를 추가한 템플릿을 꾸밉니다. `module.hot' API를 추가합니다.
 
-`options.hotUpdateChunkFilename` the filename for hot update chunks.
+`options.hotUpdateChunkFilename`은 hot 업데이트 청크 파일 이름입니다.
 
-`options.hotUpdateMainFilename` the filename for the hot update manifest.
+`options.hotUpdateMainFilename`은 hot 업데이트 매니페스트 파일 이름입니다.
 
-`options.hotUpdateFunction` JSON function name for the hot update.
+`options.hotUpdateFunction`는 hot 업데이트의 JSON 함수 이름입니다.
 
 ## source
 
-Plugins affecting the source code of modules.
+모듈의 소스 코드에 영향을 미치는 플러그인입니다.
 
 ### APIPlugin
 
-Make webpack_public_path, webpack_require, webpack_modules and webpack_chunk_load accessible. Ensures that `require.valueOf` and `require.onError` are not processed by other plugins.
+webpack_public_path, webpack_require, webpack_modules 과 webpack_chunk_load에 접근할 수 있도록 설정합니다. `require.valueOf`와 `require.onError`가 다른 플러그인으로 처리되지 않도록 합니다.
 
 ### CompatibilityPlugin
 
-Currently useless. Ensures compatibility with other module loaders.
+현재는 쓸모가 없습니다. 다른 모듈 로더과의 호환성을 보장합니다.
 
 ### ConstPlugin
 
-Tries to evaluate expressions in `if (...)` statements and ternaries to replace them with `true`/`false` for further possible dead branch elimination using hooks fired by the parser.
+파서에 의해 발사된 훅을 사용함으로써 dead branch를 추가로 제거를 가능하게 하려고 `if (...)`문과 삼항 연산자를 평가하여 `true/false`로 바꾸려고 시도합니다. 
 
-There are multiple optimizations in production mode regarding dead branches:
+프로덕션 모드에는 dead branch와 관련하여 여러 최적화 들이 있습니다.
 
-- The ones performed by [Terser](https://github.com/fabiosantoscode/terser)
-- The ones performed by webpack
+- [Terser](https://github.com/fabiosantoscode/terser) 이 수행한 최적화입니다.
+- Webpack이 수행한 최적화 입니다.
 
-Webpack will try to evaluate conditional statements. If it succeeds then the dead branch is removed. Webpack can't do constant folding unless the compiler knows it. For example:
+Webpack은 조건문을 평가하려고 할 것입니다. 만약 성공한다면 dead branch가 제거됩니다. Webpck은 컴파일러가 알지 못하는 한 상수 폴딩을 할 수 없습니다. 다음 예시를 봅시다.
 
 ```javascript
 import { calculateTax } from './tax';
@@ -167,135 +169,135 @@ if (FOO === 0) {
 }
 ```
 
-In the above example, webpack is unable to prune the branch, but Terser does. However, if `FOO` is defined using [DefinePlugin](/plugins/define-plugin/), webpack will succeed.
+위의 예시에서, webpack은 branch를 자를 수 없지만, Terser는 할 수 있습니다. 그러나 만약 `FOO`가 [DefinePlugin](/plugins/define-plugin/) 을 사용하면, webpack은 성공할 것입니다.
 
-It is important to mention that `import { calculateTax } from './tax';` will also get pruned because `calculateTax()` call was in the dead branch and got eliminated.
+`import { calculateTax } from './tax';`도 제거된다는 점을 언급해야 합니다. 왜냐하면 `calculateTax()` 호출이 dead branch에 있어 제거되었기 때문입니다.
 
 ### ProvidePlugin
 
 `ProvidePlugin(name, request)`
 
-If `name` is used in a module it is filled by a module loaded by `require(<request>)`.
+만약에 모듈에서 `name`이 사용되는 경우는 `require(<request>)`에 의해 로드된 모듈에 의해서 채워집니다.
 
 ### NodeStuffPlugin
 
 `NodeStuffPlugin(options, context)`
 
-Provide stuff that is normally available in Node.js modules.
+Node.js 모듈에서는 일반적으로 사용할 수 있는 항목을 제공합니다.
 
-It also ensures that `module` is filled with some Node.js stuff if you use it.
+또한, `module`을 사용하는 경우에는 일부의 Node.js 항목으로 채워지도록 합니다.
 
 ### RequireJsStuffPlugin
 
-Provide stuff that is normally available in require.js.
+require.js에서는 일반적으로 사용할 수 있는 항목을 제공합니다.
 
-`require[js].config` is removed. `require.version` is `0.0.0`. `requirejs.onError` is mapped to `require.onError`.
+`require[js].config`는 제거됩니다. `require.version`은 `0.0.0`입니다. `requirejs.onError`는 `require.onError`에 매핑이 됩니다.
 
 ### NodeSourcePlugin
 
 `node/NodeSourcePlugin(options)`
 
-This module adds stuff from Node.js that is not available in non Node.js environments.
+이 모듈은 Node.js 환경이 아니면 사용할 수 없는 Node.js의 내용을 추가합니다. 
 
-It adds polyfills for `process`, `console`, `Buffer` and `global` if used. It also binds the built in Node.js replacement modules.
+사용되는 경우에는 `process`, `console`, `Buffer`와 `glo`에 대한 polyfills을 추가해야 합니다.
 
 ### NodeTargetPlugin
 
 `node/NodeTargetPlugin()`
 
-The plugins should be used if you run the bundle in a Node.js environment.
+만약 Node.js 환경에서 번들을 실행하는 경우에는 플러그인을 사용해야 합니다.
 
-If ensures that native modules are loaded correctly even if bundled.
+만약 네이티브 모듈이 번들 되어있더라도 올바르게 로드되도록 보장합니다.
 
 ### AMDPlugin
 
 `dependencies/AMDPlugin(options)`
 
-Provides AMD-style `define` and `require` to modules. Also bind `require.amd`, `define.amd` and webpack_amd_options## to the `options` passed as parameter.
+AMD 스타일의 `define`과 `require` 모듈을 제공합니다. 또한, `require.amd`, `define.amd` 와 webpack_amd_options## 를 파라미터로 전달된 `options`에 바인딩합니다.
 
 ### CommonJsPlugin
 
 `dependencies/CommonJsPlugin`
 
-Provides CommonJs-style `require` to modules.
+CommonJs 스타일의 `require` 모듈을 제공합니다.
 
 ### RequireContextPlugin
 
 `dependencies/RequireContextPlugin(modulesDirectories, extensions)`
 
-Provides `require.context`. The parameter `modulesDirectories` and `extensions` are used to find alternative requests for files. It's useful to provide the same arrays as you provide to the resolver.
+`require.content`를 제공합니다. `modulesDirectories`와 `extensions` 파라미터는 파일에 대한 요청을 대체할 수 있는 것을 찾는 데 사용됩니다. 리졸버에 제공하는 것과 동일한 배열을 제공하는 것이 유용합니다.
 
 ### RequireEnsurePlugin
 
 `dependencies/RequireEnsurePlugin()`
 
-Provides `require.ensure`.
+`require.ensure`를 제공합니다.
 
 ### RequireIncludePlugin
 
 `dependencies/RequireIncludePlugin()`
 
-Provides `require.include`.
+`require.include`를 제공합니다.
 
 ### DefinePlugin
 
 `DefinePlugin(definitions)`
 
-Define constants for identifier.
+식별자에 대해 상수를 정의합니다.
 
-`definitions` is an object.
+`definitions`은 객체입니다.
 
 ## optimize
 
-Note that all plugins under `webpack.optimize` namespace should only be used when [`mode`](/configuration/mode/#mode-none) set to `'none'`. Otherwise you might get into trouble where plugins are applied twice.
+`webpack.optimize` 네임스페이스 아래의 모든 플러그인은 [`mode`](/configuration/mode/#mode-none) 가 `'none'`으로 설정된 경우에만 사용해야 합니다. 그렇지 않다면 플러그인은 두 번 적용되어야 합니다.
 
 ### LimitChunkCountPlugin
 
 `optimize/LimitChunkCountPlugin(options)`
 
-Merge chunks limit chunk count is lower than `options.maxChunks`.
+병합 청크의 제한된 청크 수는 `options.maxChunks'보다 작습니다.
 
-The overhead for each chunks is provided by `options.chunkOverhead` or defaults to 10000. Entry chunks sizes are multiplied by `options.entryChunkMultiplicator` (or 10).
+각 청크에 대한 오버헤드는 `options.chunkOverhead` 또는 기본값인 10000에 의해 제공됩니다. 엔트리 청크의 크기는 `options.entryChunkMultiplicator` (또는 10)에 의해 곱해집니다.
 
-Chunks that reduce the total size the most are merged first. If multiple combinations are equal the minimal merged size wins.
+전체적인 크기를 가장 많이 줄인 청크가 첫 번째로 병합됩니다. 만약 여러 조합이 같으면 병합된 크기가 작은 것이 선택됩니다.
 
 ### MergeDuplicateChunksPlugin
 
 `optimize/MergeDuplicateChunksPlugin()`
 
-Chunks with the same modules are merged.
+같은 모듈의 청크가 병합됩니다.
 
 ### RemoveEmptyChunksPlugin
 
 `optimize/RemoveEmptyChunksPlugin()`
 
-Modules that are included in every parent chunk are removed from the chunk.
+모든 부모 청크에 포함된 모듈은 청크로부터 제거됩니다.
 
 ### MinChunkSizePlugin
 
-`optimize/MinChunkSizePlugin(minChunkSize)`
+`optimize/MinChunkSizePlugin(minChunkSize)`-
 
-Merges chunks until each chunk has the minimum size of `minChunkSize`.
+각 청크의 최소 크기가 `minChunkSize`가 될 때까지 청크를 병합합니다. 
 
 ### ModuleConcatenationPlugin
 
-See the [ModuleConcatenationPlugin page](/plugins/module-concatenation-plugin/) for details.
+[ModuleConcatenationPlugin page](/plugins/module-concatenation-plugin/)에 대한 구체적인 내용을 확인해보세요.
 
 ### FlagIncludedChunksPlugin
 
 `optimize/FlagIncludedChunksPlugin()`
 
-Adds chunk ids of chunks which are included in the chunk. This eliminates unnecessary chunk loads.
+청크에 포함된 청크의 청크 아이디를 추가합니다. 불필요한 청크 로드를 제거할 수 있습니다.
 
 ### RealContentHashPlugin
 
 `optimize/RealContentHashPlugin()`
 
-When [`optimization.realContentHash`](/configuration/optimization/#optimizationrealcontenthash) option is enabled, webpack will apply `RealContentHashPlugin` to compiler internally.
+[`optimization.realContentHash`](/configuration/optimization/#optimizationrealcontenthash) 옵션이 활성화 될 때, webpack은 내부적으로 `RealContentHashPlugin`을 컴파일러에 추가합니다.
 
 #### Hook
 
-`RealContentHashPlugin` provides a `updateHash` <Badge text='5.8.0+' /> hook for customizing hash updating:
+`RealContentHashPlugin`은 해시 업데이트를 커스터마이징할 수 있는 훅인 `updateHash` <Badge text='5.8.0+' />를 제공합니다.
 
 ```js
 const webpack = require('webpack');
@@ -304,7 +306,7 @@ const RealContentHashPlugin = webpack.optimize.RealContentHashPlugin;
 compiler.hooks.compilation.tap('MyPlugin', (compilation) => {
   const hooks = RealContentHashPlugin.getCompilationHooks(compilation);
   hooks.updateHash.tap('MyPlugin', (content, oldHash) => {
-    // you can calculate the hash here as you wish
+    // 이곳에서 원하는데로 해시를 계산할 수 있습니다.
   });
 });
 ```

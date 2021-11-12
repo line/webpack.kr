@@ -8,9 +8,11 @@ contributors:
   - byzyk
   - EugeneHlushko
   - erykpiast
+translator:
+  - jiwoo0629
 ---
 
-While writing your code, you may have already added many code split points to load stuff on demand. After compiling you might notice that some chunks are too small - creating larger HTTP overhead. `LimitChunkCountPlugin` can post-process your chunks by merging them.
+코드를 작성할 때, 이미 필요한 것을 로드할 많은 코드 분할 지점을 추가했을 것입니다. 컴파일 후에 어떤 청크가 너무 작다는 것을 깨달을 것입니다. 이는 더 큰 HTTP 오버헤드를 만듭니다. `LimitChunkCountPlugin`은 청크를 합침으로써 그것들을 후속 처리할 수 있게 해줍니다.
 
 ```js
 new webpack.optimize.LimitChunkCountPlugin({
@@ -20,13 +22,13 @@ new webpack.optimize.LimitChunkCountPlugin({
 
 ## Options
 
-The following options are supported:
+다음의 옵션들이 지원됩니다.
 
 ### maxChunks
 
 `number`
 
-Limit the maximum number of chunks using a value greater than or equal to `1`. Using `1` will prevent any additional chunks from being added as the entry/main chunk is also included in the count.
+청크의 최대 개수를 `1`보다 크거나 같도록 제한합니다. `1`을 사용하는 것은 엔트리/메인 청크가 카운트에 포함될 때 추가적인 청크가 더해지는 것을 방지합니다.
 
 **webpack.config.js**
 
@@ -44,11 +46,11 @@ module.exports = {
 
 ### minChunkSize
 
-Keeping chunk size above the specified limit is no longer a feature of this plugin. Use [MinChunkSizePlugin](/plugins/min-chunk-size-plugin) instead.
+위의 지정된 청크 크기를 유지하는 것은 이 플러그인에서 구현하지 않습니다. [MinChunkSizePlugin](/plugins/min-chunk-size-plugin)을 대신 사용하세요.
 
 ## Usage via CLI
 
-This plugin and it's options can also be invoked via the [CLI](/api/cli/):
+이 플러그인과 옵션은 [CLI](/api/cli/)를 통해 호출될 수도 있습니다.
 
 ```bash
 webpack --optimize-max-chunks 15
