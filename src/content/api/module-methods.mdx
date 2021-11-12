@@ -82,7 +82,7 @@ export default {
 
 모듈을 동적으로 로드합니다. `import()`에 대한 호출은 분할 지점으로 처리됩니다. 즉, 요청된 모듈과 그 자식은 별도의 청크로 분할됩니다.
 
-T> [ES2015 로더 사양](https://whatwg.github.io/loader/)에서는 `import()`를 런타임에 ES2015 모듈을 동적으로 로드하는 메서드로  정의하고 있습니다.
+T> [ES2015 로더 사양](https://whatwg.github.io/loader/)에서는 `import()`를 런타임에 ES2015 모듈을 동적으로 로드하는 메서드로 정의하고 있습니다.
 
 ```javascript
 if (module.hot) {
@@ -92,7 +92,7 @@ if (module.hot) {
 }
 ```
 
-W> 이 기능은 내부적으로 [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)에 의존합니다. 이전 브라우저에서 `import()`를 사용하는 경우 [es6-promise](https://github.com/stefanpenner/es6-promise) 또는 [promise-polyfill]( https://github.com/taylorhakes/promise-polyfill)과 같은 폴리필을  사용하여 `Promise`를 대체해야 합니다.
+W> 이 기능은 내부적으로 [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)에 의존합니다. 이전 브라우저에서 `import()`를 사용하는 경우 [es6-promise](https://github.com/stefanpenner/es6-promise) 또는 [promise-polyfill]( https://github.com/taylorhakes/promise-polyfill)과 같은 폴리필을 사용하여 `Promise`를 대체해야 합니다.
 
 ### Dynamic expressions in import()
 
