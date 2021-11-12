@@ -6,6 +6,8 @@ contributors:
   - byzyk
   - chenxsan
   - snitin315
+translator:
+  - jiwoo0629
 related:
   - title: Concepts - Hot Module Replacement
     url: /concepts/hot-module-replacement
@@ -13,13 +15,13 @@ related:
     url: /api/hot-module-replacement
 ---
 
-Enables [Hot Module Replacement](/concepts/hot-module-replacement), otherwise known as HMR.
+HMR로 알려져 있는 [Hot Module Replacement](/concepts/hot-module-replacement)을 활성화합니다.
 
-W> HMR should **never** be used in production.
+W> HMR은 **절대** 프로덕션에 사용되서는 안됩니다.
 
 ## Basic Usage
 
-Enabling HMR is straightforward and in most cases no options are necessary.
+HMR을 활성화하는 것은 간단하며 대부분의 경우 옵션이 필요하지 않습니다. 
 
 ```javascript
 new webpack.HotModuleReplacementPlugin({
