@@ -12,7 +12,7 @@ translator:
   - jiwoo0629
 ---
 
-코드를 작성할 때, 당신은 이미 필요한 것을 로드할 많은 코드 분할 지점을 추가했을 것입니다. 컴파일 후에 어떤 청크가 너무 작다는 것을 깨달을 것입니다. 이는 더 큰 HTTP 오버헤드를 만듭니다. `LimitChunkCountPlugin`은 청크를 합침으로써 그것들을 후속 처리할 수 있게 해줍니다.
+코드를 작성할 때, 이미 필요한 것을 로드할 많은 코드 분할 지점을 추가했을 것입니다. 컴파일 후에 어떤 청크가 너무 작다는 것을 깨달을 것입니다. 이는 더 큰 HTTP 오버헤드를 만듭니다. `LimitChunkCountPlugin`은 청크를 합침으로써 그것들을 후속 처리할 수 있게 해줍니다.
 
 ```js
 new webpack.optimize.LimitChunkCountPlugin({
