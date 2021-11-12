@@ -13,7 +13,7 @@ translators:
   - KiKi-Daehaksaeng
 ---
 
-로더는 함수를 export 하는 노드 모듈입니다. 이 함수는 리소스가 로더에 의해 변형되어야 할 때 호출됩니다. 주어진 함수는 같이 제공되는 `this` 컨텍스트를 사용해 [Loader API](/api/loaders/)에 접근할 것입니다.
+로더는 함수를 export 하는 node 모듈입니다. 이 함수는 리소스가 로더에 의해 변형되어야 할 때 호출됩니다. 주어진 함수는 같이 제공되는 `this` 컨텍스트를 사용해 [Loader API](/api/loaders/)에 접근할 것입니다.
 
 ## Setup
 
@@ -81,7 +81,7 @@ T> 로더 작성을 시작하는데 필요한 보일러플레이트 코드를 �
 - 마지막이라 불리는 첫 로더는 JavaScript와 선택적 소스맵을 반환해야 합니다.
 - 사이에 있는 로더는 체인에 있는 이전 로더의 결과와 함께 실행됩니다.
 
-다음 예시에서, `foo-loader`는 raw 리소스를 통과할 것이고, `bar-loader`는 `foo-loader`의 출력을 하고 최종 변형된 모듈과 필요하다면 소스맵을 반환할 겁니다.
+다음 예시에서, `foo-loader`는 raw 리소스를 통과할 것이고, `bar-loader`는 `foo-loader`의 출력을 하고 최종 변형된 모듈과 필요하다면 소스맵을 반환하겠습니다.
 
 **webpack.config.js**
 
@@ -298,7 +298,7 @@ export default function loader(source) {
 }
 ```
 
-다음 파일을 처리하기 위해 이 로더를 사용할 겁니다.
+다음 파일을 처리하기 위해 이 로더를 사용하겠습니다.
 
 **test/example.txt**
 
