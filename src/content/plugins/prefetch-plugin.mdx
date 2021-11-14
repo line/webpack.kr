@@ -4,9 +4,11 @@ group: webpack
 contributors:
   - skipjack
   - byzyk
+translators:
+  - kwYoohae
 ---
 
-Prefetch normal module requests, causing them to be resolved and built before the first `import` or `require` of that module occurs. Using this plugin can boost performance. Try to profile the build first to determine clever prefetching points.
+일반 모듈의 요청을 프리페치하면 첫 번째에 `import` 또는 `require`가 발생하기 전에 요청을 확인하고  빌드합니다. 플러그인을 사용함으로써 성능을 높일 수 있습니다. 처음에 영리한 프리페칭 지점을 결정하기 위해서 프로파일링하는 것을 해봅니다.
 
 ```javascript
 new webpack.PrefetchPlugin([context], request);
@@ -14,5 +16,5 @@ new webpack.PrefetchPlugin([context], request);
 
 ## Options
 
-- `context`: An absolute path to a directory
-- `request`: A request string for a normal module
+- `context`: 디렉터리에 대한 절대경로
+- `request`: 일반 모듈에 대한 요청 문자열
