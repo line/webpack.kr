@@ -4,103 +4,103 @@ group: Plugins
 sort: 13
 contributors:
   - iguessitsokay
+translators:
+  - chopmozzi
 ---
 
-The `NormalModuleFactory` module is used by the `Compiler` to generate modules. Starting with entry points, it resolves each request, parses the content to find further requests, and keeps crawling through files by resolving all and parsing any new files. At last stage, each dependency becomes a Module instance.
+`NormalModuleFactory` 모듈은 `컴파일러`에서 모듈을 생성하는데 사용됩니다. 엔트리 포인트에서 시작하여 각 요청을 해결하고, 내용을 파싱하여 추가 요청을 찾고, 모든 파일을 해결함으로써 크롤링하고 새 파일을 파싱합니다.
 
-The `NormalModuleFactory` class extends `Tapable` and provides the following
-lifecycle hooks. They can be tapped the same way as compiler hooks:
+`NormalModuleFactory` 클래스는 `Tapable`을 확장하고 다음과 같은 라이프사이클 훅을 제공합니다. 컴파일러 훅도 같은 방식으로 탭 할 수 있습니다.
 
 ```js
 NormalModuleFactory.hooks.someHook.tap(/* ... */);
 ```
 
-NormaleModuleFactory creates `Parser` and `Generator` instances which can be accessed by HookMaps. Identifier must be passed to tap into these:
+NormaleModuleFactory는 훅맵에서 액세스 할 수 있는 `파서`와 `제너레이터` 인스턴스를 연결합니다.
 
 ```js
 NormalModuleFactory.hooks.someHook.for('identifier').tap(/* ... */);
 ```
 
-As with the `compiler`, `tapAsync` and `tapPromise` may also be available
-depending on the type of hook.
+`컴파일러`와 마찬가지로 `tapAsync` 및 `tapPromise`도 훅의 유형에 따라 사용할 수 있습니다.
 
 ### beforeResolve
 
 `AsyncSeriesBailHook`
 
-Called when a new dependency request is encountered. A dependency can be ignored by returning `false`. Otherwise, it should return `undefined` to proceed.
+새 의존성 요청이 발견되면 호출됩니다. 의존성은 `false`를 반환하여 무시할 수 있습니다. 그렇지 않으면 계속 진행하기 위해서는 `정의되지 않은` 상태로 반환되어야 합니다.
 
-- Callback Parameters: `ResolveData`
+- 콜백 파라미터: `resolveData`
 
 ### factorize
 
 `AsyncSeriesBailHook`
 
-Called before initiating resolve. It should return `undefined` to proceed.
+해결을 시작하기 전에 호출됩니다. 계속 진행하기 위해서는 `정의되지 않은` 상태로 반환되어야 합니다.
 
-- Callback Parameters: `resolveData`
+- 콜백 파라미터: `resolveData`
 
 ### resolve
 
 `AsyncSeriesBailHook`
 
-Called before the request is resolved. A dependency can be ignored by returning `false`. Returning a Module instance would finalize the process. Otherwise, it should return `undefined` to proceed.
+요청이 해결되기 전에 호출됩니다. `false`를 반환하여 의존성을 무시할 수 있습니다. 모듈 인스턴스를 반환하면 프로세스가 완료됩니다. 그렇지 않으면 계속 진행하기 위해서는 `정의되지 않은` 상태로 반환되어야 합니다.
 
-- Callback Parameters: `resolveData`
+- 콜백 파라미터: `resolveData`
 
 ### resolveForScheme
 
 `AsyncSeriesBailHook`
 
-Called before a request with scheme (URI) is resolved.
+스킴(URI)과 요청이 해결되기 전에 반환됩니다.
 
-- Callback Parameters: `resolveData`
+- 콜백 파라미터: `resolveData`
 
 ### afterResolve
 
 `AsyncSeriesBailHook`
 
-Called after the request is resolved.
+요청이 해결되면 호출됩니다.
 
-- Callback Parameters: `resolveData`
+- 콜백 파라미터: `resolveData`
 
 ### createModule
 
 `AsyncSeriesBailHook`
 
-Called before a `NormalModule` instance is created.
+`NormalModule` 인스턴스를 만들기 전에 호출됩니다.
 
-- Callback Parameters: `createData` `resolveData`
+- 콜백 파라미터: `createData` `resolveData`
 
 ### module
 
 `SyncWaterfallHook`
 
-Called after a `NormalModule` instance is created.
+`NormalModule` 인스턴스를 만들기 전에 호출됩니다.
 
-- Callback Parameters: `module` `createData` `resolveData`
+- 콜백 파라미터: `module` `createData` `resolveData`
 
 ### createParser
 
 `HookMap<SyncBailHook>`
 
-Called before a `Parser` instance is created. `parserOptions` is options in [module.parser](/configuration/module/#moduleparser) for the corresponding identifier or an empty object.
+`파서` 인스턴스를 만들기 전에 호출됩니다. `parserOptions`는 해당 식별자 또는 빈 개체에 대한 [module.parser](/configuration/module/#moduleparser)의 옵션입니다.
 
-- Hook Parameters: `identifier`
+- 훅 파라미터: `identifier`
 
-- Callback Parameters: `parserOptions`
+- 콜백 파라미터: `parserOptions`
 
 ### parser
 
 `HookMap<SyncHook>`
 
-Fired after a `Parser` instance is created.
+`파서` 인스턴스를 후 발생합니다.
 
-- Hook Parameters: `identifier`
+- 훅 파라미터: `identifier`
 
-- Callback Parameters: `parser` `parserOptions`
+- 콜백 파라미터: `parser` `parserOptions`
 
-Possible default identifiers:
+가능한 기본 식별자:
 
 1. `javascript/auto`
 2. `javascript/dynamic`
@@ -114,23 +114,23 @@ Possible default identifiers:
 
 `HookMap<SyncBailHook>`
 
-Called before a `Generator` instance is created. `generatorOptions` is options in [module.parser](/configuration/module/#modulegenerator) for the corresponding identifier or an empty object.
+`제너레이터` 인스턴스를 만들기 전에 호출됩니다. `generatorOptions`는 해당 식별자 또는 빈 개체에 대한 [module.parser](/configuration/module/#modulegenerator)의 옵션입니다.
 
-- Hook Parameters: `identifier`
+- 훅 파라미터: `identifier`
 
-- Callback Parameters: `generatorOptions`
+- 콜백 파라미터: `generatorOptions`
 
 ### generator
 
 `HookMap<SyncHook>`
 
-Called after a `Generator` instance is created.
+`제너레이터` 인스턴스를 만든 후 호출됩니다.
 
-- Hook Parameters: `identifier`
+- 훅 파라미터: `identifier`
 
-- Callback Parameters: `generator` `generatorOptions`
+- 콜백 파라미터: `generator` `generatorOptions`
 
-Possible default identifiers:
+가능한 기본 식별자:
 
 1. `json`
 2. `webassembly/sync`
