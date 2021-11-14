@@ -8,15 +8,18 @@ contributors:
   - anikethsaha
   - jamesgeorge007
   - chenxsan
+  - dev-itsheng
+translators:
+  - KiKi-Daehaksaeng
 ---
 
-A loader is a node module that exports a function. This function is called when a resource should be transformed by this loader. The given function will have access to the [Loader API](/api/loaders/) using the `this` context provided to it.
+로더는 함수를 export 하는 node 모듈입니다. 이 함수는 리소스가 로더에 의해 변형되어야 할 때 호출됩니다. 주어진 함수는 같이 제공되는 `this` 컨텍스트를 사용해 [Loader API](/api/loaders/)에 접근할 것입니다.
 
 ## Setup
 
-Before we dig into the different types of loaders, their usage, and examples, let's take a look at the three ways you can develop and test a loader locally.
+다른 타입의 로더와 사용법과 예시를 살펴보기 전에, 로컬에서 개발하고 테스트할 수 있는 세 가지 방법을 봅시다.
 
-To test a single loader, you can use `path` to `resolve` a local file within a rule object:
+단일 로더를 테스트하기 위해, rule object 내의 로컬 파일을 `resolve`하기 위한 `path`를 사용할 수 있습니다. 
 
 **webpack.config.js**
 
@@ -43,7 +46,7 @@ module.exports = {
 };
 ```
 
-To test multiple, you can utilize the `resolveLoader.modules` configuration to update where webpack will search for loaders. For example, if you had a local `/loaders` directory in your project:
+다중 로더를 테스트하기 위해, webpack이 로더를 검색할 위치를 업데이트하기 위한 `resolveLoader.modules` 설정을 활용할 수 있습니다. 예를 들어, 프로젝트에서 로컬 `/loaders` 디렉터리를 생성했다고 가정해봅시다.
 
 **webpack.config.js**
 
@@ -58,27 +61,27 @@ module.exports = {
 };
 ```
 
-By the way, if you've already created a separate repository and package for your loader, you could [`npm link`](https://docs.npmjs.com/cli/link) it to the project in which you'd like to test it out.
+그런데, 이미 로더에 대한 독립된 저장소와 패키지를 생성했다면, 테스트하려는 프로젝트와 [`npm link`](https://docs.npmjs.com/cli/link)해줄 수 있습니다.
 
-T> You can use [`webpack-defaults` package](https://github.com/webpack-contrib/webpack-defaults) to generate boilerplate code necessary to start writing your loader.
+T> 로더 작성을 시작하는데 필요한 보일러플레이트 코드를 생성하기 위해 [`webpack-defaults` package](https://github.com/webpack-contrib/webpack-defaults)를 사용할 수 있습니다.
 
 ## Simple Usage
 
-When a single loader is applied to the resource, the loader is called with only one parameter – a string containing the content of the resource file.
+단일 로더가 리소스에 적용되었을 때, 로더는 오직 하나의 파라미터(리소스 파일의 콘텐츠를 담고 있는 문자열)와 호출됩니다.
 
-Synchronous loaders can `return` a single value representing the transformed module. In more complex cases, the loader can return any number of values by using the `this.callback(err, values...)` function. Errors are either passed to the `this.callback` function or thrown in a sync loader.
+동기 로더는 변형된 모듈을 대표하는 하나의 값을 `return` 할 수 있습니다. 더 복잡한 경우에서, 로더는 `this.callback(err, values...)` 함수를 사용함으로써 여러 값을 반환할 수 있습니다. 에러는 `this.callback` 함수를 통과하거나 동기 로더에 throw 됩니다.
 
-The loader is expected to give back one or two values. The first value is a resulting JavaScript code as string or buffer. The second optional value is a SourceMap as JavaScript object.
+로더는 하나 혹은 두 개의 값을 반환해야 합니다. 첫 값은 문자열 혹은 버퍼로서의 JavaScript 코드의 결과입니다. 두 번째 선택적 값은 JavaScript 객체인 SourceMap입니다.
 
 ## Complex Usage
 
-When multiple loaders are chained, it is important to remember that they are executed in reverse order – either right to left or bottom to top depending on array format.
+다중 로더가 연결될 때, 역순(배열 형식에 따라 오른쪽에서 왼쪽 혹은 아래에서 위)으로 실행되는지 기억해야 합니다.
 
-- The last loader, called first, will be passed the contents of the raw resource.
-- The first loader, called last, is expected to return JavaScript and an optional source map.
-- The loaders in between will be executed with the result(s) of the previous loader in the chain.
+- 처음이라 불리는 마지막 로더는 원상태의 리소스의 콘텐츠가 통과될 것입니다.
+- 마지막이라 불리는 첫 로더는 JavaScript와 선택적 소스맵을 반환해야 합니다.
+- 사이에 있는 로더는 체인에 있는 이전 로더의 결과와 함께 실행됩니다.
 
-In the following example, the `foo-loader` would be passed the raw resource and the `bar-loader` would receive the output of the `foo-loader` and return the final transformed module and a source map if necessary.
+다음 예시에서, `foo-loader`는 raw 리소스를 통과할 것이고, `bar-loader`는 `foo-loader`의 출력을 하고 최종 변형된 모듈과 필요하다면 소스맵을 반환하겠습니다.
 
 **webpack.config.js**
 
@@ -98,51 +101,51 @@ module.exports = {
 
 ## Guidelines
 
-The following guidelines should be followed when writing a loader. They are ordered in terms of importance and some only apply in certain scenarios, read the detailed sections that follow for more information.
+다음 가이드라인은 로더를 작성할 때 지켜져야 합니다. 중요도 측면에서 순서가 지정되며, 일부는 특정 시나리오에서 적용됩니다. 자세한 내용은 세부 섹션을 참고하세요.
 
-- Keep them **simple**.
-- Utilize **chaining**.
-- Emit **modular** output.
-- Make sure they're **stateless**.
-- Employ **loader utilities**.
-- Mark **loader dependencies**.
-- Resolve **module dependencies**.
-- Extract **common code**.
-- Avoid **absolute paths**.
-- Use **peer dependencies**.
+- **단순하게** 하세요.
+- **chaining**을 활용하세요.
+- **모듈의** 출력을 내보내세요.
+- **stateless**인지 확인하세요.
+- **로더 유틸리티**를 사용하세요.
+- **로더 의존성**을 표시하세요.
+- **모듈 의존성**을 해석하세요.
+- **공통된 코드**를 추출하세요.
+- **절대 경로**를 지양하세요.
+- **peer dependencies**를 사용하세요.
 
 ### Simple
 
-Loaders should do only a single task. This not only makes the job of maintaining each loader easier, but also allows them to be chained for usage in more scenarios.
+로더는 오직 하나의 일만 수행해야 합니다. 로더를 유지 보수하기 쉽게 만들 뿐만 아니라, 더 많은 시나리오에서 사용할 수 있도록 체인으로 묶을 수 있습니다.
 
 ### Chaining
 
-Take advantage of the fact that loaders can be chained together. Instead of writing a single loader that tackles five tasks, write five simpler loaders that divide this effort. Isolating them not only keeps each individual loader simple, but may allow for them to be used for something you hadn't thought of originally.
+로더가 함께 연결될 수 있다는 사실을 활용하세요. 다섯 가지의 일을 처리하는 하나의 로더를 작성하는 것 대신에, 수고를 덜 다섯 개의 간단한 로더들을 작성하세요. 로더를 분할하는 것은 각각의 로더를 간단히 유지할 수 있을 뿐만 아니라 생각지도 못한 일에 사용될 수 있게 해줄 수 있습니다.
 
-Take the case of rendering a template file with data specified via loader options or query parameters. It could be written as a single loader that compiles the template from source, executes it and returns a module that exports a string containing the HTML code. However, in accordance with guidelines, an `apply-loader` exists that can be chained with other open source loaders:
+로더 옵션 또는 쿼리 파라미터를 통해 지정된 데이터로 템플릿 파일을 렌더링하는 경우를 생각해 봅시다. 소스에서 템플릿을 컴파일 하는 싱글 로더로 작성되고, 그를 실행하고 HTML 코드를 포함하고 있는 문자열을 export 하는 모듈을 반환할 수도 있습니다. 하지만, 가이드라인에 따르면, `apply-loader`는 다른 오픈 소스 로더와 연결될 수 있을 때만 존재합니다.
 
-- `pug-loader`: Convert template to a module that exports a function.
-- `apply-loader`: Executes the function with loader options and returns raw HTML.
-- `html-loader`: Accepts HTML and outputs a valid JavaScript module.
+- `pug-loader`: 템플릿을 함수를 export 하는 모듈로 전환합니다.
+- `apply-loader`: 로더 옵션으로 함수를 실행시키고, raw HTML을 반환합니다.
+- `html-loader`: HTML을 받아들이고 유효한 JavaScript 모듈을 출력합니다.
 
-T> The fact that loaders can be chained also means they don't necessarily have to output JavaScript. As long as the next loader in the chain can handle its output, the loader can return any type of module.
+T> 로더가 연결될 수 있다는 사실은 로더들이 JavaScript를 출력할 필요가 없다는 것을 의미합니다. 체인 안에 다음 로더들이 출력을 다루는 한, 로더는 어느 모듈이든지 반환할 수 있습니다.
 
 ### Modular
 
-Keep the output modular. Loader generated modules should respect the same design principles as normal modules.
+출력을 모듈식으로 유지하세요. 모듈을 생성한 로더는 일반 모듈로써 같은 디자인 요소를 반영해야 합니다.
 
 ### Stateless
 
-Make sure the loader does not retain state between module transformations. Each run should always be independent of other compiled modules as well as previous compilations of the same module.
+로더가 모듈 변형 사이에 상태를 유지하지 않는지 확인하세요. 각 실행은 항상 컴파일된 다른 모듈 및 동일한 모듈의 이전 컴파일과는 독립적이어야 합니다. 
 
 ### Loader Utilities
 
-Take advantage of the [`loader-utils`](https://github.com/webpack/loader-utils) package. It provides a variety of useful tools but one of the most common is retrieving the options passed to the loader. Along with `loader-utils`, the [`schema-utils`](https://github.com/webpack-contrib/schema-utils) package should be used for consistent JSON Schema based validation of loader options. Here's a brief example that utilizes both:
+다양한 유용한 도구를 제공하는 [`loader-utils`](https://github.com/webpack/loader-utils) 패키지를 활용하세요. `loader-utils`과 함께, [`schema-utils`](https://github.com/webpack-contrib/schema-utils) 패키지는 로더 옵션 유효성에 기반한 일관된 JSON 스키마를 위해 사용돼야 합니다. 여기 둘 다 활용하는 간단한 예시가 있습니다.
 
 **loader.js**
 
 ```js
-import { getOptions } from 'loader-utils';
+import { urlToRequest } from 'loader-utils';
 import { validate } from 'schema-utils';
 
 const schema = {
@@ -155,14 +158,16 @@ const schema = {
 };
 
 export default function (source) {
-  const options = getOptions(this);
+  const options = this.getOptions();
 
   validate(schema, options, {
     name: 'Example Loader',
     baseDataPath: 'options',
   });
 
-  // Apply some transformations to the source...
+  console.log('The request path', urlToRequest(this.resourcePath));
+
+  // 소스에 몇 가지의 변형을 적용하세요...
 
   return `export default ${JSON.stringify(source)}`;
 }
@@ -170,7 +175,7 @@ export default function (source) {
 
 ### Loader Dependencies
 
-If a loader uses external resources (i.e. by reading from filesystem), they **must** indicate it. This information is used to invalidate cacheable loaders and recompile in watch mode. Here's a brief example of how to accomplish this using the `addDependency` method:
+로더가 외부 리소스(예를 들면, 파일 시스템으로부터 읽는 것)를 사용한다면, **반드시** 표기해야 합니다. 이 정보는 캐시 가능한 로더를 무효로 하고 읽기 모드로 다시 컴파일하기 위해 사용됩니다. `addDependency` 메소드를 사용해서 완수하는 방법의 간략한 예시가 있습니다.
 
 **loader.js**
 
@@ -192,22 +197,22 @@ export default function (source) {
 
 ### Module Dependencies
 
-Depending on the type of module, there may be a different schema used to specify dependencies. In CSS for example, the `@import` and `url(...)` statements are used. These dependencies should be resolved by the module system.
+모듈의 타입에 따라, 특정한 의존성을 사용하는 다른 스키마가 있을지도 모릅니다. 예를 들어, CSS에서 `@import`와 `url(...)` 구문이 사용됩니다. 이런 의존성은 모듈 시스템에 의해 결정되어야 합니다.
 
-This can be done in one of two ways:
+둘 중 하나의 방법으로 할 수 있습니다.
 
-- By transforming them to `require` statements.
-- Using the `this.resolve` function to resolve the path.
+- `require` 구문으로 변형
+- 경로를 결정하기 위해 `this.resolve` 함수를 사용
 
-The `css-loader` is a good example of the first approach. It transforms dependencies to `require`s, by replacing `@import` statements with a `require` to the other stylesheet and `url(...)` with a `require` to the referenced file.
+`css-loader`는 처음으로 접근하기에 좋은 예시입니다. 다른 스타일시트에 대해서 `@import` 구문을 `require`로 대체하고, 참조된 파일에 대해서 `url(...)`을 `require`로 바꿈으로써, 의존성들을 `require`으로 변형합니다.
 
-In the case of the `less-loader`, it cannot transform each `@import` to a `require` because all `.less` files must be compiled in one pass for variables and mixin tracking. Therefore, the `less-loader` extends the less compiler with custom path resolving logic. It then takes advantage of the second approach, `this.resolve`, to resolve the dependency through webpack.
+`less-loader`의 예시에서, 모든 `.less`파일은 변수와 믹스인 추정을 위해 반드시 한 번에 컴파일되어야 하므로 각 `@import`를 `require`로 바꿀 수 없습니다. 그러므로, `less-loader`는 사용자 경로 해석 로직으로 더 적은 컴파일러를 확장합니다. 그런 다음 두 번째 접근 방식인 `this.resolve`를 활용하여 webpack을 통해 의존성을 해결할 수 있습니다. 
 
-T> If the language only accepts relative urls (e.g. `url(file)` always refers to `./file`), you can use the `~` convention to specify references to installed modules (e.g. those in `node_modules`). In the case of `url`, that would look something like `url('~some-library/image.jpg')`.
+T> 언어가 오직 상대 경로(예를 들어, `url(file)`은 항상 `./file`을 나타냅니다.)만 수용한다면, 설치된 모듈(예를 들어 `node_modules` 안에 있는 것들)에 대한 참조를 지정하기 위한 `~` 규칙을 사용할 수 있습니다. `url`의 경우, `url('~some-library/image.jpg')`처럼 보일 것입니다.
 
 ### Common Code
 
-Avoid generating common code in every module the loader processes. Instead, create a runtime file in the loader and generate a `require` to that shared module:
+로더가 처리하는 모든 모듈 안의 공통적인 코드가 생성되지 않도록 하세요. 대신, 로더 안에 런타임 파일을 만들고, 해당 공유 모듈에 `require`를 생성하세요.
 
 **src/loader-runtime.js**
 
@@ -227,7 +232,7 @@ module.exports = function runtime(params) {
 import runtime from './loader-runtime.js';
 
 export default function loader(source) {
-  // Custom loader logic
+  // 커스텀 로더 로직
 
   return `${runtime({
     source,
@@ -238,13 +243,13 @@ export default function loader(source) {
 
 ### Absolute Paths
 
-Don't insert absolute paths into the module code as they break hashing when the root for the project is moved. There's a [`stringifyRequest`](https://github.com/webpack/loader-utils#stringifyrequest) method in `loader-utils` which can be used to convert an absolute path to a relative one.
+절대 경로는 프로젝트의 루트가 이동될 때 해싱이 끊어지므로 모듈 코드에 삽입하지 마세요. `loader-utils` 안에 절대 경로를 상대경로로 바꾸는 데 사용하는 [`stringifyRequest`](https://github.com/webpack/loader-utils#stringifyrequest)가 있습니다.
 
 ### Peer Dependencies
 
-If the loader you're working on is a simple wrapper around another package, then you should include the package as a `peerDependency`. This approach allows the application's developer to specify the exact version in the `package.json` if desired.
+작업하고 있는 로드가 다른 패키지의 간단한 wrapper라면, `peerDependency`로써 패키지를 포함할 수 있습니다. 이런 접근은 애플리케이션 개발자가 필요하다면 `package.json`안의 정확한 버전을 지정하도록 해줍니다.
 
-For instance, the `sass-loader` [specifies `node-sass`](https://github.com/webpack-contrib/sass-loader/blob/master/package.json) as peer dependency like so:
+예를 들어, `sass-loader`는 peer dependency와 같이 [`node-sass`를 지정합니다.](https://github.com/webpack-contrib/sass-loader/blob/master/package.json)
 
 ```json
 {
@@ -256,7 +261,7 @@ For instance, the `sass-loader` [specifies `node-sass`](https://github.com/webpa
 
 ## Testing
 
-So you've written a loader, followed the guidelines above, and have it set up to run locally. What's next? Let's go through a unit testing example to ensure our loader is working the way we expect. We'll be using the [Jest](https://jestjs.io/) framework to do this. We'll also install `babel-jest` and some presets that will allow us to use the `import` / `export` and `async` / `await`. Let's start by installing and saving these as a `devDependencies`:
+로더를 작성하고 위의 가이드라인에 따라 로컬에서 실행하도록 설정했습니다. 다음은 무엇일까요? 로더가 예상대로 작동하는지 확인하기 위해 유닛 테스트 예시를 살펴보겠습니다. 이를 위해 [Jest](https://jestjs.io/) 프레임워크를 사용할 예정입니다. 또한 `import`/`export`와 `async`/`await`를 사용할 수 있는 `babel-jest`와 일부 프리셋도 설치할 것입니다. 먼저 `devDependencies`로 설치하고 저장하겠습니다.
 
 ```bash
 npm install --save-dev jest babel-jest @babel/core @babel/preset-env
@@ -279,15 +284,13 @@ module.exports = {
 };
 ```
 
-Our loader will process `.txt` files and replace any instance of `[name]` with the `name` option given to the loader. Then it will output a valid JavaScript module containing the text as its default export:
+로더가 `.txt`파일을 처리하고 어느 인스턴스의 `[name]`을 로더에 주어진 `name` 옵션으로 바꿀 것입니다. 그러고 나서, 기본 출력으로써 문자를 담고 있는 유효한 JavaScript 모듈을 출력할 것입니다.
 
 **src/loader.js**
 
 ```js
-import { getOptions } from 'loader-utils';
-
 export default function loader(source) {
-  const options = getOptions(this);
+  const options = this.getOptions();
 
   source = source.replace(/\[name\]/g, options.name);
 
@@ -295,7 +298,7 @@ export default function loader(source) {
 }
 ```
 
-We'll use this loader to process the following file:
+다음 파일을 처리하기 위해 이 로더를 사용하겠습니다.
 
 **test/example.txt**
 
@@ -303,7 +306,7 @@ We'll use this loader to process the following file:
 Hey [name]!
 ```
 
-Pay close attention to this next step as we'll be using the [Node.js API](/api/node) and [`memfs`](https://github.com/streamich/memfs) to execute webpack. This lets us avoid emitting `output` to disk and will give us access to the `stats` data which we can use to grab our transformed module:
+webpack을 실행하기 위해 [Node.js API](/api/node)와 [`memfs`](https://github.com/streamich/memfs) 사용할 다음 단계에 세심한 주의를 기울이세요. 이는 디스크에 `output`을 출력하는 것을 막고, 변형한 모듈을 파악하기 위해 사용할 수 있는 `stats` 데이터에 접근할 수 있도록 할 것입니다.
 
 ```bash
 npm install --save-dev webpack memfs
@@ -351,9 +354,9 @@ export default (fixture, options = {}) => {
 };
 ```
 
-T> In this case, we've inlined our webpack configuration but you can also accept a configuration as a parameter to the exported function. This would allow you to test multiple setups using the same compiler module.
+T> 이 경우, webpack 설정을 인라인했지만 내보낸 기능에 대한 파라미터로 설정을 받아들일 수 있습니다. 이를 통해 동일한 컴파일 모듈을 사용하여 여러 설정을 테스트할 수 있습니다.
 
-And now, finally, we can write our test and add an npm script to run it:
+이제, 마지막으로, 테스트를 작성하고 npm script에 실행하도록 추가할 수 있습니다.
 
 **test/loader.test.js**
 
@@ -384,7 +387,7 @@ test('Inserts name and outputs JavaScript', async () => {
 }
 ```
 
-With everything in place, we can run it and see if our new loader passes the test:
+모든 것이 갖춰져 있으면, 그것을 실행하고 새로운 로더가 테스트를 통과했는지 볼 수 있습니다.
 
 ```bash
  PASS  test/loader.test.js
@@ -397,4 +400,4 @@ Time:        1.853s, estimated 2s
 Ran all test suites.
 ```
 
-It worked! At this point you should be ready to start developing, testing, and deploying your own loaders. We hope that you'll share your creations with the rest of the community!
+성공했습니다! 이제 자신만의 로더를 개발, 테스트 및 배포할 준비가 되어 있어야 합니다. 창작물을 커뮤니티의 다른 사람들과 공유해 주시기 바랍니다.
