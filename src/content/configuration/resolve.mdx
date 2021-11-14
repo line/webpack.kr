@@ -174,9 +174,9 @@ module.exports = {
 
 ### resolve.cacheWithContext
 
-`boolean` (since webpack 3.1.0)
+`boolean`
 
-안전하지 않은 캐시가 활성화되었을 경우에는 캐시키에 `request.context`를 포함합니다. 이 옵션은 [`enhanced-resolve`](https://github.com/webpack/enhanced-resolve/) 모듈에서 고려됩니다. webpack 3.1.0 이후로 resolve 또는 resolveLoader 플러그인이 제공되면 캐싱을 해석하는 컨텍스트가 무시됩니다. 이것은 성능 문제를 해결합니다.
+안전하지 않은 캐시가 활성화되었을 경우에는 캐시키에 `request.context`를 포함합니다. 이 옵션은 [`enhanced-resolve`](https://github.com/webpack/enhanced-resolve/) 모듈에서 고려됩니다. resolve 또는 resolveLoader 플러그인이 제공되면 캐싱을 해석하는 `컨텍스트`가 무시됩니다. 이것은 성능 문제를 해결합니다.
 
 ### resolve.conditionNames
 
@@ -264,6 +264,8 @@ module.exports = {
 ```
 
 ### resolve.fallback
+
+`object`
 
 정상적인 확인이 실패하면 모듈 요청을 리디렉션합니다.
 

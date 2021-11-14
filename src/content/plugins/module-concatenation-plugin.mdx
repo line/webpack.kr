@@ -5,42 +5,44 @@ contributors:
   - skipjack
   - TheLarkInn
   - byzyk
+translators: 
+  - jiwoo0629 
 ---
 
-In the past, one of webpack’s trade-offs when bundling was that each module in your bundle would be wrapped in individual function closures. These wrapper functions made it slower for your JavaScript to execute in the browser. In comparison, tools like Closure Compiler and RollupJS ‘hoist’ or concatenate the scope of all your modules into one closure and allow for your code to have a faster execution time in the browser.
+과거에 번들링을 할 때 webpack의 절충점 중 하나는 번들의 각 모듈이 개별 함수 클로저에 의해 래핑된다는 점이었습니다. 이러한 래퍼 함수는 브라우저에서 자바스크립트의 실행을 느리게 만들었습니다. 이와 달리, Closure Comiler와 RollupJS와 같은 도구는 모든 모듈을 하나의 클로저로 호이스팅 하거나 연결하여 코드가 브라우저에서 더 빠른 실행 시간을 갖게 했습니다.
 
-This plugin will enable the same concatenation behavior in webpack. By default this plugin is already enabled in [production `mode`](/configuration/mode/#mode-production) and disabled otherwise. If you need to override the production `mode` optimization, set the [`optimization.concatenateModules` option](/configuration/optimization/#optimizationconcatenatemodules) to `false`. To enable concatenation behavior in other modes, you can add `ModuleConcatenationPlugin` manually or use the `optimization.concatenateModules` option:
+이 플러그인은 위의 내용과 같은 연결 동작이 webpack에서 가능하게 해줍니다. 기본적으로 이 플러그인은 [production `mode`](/configuration/mode/#mode-production)에서는 이미 가능하고 나머지에서는 아직 가능하지 않습니다. 만약 생산 `mode` 최적화를 무효로 해야 하는 경우, [`optimization.concatenateModules` 옵션](/configuration/optimization/#optimizationconcatenatemodules)을 `false`로 설정하세요. 다른 모드에서 연결 동작을 가능하게 하고 싶을 경우, `ModuleConcatenationPlugin`을 수동으로 설정하거나 `optimization.concatenateModules` 옵션을 사용하세요.
 
 ```js
 new webpack.optimize.ModuleConcatenationPlugin();
 ```
 
-> This concatenation behavior is called “scope hoisting.”
->
-> Scope hoisting is specifically a feature made possible by ECMAScript Module syntax. Because of this webpack may fallback to normal bundling based on what kind of modules you are using, and [other conditions](https://medium.com/webpack/webpack-freelancing-log-book-week-5-7-4764be3266f5).
+> 이 연결 동작은 “범위 호이스팅” 이라고 불립니다. 
+> 
+> 범위 호이스팅은 특별히 ECMAScript Module 문법에서 사용 가능하도록 만들어진 형태입니다. 이로 인해 webpack은 현재 사용 중인 모듈의 종류와 [다른 여러 조건](https://medium.com/webpack/webpack-freelancing-log-book-week-5-7-4764be3266f5)에 따라 평범한 번들링으로 퇴화할 수도 있습니다. 
 
-W> Keep in mind that this plugin will only be applied to [ES6 modules](/api/module-methods/#es6-recommended) processed directly by webpack. When using a transpiler, you'll need to disable module processing (e.g. the [`modules`](https://babeljs.io/docs/en/babel-preset-env#modules) option in Babel).
+W> 이 플러그인은 webpack에서 직접 처리되는 [ES6 modules](/api/module-methods/#es6-recommended)에만 적용된 다는 점을 명심하세요. 트랜스파일러를 사용할 경우 모듈 처리를 비활성화해야 합니다. (예) Babel의 [`modules`] (https://babeljs.io/docs/en/babel-preset-env#modules) 옵션
 
 ## Optimization Bailouts
 
-As the article explains, webpack attempts to achieve partial scope hoisting. It will merge modules into a single scope but cannot do so in every case. If webpack cannot merge a module, the two alternatives are Prevent and Root. Prevent means the module must be in its own scope. Root means a new module group will be created. The following conditions determine the outcome:
+글에서 설명하듯이 webpack은 부분적인 범위 호이스팅을 시도합니다. 이는 모듈을 하나의 범위로 합치지만 모든 경우에 합치지는 못합니다. 만약 webapck이 모듈을 합칠 수 없다면 두 가지 대안은 Prevent와 Root 입니다. Prevent는 모듈이 반드시 그 자신의 범위 안에 있어야 한다는 것을 의미합니다. Root는 새로운 모듈 그룹이 생성될 것이라는 의미입니다. 다음의 조건이 결과를 결정합니다.
 
-| Condition                                     | Outcome |
-| --------------------------------------------- | ------- |
-| Non ES6 Module                                | Prevent |
-| Imported By Non Import                        | Root    |
-| Imported From Other Chunk                     | Root    |
-| Imported By Multiple Other Module Groups      | Root    |
-| Imported With `import()`                      | Root    |
-| Affected By `ProvidePlugin` Or Using `module` | Prevent |
-| HMR Accepted                                  | Root    |
-| Using `eval()`                                | Prevent |
-| In Multiple Chunks                            | Prevent |
-| `export * from "cjs-module"`                  | Prevent |
+| Condition                                      | Outcome |
+| ---------------------------------------------  | ------- |
+| Non ES6 Module                                 | Prevent |
+| Non Import로 가져옴                            | Root    |
+| 다른 청크에서 가져옴                           | Root    |
+| 다수의 다른 모듈 그룹에서 가져옴               | Root    |
+| `import()`로 가져옴                           | Root    |
+| `ProvidePlugin`의 영향을 받거나 `module` 사용 | Prevent |
+| HMR 허용                                      | Root    |
+| `eval()` 사용                                 | Prevent |
+| 다수의 청크                                   | Prevent |
+| "cjs-module"로부터 * 내보내기                 | Prevent |
 
 ### Module Grouping Algorithm
 
-The following pseudo JavaScript explains the algorithm:
+아래의 자바스크립트 의사코드는 이 알고리즘을 설명합니다.
 
 ```js
 modules.forEach((module) => {
@@ -84,7 +86,7 @@ function tryToAdd(group, module) {
 
 ### Debugging Optimization Bailouts
 
-When using the webpack CLI, the `--display-optimization-bailout` flag will display bailout reasons. When using the webpack config, add the following to the `stats` object:
+webpack CLI를 사용할 경우 `--display-optimization-bailout` 플래그는 bailout 원인을 보여줍니다. webpack config를 사용할 경우 `stats` 객체에 다음을 추가하세요.
 
 ```js
 module.exports = {
