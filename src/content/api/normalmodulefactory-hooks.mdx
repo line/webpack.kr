@@ -28,7 +28,7 @@ NormalModuleFactory.hooks.someHook.for('identifier').tap(/* ... */);
 
 `AsyncSeriesBailHook`
 
-새 의존성 요청이 발견되면 호출됩니다. 의존성은 `false`를 반환하여 무시할 수 있습니다. 그렇지 않으면 계속 진행하기 위해서는 `정의되지 않은` 상태로 반환되어야 합니다.
+새 의존성 요청이 발견되면 호출됩니다. 의존성은 `false`를 반환하여 무시할 수 있습니다. 그렇지 않으면 계속 진행하기 위해서는 `undefined` 상태로 반환되어야 합니다.
 
 - 콜백 파라미터: `resolveData`
 
@@ -36,7 +36,7 @@ NormalModuleFactory.hooks.someHook.for('identifier').tap(/* ... */);
 
 `AsyncSeriesBailHook`
 
-해결을 시작하기 전에 호출됩니다. 계속 진행하기 위해서는 `정의되지 않은` 상태로 반환되어야 합니다.
+해결을 시작하기 전에 호출됩니다. 계속 진행하기 위해서는 `undefined` 상태로 반환되어야 합니다.
 
 - 콜백 파라미터: `resolveData`
 
@@ -44,7 +44,7 @@ NormalModuleFactory.hooks.someHook.for('identifier').tap(/* ... */);
 
 `AsyncSeriesBailHook`
 
-요청이 해결되기 전에 호출됩니다. `false`를 반환하여 의존성을 무시할 수 있습니다. 모듈 인스턴스를 반환하면 프로세스가 완료됩니다. 그렇지 않으면 계속 진행하기 위해서는 `정의되지 않은` 상태로 반환되어야 합니다.
+요청이 해결되기 전에 호출됩니다. `false`를 반환하여 의존성을 무시할 수 있습니다. 모듈 인스턴스를 반환하면 프로세스가 완료됩니다. 그렇지 않으면 계속 진행하기 위해서는 `undefined` 상태로 반환되어야 합니다.
 
 - 콜백 파라미터: `resolveData`
 
