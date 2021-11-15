@@ -46,7 +46,7 @@ webpack-cli는 webpack을 더 쉽게 사용할 수 있도록 다양한 명령을
 | --------------------------- | ----------------------------------------------------- | -------------------------------------------------------------------------- |
 | [`build`](#build)           | `build\|bundle\|b [entries...] [options]`             | webpack을 실행합니다. (기본 명령어, 생략 가능).                            |
 | [`configtest`](#configtest) | `configtest\|t [config-path]`                         | webpack 설정을 검증합니다.                                                 |
-| [`help`](#help)             | `help\|h [command] [option]`                          | 명렁어 및 옵션에 대한 도움말을 표시합니다.                                 |
+| [`help`](#help)             | `help\|h [command] [option]`                          | 명령어 및 옵션에 대한 도움말을 표시합니다.                                 |
 | [`info`](#info)             | `info\|i [options]`                                   | 시스템 정보를 출력합니다.                                                  |
 | [`init`](#init)             | `init\|create\|c\|new\|n [generation-path] [options]` | 새로운 webpack 프로젝트를 초기화합니다.                                    |
 | [`loader`](#loader)         | `loader\|l [output-path] [options]`                   | 로더를 스캐폴드합니다.                                                     |
@@ -703,3 +703,5 @@ TypeScript에서 기본 ESM을 사용하는 경우 이와 같은 오류가 발�
 ```bash
 NODE_OPTIONS="--loader ts-node/esm" npx webpack --entry ./src/index.js --mode production
 ```
+
+자세한 내용은 [`TypeScript`로 webpack 설정 작성](/configuration/configuration-languages/#typescript)에 대한 문서를 참고하세요.

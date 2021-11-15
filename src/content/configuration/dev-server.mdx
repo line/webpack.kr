@@ -38,7 +38,7 @@ This set of options is picked up by [webpack-dev-server](https://github.com/webp
 **webpack.config.js**
 
 ```javascript
-var path = require('path');
+const path = require('path');
 
 module.exports = {
   //...
@@ -85,6 +85,12 @@ npx webpack serve
 ```
 
 A list of CLI options for `serve` is available [here](https://github.com/webpack/webpack-cli/blob/master/SERVE-OPTIONS-v4.md)
+
+### Usage via API
+
+While it's recommended to run `webpack-dev-server` via the CLI, you may also choose to start a server via the API.
+
+See the related [API documentation for `webpack-dev-server`](/api/webpack-dev-server/).
 
 ## devServer.allowedHosts
 
@@ -326,6 +332,71 @@ To disable:
 npx webpack serve --no-client-progress
 ```
 
+### reconnect
+
+`boolean = true` `number`
+
+<Badge text="v4.4.0+" />
+
+Tells dev-server the number of times it should try to reconnect the client. When `true` it will try to reconnect unlimited times.
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  //...
+  devServer: {
+    client: {
+      reconnect: true,
+    },
+  },
+};
+```
+
+Usage via the CLI:
+
+```bash
+npx webpack serve --client-reconnect
+```
+
+When set to `false` it will not try to reconnect.
+
+```javascript
+module.exports = {
+  //...
+  devServer: {
+    client: {
+      reconnect: false,
+    },
+  },
+};
+```
+
+Usage via the CLI:
+
+```bash
+npx webpack serve --no-client-reconnect
+```
+
+You can also specify the exact number of times the client should try to reconnect.
+
+```javascript
+module.exports = {
+  //...
+  devServer: {
+    client: {
+      reconnect: 5,
+    },
+  },
+};
+```
+
+Usage via the CLI:
+
+```bash
+npx webpack serve --client-reconnect 5
+```
+
 ### webSocketTransport
 
 `'ws' | 'sockjs'` `string`
@@ -533,6 +604,8 @@ Provide your own certificate using the [https](#devserverhttps) option:
 **webpack.config.js**
 
 ```javascript
+const fs = require('fs');
+
 module.exports = {
   //...
   devServer: {
@@ -540,7 +613,7 @@ module.exports = {
     https: {
       key: fs.readFileSync('/path/to/server.key'),
       cert: fs.readFileSync('/path/to/server.crt'),
-      cacert: fs.readFileSync('/path/to/ca.pem'),
+      ca: fs.readFileSync('/path/to/ca.pem'),
     },
   },
 };
@@ -549,14 +622,16 @@ module.exports = {
 To pass your certificate via CLI, use the following options:
 
 ```bash
-npx webpack serve --http2 --https-key ./path/to/server.key --https-cert ./path/to/server.crt --https-cacert ./path/to/ca.pem
+npx webpack serve --http2 --https-key ./path/to/server.key --https-cert ./path/to/server.crt --https-ca ./path/to/ca.pem
 ```
+
+W> This option is deprecated in favor of [devServer.server](#devserverserver) option.
 
 ## devServer.https
 
 `boolean` `object`
 
-By default, dev-server will be served over `HTTP`. It can optionally be served over `HTTP/2` with `HTTPS`:
+By default, dev-server will be served over `HTTP`. It can optionally be served over `HTTPS`:
 
 **webpack.config.js**
 
@@ -589,10 +664,10 @@ With the above setting, a self-signed certificate is used, but you can provide y
 module.exports = {
   devServer: {
     https: {
-      cacert: './server.pem',
-      pfx: './server.pfx',
-      key: './server.key',
-      cert: './server.crt',
+      ca: './path/to/server.pem',
+      pfx: './path/to/server.pfx',
+      key: './path/to/server.key',
+      cert: './path/to/server.crt',
       passphrase: 'webpack-dev-server',
       requestCert: true,
     },
@@ -605,7 +680,7 @@ This object is passed straight to the Node.js HTTPS module, so see the [HTTPS do
 To pass your own certificate via the CLI use the following options:
 
 ```bash
-npx webpack serve --https-key ./path/to/server.key --https-cert ./path/to/server.crt --https-cacert ./path/to/ca.pem
+npx webpack serve --https-request-cert --https-key ./path/to/server.key --https-cert ./path/to/server.crt --https-ca ./path/to/ca.pem --https-pfx ./path/to/server.pfx --https-passphrase webpack-dev-server
 ```
 
 `webpack-dev-server >= v4.2.0` allows you to set additional [TLS options](https://nodejs.org/api/tls.html#tls_tls_createsecurecontext_options) like `minVersion`. Also, you can directly pass the contents of respective files:
@@ -633,9 +708,11 @@ module.exports = {
 
 W> Don't specify `https.ca` and `https.cacert` options together, if specified `https.ca` will be used. `https.cacert` is deprecated and will be removed in the next major release.
 
+W> This option is deprecated in favor of [devServer.server](#devserverserver) option.
+
 ## devServer.headers
 
-`function` `object`
+`array` `function` `object`
 
 Adds headers to all responses:
 
@@ -648,6 +725,28 @@ module.exports = {
     headers: {
       'X-Custom-Foo': 'bar',
     },
+  },
+};
+```
+
+You can also pass an array:
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  //...
+  devServer: {
+    headers: [
+      {
+        key: 'X-Custom',
+        value: 'foo',
+      },
+      {
+        key: 'Y-Custom',
+        value: 'bar',
+      },
+    ],
   },
 };
 ```
@@ -831,7 +930,7 @@ Usage via the CLI:
 npx webpack serve --hot only
 ```
 
-T> Note that [`webpack.HotModuleReplacementPlugin`](/plugins/hot-module-replacement-plugin/) is required to fully enable HMR. If `webpack` or `webpack-dev-server` are launched with the `--hot` option, this plugin will be added automatically, so you may not need to add this to your `webpack.config.js`. See the [HMR concepts page](/concepts/hot-module-replacement/) for more information.
+T> Since webpack-dev-server v4, HMR is enabled by default. It automatically applies [`webpack.HotModuleReplacementPlugin`](/plugins/hot-module-replacement-plugin/) which is required to enable HMR. So you don't have to add this plugin to your `webpack.config.js` when `hot` is set to `true` in config or via the CLI option `--hot`. See the [HMR concepts page](/concepts/hot-module-replacement/) for more information.
 
 ## devServer.ipc
 
@@ -1312,6 +1411,125 @@ module.exports = {
 };
 ```
 
+## devServer.server
+
+`'http' | 'https' | 'spdy'` `object`
+
+<Badge text="v4.4.0+" />
+
+Allows to set server and options (by default 'http').
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  //...
+  devServer: {
+    server: 'http',
+  },
+};
+```
+
+Usage via the CLI:
+
+```bash
+npx webpack serve --server-type http
+```
+
+To serve over `HTTPS` with a self-signed certificate:
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  //...
+  devServer: {
+    server: 'https',
+  },
+};
+```
+
+Usage via the CLI:
+
+```bash
+npx webpack serve --server-type https
+```
+
+To serve over `HTTP/2` using [spdy](https://www.npmjs.com/package/spdy) with a self-signed certificate:
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  //...
+  devServer: {
+    server: 'spdy',
+  },
+};
+```
+
+Usage via the CLI:
+
+```bash
+npx webpack serve --server-type spdy
+```
+
+Use the object syntax to provide your own certificate:
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  //...
+  devServer: {
+    server: {
+      type: 'https',
+      options: {
+        ca: './path/to/server.pem',
+        pfx: './path/to/server.pfx',
+        key: './path/to/server.key',
+        cert: './path/to/server.crt',
+        passphrase: 'webpack-dev-server',
+        requestCert: true,
+      },
+    },
+  },
+};
+```
+
+Usage via the CLI:
+
+```bash
+npx webpack serve --server-type https --server-options-key ./path/to/server.key --server-options-cert ./path/to/server.crt --server-options-ca ./path/to/ca.pem --server-options-passphrase webpack-dev-server
+```
+
+It also allows you to set additional [TLS options](https://nodejs.org/api/tls.html#tls_tls_createsecurecontext_options) like `minVersion` and you can directly pass the contents of respective files:
+
+**webpack.config.js**
+
+```javascript
+const fs = require('fs');
+const path = require('path');
+
+module.exports = {
+  //...
+  devServer: {
+    server: {
+      type: 'https',
+      options: {
+        minVersion: 'TLSv1.1',
+        key: fs.readFileSync(path.join(__dirname, './server.key')),
+        pfx: fs.readFileSync(path.join(__dirname, './server.pfx')),
+        cert: fs.readFileSync(path.join(__dirname, './server.crt')),
+        ca: fs.readFileSync(path.join(__dirname, './ca.pem')),
+        passphrase: 'webpack-dev-server',
+        requestCert: true,
+      },
+    },
+  },
+};
+```
+
 ## devServer.setupExitSignals
 
 `boolean = true`
@@ -1442,6 +1660,8 @@ module.exports = {
 T> It is recommended to use an absolute path.
 
 ### staticOptions
+
+`object`
 
 It is possible to configure advanced options for serving static files from [`static.directory`](#directory). See the [Express documentation](http://expressjs.com/en/4x/api.html#express.static) for the possible options.
 
