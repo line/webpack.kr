@@ -149,7 +149,7 @@ WebAssembly 및 JSON은 제안이 아직 완료되지 않은 동안에도 이미
 그렇다고 해서 그 위에 추가 사용자 지정을 추가할 수 있다는 의미는 아닙니다.
 많은 개발자가 원시 CSS를 사용하지 않고 그 위에 전처리기를 사용하는 것을 봅니다(네이티브 CSS 지원으로 이것은 다음과 같습니다: `{ test: /\.sass$/, type: "stylesheet", use: "sass-loader" }`).
 
-[State of CSS 2020](https://2020.stateofcss.com/en-US/technologies/css-in-js/)에 따르면 2020 현재 CSS 모듈식 CSS를 작성하는 인기 있는 방법이며 기본 모듈 유형입니다. webpack을 사용하면 Tree Shaking(Used Exports Optimization 및 Side-Effects 최적화)과 같은 모듈 그래프 최적화의 이점을 누릴 수 있습니다. CSS 모듈을 사용할 때 이것은 결과 CSS가 애플리케이션에서 참조하는 CSS 규칙만 포함한다는 것을 의미합니다(JS Tree Shaking에서 사용된 것처럼).
+[State of CSS 2020](https://2020.stateofcss.com/en-US/technologies/css-in-js/)에 따르면 2020 현재 CSS 모듈은 모듈식 CSS를 작성하는 인기 있는 방법이며 기본 모듈 유형입니다. webpack을 사용하면 Tree Shaking(Used Exports Optimization 및 Side-Effects 최적화)과 같은 모듈 그래프 최적화의 이점을 누릴 수 있습니다. CSS 모듈을 사용할 때 이것은 결과 CSS가 애플리케이션에서 참조하는 CSS 규칙만 포함한다는 것을 의미합니다(JS Tree Shaking에서 사용된 것처럼).
 
 응용 프로그램 webpack에 대한 글로벌 지식으로 가능한 몇 가지 잠재적인 CSS 모듈 특정 최적화가 있습니다. CSS 규칙은 공통 속성의 반복을 피하고자 더 작은 규칙으로 분할될 수 있습니다. 이렇게 하면 출력 CSS에 반복되는 속성(Atomic CSS)이 더 적기 때문에 페이로드가 훨씬 작아질 수 있습니다.
 
