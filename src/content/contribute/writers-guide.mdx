@@ -4,19 +4,21 @@ sort: 1
 contributors:
   - pranshuchittora
   - EugeneHlushko
+translators:
+  - angrymusic
 ---
 
-The following sections contain all you need to know about editing and formatting the content within this site. Make sure to do some research before starting your edits or additions. Sometimes the toughest part is finding where the content should live and determining whether or not it already exists.
+아래에는 콘텐츠 편집 및 추가에 대해 알아야 할 모든 내용이 포함되어 있습니다. 편집이나 추가를 시작하기 전에 몇 가지 확인하세요. 때때로 가장 어려운 부분은 콘텐츠가 있어야 할 위치를 찾고 콘텐츠가 이미 존재하는지 여부를 결정하는 것입니다.
 
 ## Process
 
-1. Check related issue if an article links to one.
-2. Hit `edit` and expand on the structure.
-3. PR changes.
+1. 글이 링크되어 있다면 관련된 이슈를 확인하세요.
+2. `편집`을 누르고 구조를 확장하세요.
+3. 변경점들을 Pull Request에 생성하세요.
 
 ## YAML Frontmatter
 
-Each article contains a small section at the top written in [YAML Frontmatter](https://jekyllrb.com/docs/frontmatter/):
+모든 글들은 상단에 [YAML Frontmatter](https://jekyllrb.com/docs/frontmatter/)로 쓰인 작은 섹션을 포함합니다.
 
 ```yaml
 ---
@@ -31,30 +33,30 @@ related:
 ---
 ```
 
-Let's break these down:
+각각에 대해 알아보겠습니다.
 
-- `title`: The name of the article.
-- `group`: The name of the sub-section
-- `sort`: The order of the article within its section (or) sub-section if it is present.
-- `contributors`: A list of GitHub usernames who have contributed to this article.
-- `related`: Any related reading or useful examples.
+- `title`: 글의 제목입니다.
+- `group`: 하위 섹션의 제목입니다.
+- `sort`: 해당 섹션 (또는) 하위 섹션 내에서 글의 순서입니다.
+- `contributors`: 글에 기여한 사람들이 GitHub username 리스트입니다.
+- `related`: 관련된 읽을거리 또는 유용한 예시입니다.
 
-Note that `related` will generate a **Further Reading** section at the bottom of the page and `contributors` will yield a **Contributors** section below it. If you edit an article and would like recognition, don't hesitate to add your GitHub username to the `contributors` list.
+`related`는 페이지 하단에 **Further Reading** 섹션을 생성하고 `contributors`는 그 아래에 **Contributors** 섹션을 생성합니다. 글을 편집하고 인정받고 싶다면 주저하지 말고 GitHub 사용자 이름을 `contributors` 목록에 추가하세요.
 
 ## Article Structure
 
-1. Brief Introduction - a paragraph or two so you get the basic idea about the what and why.
-2. Outline Remaining Content – how the content will be presented.
-3. Main Content - tell what you promised to tell.
-4. Conclusion - tell what you told and recap the main points.
+1. 간략한 소개 - 어떤 것을 왜 하였는지에 대한 아이디어를 적은 한두 문단입니다.
+2. 남은 콘텐츠 개요 – 콘텐츠가 표시되는 방식입니다.
+3. 주요 콘텐츠 - 주요 내용들을 말하세요.
+4. 결론 - 내용들을 정리하고 주요 포인트들을 요약합니다.
 
 ## Typesetting
 
-- Webpack can be written with a capital W at the beginning of a sentence. ([source](https://github.com/webpack/media#name))
-- loaders are enclosed in backticks and [kebab-cased](https://en.wikipedia.org/w/index.php?title=Kebab_case): `css-loader`, `ts-loader`, …
-- plugins are enclosed in backticks and [camel-cased](https://en.wikipedia.org/wiki/Camel_case): `BannerPlugin`, `NpmInstallWebpackPlugin`, …
-- Use "webpack 2" to refer to a specific webpack version (~~"webpack v2"~~)
-- Use ES5; ES2015, ES2016, … to refer to the ECMAScript standards (~~ES6~~, ~~ES7~~)
+- Webpack은 문장의 시작 부분에 대문자 W로 작성할 수 있습니다. ([출처](https://github.com/webpack/media#name))
+- 로더는 역 따옴표로 묶여 있으며 [kebab-cased](https://en.wikipedia.org/w/index.php?title=Kebab_case)입니다. 다음은 예시 입니다. `css-loader`, `ts-loader`, …
+- 플러그인은 백틱 및 [camel-cased](https://en.wikipedia.org/wiki/Camel_case)로 묶입니다. 다음은 예시 입니다. `BannerPlugin`, `NpmInstallWebpackPlugin`, …
+- "webpack 2"를 사용하여 특정 Webpack 버전을 나타냅니다(~~"webpack v2"~~).
+- ES5 사용; ES2015, ES2016, ... ECMAScript 표준 참조(~~ES6~~, ~~ES7~~)
 
 ## Formatting
 
@@ -72,22 +74,22 @@ foo();
 
 #### Quotation
 
-Use single quotes in code snippets and project files (`.jsx`, `.scss` etc):
+코드 스니펫과 프로젝트 파일(`.jsx`, `.scss` 등)에 작은따옴표를 사용하세요.
 
 ```diff
 - import webpack from "webpack";
 + import webpack from 'webpack';
 ```
 
-And in inline backticks:
+그리고 아래는 인라인 백틱 안에서의 예시입니다.
 
 **correct**
 
-Set value to `'index.md'`...
+값을 `'index.md'`로 설정...
 
 **incorrect**
 
-Set value to `"index.md"`...
+값을 `"index.md"`로 설정...
 
 ### Lists
 
@@ -95,21 +97,21 @@ Set value to `"index.md"`...
 - Foo
 - Zoo
 
-Lists should be ordered alphabetically.
+목록은 알파벳순으로 정렬되어야 합니다.
 
 ### Tables
 
-| Parameter  | Explanation                                      | Input Type | Default Value |
-| ---------- | ------------------------------------------------ | ---------- | ------------- |
-| --debug    | Switch loaders to debug mode                     | boolean    | false         |
-| --devtool  | Define source map type for the bundled resources | string     | -             |
-| --progress | Print compilation progress in percentage         | boolean    | false         |
+| Parameter  | Explanation                         | Input Type | Default Value |
+| ---------- | ----------------------------------- | ---------- | ------------- |
+| --debug    | 로더를 디버그 모드로 변환           | boolean    | false         |
+| --devtool  | 번들 리소스에 대한 소스맵 유형 정의 | string     | -             |
+| --progress | 백분율로 컴파일 진행률 출력         | boolean    | false         |
 
-Tables should also be ordered alphabetically.
+테이블도 알파벳순으로 정렬해야 합니다.
 
 ### Configuration Properties
 
-The [configuration](/configuration) properties should be ordered alphabetically as well:
+[설정](/configuration) 속성도 알파벳순으로 정렬해야 합니다.
 
 - `devServer.compress`
 - `devServer.hot`
@@ -121,105 +123,105 @@ The [configuration](/configuration) properties should be ordered alphabetically 
 
 **Syntax: \>**
 
-> This is a blockquote.
+> 이것은 Blockquote입니다.
 
 #### Tip
 
 **Syntax: T\>**
 
-T> This is a tip.
+T> 이것은 Tip입니다.
 
 **Syntax: W\>**
 
-W> This is a warning.
+W> 이것은 Warning입니다.
 
 **Syntax: ?\>**
 
-?> This is a todo.
+?> 이것은 Todo입니다.
 
 ### Assumptions and simplicity
 
-Do not make assumptions when writing the documentation.
+문서를 작성할 때 가정하지 마세요.
 
 ```diff
-- You might already know how to optimize bundle for production...
-+ As we've learned in [production guide](/guides/production/)...
+- 프로덕션을 위해 번들을 최적화하는 방법을 이미 알고 있을 수 있습니다...
++ 이미 우리는 [프로덕션 가이드](/guides/production/)에서 배웠습니다...
 ```
 
-Please do not assume things are simple. Avoid words like 'just', 'simply'.
+모든 것이 단순하다고 가정하지 마세요. '그냥', '간단하게'와 같은 단어를 피하세요.
 
 ```diff
-- Simply run command...
-+ Run the `command-name` command...
+- 간단히 명령을 실행하세요...
++ `command-name` 명령을 실행하세요...
 ```
 
 ### Configuration defaults and types
 
-Always provide types and defaults to all of the documentation options in order to keep the documentation accessible and well-written. We are adding types and defaults after entitling the documented option:
+문서를 쉽게 이해할 수 있고 잘 작성할 수 있도록 항상 모든 문서 옵션에 유형과 기본값을 제공하세요. 저희는 문서화된 옵션은 제목으로 작성한 후 유형과 기본값을 추가합니다.
 
 **configuration.example.option**
 
 `string = 'none'`
 
-Where `= 'none'` means that the default value is `'none'` for the given option.
+여기서 `= 'none'`은 주어진 옵션에 대한 기본값이 `'none'`임을 의미합니다.
 
 `string = 'none': 'none' | 'development' | 'production'`
 
-Where `: 'none' | 'development' | 'production'` enumerates the possible type values, in this case, three strings are acceptable: `'none'`, `'development'`, and `'production'`.
+여기서 `: 'none' | 'development' | 'production'`에는 가능한 유형 값을 열거합니다. 이 경우에는 `'none'`, `'development'` 및 `'production'`의 세 가지 문자열을 사용할 수 있습니다.
 
-Use space between types to list all available types for the given option:
+주어진 옵션에 대해 사용 가능한 모든 유형을 나열하려면 유형 사이에 공백을 사용하세요.
 
 `string = 'none': 'none' | 'development' | 'production'` `boolean`
 
-To mark an array, use square brackets:
+배열을 표시하려면 대괄호를 사용하세요.
 
 `string` `[string]`
 
-If multiple types are allowed in `array`, use comma:
+`array`에 여러 유형이 허용되는 경우 쉼표를 사용합니다.
 
 `string` `[string, RegExp, function(arg) => string]`
 
-To mark a function, also list arguments when they are available:
+함수를 표시하려면 사용 가능한 인수도 나열하세요.
 
 `function (compilation, module, path) => boolean`
 
-Where `(compilation, module, path)` lists the arguments that the provided function will receive and `=> boolean` means that the return value of the function must be a `boolean`.
+여기서 `(compilation, module, path)`에는 제공된 함수가 수신할 인수를 나열하고 `=> boolean`은 함수의 반환 값이 `boolean`이어야 함을 의미합니다.
 
-To mark a Plugin as an available option value type, use the camel case title of the `Plugin`:
+플러그인을 사용 가능한 옵션 값 유형으로 표시하려면 `Plugin`의 camel-cased 형식의 제목을 사용하세요.
 
 `TerserPlugin` `[TerserPlugin]`
 
-Which means that the option expects one or few `TerserPlugin` instances.
+이는 옵션이 하나 또는 소수의 `TerserPlugin` 인스턴스를 예상한다는 것을 의미합니다.
 
-To mark a number, use `number`:
+숫자를 표시하려면 `number`를 사용하세요.
 
 `number = 15: 5, 15, 30`
 
-To mark an object, use `object`:
+객체를 표시하려면 `object`를 사용하세요.
 
 `object = { prop1 string = 'none': 'none' | 'development' | 'production', prop2 boolean = false, prop3 function (module) => string }`
 
-When object's key can have multiple types, use `|` to list them. Here is an example, where `prop1` can be both a string and an array of strings:
+객체의 키가 여러 유형을 가질 수 있는 경우 `|`를 사용하여 나열하세요. 다음은 `prop1`이 문자열과 문자열 배열 모두일 수 있는 예입니다.
 
 `object = { prop1 string = 'none': 'none' | 'development' | 'production' | [string]}`
 
-This allows us to display the defaults, enumeration and other information.
+이를 통해 기본값, 열거 및 기타 정보를 표시할 수 있습니다.
 
-If the object's key is dynamic, user-defined, use `<key>` to describe it:
+객체의 키가 동적이며 사용자 정의된 경우 `<key>`를 사용하여 설명합니다.
 
 `object = { <key> string }`
 
 ### Options shortlists and their typing
 
-Sometimes, we want to describe certain properties of objects and functions in lists. When applicable add typing directly to the list where properties are enlisted:
+때때로 목록에 있는 객체와 함수의 특정 속성을 설명하고 싶을 때가 있습니다. 해당하는 경우 속성이 등록된 목록에 직접 입력을 추가합니다.
 
 - `madeUp` (`boolean = true`): short description
 - `shortText` (`string = 'i am text'`): another short description
 
-W> `:` is not a necessity here, note the property, type and default.
+W> `:`는 여기에서 필수가 아닙니다. 속성, 유형 및 기본값에 유의하세요.
 
-An example can be found on the [`options` section of the EvalSourceMapDevToolPlugin's page](/plugins/eval-source-map-dev-tool-plugin/#options).
+예제는 [EvalSourceMapDevToolPlugin 페이지의 `options` 섹션](/plugins/eval-source-map-dev-tool-plugin/#options)에서 찾을 수 있습니다.
 
 ### Adding links
 
-Please use relative URLs (such as `/concepts/mode/`) to link our own content instead of absolute URLs (such as `https://webpack.js.org/concepts/mode/`).
+절대적 URL(예: `https://webpack.js.org/concepts/mode/`) 대신 상대적 URL(예: `/concepts/mode/`)을 사용하여 자체 콘텐츠를 연결하세요.
