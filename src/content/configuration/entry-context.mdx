@@ -81,6 +81,7 @@ module.exports = {
       filename: 'pages/personal.js',
       dependOn: 'shared',
       chunkLoading: 'jsonp',
+      asyncChunks: true, // 요청 시 로드되는 비동기 청크 생성
       layer: 'name of layer', // 엔트리 포인트에 대한 레이어 설정
     },
   },
@@ -179,7 +180,7 @@ module.exports = {
 ```js
 module.exports = {
   entry() {
-    return fetchPathsFromSomeExternalSource(); // returns a promise that will be resolved with something like ['src/main-layout.js', 'src/admin-layout.js']
+    return fetchPathsFromSomeExternalSource(); // ['src/main-layout.js', 'src/admin-layout.js']와 같이 해석할 promise를 반환합니다.
   },
 };
 ```
