@@ -5,15 +5,17 @@ contributors:
   - EugeneHlushko
   - byzyk
   - akgupta0777
+translators:
+  - chopmozzi
 ---
 
-Generate Chrome profile file which includes timings of plugins execution. Outputs `events.json` file by default. It is possible to provide custom file path using `outputPath` option.
+플러그인 실행 시간이 포함된 Chrome 프로필 파일을 생성합니다. 기본적으로 `events.json` 파일을 출력합니다. `outputPath`옵션을 사용하여 커스텀 파일 경로를 제공할 수 있습니다.
 
-> Note : ProfilingPlugin accepts only absolute paths.
+> 참고: ProfilingPlugin은 절대 경로만 사용합니다.
 
 ## Options
 
-- `outputPath`: An absolute path to a custom output file (json)
+- `outputPath`: 커스텀 출력 파일(json)의 절대 경로
 
 ## Usage: default
 
@@ -29,10 +31,10 @@ new webpack.debug.ProfilingPlugin({
 });
 ```
 
-In order to view the profile file:
+프로필 파일을 보기 위해서는 다음과 같은 과정을 따릅니다.
 
-1. Run webpack with `ProfilingPlugin`.
-2. Go to Chrome, open DevTools, and go to the `Performance` tab (formerly `Timeline`).
-3. Drag and drop generated file (`events.json` by default) into the profiler.
+1. `ProfilingPlugin`과 함께 webpack을 실행합니다.
+2. Chrome으로 이동하여 DevTools를 열고 `Performance` 탭(이전 명칭 `Timeline`)으로 이동합니다.
+3. 생성된 파일(기본 값 `events.json`)을 profiler로 끌어다 놓습니다.
 
-It will then display timeline stats and calls per plugin!
+위와 같은 과정을 거치면 plugin당 timeline 통계와 호출들이 표시될 것입니다!

@@ -1,17 +1,19 @@
-const path = require('path');
-const webpack = require('webpack');
-const { merge } = require('webpack-merge');
-const HTMLPlugin = require('html-webpack-plugin');
-const DirectoryTreePlugin = require('directory-tree-webpack-plugin');
-const common = require('./webpack.common.js');
-const {
+import path from 'path';
+import { merge } from 'webpack-merge';
+import HTMLPlugin from 'html-webpack-plugin';
+import DirectoryTreePlugin from 'directory-tree-webpack-plugin';
+import common from './webpack.common.mjs';
+import {
   enhance,
   filter,
   sort,
-} = require('./src/utilities/content-tree-enhancers.js');
-const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+} from './src/utilities/content-tree-enhancers.mjs';
+import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-module.exports = (env) =>
+export default (env) =>
   merge(common(env), {
     experiments: {
       lazyCompilation: true,
@@ -22,7 +24,6 @@ module.exports = (env) =>
       index: './index.jsx',
     },
     plugins: [
-      new webpack.HotModuleReplacementPlugin(),
       new ReactRefreshWebpackPlugin(),
       new HTMLPlugin({
         template: 'index.html',

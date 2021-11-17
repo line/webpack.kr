@@ -8,30 +8,30 @@ contributors:
   - EugeneHlushko
   - FadySamirSadek
   - iamakulov
+  - chenxsan
+translators:
+  - moonheekim0118
 ---
 
-IgnorePlugin prevents the generation of modules for `import` or `require` calls matching the regular expressions or filter functions:
+IgnorePlugin은 정규 표현식 또는 필터 함수와 일치하는 `import` 또는 `require` 호출에 대한 모듈 생성을 방지합니다.
 
 ## Using regular expressions
 
-- `resourceRegExp`: A RegExp to test the resource against.
-- `contextRegExp`: (optional) A RegExp to test the context (directory) against.
+- `resourceRegExp`: 리소스 테스트를 위한 정규 표현식
+- `contextRegExp`: (선택) 컨텍스트 (디렉터리) 테스트를 위한 정규 표현식
 
 ```javascript
 new webpack.IgnorePlugin({ resourceRegExp, contextRegExp });
-// Supported in webpack 4 and earlier, unsupported in webpack 5:
-new webpack.IgnorePlugin(resourceRegExp, [contextRegExp]);
 ```
 
 ## Using filter functions
 
-- `checkResource (resource, context)` A Filter function that receives `resource` and `context` as arguments, must return boolean.
-- `checkContext (context)` was **removed in webpack 5** as `checkResource` already gets context.
+- `checkResource (resource, context)`는 `resource`와 `context`를 인수로 받는 필터 함수로, 불리언 값을 반환해야 합니다.
 
 ```javascript
 new webpack.IgnorePlugin({
   checkResource(resource) {
-    // do something with resource
+    // 리소스를 사용합니다
     return true | false;
   },
 });
@@ -39,21 +39,21 @@ new webpack.IgnorePlugin({
 
 ## Example of ignoring Moment Locales
 
-As of [moment](https://momentjs.com/) 2.18, all locales are bundled together with the core library (see [this GitHub issue](https://github.com/moment/moment/issues/2373)).
+[moment](https://momentjs.com/) 2.18 부터, 모든 로케일이 코어 라이브러리와 함께 번들로 제공됩니다 ([깃허브 이슈](https://github.com/moment/moment/issues/2373)를 참고하세요).
 
-The `resourceRegExp` parameter passed to `IgnorePlugin` is not tested against the resolved file names or absolute module names being imported or required, but rather against the _string_ passed to `require` or `import` _within the source code where the import is taking place_. For example, if you're trying to exclude `node_modules/moment/locale/*.js`, this won't work:
+`IgnorePlugin`에 전달된 `resourceRegExp` 파라미터는 import 또는 require 되는 해석된 파일 이름 혹은 절대 모듈 이름에 대해 테스트 되지 않고, _가져오기가 실행되는 소스 코드 내에서_ `require` 또는 `import`로 전달된 _문자열_ 에 대해 테스트 됩니다. 예를 들어 `node_modules/moment/locale/*.js`를 제외하려는 경우 다음과 같은 작업이 수행되지 않습니다.
 
 ```diff
 -new webpack.IgnorePlugin({ resourceRegExp: /moment\/locale\// });
 ```
 
-Rather, because `moment` imports with this code:
+`moment`는 아래의 코드로 가져오기 때문입니다.
 
 ```js
 require('./locale/' + name);
 ```
 
-...your first regexp must match that `'./locale/'` string. The second `contextRegExp` parameter is then used to select specific directories from where the import took place. The following will cause those locale files to be ignored:
+첫 번째 정규 표현식은 `'./locale/'` 문자열과 일치해야 합니다. 그다음 두 번째 `contextRegExp` 파라미터를 사용하여 가져오기가 수행된 특정 디렉터리를 선택합니다. 다음은 로케일 파일이 무시되는 경우입니다.
 
 ```javascript
 new webpack.IgnorePlugin({
@@ -62,4 +62,4 @@ new webpack.IgnorePlugin({
 });
 ```
 
-...which means "any require statement matching `'./locale'` from any directories ending with `'moment'` will be ignored.
+이는 `'moment'`로 끝나는 디렉터리에서 `'./locale'`과 일치하는 모든 require 문이 무시됨을 의미합니다.

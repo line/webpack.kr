@@ -11,47 +11,49 @@ contributors:
   - chenxsan
   - jamesgeorge007
   - getsnoopy
+translators:
+  - maphnew
 ---
 
-This guide aims to help you migrating to webpack 5 when using webpack directly. If you are using a higher level tool to run webpack, please refer to the tool for migration instructions.
+이 가이드는 webpack을 직접 사용할 때 webpack 5로 마이그레이션 하는 데 도움이 되는 것을 목표로 합니다. webpack을 실행하기 위해 더 높은 수준의 도구를 사용하는 경우 그 도구의 마이그레이션 지침을 참고하세요.
 
 ## Preparations
 
-Webpack 5 requires at least Node.js 10.13.0 (LTS), so make sure you upgrade your Node.js if you're still running an older one.
+Webpack 5는 Node.js 10.13.0 (LTS) 이상의 버전이 필요합니다. 따라서 여전히 이전 버전을 실행 중인 경우 Node.js를 업그레이드해야 합니다.
 
 ## Upgrade webpack 4 and its plugins/loaders
 
-1. Upgrade `webpack` 4 to the latest available version.
+1. `webpack` 4의 사용 가능한 최신 버전으로 업그레이드하세요.
 
-   - When using webpack >= 4, upgrading to the latest webpack 4 version should not require additional guidance.
+   - webpack >= 4를 사용하는 경우 최신 webpack 4 버전으로 업그레이드할 때 추가 지침이 필요하지 않습니다.
 
-   - If you are using webpack version less than 4 please see the [webpack 4 migration guide](/migrate/4/).
+   - webpack 버전 4 미만을 사용하는 경우 [webpack 4 마이그레이션 가이드](/migrate/4/)를 참고하세요.
 
-2. Upgrade `webpack-cli` to the latest available version (when used)
+2. `webpack-cli` 을 사용한다면 사용 가능한 최신 버전으로 업그레이드하세요.
 
-3. Upgrade all used Plugins and Loaders to the latest available version
+3. 사용한 모든 플러그인과 로더를 사용 가능한 최신 버전으로 업그레이드하세요.
 
-   Some Plugins and Loaders might have a beta version that has to be used in order to be compatible with webpack 5.
+   일부 플러그인 또는 로더에는 webpack 5와 호환되기 위해 사용해야 하는 베타 버전이 있을 수 있습니다.
 
 ### Make sure your build has no errors or warnings
 
-There might be new errors or warnings because of the upgraded versions of `webpack`, `webpack-cli`, Plugins and Loaders. Keep an eye for deprecation warnings during the build.
+`webpack`, `webpack-cli`, 플러그인 그리고 로더를 업그레이드하면서 새로운 오류와 경고가 있을 수 있습니다. 빌드 중 사용 중단 경고를 주시하세요.
 
-You can invoke `webpack` this way to get stack traces for deprecation warnings to figure out which Plugins and Loaders are responsible.
+이 방법으로 `webpack`을 호출하여 어떤 플러그인과 로더가 책임이 있는지 파악하기 위해 사용 중단 경고에 대한 스택 추적을 얻을 수 있습니다.
 
 ```bash
 node --trace-deprecation node_modules/webpack/bin/webpack.js
 ```
 
-As webpack 5 removes all deprecated features, make sure there's no webpack deprecation warnings during the build in order to proceed.
+webpack 5는 이제는 사용되지 않는 기능을 모두 제거하므로 계속 진행하려면 빌드 중에 webpack 사용 중단 경고가 없는지 확인하세요.
 
 ### Make sure to use `mode`
 
-Set `mode` to either [`production`](/configuration/mode/#mode-production) or [`development`](/configuration/mode/#mode-development) to make sure that corresponding defaults are set.
+`mode`를 [production](/configuration/mode/#mode-production) 또는 [develop](/configuration/mode/#mode-development)으로 설정하여 해당 기본값이 설정되어 있는지 확인하세요.
 
 ### Update outdated options
 
-Update the following options to their new version (if used):
+다음 옵션을 새 버전으로 업데이트합니다. (사용되는 경우)
 
 - `optimization.hashedModuleIds: true` → `optimization.moduleIds: 'hashed'`
 - `optimization.namedChunks: true` → `optimization.chunkIds: 'named'`
@@ -63,12 +65,12 @@ Update the following options to their new version (if used):
 - `optimization.occurrenceOrder: true` → `optimization: { chunkIds: 'total-size', moduleIds: 'size' }`
 - `optimization.splitChunks.cacheGroups.vendors` → `optimization.splitChunks.cacheGroups.defaultVendors`
 - `Compilation.entries` → `Compilation.entryDependencies`
-- `serve` → `serve` is removed in favor of [`DevServer`](/configuration/dev-server/)
-- [`Rule.query`](/configuration/module/#ruleoptions--rulequery) (deprecated since v3) → `Rule.options`/`UseEntry.options`
+- `serve` → [`DevServer`](/configuration/dev-server/)를 위해 `serve`가 제거되었습니다.
+- [`Rule.query`](/configuration/module/#ruleoptions--rulequery) (v3부터 사용 중단됨) → `Rule.options`/`UseEntry.options`
 
 ### Test webpack 5 compatibility
 
-Try to set the following options in your webpack 4 configuration and check if build still works correctly.
+webpack 4 설정에서 다음 옵션을 설정하고 빌드가 여전히 올바르게 작동하는지 확인하세요.
 
 ```javascript
 module.exports = {
@@ -80,13 +82,13 @@ module.exports = {
 };
 ```
 
-You have to remove these options again when upgrading your configuration for webpack 5.
+webpack 5의 설정을 업그레이드할 때 이 옵션을 다시 제거해야 합니다.
 
-T> webpack 5 removes these options from the configuration schema and will always use `false`.
+T> webpack 5는 설정 스키마에서 이러한 옵션을 제거하고 항상 `false`를 사용합니다.
 
 ## Upgrade webpack to 5
 
-Now let's upgrade webpack to version 5:
+이제 webpack을 버전 5로 업그레이드해 봅시다.
 
 - npm: `npm install webpack@latest`
 
@@ -94,14 +96,14 @@ Now let's upgrade webpack to version 5:
 
 ### Clean up configuration
 
-- Consider removing `optimization.moduleIds` and `optimization.chunkIds` from your webpack configuration. The defaults could be better, because they support long term caching in [`production mode`](/configuration/mode/#mode-production) and debugging in [`development` mode](/configuration/mode/#mode-development).
-- When using `[hash]` placeholder in webpack configuration, consider changing it to `[contenthash]`. It is not the same, but proven to be more effective.
-- If you are using Yarn's PnP and the `pnp-webpack-plugin`, we have good news: it is supported by default now. You have to remove it from the configuration.
-- If you are using `IgnorePlugin` with a regular expression as argument, it takes an `options` object now: `new IgnorePlugin({ resourceRegExp: /regExp/ })`.
-- If you are using something like `node.fs: 'empty'` replace it with `resolve.fallback.fs: false`.
-- If you are using `watch: true` in webpack Node.js API, remove it. There's no need to set it as it's indicated by the compiler method you call, either `true` for `watch()` or `false` for `run()`.
-- If you have `rules` defined for loading assets using `raw-loader`, `url-loader`, or `file-loader`, please use [Asset Modules](/guides/asset-modules/) instead as they're going to be deprecated in near future.
-- If you have `target` set to a function, update it to `false` and apply that function within `plugins` option. See example below:
+- webpack 설정에서 `optimization.moduleIds` 및 `optimization.chunkIds` 제거를 고려하세요. 기본값은 [`production` 모드](/configuration/mode/#mode-production)에서 장기 캐싱을 지원하고 [`development` 모드](/configuration/mode/#mode-development)에서 디버깅을 지원하기 때문에 더 나을 수 있습니다.
+- webpack 설정에서 `[hash]` placeholder를 사용할 때 `[contenthash]`로 변경하는 것이 좋습니다. 동일하지는 않지만, 더 효과적인 것으로 입증되었습니다.
+- Yarn의 PnP 및 `pnp-webpack-plugin`을 사용하는 경우 좋은 소식이 있습니다. 이제 기본적으로 지원됩니다. 설정에서 제거해야 합니다.
+- 정규 표현식과 함께 `IgnorePlugin`을 인수로 사용하는 경우 이제 `options` object를 사용합니다. `new IgnorePlugin({ resourceRegExp: /regExp/ })`.
+- `node.fs: 'empty'`와 같은 것을 사용하는 경우 `resolve.fallback.fs: false`로 교체하세요.
+- webpack Node.js API에서 `watch: true`를 사용하는 경우 제거하세요. 호출하는 컴파일러 메서드가 나타내는 대로 설정할 필요가 없습니다. `watch()`의 경우 `true` 또는 `run()`의 경우 `false` 입니다.
+- `raw-loader`, `url-loader` 또는 `file-loader`를 사용하여 애셋들을 load 하기 위해 정의된 `rules`가 있는 경우 가까운 장래에 사용되지 않을 것이므로 [Asset Modules](/guides/asset-modules/) 을 대신 사용하세요.
+- `target`이 함수로 설정되어 있으면 `false`로 업데이트하고 `plugins` option 내에서 해당 함수를 적용하세요. 아래 예를 참고하세요.
 
   ```json
   // for webpack 4
@@ -118,56 +120,56 @@ Now let's upgrade webpack to version 5:
   }
   ```
 
-If you were using WebAssembly via import, you should follow this two step process:
+import를 통해 WebAssembly를 사용하는 경우 다음 두 단계 프로세스를 따라야 합니다.
 
-- Enable the deprecated spec by setting `experiments.syncWebAssembly: true`, to get the same behavior as in webpack 4.
-- After successful migration to webpack 5, change the `experiments` value to `experiments: { asyncWebAssembly: true }` to use the up-to-date spec for WASM integration.
+- webpack 4에서와 동일한 동작을 얻으려면 `experiments.syncWebAssembly: true`를 설정하여 이제는 사용되지 않는 사양을 활성화합니다.
+- webpack 5로 성공적으로 마이그레이션 한 후 WASM 통합을 위한 최신 사양을 사용하려면 `experiments` 값을 `experiments: { asyncWebAssembly: true }`으로 변경합니다.
 
-Reconsider `optimization.splitChunks`:
+`optimization.splitChunks` 를 재고하세요.
 
-- It's recommended to use either the defaults or `optimization.splitChunks: { chunks: 'all' }`.
-- When using a custom configuration, drop `name: false` and replace `name: string | function` with `idHint: string | function`.
-- It was possible to turn off the defaults by setting `optimization.splitChunks.cacheGroups: { default: false, vendors: false }`. We don't recommend doing this, but if you really want to get the same effect in webpack 5: `optimization.splitChunks.cacheGroups: { default: false, defaultVendors: false }`.
+- 기본값 또는 `optimization.splitChunks: { chunks: 'all' }`을 사용하는 것을 권장합니다.
+- 사용자 정의 설정을 사용할 때 `name: false`를 삭제하고 `name: string | function`을 `idHint: string | function`로 교체하세요.
+- `Optimization.splitChunks.cacheGroups: { default: false, vendors: false }`를 설정하여 기본값을 끌 수 있었습니다. 이것을 권장하지 않지만, webpack 5에서 같은 효과를 얻고 싶다면 `optimization.splitChunks.cacheGroups: { default: false, defaultVendors: false }`를 사용할 수 있습니다.
 
-Consider removing defaults:
+기본값 제거를 고려하세요.
 
-- Using `entry: './src/index.js'`: you can omit it, that's the default.
-- Using `output.path: path.resolve(__dirname, 'dist')`: you can omit it, that's the default.
-- Using `output.filename: '[name].js'`: you can omit it, that's the default.
+- `entry: './src/index.js'`는 생략할 수 있습니다. 이것이 기본값입니다.
+- `output.path: path.resolve(__dirname, 'dist')`는 생략할 수 있습니다. 이것이 기본값입니다.
+- `output.filename: '[name].js'`는 생략할 수 있습니다. 이것이 기본값입니다.
 
 ### Need to support an older browser like IE 11?
 
-- If you have [browserslist](https://github.com/browserslist/browserslist) enabled for your project, webpack 5 will reuse your `browserslist` config to decide which code style to emit for the runtime code.
+- 프로젝트에 대해 [browserslist](https://github.com/browserslist/browserslist)를 활성화한 경우 webpack 5는 `browserslist` 설정을 재사용하여 런타임 코드에 대해 내보낼 코드 스타일을 결정합니다.
 
-  Make sure to:
+  확실히 할 것들.
 
-  1. set [`target`](/configuration/target/#root) to `browserslist` or remove `target` letting webpack set `browserslist` automatically for you.
-  2. add a `IE 11` to your browserslist configuration.
+  1. [`target`](/configuration/target/#root)을 `browserslist`으로 설정하거나 webpack이 자동으로 `browserslist`을 설정하도록 `target`을 제거합니다.
+  2. `IE 11`을 browserslist 설정에 추가합니다.
 
-- Without a `browserslist` webpack's runtime code uses ES2015 syntax (e.g., arrow function) to build smaller bundles. Hence you'll need to set `target: ['web', 'es5']` to use the ES5 syntax for browsers (like IE11) which don't support ES2015 syntax .
-- For Node.js, builds include the supported Node.js version in the `target` option and webpack will automatically figure out which syntax is supported, e.g. `target: 'node8.6'`.
+- `browserslist`가 없으면 webpack의 런타임 코드는 ES2015 구문(예: 화살표 함수)을 사용하여 더 작은 번들을 빌드합니다. 따라서 ES2015 구문을 지원하지 않는 브라우저(예: IE11)에 ES5 구문을 사용하려면 `target: ['web', 'es5']`를 설정해야 합니다.
+- Node.js의 경우 빌드에는 `target` option에 지원되는 Node.js 버전이 포함되며 webpack은 지원되는 구문을 자동으로 파악합니다. 예를 들어 `target: 'node8.6'`와 같이 사용합니다.
 
 ### Cleanup the code
 
 #### Using `/* webpackChunkName: '...' */`
 
-Make sure to understand the intention:
+사용 의도를 이해해야 합니다.
 
-- The chunk's name here is intended to be public.
-- It's not a development-only name.
-- Webpack will use it to name files in production and development modes.
-- Webpack 5 will automatically assign useful file names in `development` mode even when not using `webpackChunkName`.
+- 여기서 chunk's name은 public 용입니다.
+- 오직 개발을 위한 이름이 아닙니다.
+- Webpack은 이를 사용하여 production 및 development 모드에서 파일 이름을 지정합니다.
+- Webpack 5는 `webpackChunkName`을 사용하지 않는 경우에도 `development` 모드에서 유용한 파일 이름을 자동으로 할당합니다.
 
 #### Using named exports from JSON modules
 
-This is not supported by the new specification and you will get a warning. Instead of:
+이것은 새 사양에서 지원되지 않으며 경고가 표시됩니다.
 
 ```js
 import { version } from './package.json';
 console.log(version);
 ```
 
-use:
+위 코드 대신 아래 코드를 사용하세요.
 
 ```js
 import pkg from './package.json';
@@ -176,99 +178,99 @@ console.log(pkg.version);
 
 #### Cleanup the build code
 
-- When using `const compiler = webpack(...);`, make sure to close the compiler after using it: `compiler.close(callback);`.
-  - This doesn't apply to the `webpack(..., callback)` form which automatically closes.
-  - This is optional if you use webpack in watching mode until the user ends the process. The idle phases in watch mode will be used for this kind of work.
+- `const compiler = webpack(...);`을 사용할 때 컴파일러를 사용한 후에는 반드시 컴파일러를 닫아야 합니다. `compiler.close(callback);`.
+  - 이것은 자동으로 닫히는 `webpack(..., callback)` 양식에는 적용되지 않습니다.
+  - 사용자가 프로세스를 종료할 때까지 감시 모드에서 webpack을 사용하는 경우 선택 사항입니다. 이런 종류의 작업에는 감시 모드의 유휴 단계가 사용됩니다.
 
 ### Run a single build and follow advice
 
-Please make sure to read the building errors/warnings carefully. If there is no corresponding advice, please create an issue and we will try to resolve it.
+빌드 오류/경고를 주의 깊게 읽어보세요. 해당하는 조언이 없는 경우 issue를 생성해 주시면 해결해 드리겠습니다.
 
-Repeat the following steps until you solved at least level 3 or 4:
+최소한 레벨 3 또는 4를 풀 때까지 다음 단계를 반복합니다.
 
 - Level 1: **Schema validation fails**.
 
-  Configuration options have changed. There should be a validation error with a `BREAKING CHANGE:` note, or a hint of which option should be used instead.
+  Configuration options가 변경되었습니다. `BREAKING CHANGE:` 메모 또는 대신 사용해야 하는 옵션에 대한 힌트에 유효성 검사 오류가 있어야 합니다.
 
 - Level 2: **Webpack exits with an error**.
 
-  The error message should tell you what needs to be changed.
+  오류 메시지는 변경해야 할 사항을 알려야 합니다.
 
 - Level 3: **Build Errors**.
 
-  The error message should have a `BREAKING CHANGE:` note.
+  오류 메시지에는 `BREAKING CHANGE:` 메모가 있어야 합니다.
 
 - Level 4: **Build Warnings**.
 
-  The warning message should tell you what can be improved.
+  경고 메시지는 무엇을 개선할 수 있는지 알려야 합니다.
 
 - Level 5: **Runtime Errors**.
 
-  This is tricky. You probably have to debug to find the problem. General advice is difficult here. But we do list some common advice below regarding Runtime Errors:
+  이것은 까다롭습니다. 문제를 찾으려면 디버그해야 할 것입니다. 일반적인 조언은 여기에서 어렵습니다. 그러나 런타임 오류와 관련하여 아래에 몇 가지 일반적인 조언을 나열합니다.
 
-  - `process` is not defined.
-    - webpack 5 does no longer include a polyfill for this Node.js variable. Avoid using it in the frontend code.
-    - Want to support browser usage? Use the `exports` or `imports` package.json field to use different code depending on the environment.
-      - Also use the `browser` field to support older bundlers.
-      - Alternative: Wrap code blocks with the `typeof process` checks. Note that this will have a negative impact on the bundle size.
-    - Want to use environment variables with `process.env.VARIABLE`? You need to use the `DefinePlugin` or `EnvironmentPlugin` to define these variables in the configuration.
-      - Consider using `VARIABLE` instead and make sure to check `typeof VARIABLE !== 'undefined'` too. `process.env` is Node.js specific and should be avoided in frontend code.
-  - 404 errors pointing to URLs containing `auto`
-    - Not all ecosystem tooling is ready for the new default automatic `publicPath` via `output.publicPath: "auto"`
-      - Use a static `output.publicPath: ""` instead.
+  - `process`는 정의되지 않았습니다.
+    - webpack 5는 더 이 Node.js 변수에 대한 폴리필을 포함하지 않습니다. 프론트엔드 코드에서 사용하지 마세요.
+    - 브라우저 사용을 지원하고 싶으신가요? 환경에 따라 다른 코드를 사용하려면 `export` 또는 `imports` package.json 필드를 사용하세요.
+      - 또한 이전 번들러를 지원하려면 `browser` 필드를 사용합니다.
+      - 대안: `typeof process` 검사로 코드 블록을 래핑 합니다. 이는 번들 크기에 부정적인 영향을 미칩니다.
+    - `process.env.VARIABLE`과 함께 환경 변수를 사용하고 싶으신가요? 설정에서 이러한 변수를 정의하려면 `DefinePlugin` 또는 `EnvironmentPlugin`을 사용해야 합니다.
+      - 그것 대신 `VARIABLE` 사용을 고려하고 `typeof VARIABLE !== 'undefined'`도 확인하세요. `process.env`는 Node.js에 따라 다르며 프론트엔드 코드에서는 피해야 합니다.
+  - `auto`가 포함된 URL을 가리키는 404 오류
+    - 모든 생태계 도구가 `output.publicPath: "auto"`를 통한 새로운 기본 자동 `publicPath`에 대해 준비된 것은 아닙니다
+      - 대신 고정값 `output.publicPath: ""`를 사용하세요.
 
 - Level 6: **Deprecation Warnings**.
 
-  You probably get a lot of deprecation warnings. This is not directly a problem. Plugins need time to catch up with core changes. Please report these deprecations to the plugins. These deprecations are only warnings and the build will still work with only minor drawbacks (like less performance).
+  사용 중단 경고가 많을 수 있습니다. 이것은 직접적인 문제가 아닙니다. 플러그인은 핵심 변경 사항을 따라잡을 시간이 필요합니다. 이러한 지원 중단을 플러그인에 보고하세요. 이러한 지원 중단은 경고일 뿐이며 빌드는 여전히 약간의 단점(예: 성능 저하)으로만 작동합니다.
 
-  - You can hide deprecation warnings by running node with `--no-deprecation` flag, e.g.: `node --no-deprecation node_modules/webpack/bin/webpack.js`. This should only be a temporary workaround.
-  - Plugins and Loaders contributors can follow the advice in the deprecation messages to improve the code.
+  - `--no-deprecation` 플래그와 함께 node를 실행하여 사용 중단 경고를 숨길 수 있습니다(예: `node --no-deprecation node_modules/webpack/bin/webpack.js)`. 이것은 일시적인 해결 방법일 뿐입니다.
+  - 플러그인 및 로더 기여자는 사용 중단 메시지의 조언을 따라 코드를 개선할 수 있습니다.
 
 - Level 7: **Performance issues**.
 
-  Usually, performance should improve with webpack 5, but there are also a few cases where performance gets worse.
+  일반적으로 webpack 5에서는 성능이 향상되지만, 성능이 나빠지는 경우도 있습니다.
 
-  And here are something you can do to improve the situation:
+  그리고 상황을 개선하기 위해 다음과 같이 할 수 있습니다.
 
-  - Profile where the time is spent.
-    - `--profile --progress` displays a simple performance profile now
-    - `node --inspect-brk node_modules/webpack/bin/webpack.js` + [`chrome://inspect`](chrome://inspect) / [`edge://inspect`](edge://inspect) (see profiler tab).
-      - You can save these profiles to files and provide them in issues.
-      - Try using `--no-turbo-inlining` flag for better stack traces in some cases.
-  - Time for building modules in incremental builds can be improved by reverting to unsafe caching like in webpack 4:
+  - 시간이 어디에서 소요되었는지 설명합니다.
+    - `--profile --progress`는 이제 간단한 성능 프로필을 표시합니다.
+    - `node --inspect-brk node_modules/webpack/bin/webpack.js` + [`chrome://inspect`](chrome://inspect) / [`edge://inspect`](edge://inspect) (프로파일러 탭 참고).
+      - 이러한 프로필을 파일에 저장하고 이슈에 제공할 수 있습니다.
+      - 어떤 경우에는 더 나은 스택 추적을 위해 `--no-turbo-inlining` 플래그를 사용해 보세요.
+  - 증분 빌드에서 모듈을 빌드하는 시간은 webpack 4에서와 같이 안전하지 않은 캐싱으로 되돌리면 개선될 수 있습니다.
     - `module.unsafeCache: true`
-    - But this might affect the ability to handle some of the changes to the code base
+    - 그러나 이것은 코드 기반의 일부 변경 사항을 처리하는 기능에 영향을 미칠 수 있습니다.
   - Full build
-    - Backward-compatibility layer for the deprecated features will usually have worse performance compared to the new features.
-    - Creating many warnings can affect build performance, even if they are ignored.
-    - Source Maps are expensive. Check [`devtool`](/configuration/devtool/) option in the documentation to see a comparison of the different options.
-    - Anti-Virus protection might affect performance of the file system access.
-    - Persistent Caching can help to improve the repetitive full builds.
-    - Module Federation allows to split the application into multiple smaller builds.
+    - 이제는 사용되지 않는 기능에 대한 이전 버전과의 호환성 계층은 일반적으로 새 기능에 비해 성능이 저하됩니다.
+    - 경고를 많이 생성하면 무시하더라도 빌드 성능에 영향을 줄 수 있습니다.
+    - Source Maps는 비용이 많이 듭니다. 문서에서 [`devtool`](/configuration/devtool/) 옵션을 확인하여 다양한 옵션을 비교하세요.
+    - 바이러스 백신 보호는 파일 시스템 액세스 성능에 영향을 줄 수 있습니다.
+    - 영구 캐싱은 반복적인 전체 빌드를 개선하는 데 도움이 될 수 있습니다.
+    - 모듈 연합을 사용하면 애플리케이션을 여러 개의 작은 빌드로 분할할 수 있습니다.
 
 ## Everything works?
 
-Please tweet that you have successfully migrated to webpack 5. [Tweet it](https://twitter.com/intent/tweet?source=https://webpack.js.org/migrate/5/&text=I%20just%20migrated%20to%20webpack%205%20using%20its%20migration%20guide!%20&via=webpack&hashtags=webpack,webpack5)
+webpack 5로 성공적으로 마이그레이션 했다고 트윗해주세요. [Tweet it](https://twitter.com/intent/tweet?source=https://webpack.js.org/migrate/5/&text=I%20just%20migrated%20to%20webpack%205%20using%20its%20migration%20guide!%20&via=webpack&hashtags=webpack,webpack5)
 
 ## It is not working?
 
-Create an [issue](https://github.com/webpack/webpack/issues/new?template=Bug_report.md) and tell us about the issues you have encountered during the migration.
+[issue](https://github.com/webpack/webpack/issues/new?template=Bug_report.md)를 만들고 마이그레이션 중에 발생한 문제에 대해 알려주세요.
 
 ## Something missing in this guide?
 
-Please open a [Pull Request](https://github.com/webpack/webpack.js.org/edit/master/src/content/migrate/5.mdx) to help the next person using this guide.
+[Pull Request](https://github.com/webpack/webpack.js.org/edit/master/src/content/migrate/5.mdx)를 만들어 이 가이드를 사용하는 다음 사람을 도와주세요.
 
 ## Changes to internals
 
-The changes to webpack internals such as: adding types, refactoring code and methods renaming are listed here for anyone interested. But they are not intended as a part of common use-case migration.
+유형 추가, 코드 리팩토링 및 메서드 이름 변경과 같은 webpack 내부의 변경 사항은 관심 있는 모든 사람을 위해 여기에 나열됩니다. 그러나 일반적인 사용 사례 마이그레이션의 일부로 의도한 것은 아닙니다.
 
-- `Module.nameForCondition`, `Module.updateCacheModule` and `Module.chunkCondition` are no longer optional.
+- `Module.nameForCondition`, `Module.updateCacheModule` 및 `Module.chunkCondition`은 더 이상 선택 사항이 아닙니다.
 
 ### getOptions method for Loaders
 
-Webpack 5 ships with built-in [`this.getOptions`](/api/loaders/#thisgetoptionsschema) method available in loader context. This is a breaking change for loaders that had been using `getOptions` method from previously preferred [schema-utils](https://github.com/webpack/schema-utils):
+Webpack 5는 로더 컨텍스트에서 사용할 수 있는 내장 [`this.getOptions`](/api/loaders/#thisgetoptionsschema) 메서드와 함께 제공됩니다. 이것은 이전에 선호하는 [schema-utils](https://github.com/webpack/schema-utils)에서 `getOptions` 메소드를 사용했던 로더에 대한 주요 변경 사항입니다.
 
-- `this.getOptions` is available since webpack 5
-- Instead of JSON5 it supports JSON as a query string: `?{arg:true}` → `?{"arg":true}`. Using JSON5 should be considered and documented as deprecated in favor of JSON in the respective Loader's documentation.
-- [`loader-utils`](https://github.com/webpack/loader-utils) has specific behavior for parsing query strings (`true`, `false` and `null` won't be parsed as `string` but as a primitive value). This is no longer the case for the new built-in `this.getOptions` method, which uses native [`querystring`](https://nodejs.org/api/querystring.html) parsing (ships with Node.js). It is still possible to add custom behavior for these cases in the Loader's code after getting the options by using `this.getOptions` method.
-- Schema argument is optional for the new `this.getOptions` method, but we strongly advise to add schema validation for your Loader's options. The `title` field in the schema, can be used to customize the validation error message e.g. `"title": "My Loader ooooptions"` will result in displaying errors this way: `Invalid ooooptions object. My Loader has been initialised using an ooooptions object that does not match the API schema. - ooooptions.foo.bar.baz should be a string.`
+- `this.getOptions`는 webpack 5부터 사용할 수 있습니다.
+- JSON5 대신 쿼리 문자열로 JSON을 지원합니다. `?{arg:true}` → `?{"arg":true}`. JSON5를 사용하는 것은 해당 로더의 문서에서 이제는 사용되지 않는 것으로 간주하고 문서화되어야 합니다.
+- [`loader-utils`](https://github.com/webpack/loader-utils)에는 쿼리 문자열 구문 분석을 위한 특정 동작이 있습니다(`true`, `false` 및 `null`은 `string`로 구문 분석되지 않고 원시 값으로 구문 분석됨). 기본 [`querystring`](https://nodejs.org/api/querystring.html) 구문 분석(Node.js와 함께 제공됨) 을 사용하는 새로운 내장 `this.getOptions` 메서드의 경우에는 그렇지 않습니다. `this.getOptions` 메소드를 사용하여 옵션을 가져온 후 로더의 코드에서 이러한 경우에 대한 사용자 정의 동작을 추가하는 것은 여전히 가능합니다.
+- 새로운 `this.getOptions` 메서드에 대해 스키마 인수는 선택 사항이지만 로더 옵션에 대한 스키마 유효성 검사를 추가하는 것이 좋습니다. 스키마의 `title` 필드는 유효성 검사 오류 메시지를 사용자 정의하는 데 사용할 수 있습니다. 예를 들면 `"title": "My Loader ooptions"`는 다음과 같은 방식으로 오류를 표시합니다. `Invalid ooooptions object. My Loader has been initialised using an ooooptions object that does not match the API schema. - ooooptions.foo.bar.baz should be a string.`

@@ -18,57 +18,57 @@ related:
     url: https://medium.com/@paul_irish/debugging-node-js-nightlies-with-chrome-devtools-7c4a1b95ae27
 ---
 
-When contributing to the core repo, writing a loader/plugin, or even working on a complex project, debugging tools can be central to your workflow. Whether the problem is slow performance on a large project or an unhelpful traceback, the following utilities can make figuring it out less painful.
+코어 저장소에 기여할 때나, 로더 또는 플러그인을 작성할 때, 아니면 복잡한 프로젝트를 작업할 때도 디버깅 도구가 워크 플로에서 중심이 될 수 있습니다. 규모가 큰 프로젝트에서의 느린 성능이나 도움이 되지 않는 트레이스백이 문제라면, 다음의 유틸리티를 사용하여 문제를 보다 수월하게 파악할 수 있습니다.
 
-- The [`stats` data](/api/stats) made available through [Node](/api/node/#stats-object) and the [CLI](/api/cli/#common-options).
-- Chrome **DevTools** via `node-nightly` and the latest Node.js versions.
+-  [Node](/api/node/#stats-object)와 [CLI](/api/cli/#common-options)를 통해 제공되는 [`stats` 데이터](/api/stats).
+-  최신 Node.js 버전 및 `node-nightly`으로 사용하는 Chrome **DevTools**.
 
 ## Stats
 
-Whether you want to sift through [this data](/api/stats) manually or use a tool to process it, the `stats` data can be extremely useful when debugging build issues. We won't go in depth here as there's an [entire page](/api/stats) dedicated to its contents, but know that you can use it to find the following information:
+[이 데이터](/api/stats)를 수동으로 조사하거나, 도구를 사용하여 데이터를 처리할 때도 `stats` 데이터는 빌드 이슈 디버깅에 매우 유용할 수 있습니다. 이 내용을 설명하는 [페이지](/api/stats)가 있으므로 여기서 자세히 설명하지는 않지만, 다음 정보를 찾는 데 사용할 수 있습니다.
 
-- The contents of every module.
-- The modules contained within every chunk.
-- Per module compilation and resolving stats.
-- Build errors and warnings.
-- The relationships between modules.
-- And much more...
+- 모든 모듈의 내용.
+- 모든 청크에 포함된 모듈.
+- 모듈 별 컴파일 및 통계 분석.
+- 빌드 오류 및 경고.
+- 모듈 간의 관계.
+- 그리고 더 많은 것들..
 
-On top of that, the official [analyze tool](https://github.com/webpack/analyse) and [various others](/guides/code-splitting/#bundle-analysis) will accept this data and visualize it in various ways.
+또한 공식 [분석 도구](https://github.com/webpack/analyse) 및 [다양한 도구](/guides/code-splitting/#bundle-analysis)가 이 데이터를 분석하고 여러 방법으로 시각화합니다.
 
 ## DevTools
 
-While [`console`](https://nodejs.org/api/console.html) statements may work well in straightforward scenarios, sometimes a more robust solution is needed. As most front-end developers already know, Chrome DevTools are a life saver when debugging web applications, _but they don’t have to stop there_. As of Node v6.3.0+, developers can use the built-in `--inspect` flag to debug a node program in DevTools.
+[`console`](https://nodejs.org/api/console.html) 문은 간단한 시나리오에서는 잘 작동하지만 때로는 더 강력한 솔루션이 필요합니다. 대부분의 프런트엔드 개발자가 이미 알고 있듯이 Chrome DevTools는 웹 애플리케이션을 디버깅할 때 생명의 은인 같은 역할을 합니다. _하지만 거기서 멈추지 않고 더 나아갈 수 있습니다_. Node v6.3.0+부터 개발자는 내장된 `--inspect` 플래그를 사용하여 DevTools에서 Node 프로그램을 디버깅할 수 있습니다.
 
-This gives you the power to easily create breakpoints, debug memory usage, expose and examine objects in the console, and much more. In this short demo, we'll utilize the [`node-nightly`](https://github.com/hemanth/node-nightly) package which provides access to the latest and greatest inspecting capabilities.
+이를 통해 중단점을 쉽게 생성하고, 메모리 사용을 디버그 하며, 콘솔에서 객체를 노출하여 검사하는 등, 여러 작업을 수행할 수 있습니다. 이 짧은 데모에서는 가장 최신의, 가장 훌륭한 검사 기능을 사용 가능하게 하는 [`node-nightly`] (https://github.com/hemanth/node-nightly) 패키지를 활용합니다.
 
-W> The `--inspect` interface has been available since v6.3.0 so feel free to try it out with your local version, but be warned that certain features and flags may differ from the ones in this demo.
+W> `--inspect` 인터페이스는 v6.3.0부터 사용할 수 있으므로 로컬 버전에서 사용해보세요. 하지만 특정 기능과 플래그는 데모에 보이는 것과 다를 수 있습니다.
 
-Let's start by installing it globally:
+패키지를 전역으로 설치하여 시작해보세요.
 
 ```bash
 npm install --global node-nightly
 ```
 
-Now, we'll need to run it once to finish the installation:
+이제 설치를 완료하려면 한 번 실행해야 합니다.
 
 ```bash
 node-nightly
 ```
 
-Now, we can use `node-nightly` along with the `--inspect` flag to start our build in any webpack-based project. Note that we cannot run NPM `scripts`, e.g. `npm run build`, so we'll have to specify the full `node_modules` path:
+이제 `--inspect` 플래그로 간단하게 `node-nightly`를 사용하여 webpack 기반 프로젝트에서 빌드를 시작할 수 있습니다. 참고로, `npm run build`과 같은 NPM `scripts`를 실행할 수 없으므로 전체 `node_modules` 경로를 지정해야 합니다.
 
 ```bash
 node-nightly --inspect ./node_modules/webpack/bin/webpack.js
 ```
 
-Which should output something like:
+이는 다음과 같이 출력될 것입니다.
 
 ```bash
 Debugger listening on ws://127.0.0.1:9229/c624201a-250f-416e-a018-300bbec7be2c
 For help see https://nodejs.org/en/docs/inspector
 ```
 
-Now jump to `chrome://inspect` in the browser and you should see any active scripts you've inspected under the _Remote Target_ header. Click the "inspect" link under each script to open a dedicated debugger or the _Open dedicated DevTools for Node_ link for a session that will connect automatically. You can also check out the [NiM extension](https://chrome.google.com/webstore/detail/nodejs-v8-inspector-manag/gnhhdgbaldcilmgcpfddgdbkhjohddkj), a handy Chrome plugin that will automatically open a DevTools tab every time you `--inspect` a script.
+이제 브라우저에서 `chrome://inspect`로 이동하면 _Remote Target_ 헤더 내에 검사 한 활성 스크립트가 표시됩니다. 각 스크립트 하단의 "inspect" 링크를 클릭하여 전용 디버거를 열거나 _Open dedicated DevTools for Node_ 링크를 클릭하여 자동으로 연결되는 세션을 시작할 수 있습니다. 매번 DevTools 탭을 자동으로 여는 편리한 Chrome 플러그인인 [NiM 확장 프로그램](https://chrome.google.com/webstore/detail/nodejs-v8-inspector-manag/gnhhdgbaldcilmgcpfddgdbkhjohddkj)도 확인해 보세요. 스크립트를 `--inspect`할 때마다 DevTools 탭을 자동으로 실행하는 유용한 크롬 플러그인입니다.
 
-We recommend using the `--inspect-brk` flag which will break on the first statement of the script allowing you to go through the source to set breakpoints and start/stop the build as you please. Also, don't forget that you can still pass arguments to the script. For example, if you have multiple configuration files you could pass `--config webpack.prod.js` to specify the configuration you'd like to debug.
+스크립트의 첫 번째 문에서 중단하는 `--inspect-brk` 플래그 사용을 추천합니다. 이를 통해 소스를 확인하여 중단점을 설정하고, 원하는 대로 빌드를 시작 또는 중지할 수 있습니다. 또한 여전히 스크립트에 인수를 전달할 수 있다는 점을 잊지 마세요. 예를 들어 설정 파일이 여러 개인 경우`--config webpack.prod.js`를 전달하여 디버깅할 설정을 지정할 수 있습니다.

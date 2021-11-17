@@ -222,8 +222,8 @@ module.exports = {
 
 모듈 요청에 대한 해석을 캐시합니다. `module.unsafeCache`에 대한 몇 가지 기본값이 있습니다.
 
-- [`cache`](/configuration/cache)가 비활성화 되어 있다면 `false`
-- [`cache`](/configuration/cache)가 활성화 되어 있고 모듈이 node 모듈에서 온 것으로 보인다면 `true`, 그렇지 않다면 `false`
+- [`cache`](/configuration/cache)가 비활성화되어 있다면 `false`
+- [`cache`](/configuration/cache)가 활성화되어 있고 모듈이 node 모듈에서 온 것으로 보인다면 `true`, 그렇지 않다면 `false`
 
 **webpack.config.js**
 
@@ -235,8 +235,6 @@ module.exports = {
   },
 };
 ```
-
-W> webpack 4에서는 기본값이 `true`입니다.
 
 ## module.rules
 
@@ -1002,7 +1000,7 @@ module.exports = {
           // `app/styles`로 시작하는 현재 디렉터리와 관련된 모든 경로를 포함합니다.
           // 예. `app/styles.css`, `app/styles/styles.css`, `app/stylesheet.css`
           path.resolve(__dirname, 'app/styles'),
-          // `vendor/styles/`디렉터리의 내용만 포함하도록 슬래시를 추가합니다.
+          // `vendor/styles/` 디렉터리의 내용만 포함하도록 슬래시를 추가합니다.
           path.join(__dirname, 'vendor/styles/'),
         ],
       },
@@ -1086,8 +1084,6 @@ module.exports = {
 ```
 
 ## Module Contexts
-
-> 이 옵션은 곧 제거될 예정이므로 사용하지 마세요.
 
 이 옵션은 동적 종속성이 발생할 때 생성되는 컨텍스트의 기본 설정을 설명합니다.
 

@@ -174,6 +174,23 @@ import('./module-a').then((moduleA) => {
 
 컴파일의 해시에 대한 접근을 제공합니다.
 
+## \_\_webpack_get_script_filename\_\_ (webpack-specific)
+
+`function (chunkId)`
+
+id로 청크의 파일 이름을 제공합니다.
+
+할당 가능하기 때문에 런타임에서 사용하는 파일 이름을 변경할 수 있습니다. 예를 들면 청크를 로드할 때 최종 경로를 결정하는 데 사용할 수 있습니다.
+
+```js
+const oldFn = __webpack_get_script_filename__;
+
+__webpack_get_script_filename__ = (chunkId) => {
+  const filename = oldFn(chunkId);
+  return filename + '.changed';
+};
+```
+
 ## \_\_non_webpack_require\_\_ (webpack-specific)
 
 webpack에 의해 파싱되지 않는 `require` 함수를 생성합니다. 가능한 경우 전역 요청 함수로 멋진 작업을 수행하는데 사용할 수 있습니다.
@@ -193,6 +210,7 @@ webpack에 의해 파싱되지 않는 `require` 함수를 생성합니다. 가�
   - export 사용이 런타임 조건에 따라 달라질 수 있는 경우 `null
 
     `
+
   - 정보가 없을 경우 `undefined`
 
 - `__webpack_exports_info__.<exportName>.provideInfo`는 다음과 같습니다.
@@ -202,6 +220,7 @@ webpack에 의해 파싱되지 않는 `require` 함수를 생성합니다. 가�
   - export 규정이 런타임 조건에 따라 달라질 수 있는 경우 `null
 
     `
+
   - 정보가 없을 경우 `undefined`
 
 - nested export에서 정보에 접근할 수 있습니다. 예. `__webpack_exports_info__.<exportName>.<exportName>.<exportName>.used`

@@ -282,6 +282,21 @@ module.exports = {
 };
 ```
 
+### stats.groupAssetsByExtension
+
+`boolean`
+
+확장자로 애셋을 그룹화할지 여부를 `stats`에 알려줍니다.
+
+```javascript
+module.exports = {
+  //...
+  stats: {
+    groupAssetsByExtension: false,
+  },
+};
+```
+
 ### stats.groupAssetsByInfo
 
 `boolean`
@@ -297,6 +312,21 @@ module.exports = {
 };
 ```
 
+### stats.groupAssetsByPath
+
+`boolean`
+
+애셋 경로별로 애셋을 그룹화할지 여부를 `stats`에 알려줍니다.
+
+```javascript
+module.exports = {
+  //...
+  stats: {
+    groupAssetsByPath: false,
+  },
+};
+```
+
 ### stats.groupModulesByAttributes
 
 `boolean`
@@ -308,6 +338,81 @@ module.exports = {
   //...
   stats: {
     groupModulesByAttributes: false,
+  },
+};
+```
+
+### stats.groupModulesByCacheStatus
+
+`boolean`
+
+캐시 상태(캐시되었는지 혹은 빌드되고 캐시 가능한지)별로 모듈을 그룹화할지 여부를 `stats`에 알려줍니다.
+
+```javascript
+module.exports = {
+  //...
+  stats: {
+    groupModulesByCacheStatus: true,
+  },
+};
+```
+
+### stats.groupModulesByExtension
+
+`boolean`
+
+확장자로 모듈을 그룹화할지 여부를 `stats`에 알려줍니다.
+
+```javascript
+module.exports = {
+  //...
+  stats: {
+    groupModulesByExtension: true,
+  },
+};
+```
+
+### stats.groupModulesByLayer
+
+`boolean`
+
+모듈을 레이어별로 그룹화할지 여부를 `stats`에 알려줍니다.
+
+```javascript
+module.exports = {
+  //...
+  stats: {
+    groupModulesByLayer: true,
+  },
+};
+```
+
+### stats.groupModulesByPath
+
+`boolean`
+
+모듈을 경로별로 그룹화할지 여부를 `stats`에 알려줍니다.
+
+```javascript
+module.exports = {
+  //...
+  stats: {
+    groupModulesByPath: true,
+  },
+};
+```
+
+### stats.groupModulesByType
+
+`boolean`
+
+모듈을 유형별로 그룹화할지 여부를 `stats`에 알려줍니다.
+
+```javascript
+module.exports = {
+  //...
+  stats: {
+    groupModulesByType: true,
   },
 };
 ```
@@ -756,6 +861,21 @@ module.exports = {
   //...
   stats: {
     moduleTrace: false,
+  },
+};
+```
+
+### stats.optimizationBailout
+
+`boolean`
+
+모듈에 대한 최적화가 중단된 이유를 보여주기 위해 `stats`에 알려줍니다.
+
+```javascript
+module.exports = {
+  //...
+  stats: {
+    optimizationBailout: false,
   },
 };
 ```
