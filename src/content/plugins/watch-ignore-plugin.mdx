@@ -5,9 +5,11 @@ contributors:
   - skipjack
   - byzyk
   - EugeneHlushko
+translators:
+  - KiKi-Daehaksaeng
 ---
 
-Ignore the specified files, i.e. those matching the provided paths or regular expressions, while in [watch mode](/configuration/watch).
+[watch 모드](/configuration/watch)인 경우, 제공된 경로나 정규 표현식에 해당되는 특정 파일을 무시합니다.
 
 ```javascript
 new webpack.WatchIgnorePlugin({ paths });
@@ -15,4 +17,4 @@ new webpack.WatchIgnorePlugin({ paths });
 
 ## Options
 
-- `paths` (`Array<string | RegExp>`): A list of RegExps or absolute paths to directories or files that should be ignored.
+- `paths` (`Array<string | RegExp>`): 무시해야 하는 디렉터리나 파일에 대한 정규 표현식 또는 절대 경로의 목록입니다.
