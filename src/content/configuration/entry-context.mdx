@@ -179,7 +179,7 @@ module.exports = {
 ```js
 module.exports = {
   entry() {
-    return fetchPathsFromSomeExternalSource(); // returns a promise that will be resolved with something like ['src/main-layout.js', 'src/admin-layout.js']
+    return fetchPathsFromSomeExternalSource(); //['src/main-layout.js', 'src/admin-layout.js']와 같이 해결될 promise를 반환합니다.
   },
 };
 ```
