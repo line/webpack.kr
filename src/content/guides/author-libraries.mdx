@@ -209,7 +209,7 @@ webpack으로 애플리케이션을 번들해보았다면 익숙할 것입니다
 
 webpack은 라이브러리를 CommonJS, AMD, script 태그에서 사용할 수 있도록 번들할 것입니다.
 
-T> `library` 설정은 `entry` 설정과 연관되어 있습니다. 대부분의 라이브러리의 경우 단일 엔트리 포인트를 지정하는 것으로 충분합니다. [다중 진입 라이브러리](https://github.com/webpack/webpack/tree/master/examples/multi-part-library)도 가능하지만, [index script](https://stackoverflow.com/questions/34072598/es6-exporting-importing-in-index-file)를 통해 부분적으로 export하는 것이 더 간단합니다. 라이브러리의 `entry`를 `array`를 사용하는 것은 **권장되지 않습니다.**
+T> `library` 설정은 `entry` 설정과 연관되어 있습니다. 대부분의 라이브러리의 경우 단일 엔트리 포인트를 지정하는 것으로 충분합니다. [다중 진입 라이브러리](https://github.com/webpack/webpack/tree/master/examples/multi-part-library)도 가능하지만, [index script](https://stackoverflow.com/questions/34072598/es6-exporting-importing-in-index-file)를 통해 부분적으로 export하는 것이 더 간단합니다. 라이브러리의 `entry`로 `array`를 사용하는 것은 **권장되지 않습니다.**
 
 ## Externalize Lodash
 
