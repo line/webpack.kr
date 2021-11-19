@@ -168,7 +168,8 @@ function Navigation({ links, pathname, hash = '', toggleSidebar }) {
           <div className="inline-flex items-center ml-[18px]">
             <HelloDarkness />
             <DocSearch
-              apiKey={'8535036d0982242833e1380d8649b88c'}
+              appId="78PIF746H9"
+              apiKey="0bf212faf8487900d5d5ee6754c1572a"
               indexName="webpack_korea"
               disableUserPersonalization={true}
               placeholder="Search webpack documentation"
