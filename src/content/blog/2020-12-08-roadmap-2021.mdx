@@ -3,98 +3,100 @@ title: Roadmap 2021 (2020-12-08)
 sort: -202012080
 contributors:
   - sokra
+translators:
+  - syw2045
 ---
 
-It has been nearly 2 months since webpack 5 was officially released. Due to the sponsoring situation, we couldn't devote as much time to webpack as we would like to. Speaking only for myself (@sokra), I enjoyed the little break and have worked on a few side projects. Ironically, while I was using webpack 5 and all its bleeding-edge features (asset modules, worker support, persistent caching), I discovered a few more bugs in webpack 5 that people are likely to run into when upgrading their projects to webpack 5, which led to a lot of work going into bug fixing. Here is a little summary:
+Webpack 5가 정식 릴리스 된 지 약 2달이 지났습니다. 후원 상황 때문에, webpack에 원하는 만큼 시간을 할애하지 못했습니다. 솔직하게 말해서, 약간의 휴식을 즐겼고 몇 가지 사이드 프로젝트에 참여했습니다. 아이러니하게 webpack 5와 모든 최신기능(에셋 모듈, 작업자 지원, 영구 캐싱)을 사용하는 동안 webpack 5에서 프로젝트를 webpack 5로 업그레이드할 때 발생할 가능성이 있는 몇 가지 버그를 더 발견했습니다. 버그 수정에 큰 노력을 기울였습니다. 그동안의 이야기입니다.
 
 ## What happened so far?
 
-A few more things have been exposed from webpack, both typings-wise and runtime-wise. A few low-handling performance improvements have been made. Code without semicolons used to generate some invalid/incorrect code in some cases, which has been corrected. The combination of side-effect-free code + concatenated modules + reexports has led to some edge cases, which have been fixed (at least the known ones).
+Webpack은 타이핑 측면과 런타임측면에서 몇가지를 더 선보였습니다. 몇 가지의 낮은 처리 성능이 향상되었습니다. 어떤 경우들에서 유효하지 않고 부정확함을 발생시키는 세미콜론이 없는 코드는 수정되었습니다. 부작용이 없는 코드 + 연결된 모듈 + 재배포의 조합으로 일부 극단적인 경우가 발생했으며 이 경우는 수정되었습니다(적어도 알려진 경우).
 
-But one bug reported by a user has led to the need for a completely new internal feature. You can skip it and go to the next chapter if you find webpack internals boring or too complex.
+하지만 사용자가 보고한 한 가지 버그로 인해 완전히 새로운 내부 기능이 필요하게 되었습니다. webpack 내부가 지루하거나 너무 복잡하다고 생각되면 건너뛰고 다음 챕터로 넘어갈 수 있습니다.
 
-To trigger the bug we need three ingredients:
+버그를 유발하려면 세 가지 요소가 필요합니다.
 
-- Since webpack 5 the optimization in `production` mode will run the used exports analysis (Tree Shaking) against each runtime (which is often identical to the entrypoints), which means webpack can optimize each runtime (resp. entrypoint) individually.
-- A custom `optimization.splitChunks` configuration allows to forcefully merge modules into a single chunk. This is done by passing the `name` option. E.g. `{ test: /node_modules/, name: "vendors" }` merges modules from `node_modules` into a single chunk. While this is not recommended in general, it's possible and probably makes sense in some cases. The whole thing is about trade-offs anyway and choosing to merge all vendors into a single chunk can be good for long term caching this chunk for repeated visits or between multiple entrypoints.
-- When exports of a side-effect-free module are not used, the whole module is omitted from the module graph and the `import`-statement generates no runtime code at all.
+- `production`모드의 webpack 5 최적화는 각 런타임(종종 엔트리 포인트와 동일함)에 대해 사용된 exports 분석 (Tree Shaking)을 실행하므로 webpack이 각 런타임(해당 엔트리 포인트)을 개별적으로 최적화할 수 있습니다.
+- 커스텀 `optimization.splitChunks` 구성을 사용하면 모듈을 단일 청크로 강제 병합할 수 있습니다. 이것은 `name` 옵션을 전달하여 수행됩니다. 예를 들어 `{ test: /node_modules/, name: "vendors" }`는 `node_modules`의 모듈을 단일 청크로 병합합니다. 이것은 일반적으로 권장되지 않지만 가능하고 어떤 경우에는 아마도 의미가 있습니다. 어쨋든 모든 것은 절충점에 관한 것이며 모든 vendors를 단일 청크로 병합하도록 선택하는 것은 반복적인 방문 또는 여러 엔트리 포인트 사이에 이 청크를 장기간 캐싱하는데 유용 할 수 있습니다.
+- side-effect-free 모듈의 exports를 사용하지 않는 경우, 전체 모듈은 모듈 그래프에서 생략하고 `import`문은 런타임 코드를 전혀 발생시키지 않는다.
 
-A problem happens in an edge case where modules from two entrypoints are merged into a single chunk and they reference a side-effect-free module which is not in the shared chunk since only one of the entrypoints uses exports from the side-effect-free module. Modules in the shared chunk are used by both entrypoint, thus they need to include the exports that are used by any of the entrypoints.
-That means it will generate code referencing the side-effect-free module that is not available at runtime for the other entrypoint in the aforementioned edge case, which leads to an `undefined is not a function` or `cannot read property 'call' of undefined` error at runtime.
+두 엔트리 포인트의 모듈이 단일 청크로 병합되고 엔트리 포인트 중 하나만 side-effect-free에서 내보내기를 사용하기 때문에 공유 청크에 없는 side-effect-free 모듈을 참조하는 경우 문제가 발생합니다. 공유 청크의 모듈은 두 엔트리 포인트에서 모두 사용되므로 엔트리 포인트 중 하나에서 사용되는 exports를 포함해야 합니다.
+이는 앞서 언급한 극단적 상황의 다른 엔트리 포인트에 대해 런타임에 사용할 수 없는 side-effect-free 모듈을 참조하는 코드를 생산한다는 것을 의미하며, 이는 `undefined is not a function` 또는 `cannot read property 'call' of undefined`로 이어집니다.
 
-A potential fix would be to include the side-effect-free module in all entrypoints, but as this module isn't really needed, that would be a waste of bundle size.
-So we went another route, which required the development of a new feature: `runtime-dependent code generation`.
-This allows to generate code which behaves differently depending on which runtime it executes.
+잠재적인 수정은 모든 엔트리 포인트에 side-effect-free 모듈을 포함하는 것이지만 이 모듈은 실제로 필요하지 않으므로 번들 크기가 낭비됩니다.
+그래서 `runtime-dependent code generation`이라는 새로운 기능의 개발이 필요한 또 다른 경로를 택했습니다.
+이를 통해 실행되는 런타임에 따라 다르게 동작하는 코드를 생성할 수 있습니다.
 
-To put it another way, we are wrapping some generated code in `if`-blocks, so they only execute in one runtime.
-In this example, this would affect the `import`-statement which references the side-effect-free module.
-The import is only executed for one of the entrypoints.
-This avoids to include unnecessary modules, and it also avoids executing unnecessary code even if it would be available.
-So even if you are merging all code into a single chunk, only the code that is really used is executed.
+다시 말해, 생성된 일부 코드를 `if` 블록에 wrapping 하여 하나의 런타임에서만 실행되도록 합니다.
+이 예에서 이것은 side-effect-free 모듈을 참조하는 `import`문에 영향을 미칩니다.
+import는 엔트리 포인트 중 하나에 대해서만 실행됩니다.
+이렇게 하면 불필요한 모듈을 포함하는 것을 피할 수 있으며 사용 가능한 경우에도 불필요한 코드를 실행하지 않습니다.
+따라서 모든 코드를 단일 청크로 병합하더라도 실제로 사용되는 코드만 사용됩니다.
 
-So far for the excurse, I hope it wasn't that boring...
+지금까지 이야기가 지루하지 않았기를 바랍니다.
 
 ## Roadmap 2021
 
-So assuming we can sort out our sponsoring situation, the following is planned for 2021:
+따라서 후원 상황을 정리 할 수 있다고 가정하면 2021년에는 아래의 일들이 계획되어있습니다.
 
 ### Further stabilizing
 
-Our top-priority stays stabilizing webpack 5.
-So far the situation looks pretty good.
-Most critical bugs reported in the last time, affect some edge cases.
-So I guess webpack 5 should work for the general cases.
-But handling edge cases is (and should stay) one of webpack strength, so we want to continue to work hard fixing these.
-We think that many many webpack users need custom things for their build and that's something webpack offers via configurability and its rich plugin system.
+최우선 순위는 webpack 5를 안정화 하는 겁니다.
+현재까지는 상황이 꽤 괜찮아 보입니다.
+저번에 보고된 가장 중요한 버그는 일부 극단적인 경우에 영향을 미칩니다.
+따라서 webpack 5는 일반적인 경우에 작동해야 한다고 생각합니다.
+그러나 엣지 케이스를 처리하는 것은 webpack의 강점 중 하나를 유지하는 것이므로 이러한 문제를 해결하기 위해 계속 노력하고 싶습니다.
+많은 webpack 사용자가 빌드를 위해 사용자 정의 항목을 필요로 하고 구성 가능성과 풍부한 플러그인 시스템을 통해 webpack이 제공하는 것이라고 생각합니다.
 
 ### EcmaScript Modules
 
-EcmaScript Modules (ESM) are slowly gaining wide-spread adoption.
-On authoring side they are already the de facto standard to write code.
-On browser support it also looks pretty ok (except for IE11 and a few older mobile browsers).
-Browsers are still a bit lacking in supporting ESM for WebWorkers.
+EcmaScript Modules (ESM)은 천천히 널리 채택되고 있습니다.
+저작 측면에서 이미 코드작성에 대한 사실상의 표준입니다.
+브라우저 지원에서도 꽤 괜찮아 보입니다.(IE11 그리고 몇 가지 오래된 모바일 브라우저를 제외하면)
+브라우저는 아직 웹워커용 ESM을 지원하는 데 여전히 약간 부족합니다.
 
-One can also generate bundles that run in a `type=module` script tag, but that has few benefits currently.
+`type=module`스크립트 태그에서 실행되는 번들을 생성할 수도 있지만 현재로서는 이점이 거의 없습니다.
 
-There are multiple areas in webpack where ESM support can be improved:
+Webpack에는 ESM 지원을 개선할 수 있는 여러 영역이 있습니다.
 
 #### ESM as chunk loading mechanism
 
-When targeting the web webpack loads chunks via `script` tags.
-When targeting node.js webpack loads chunks via `require` or `fs` + `vm`.
-When targeting WebWorkers webpack loads chunk via `importScripts`.
+웹을 대상으로 할 때, webpack은 `script` 태그를 통해 청크를 로드합니다.
+Node.js를 대상으로 할 때, webpack은 `require` 또는 `fs` + `vm`을 통해 청크를 로드합니다.
+웹워커를 대상으로 할 때, webpack은 `importScripts`를 통해 청크를 로드합니다.
 
-In a not-so-far future, all these environments support ESM and more importantly the dynamic `import()` function.
-So a chunk loading mechanism based on `import()` can unify all these environments, while even needing less runtime code.
+머지않은 미래에 이러한 모든 환경은 ESM과 더 중요한 동적 `import()`기능을 지원합니다.
+따라서 `import()`를 기반으로 하는 청크 로딩 메커니즘은 이러한 모든 환경을 통합하면서 더 적은 런타임 코드가 필요합니다.
 
 #### Self-executed chunks
 
-Currently on-demand-loaded chunks in webpack are always containers for module and never execute module code directly.
-When writing `import("./module")` in modules, this will compile to something like `__webpack_load_chunk__("chunk-containing-module.js").then(() => __webpack_require__("./module"))`.
-There are many cases where this can't be changed (e.g. when loading multiple chunks or loading CSS too), but there are some cases where webpack could generate a chunk that directly executes the contained module.
-This could lead to less generated code and would avoid the function wrapping in the chunk.
+현재 webpack의 온 디맨드 로디드 청크는 항상 모듈의 컨테이너이며 모듈 코드를 직접 실행하지 않습니다.
+모듈에 `import("./module")`을 작성하면 `__webpack_load_chunk__("chunk-containing-module.js").then(() => __webpack_require__("./module"))`와 같이 컴파일됩니다.
+변경할 수 없는 경우가 많지만(예를 들어 여러 청크를 로드하거나 CSS를 로드할 때), webpack이 포함된 모듈을 직접 실행하는 청크를 생성할 수 있는 경우가 있습니다.
+이렇게 하면 생성된 코드가 줄어들고 청크에서 함수 wrapping을 피할 수 있습니다.
 
-Currently I'm not yet sure if this is worth it, but it's at least worth looking into that.
+현재로서는 이것이 가치가 있는지 확실하지 않습니다. 하지만 적어도 조사할 가치가 있습니다.
 
 #### ESM exports
 
-Currently it's not possible to generate ESM exports for a bundle via `output.library.type: "module"`.
-This can be useful when integrating webpack bundles into ESM loading environments or inline scripts.
+현재 `output.library.type: "module"`을 통해 번들에 대한 ESM 내보내기를 생성할 수 없습니다.
+이는 webpack 번들을 ESM 로딩 환경 또는 인라인 스크립트에 통합할 때 유용할 수 있습니다.
 
-T> For webpack 4 there is actually a plugin, but native support would be preferable.
+T> webpack 4의 경우 실제로 플러그인이 있지만 기본 지원이 더 좋습니다.
 
 #### ESM externals (import)
 
-Webpack allows to define `externals` which are modules that are not bundled but exist at runtime.
-There are many types of externals ranging from globals over CommonJs/AMD/System to loading from classic script tag.
-Even `import()` (`type: "import"`) can be used to load an external, but `import` (`type: "module"`) can't be used yet.
+Webpack을 사용하면 번들로 제공되지 않지만 런타임에 존재하는 모듈인 'externals'를 정의할 수 있습니다.
+CommonJs/AMD/System을 통한 전역에서 클래식 스크립트 태그에서 로드에 이르기까지 다양한 외부 유형이 있습니다.
+`import()` (`type: "import"`)도 외부 로드에 사용할 수 있지만 'import'(`type: "module"`)는 아직 사용할 수 없습니다.
 
-Interestingly even while `type: "module"` isn't supported yet, webpack already uses it as default when writing e.g. `import x from "https://example.com/module.js"`.
-The default has been choosing to seamlessly add support for ESM externals without introducing a breaking change.
+흥미롭게도 `type: "module"`은 아직 지원되지 않지만 webpack은 예를 들어 `import x from "https://example.com/module.js"` 를 작성할 때 이미 기본값으로 사용합니다.
+기본적으로 주요 변경 사항을 도입하지 않고 ESM 외부에 대한 지원을 원활하게 추가하도록 선택했습니다.
 
-Absolute URLs in `import`s can make sense e.g. when using external services that offer their API as ESM: `import { event } from "https://analytics.company.com/api/v1.js"` (`import("https://analytics.company.com/api/v1.js")` might make more sense to gracefully handle errors when depending on this external service, but errors could also be caught higher in module graph).
+`import`의 절대적 URL은 API를 ESM으로 제공하는 외부서비스를 사용할 때 의미가 있습니다. `import { event } from "https://analytics.company.com/api/v1.js"` (`import("https://analytics.company.com/api/v1.js")` 이 외부 서비스에 의존할 때 오류를 정상적으로 처리하는 것이 더 합리적일 수 있지만, 오류는 모듈 그래프에서 더 높게 포착될 수도 있습니다.
 
-As usual the `externals` configuration allows to map any module name to externals:
+평소와 같이 `externals` 구성을 사용하면 모든 모듈 이름을 외부에 매핑할 수 있습니다.
 
 ```js
 export default {
@@ -108,125 +110,125 @@ export default {
 };
 ```
 
-W> Using multiple different ESM CDNs will not work. This is only an example.
+W> 여러 다른 ESM CDN을 사용하면 작동하지 않습니다. 이것은 단지 예시입니다.
 
 #### ESM library
 
-When ESM exports and import are supported people might think bundling a library makes sense, and that's probably true in some cases, but in many cases natively bundling will result in worse results.
-The biggest problem is the `"sideEffects": false` flag. It affects modules on per file base to skip whole modules. When concatenating multiple side-effect-free modules it's no longer possible to skip the individual modules, which leads to worse optimization when not all exports of the library are used.
+ESM exports 및 import가 지원될 때 사람들은 라이브러리 번들링이 의미가 있다고 생각할 수 있으며 일부 경우에는 사실일 수도 있지만 대부분의 경우 기본적으로 번들링은 더 나쁜 결과를 초래할 것입니다.
+가장 큰 문제는 `"sideEffects": false` 플래그입니다. 전체 모듈을 건너뛰기 위해 파일 기반의 모듈에 영향을 줍니다. 부작용이 없는 여러 모듈을 연결할 때 개별 모듈을 더 건너뛸 수 없으므로 라이브러리의 모든 내보내기가 사용되지 않을 때 최적화가 악화합니다.
 
-When the output should be a library that will be processed by a bundler later, this needs to be considered.
+출력이 나중에 번들러에 의해 처리될 라이브러리여야 하는 경우 이를 고려해야 합니다.
 
-I could think of a special mode, which does not apply chunking and instead, emit the raw (processed) modules connected via ESM imports and exports (or also CommonJS `require`).
-So this means loaders, module graph, and asset optimizations run, but no chunk graph is created and each module in the module graph is emitted as a separate file.
+청킹을 적용하지 않고 대신 ESM 가져오기 및 내보내기(또는 CommonJS `require`)를 통해 연결된 원시(처리된) 모듈을 내보내는 특수 모드를 생각할 수 있습니다.
+따라서 이는 로더, 모듈 그래프 및 자산 최적화가 실행되지만 청크 그래프가 생성되지 않고 모듈 그래프의 각 모듈이 별도의 파일로 방출된다는 것을 의미합니다.
 
 #### Strict mode warnings
 
-When generating an ESM bundle, all contained code will be forced to strict mode.
-For many modules, this isn't an issue, but there are a few older packages that might have trouble with the different semantic.
-We want to show warnings for these cases.
+ESM 번들을 생성할 때 포함된 모든 코드는 엄격 모드로 강제 실행됩니다.
+많은 모듈의 경우 이것은 문제가 되지 않지만 다른 의미 체계에 문제가 있을 수 있는 몇 가지 이전 패키지가 있습니다.
+이러한 경우에 대한 경고를 표시하고자 합니다.
 
 ### More first-class citizen
 
-Webpack 4 and 5 did a lot of work to support non-JS module types, and webpack 5 already supports some module types by default: JS (ESM/CJS/AMD), JSON, WebAssembly, Asset.
-Since webpack 5 one of our long term goals is to become a web-app optimizer, with the goal of supporting everything the browser supports.
-So technically a vanilla web app should work out-of-the-box with webpack, but being optimized on the go.
+Webpack 4 및 5는 비JS 모듈 유형을 지원하기 위해 많은 작업을 수행했으며 webpack 5는 이미 기본적으로 JS(ESM/CJS/AMD), JSON, WebAssembly, Asset과 같은 일부 모듈 유형을 지원합니다.
+Webpack 5 이후 장기적인 목표 중 하나는 브라우저가 지원하는 모든 것을 지원하는 목표로 웹 앱 옵티마이저가 되는 것입니다.
+따라서 기술적으로 바닐라 웹 앱은 webpack과 함께 즉시 작동해야 하지만 이와 함께 최적화도 되어야 합니다.
 
-The initial webpack 5 release already did some major steps in this direction: `new Worker` is supported natively. `new URL(...)` is supported natively (assets).
+초기 webpack 5 릴리스는 이미 이 방향으로 몇 가지 주요 단계를 수행했습니다. `new Worker`는 기본적으로 지원됩니다. `new URL(...)`은 기본적으로 지원됩니다(애셋).
 
-WebAssembly and JSON is already supported, even while the proposals are not finished yet.
+WebAssembly 및 JSON은 제안이 아직 완료되지 않은 동안에도 이미 지원됩니다.
 
-But two resource types are still missing for the complete story: HTML and CSS.
+그러나 전체 스토리에는 HTML과 CSS라는 두 가지 리소스 유형이 여전히 누락되어 있습니다.
 
 #### CSS as modules
 
-Currently webpack supports CSS via `css-loader`, `style-loader` or `mini-css-extract-plugin`.
-This is working pretty well, but I think we can do more by supporting CSS as a native module type in webpack.
+현재 webpack은 `css-loader`, `style-loader` 또는 `mini-css-extract-plugin`을 통해 CSS를 지원합니다.
+이것은 꽤 잘 작동하지만 webpack에서 CSS를 기본 모듈 유형으로 지원함으로써 더 많은 일을 할 수 있다고 생각합니다.
 
-A major benefit would be the developer experience: The `mini-css-extract-plugin` configuration is not the easiest and getting rid of it would simplify a lot for the developer.
-That doesn't mean you can add additional customization on top of that.
-I see many developers not using raw CSS, but using preprocessors on top of that (with native CSS support this would look like that: `{ test: /\.sass$/, type: "stylesheet", use: "sass-loader" }`).
+주요 이점은 개발자 경험입니다. `mini-css-extract-plugin` 구성은 가장 쉬운 일이 아니며 이를 제거하면 개발자가 많이 단순화할 수 있습니다.
+그렇다고 해서 그 위에 추가 사용자 지정을 추가할 수 있다는 의미는 아닙니다.
+많은 개발자가 원시 CSS를 사용하지 않고 그 위에 전처리기를 사용하는 것을 봅니다(네이티브 CSS 지원으로 이것은 다음과 같습니다: `{ test: /\.sass$/, type: "stylesheet", use: "sass-loader" }`).
 
-As of [State of CSS 2020](https://2020.stateofcss.com/en-US/technologies/css-in-js/) CSS Modules is a popular way of writing modular CSS and it being a native module type in webpack allows to benefit from module graph optimization like Tree Shaking (Used Exports Optimization and Side-Effects optimization). When using CSS Modules this means the resulting CSS will only contain CSS rules that are referenced from the application (as one is used to from JS Tree Shaking).
+[State of CSS 2020](https://2020.stateofcss.com/en-US/technologies/css-in-js/)에 따르면 2020 현재 CSS 모듈은 모듈식 CSS를 작성하는 인기 있는 방법이며 기본 모듈 유형입니다. webpack을 사용하면 Tree Shaking(Used Exports Optimization 및 Side-Effects 최적화)과 같은 모듈 그래프 최적화의 이점을 누릴 수 있습니다. CSS 모듈을 사용할 때 이것은 결과 CSS가 애플리케이션에서 참조하는 CSS 규칙만 포함한다는 것을 의미합니다(JS Tree Shaking에서 사용된 것처럼).
 
-There are some potential CSS Modules specific optimizations which are possible with the global knowledge of the application webpack has: CSS rules can be split into smaller rules to avoid repeating common properties. This can result in a much smaller payload as the output CSS contains fewer repeated properties (Atomic CSS).
+응용 프로그램 webpack에 대한 글로벌 지식으로 가능한 몇 가지 잠재적인 CSS 모듈 특정 최적화가 있습니다. CSS 규칙은 공통 속성의 반복을 피하고자 더 작은 규칙으로 분할될 수 있습니다. 이렇게 하면 출력 CSS에 반복되는 속성(Atomic CSS)이 더 적기 때문에 페이로드가 훨씬 작아질 수 있습니다.
 
-But there is a big "BUT" here: There is work towards a different "CSS Modules" proposal in the WebComponents community, which is planned to become natively supported by browsers.
-At least that's the goal of the proposal.
-Sadly this proposal is different from what's currently used in the Frontend ecosystem but uses similar syntax.
-Usually, webpack would align with proposals, so that's something to consider here.
-We have to check whether it's possible to avoid potential conflicts.
+그러나 여기에는 큰 "BUT"이 있습니다. WebComponents 커뮤니티에는 브라우저에서 기본적으로 지원될 예정인 다른 "CSS 모듈" 제안에 대한 작업이 있습니다.
+적어도 그것이 제안의 목표입니다.
+슬프게도 이 제안은 현재 프론트엔드 생태계에서 사용되는 것과 다르지만 유사한 구문을 사용합니다.
+일반적으로 webpack은 제안과 일치하므로 여기에서 고려해야 할 사항입니다.
+잠재적인 충돌을 피할 수 있는지 확인해야 합니다.
 
 #### HTML as entrypoint
 
-Following Parcels example, we also want to support HTML natively as entrypoints.
-Supporting that would be inline with the goal as web app optimizer, as web apps unusally start with a HTML.
-It is also a huge developer experience improvement for beginners as many things can be inferred from the HTML.
+Parcels 예제에 따라 HTML을 기본적으로 엔트리 포인트로 지원하려고 합니다.
+웹 앱이 비정상적으로 HTML로 시작하기 때문에 이를 지원하는 것은 웹 앱 옵티마이저로서의 목표와 일치합니다.
+또한 HTML에서 많은 것을 유추할 수 있으므로 초보자를 위한 엄청난 개발자 경험 향상입니다.
 
-Being in control of the generated HTML does also allow to optimize more aggressively by default.
-Currently, we prevent renaming or splitting initial chunks by default, as this requires additional infrastructure for the HTML generation.
+생성된 HTML을 제어하면 기본적으로 더욱 적극적으로 최적화할 수도 있습니다.
+현재 HTML 생성을 위한 추가 인프라가 필요하기 때문에 기본적으로 초기 청크의 이름을 바꾸거나 분할하는 것을 방지합니다.
 
-HTML entrypoints also benefit from CSS as modules and Asset modules, as these resources can be referenced from HTML too (e.g. `<link rel=stylesheet />`, `<img src="..." />`, `<link rel=icon />`).
+HTML 엔트리 포인트 또한 이러한 리소스를 HTML에서 참조할 수 있어서 CSS를 모듈 및 자산 모듈로 활용합니다(예: `<link rel=stylesheet />`, `<img src="..." />`, `<link rel=icon />`).
 
 #### HTML modules
 
-There is also a proposal about native support of importing HTML in browsers, that's something we will follow, especially as there is a huge overlap with HTML entrypoints.
+브라우저에서 HTML을 가져오는 기본 지원에 대한 제안도 있습니다. 특히 HTML 엔트리 포인트와 크게 겹치기 때문에 이를 따를 것입니다.
 
 ### SourceMap performance
 
-Using (full) SourceMaps with webpack is currently quite expensive with webpack, as performance for SourceMap processing isn't the best.
-This is something we want to look into for webpack, but also for terser, which is used by webpack as minimizer by default.
+Webpack과 함께 (전체) SourceMaps을 사용하는 것은 현재 Webpack에서 상당히 비쌉니다. SourceMap 처리 성능이 최고가 아니기 때문입니다.
+이것은 webpack에 대해 살펴보고자 하는 것뿐만 아니라 webpack이 기본적으로 최소화기로 사용하는 terser에 대해서도 살펴보고자 하는 것입니다.
 
 ### `exports`/`imports` package.json field
 
-Node.js 14 has added support for the `exports` field in package.json to allow to define entrypoints of a package.
-Webpack 5 followed this, and even added additional conditions like `production/development`.
+Node.js 14는 패키지의 엔트리 포인트를 정의할 수 있도록 package.json의 `exports` 필드에 대한 지원을 추가했습니다.
+Webpack 5는 이를 따랐고 `production/development`과 같은 추가 조건을 추가했습니다.
 
-Shortly after that Node.js made further additionals to that, e.g. they also added an `imports` field for private imports.
+그 직후 Node.js는 이에 대한 추가 기능을 추가했습니다. 그들은 또한 개인 수입을 위한 `imports` 필드를 추가했습니다.
 
-That's something we also want to add.
+우리가 추가하고 싶은 것중 하나입니다.
 
 ### Improve CommonJS analysis
 
-While ESM is the future, there are still a lot of CommonJS packages in npm and in use.
-Webpack 5 added analysis for CommonJS modules to allow Tree Shaking for most of these modules.
+ESM은 미래이지만 npm과 사용 중인 CommonJS 패키지는 여전히 많습니다.
+Webpack 5는 CommonJS 모듈에 대한 분석을 추가하여 이러한 모듈 대부분에 대해 Tree Shaking을 허용합니다.
 
-But we can do more. While many exporting patterns are supported, only a few importing patterns are supported.
-We want to add support for more patterns to allow more optimizations for CommonJS modules too.
+하지만 더 많은 것을 할 수 있습니다. 많은 내보내기 패턴이 지원되지만 몇 가지 가져오기 패턴만 지원됩니다.
+CommonJS 모듈에 대한 더 많은 최적화를 허용하기 위해 더 많은 패턴에 대한 지원을 추가하고자 합니다.
 
 ### Hot Module Replacement for Module Federation
 
-Webpack 5 added a new feature called "Module Federation" which allows integrating multiple builds together at runtime.
-Currently, Hot Module Replacement (HMR) supports only a single build at a time and updates can't bubble between builds.
-We want to improve here and allow HMR updates to bubble between different builds, which would improve developing federation applications.
+Webpack 5에는 런타임에 여러 빌드를 통합할 수 있는 "모듈 연합"이라는 새로운 기능이 추가되었습니다.
+현재 핫 모듈 교체(HMR)는 한 번에 단일 빌드만 지원하며 업데이트는 빌드 간에 버블링될 수 없습니다.
+여기에서 개선하고 다른 빌드 간에 HMR 업데이트가 버블링되도록 하여 페더레이션 응용 프로그램 개발을 개선하고자 합니다.
 
 ### Hinting system
 
-Currently, webpack displays warnings and errors to the user.
-During the build, there are quite a few cases where we could tell the user something, like potential footguns or optimization opportunities, but they don't fit into warnings or errors and we don't want to spam the output with all this information.
-So we want to add another category: Hints.
-We want to collect all hints during builds (plugins could also emit some), but only display a limited number of them in the output (by default only one).
-This should lead to some kind of "Did you know" experience for the user.
+현재 webpack은 사용자에게 경고 및 오류를 표시합니다.
+빌드하는 동안 잠재적인 풋건이나 최적화 기회와 같은 것을 사용자에게 말할 수 있지만 경고나 오류에 맞지 않으며 이 모든 정보로 출력을 스팸 하고 싶지 않은 경우가 꽤 있습니다.
+그래서 다른 카테고리 힌트를 추가하고 싶습니다.
+빌드 중에 모든 힌트를 수집하기를 원하지만(플러그인도 일부를 방출할 수 있음) 출력에는 제한된 수의 힌트만 표시합니다(기본적으로 하나만 표시).
+이것은 사용자에게 일종의 "아시나요?" 경험으로 이어질 것입니다.
 
 ### Multi-Threading
 
-While Persistent Caching makes cached build "blazing" fast, initial builds without Persistent Cache have still a bit of room for improvement.
-Javascript execution in Node.js is single-threaded by default, but recent additions allow to use `worker_threads`, which is an API similar to WebWorkers.
+Persistent Caching은 캐시된 빌드를 "엄청나게" 빠르게 만들지만 Persistent Cache가 없는 초기 빌드에는 여전히 개선의 여지가 있습니다.
+Node.js의 자바스크립트 실행은 기본적으로 단일 스레드이지만 최근 추가되면서 WebWorkers와 유사한 API인 `worker_threads`를 사용할 수 있습니다.
 
-This can be used distribute work across all CPUs. There has already been some preparations in webpack 5 for that: e.g. serializing of internal data structures is possible and the work queues support plugins. But some parts of that are still unclear and require experimentation.
+이것은 모든 CPU에 작업을 분산하는 데 사용할 수 있습니다. 이를 위해 webpack 5에서 이미 몇 가지 준비가 있었습니다. 내부 데이터 구조의 직렬화가 가능하고 작업 대기열은 플러그인을 지원합니다. 그러나 그중 일부는 여전히 불분명하고 실험이 필요합니다.
 
-This is in our voting list for a while, but not many have voted on that. Is this really something people need?
+이것은 잠깐 동안 투표 목록에 있지만 많은 사람이 그것에 대해 투표하지 않았습니다. 이것이 정말 사람들에게 필요한 것입니까?
 
 ### WebAssembly
 
-Currently, WebAssembly is experimental and not enabled by default.
-Once the proposal reaches Stage 4 we can enable it by default.
+현재 WebAssembly는 실험적이며 기본적으로 활성화되어 있지 않습니다.
+제안이 4단계에 도달하면 기본적으로 활성화할 수 있습니다.
 
-This might also lead to a wider adoption of WebAssembly in the ecosystem.
-I think we might see more in this field in 2021.
+이것은 또한 생태계에서 WebAssembly의 광범위한 채택으로 이어질 수 있습니다.
+2021년에는 이 분야에서 더 많은 것을 볼 수 있으리라 생각합니다.
 
 ## Disclaimer
 
-This list is not set in stone.
-The web ecosystem changes so fast that we probably end up implementing totally different things, that we might not even aware of at this time.
-We do not even know how much time we can invest in webpack, considering our current sponsoring situation.
+이 목록은 고정되어 있지 않습니다.
+웹 생태계는 너무 빠르게 변하기 때문에 아마도 지금은 인식하지 못하는 완전히 다른 것들을 구현하게 될 것입니다.
+현재 후원 상황을 고려할 때 webpack에 얼마나 많은 시간을 투자할 수 있는지조차 모릅니다.
