@@ -426,19 +426,19 @@ module.exports = {
 module.exports = {
   output: {
     environment: {
-      // 이 환경은 화살표 기능('() => { ... }')을 지원합니다.
+      // 화살표 기능('() => { ... }')을 지원합니다.
       arrowFunction: true,
-      // 이 환경은 BigInt를 문자 그대로 지원합니다(예를 들어, 123n).
+      // BigInt를 문자 그대로 지원합니다(예를 들어, 123n).
       bigIntLiteral: false,
-      // 이 환경은 const 및 let 변수 선언을 지원합니다.
+      // const 및 let 변수 선언을 지원합니다.
       const: true,
-      // 이 환경은 destructuring을 지원합니다('{ a, b } = obj' 처럼 사용합니다).
+      // destructuring을 지원합니다('{ a, b } = obj' 처럼 사용합니다).
       destructuring: true,
-      // 이 환경은 EcmaScript 모듈을 가져오는 비동기 import() 함수를 지원합니다.
+      // EcmaScript 모듈을 가져오는 비동기 import() 함수를 지원합니다.
       dynamicImport: false,
-      // 이 환경은 'for of' 반복자를 지원합니다('for (const x of array) { ... }' 처럼 사용합니다).
+      // 'for of' 반복자를 지원합니다('for (const x of array) { ... }' 처럼 사용합니다).
       forOf: true,
-      // 이 환경은 ECMAScript 모듈을 가져오는 ECMAScript Module syntax를 지원합니다(import ... from '...' 처럼 사용합니다).
+      // ECMAScript 모듈을 가져오는 ECMAScript Module syntax를 지원합니다(import ... from '...' 처럼 사용합니다).
       module: false,
     },
   },
