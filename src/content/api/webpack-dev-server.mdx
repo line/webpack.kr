@@ -3,19 +3,21 @@ title: webpack-dev-server API
 sort: 3
 contributors:
   - snitin315
+translator:
+  - dkstyle
 ---
 
-`webpack-dev-server` provides a Node.js API which can be used directly in Node.js runtime.
+`webpack-dev-server`는 Node.js 런타임에서 직접 사용할 수 있는 Node.js API를 제공합니다.
 
 ## Installation
 
-To start using the `webpack-dev-server` Node.js API, first install `webpack` and `webpack-dev-server` if you haven’t yet:
+`webpack-dev-server` Node.js API를 사용하려면, 먼저 `webpack` 과 `webpack-dev-server`를 설치하세요.
 
 ```bash
 npm install --save-dev webpack webpack-dev-server
 ```
 
-Then require the modules in your Node.js script:
+그런 다음 Node.js 스크립트에 모듈이 필요합니다.
 
 ```js
 const Webpack = require('webpack');
@@ -24,7 +26,7 @@ const WebpackDevServer = require('webpack-dev-server');
 
 ## start
 
-It instructs `webpack-dev-server` instance to start the server.
+`webpack-dev-server` 인스턴스에 서버를 시작하도록 지시합니다.
 
 **server.js**
 
@@ -45,7 +47,7 @@ const runServer = async () => {
 runServer();
 ```
 
-And then run the server with the following command:
+그런 다음 아래 명령으로 서버를 실행합니다.
 
 ```bash
 node server.js
@@ -53,7 +55,7 @@ node server.js
 
 ## startCallback(callback)
 
-It instructs `webpack-dev-server` instance to start the server and then run the callback function.
+`webpack-dev-server` 인스턴스에 서버를 시작한 후 콜백 함수를 실행하도록 지시합니다.
 
 **server.js**
 
@@ -71,7 +73,7 @@ server.startCallback(() => {
 });
 ```
 
-And then run the server with the following command:
+그런 다음 아래 명령으로 서버를 실행합니다.
 
 ```bash
 node server.js
@@ -79,7 +81,7 @@ node server.js
 
 ## stop
 
-It instructs `webpack-dev-server` instance to stop the server.
+`webpack-dev-server` 인스턴스에 서버를 중지하도록 지시합니다.
 
 **server.js**
 
@@ -107,7 +109,7 @@ runServer();
 setTimeout(stopServer, 5000);
 ```
 
-And then run the server with the following command:
+그런 다음 아래 명령으로 서버를 실행합니다.
 
 ```bash
 node server.js
@@ -115,7 +117,7 @@ node server.js
 
 ## stopCallback(callback)
 
-It instructs `webpack-dev-server` instance to stop the server and then run the callback function.
+`webpack-dev-server` 인스턴스에 서버를 중지하고 콜백 함수를 실행하도록 지시합니다.
 
 **server.js**
 
@@ -140,7 +142,7 @@ const stopServer = () =>
 setTimeout(stopServer, 5000);
 ```
 
-And then run the server with the following command:
+그런 다음 아래 명령으로 서버를 실행합니다.
 
 ```bash
 node server.js
