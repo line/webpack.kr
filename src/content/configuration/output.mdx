@@ -205,7 +205,7 @@ module.exports = {
 
 `false` `string: 'jsonp' | 'import-scripts' | 'require' | 'async-node' | 'import' | <any string>`
 
-청크를 로드하는 메소드.(기본적으로 포함된 메소드는 `'jsonp'` (web), `'import'` (ESM), `'importScripts'` (WebWorker), `'require'` (sync node.js), `'async-node'` (async node.js) 등이지만 플러그인에 의해 추가될 수 있습니다).
+청크를 로드하는 메소드(기본적으로 포함된 메소드는 `'jsonp'` (web), `'import'` (ESM), `'importScripts'` (WebWorker), `'require'` (sync node.js), `'async-node'` (async node.js) 등이지만 플러그인에 의해 추가될 수 있습니다).
 
 **webpack.config.js**
 
@@ -426,19 +426,19 @@ module.exports = {
 module.exports = {
   output: {
     environment: {
-      // The environment supports arrow functions ('() => { ... }').
+      // 화살표 기능('() => { ... }')을 지원합니다.
       arrowFunction: true,
-      // The environment supports BigInt as literal (123n).
+      // BigInt를 문자 그대로 지원합니다(예를 들어, 123n).
       bigIntLiteral: false,
-      // The environment supports const and let for variable declarations.
+      // const 및 let 변수 선언을 지원합니다.
       const: true,
-      // The environment supports destructuring ('{ a, b } = obj').
+      // destructuring을 지원합니다('{ a, b } = obj' 처럼 사용합니다).
       destructuring: true,
-      // The environment supports an async import() function to import EcmaScript modules.
+      // EcmaScript 모듈을 가져오는 비동기 import() 함수를 지원합니다.
       dynamicImport: false,
-      // The environment supports 'for of' iteration ('for (const x of array) { ... }').
+      // 'for of' 반복자를 지원합니다('for (const x of array) { ... }' 처럼 사용합니다).
       forOf: true,
-      // The environment supports ECMAScript Module syntax to import ECMAScript modules (import ... from '...').
+      // ECMAScript 모듈을 가져오는 ECMAScript Module syntax를 지원합니다(import ... from '...' 처럼 사용합니다).
       module: false,
     },
   },
@@ -820,7 +820,7 @@ export function hello(name) {
    ```js
    module.exports = {
      // …
-     entry: ['./src/a.js', './src/b.js'], // only exports in b.js will be exposed
+     entry: ['./src/a.js', './src/b.js'], // 오직 b.js의 출력만 노출됩니다.
      output: {
        library: 'MyLibrary',
      },
