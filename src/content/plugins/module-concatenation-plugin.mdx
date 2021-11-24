@@ -5,8 +5,8 @@ contributors:
   - skipjack
   - TheLarkInn
   - byzyk
-translators: 
-  - jiwoo0629 
+translators:
+  - jiwoo0629
 ---
 
 과거에 번들링을 할 때 webpack의 절충점 중 하나는 번들의 각 모듈이 개별 함수 클로저에 의해 래핑된다는 점이었습니다. 이러한 래퍼 함수는 브라우저에서 자바스크립트의 실행을 느리게 만들었습니다. 이와 달리, Closure Comiler와 RollupJS와 같은 도구는 모든 모듈을 하나의 클로저로 호이스팅 하거나 연결하여 코드가 브라우저에서 더 빠른 실행 시간을 갖게 했습니다.
@@ -17,9 +17,9 @@ translators:
 new webpack.optimize.ModuleConcatenationPlugin();
 ```
 
-> 이 연결 동작은 “범위 호이스팅” 이라고 불립니다. 
-> 
-> 범위 호이스팅은 특별히 ECMAScript Module 문법에서 사용 가능하도록 만들어진 형태입니다. 이로 인해 webpack은 현재 사용 중인 모듈의 종류와 [다른 여러 조건](https://medium.com/webpack/webpack-freelancing-log-book-week-5-7-4764be3266f5)에 따라 평범한 번들링으로 퇴화할 수도 있습니다. 
+> 이 연결 동작은 “범위 호이스팅” 이라고 불립니다.
+>
+> 범위 호이스팅은 특별히 ECMAScript Module 문법에서 사용 가능하도록 만들어진 형태입니다. 이로 인해 webpack은 현재 사용 중인 모듈의 종류와 [다른 여러 조건](https://medium.com/webpack/webpack-freelancing-log-book-week-5-7-4764be3266f5)에 따라 평범한 번들링으로 퇴화할 수도 있습니다.
 
 W> 이 플러그인은 webpack에서 직접 처리되는 [ES6 modules](/api/module-methods/#es6-recommended)에만 적용된 다는 점을 명심하세요. 트랜스파일러를 사용할 경우 모듈 처리를 비활성화해야 합니다. (예) Babel의 [`modules`] (https://babeljs.io/docs/en/babel-preset-env#modules) 옵션
 
@@ -27,18 +27,18 @@ W> 이 플러그인은 webpack에서 직접 처리되는 [ES6 modules](/api/modu
 
 글에서 설명하듯이 webpack은 부분적인 범위 호이스팅을 시도합니다. 이는 모듈을 하나의 범위로 합치지만 모든 경우에 합치지는 못합니다. 만약 webapck이 모듈을 합칠 수 없다면 두 가지 대안은 Prevent와 Root 입니다. Prevent는 모듈이 반드시 그 자신의 범위 안에 있어야 한다는 것을 의미합니다. Root는 새로운 모듈 그룹이 생성될 것이라는 의미입니다. 다음의 조건이 결과를 결정합니다.
 
-| Condition                                      | Outcome |
-| ---------------------------------------------  | ------- |
-| Non ES6 Module                                 | Prevent |
-| Non Import로 가져옴                            | Root    |
-| 다른 청크에서 가져옴                           | Root    |
-| 다수의 다른 모듈 그룹에서 가져옴               | Root    |
+| Condition                                     | Outcome |
+| --------------------------------------------- | ------- |
+| Non ES6 Module                                | Prevent |
+| Non Import로 가져옴                           | Root    |
+| 다른 청크에서 가져옴                          | Root    |
+| 다수의 다른 모듈 그룹에서 가져옴              | Root    |
 | `import()`로 가져옴                           | Root    |
 | `ProvidePlugin`의 영향을 받거나 `module` 사용 | Prevent |
 | HMR 허용                                      | Root    |
 | `eval()` 사용                                 | Prevent |
 | 다수의 청크                                   | Prevent |
-| "cjs-module"로부터 * 내보내기                 | Prevent |
+| "cjs-module"로부터 \* 내보내기                | Prevent |
 
 ### Module Grouping Algorithm
 
