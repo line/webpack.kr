@@ -30,7 +30,7 @@ Webpack은 여러 모듈 구문을 지원하지만, 일관성을 유지하고 �
   - CommonJS가 허용되지 않습니다. 예를 들면 `require`, `module.exports` 또는 `exports`를 사용할 수 없습니다.
   - 가져올 때 파일 확장자가 필요합니다. 예를 들어 `import './src/App'` 대신에 `import './src/App.mjs'`를 사용해야 합니다. ([`Rule.resolve.fullySpecified`](/configuration/module/#resolvefullyspecified)를 사용하여 이 사항을 비활성화할 수 있습니다.)
 - `package.json`에 `"type": "commonjs"`가 있는 `.cjs` 또는 `.js`.
-   - '`import`도 `export`도 사용할 수 없습니다.
+   - `import`도 `export`도 사용할 수 없습니다.
 - `package.json`에 `"type": "module"`이 있는 `.wasm`.
    - wasm 파일을 가져올 때 파일 확장자가 필요합니다.
 
@@ -61,10 +61,10 @@ import {
 
 ### export
 
-무엇이든 `default` 또는 유명 내보내기(named export)로 내보냅니다.
+무엇이든 `default` 또는 이름이 지정된 내보내기로 내보냅니다.
 
 ```javascript
-// 유명 내보내기
+// 이름이 지정된 내보내기
 export var Count = 5;
 export function Multiply(a, b) {
   return a * b;
@@ -112,7 +112,7 @@ T> [`webpackInclude` 및 `webpackExclude`](/api/module-methods/#magic-comments) 
 
 #### Magic Comments
 
-기능을 작동시키기 위한 인라인 주석입니다. 가져오기에 주석을 추가하여 청크의 이름을 지정하거나 다른 모드를 선택하는 등의 여러 작업을 할 수 있습니다. 이러한 마법 주석의 전체 목록은 아래 코드와 주석이 수행하는 작업에 대한 설명을 참고하세요.
+기능을 작동시키기 위한 인라인 주석입니다. 가져오기에 주석을 추가하여 청크의 이름을 지정하거나 다른 모드를 선택하는 등의 여러 작업을 할 수 있습니다. 이 특별한 주석의 전체 목록과 주석이 수행하는 작업은 아래 코드와 설명을 참고하세요.
 
 ```js
 // 단일 대상
@@ -123,7 +123,7 @@ import(
   'module'
 );
 
-// 복수의 가능한 대상
+// 여러 가능한 대상
 import(
   /* webpackInclude: /\.json$/ */
   /* webpackExclude: /\.noimport\.json$/ */
@@ -183,7 +183,7 @@ var $ = require('jquery');
 var myModule = require('my-module');
 ```
 
-`require`에 대한 마법 주석도 활성화할 수 있습니다. 자세한 내용은 [`module.parser.javascript.commonjsMagicComments`](/configuration/module/#moduleparserjavascriptcommonjsmagiccomments)를 참고하세요.
+`require`에 대한 특별한 주석도 활성화할 수 있습니다. 자세한 내용은 [`module.parser.javascript.commonjsMagicComments`](/configuration/module/#moduleparserjavascriptcommonjsmagiccomments)를 참고하세요.
 
 W> 비동기식으로 사용하면 예상한 효과가 없을 수 있습니다.
 
@@ -293,7 +293,7 @@ W> 비동기 함수에서는 사용할 수 없습니다.
 define(value: !Function)
 ```
 
-제공된 `value`를 내보냅니다. 여기서 `value`은 함수를 제외한 모든 것이 될 수 있습니다.
+제공된 `value`를 내보냅니다. 여기서 `value`는 함수를 제외한 모든 것이 될 수 있습니다.
 
 ```javascript
 define({
