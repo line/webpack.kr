@@ -18,6 +18,7 @@ contributors:
   - rohrlaf
   - jamesgeorge007
   - anshumanv
+  - snitin315
 translators:
   - 1ilsang
 related:
@@ -103,6 +104,8 @@ W> webpack 5부터 `{cacheGroup}.test`에 엔트리 이름을 전달하고 `{cac
 
 이것은 최적화를 위해 선택될 청크를 나타냅니다. 문자열이 제공될 때 유효한 값은 `all`, `async` 및 `initial`입니다. `all`을 제공하는 것은 비동기 청크와 동기 청크 간에도 청크를 공유할 수 있다는 것을 의미하기 때문에 특히 강력할 수 있습니다.
 
+대체 캐시 그룹(`splitChunks.fallbackCacheGroup.chunks`)에도 적용됩니다.
+
 **webpack.config.js**
 
 ```js
@@ -167,9 +170,17 @@ maxSize로 분할된 부분의 이름을 만들 때 경로 정보가 노출되�
 
 ### splitChunks.minSize
 
-`number = 20000`
+`number = 20000` `{ [index: string]: number }`
 
 생성할 청크의 최소 byte 크기입니다.
+
+### splitChunks.minSizeReduction
+
+`number` `{ [index: string]: number }`
+
+청크를 생성하는 데 필요한 기본 청크(번들)의 바이트 단위의 줄어들 최소 크기입니다. 즉, 청크로 분할해도 기본 청크(번들)의 크기가 주어진 바이트만큼 줄어들지 않으면 `splitChunks.minSize` 값을 충족하더라도 분할되지 않습니다.
+
+T> 청크가 생성되려면 `splitChunks.minSizeReduction` 과 `splitChunks.minSize`가 모두 충족되어야 합니다.
 
 ### splitChunks.enforceSizeThreshold
 
