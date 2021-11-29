@@ -18,36 +18,38 @@ related:
     url: https://en.wikipedia.org/wiki/CommonJS
   - title: Asynchronous Module Definition
     url: https://en.wikipedia.org/wiki/Asynchronous_module_definition
+translators:
+  - keipark
 ---
 
-This section covers all methods available in code compiled with webpack. When using webpack to bundle your application, you can pick from a variety of module syntax styles including [ES6](https://en.wikipedia.org/wiki/ECMAScript#6th_Edition_-_ECMAScript_2015), [CommonJS](https://en.wikipedia.org/wiki/CommonJS), and [AMD](https://en.wikipedia.org/wiki/Asynchronous_module_definition).
+이 섹션에서는 webpack으로 컴파일된 코드에서 사용할 수 있는 모든 메서드를 다룹니다. Webpack을 사용하여 애플리케이션을 번들할 때 [ES6](https://en.wikipedia.org/wiki/ECMAScript#6th_Edition_-_ECMAScript_2015), [CommonJS](https://en.wikipedia.org/wiki/CommonJS) 및 [AMD](https://en.wikipedia.org/wiki/Asynchronous_module_definition)와 같은 여러 가지 구문 스타일 중 선택할 수 있습니다.
 
-While webpack supports multiple module syntaxes, we recommend following a single syntax for consistency and to avoid odd behaviors/bugs. Actually webpack would enforce the recommendation for `.mjs` files, `.cjs` files or `.js` files when their nearest parent `package.json` file contains a `"type"` field with a value of either `"module"` or `"commonjs"`. Please pay attention to these enforcements before you read on:
-
-- `.mjs` or `.js` with `"type": "module"` in `package.json`
-  - No CommonJS allowed, for example, you can't use `require`, `module.exports` or `exports`
-  - File extensions are required when importing, e.g, you should use `import './src/App.mjs'` instead of `import './src/App'` (you can disable this enforcement with [`Rule.resolve.fullySpecified`](/configuration/module/#resolvefullyspecified))
-- `.cjs` or `.js` with `"type": "commonjs"` in `package.json`
-  - Neither `import` nor `export` is available
-- `.wasm` with `"type": "module"` in `package.json`
-  - File extensions are required when importing wasm file
+Webpack은 여러 모듈 구문을 지원하지만, 일관성을 유지하고 이상한 동작이나 버그를 피하려면 단일 구문을 따르는 것이 좋습니다. 실제로 webpack은 가장 가까운 상위 `package.json` 파일에 값이 `"module"` 이거나 `commonjs`인 `"type"` 필드가 포함된 경우, `.mjs` 파일, `.cjs` 파일 또는 `.js` 파일에 대한 권장 사항을 적용합니다. 계속해서 읽기 전에 다음 적용 사항을 알아보세요.
+  
+- `package.json`에 `"type": "module"`이 있는 `.mjs` 또는 `.js`.
+  - CommonJS가 허용되지 않습니다. 예를 들면 `require`, `module.exports` 또는 `exports`를 사용할 수 없습니다.
+  - 가져올 때 파일 확장자가 필요합니다. 예를 들어 `import './src/App'` 대신에 `import './src/App.mjs'`를 사용해야 합니다. ([`Rule.resolve.fullySpecified`](/configuration/module/#resolvefullyspecified)를 사용하여 이 사항을 비활성화할 수 있습니다.)
+- `package.json`에 `"type": "commonjs"`가 있는 `.cjs` 또는 `.js`.
+   - `import`도 `export`도 사용할 수 없습니다.
+- `package.json`에 `"type": "module"`이 있는 `.wasm`.
+   - wasm 파일을 가져올 때 파일 확장자가 필요합니다.
 
 ## ES6 (Recommended)
 
-Version 2 of webpack supports ES6 module syntax natively, meaning you can use `import` and `export` without a tool like babel to handle this for you. Keep in mind that you will still probably need babel for other ES6+ features. The following methods are supported by webpack:
+Webpack 버전 2는 기본적으로 ES6 모듈 구문을 지원합니다. 즉, babel과 같은 도구 없이 `import` 및 `export`를 사용하여 이를 처리할 수 있습니다. 다른 ES6+ 기능에는 여전히 babel이 필요할 수 있습니다. Webpack이 지원하는 메서드는 다음과 같습니다.
 
 ### import
 
-Statically `import` the `export`s of another module.
+다른 모듈의 `export`를 정적으로 `import` 합니다.
 
 ```javascript
 import MyModule from './my-module.js';
 import { NamedExport } from './other-module.js';
 ```
 
-W> The keyword here is **statically**. A normal `import` statement cannot be used dynamically within other logic or contain variables. See the [spec](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import) for more information and `import()` below for dynamic usage.
+W> 여기서 키워드는 **정적으로**입니다. 일반적인 `import` 문은 다른 로직 내에서 동적으로 사용하거나 변수를 포함할 수 없습니다. 자세한 내용은 [세부 사양](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import)에서 확인해 보세요. 동적 사용법은 아래의 `import()`를 참고하세요.
 
-You can also `import` Data URI:
+Data URI를 `import` 할 수도 있습니다.
 
 ```javascript
 import 'data:text/javascript;charset=utf-8;base64,Y29uc29sZS5sb2coJ2lubGluZSAxJyk7';
@@ -59,18 +61,18 @@ import {
 
 ### export
 
-Export anything as a `default` or named export.
+무엇이든 `default` 또는 이름이 지정된 내보내기로 내보냅니다.
 
 ```javascript
-// Named exports
+// 이름이 지정된 내보내기
 export var Count = 5;
 export function Multiply(a, b) {
   return a * b;
 }
 
-// Default export
+// 기본 내보내기
 export default {
-  // Some data...
+  // 데이터...
 };
 ```
 
@@ -78,42 +80,42 @@ export default {
 
 `function(string path):Promise`
 
-Dynamically load modules. Calls to `import()` are treated as split points, meaning the requested module and its children are split out into a separate chunk.
+모듈을 동적으로 로드합니다. `import()`에 대한 호출은 분할 지점으로 처리됩니다. 즉, 요청된 모듈과 그 자식은 별도의 청크로 분할됩니다.
 
-T> The [ES2015 Loader spec](https://whatwg.github.io/loader/) defines `import()` as method to load ES2015 modules dynamically on runtime.
+T> [ES2015 로더 사양](https://whatwg.github.io/loader/)에서는 `import()`를 런타임에 ES2015 모듈을 동적으로 로드하는 메서드로 정의하고 있습니다.
 
 ```javascript
 if (module.hot) {
   import('lodash').then((_) => {
-    // Do something with lodash (a.k.a '_')...
+    // lodash(일명 '_')로 작업 수행...
   });
 }
 ```
 
-W> This feature relies on [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) internally. If you use `import()` with older browsers, remember to shim `Promise` using a polyfill such as [es6-promise](https://github.com/stefanpenner/es6-promise) or [promise-polyfill](https://github.com/taylorhakes/promise-polyfill).
+W> 이 기능은 내부적으로 [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)에 의존합니다. 이전 브라우저에서 `import()`를 사용하는 경우 [es6-promise](https://github.com/stefanpenner/es6-promise) 또는 [promise-polyfill]( https://github.com/taylorhakes/promise-polyfill)과 같은 폴리필을 사용하여 `Promise`를 대체해야 합니다.
 
 ### Dynamic expressions in import()
 
-It is not possible to use a fully dynamic import statement, such as `import(foo)`. Because `foo` could potentially be any path to any file in your system or project.
+`import(foo)`와 같은 완전히 동적인 import 문을 사용하는 것은 불가능합니다. `foo`는 잠재적으로 시스템이나 프로젝트의 모든 파일에 대한 경로가 될 수 있기 때문입니다.
 
-The `import()` must contain at least some information about where the module is located. Bundling can be limited to a specific directory or set of files so that when you are using a dynamic expression - every module that could potentially be requested on an `import()` call is included. For example, `` import(`./locale/${language}.json`) `` will cause every `.json` file in the `./locale` directory to be bundled into the new chunk. At run time, when the variable `language` has been computed, any file like `english.json` or `german.json` will be available for consumption.
+`import()`는 최소한 모듈 위치에 대한 정보를 포함해야 합니다. 번들링은 특정 디렉터리 또는 파일 집합으로 제한될 수 있습니다. 그러므로 동적 표현 식을 사용할 때 `import()` 호출 시 잠재적으로 요청 가능한 모든 모듈이 포함됩니다. 예를 들어 `` import(`./locale/${language}.json`) ``은 `./locale` 디렉터리의 모든 `.json` 파일을 새로운 청크로 번들합니다. 런타임에 `language` 변수가 계산되면 `english.json` 또는 `german.json`과 같은 모든 파일이 사용 가능하게 됩니다.
 
 ```javascript
-// imagine we had a method to get language from cookies or other storage
+// 쿠키나 다른 저장소에서 언어를 가져오는 방법이 있다고 상상해 보세요.
 const language = detectVisitorLanguage();
 import(`./locale/${language}.json`).then((module) => {
-  // do something with the translations
+  // 번역과 관련된 작업을 수행합니다.
 });
 ```
 
-T> Using the [`webpackInclude` and `webpackExclude`](/api/module-methods/#magic-comments) options allows you to add regex patterns that reduce the number of files that webpack will bundle for this import.
+T> [`webpackInclude` 및 `webpackExclude`](/api/module-methods/#magic-comments) 옵션을 사용하면 이 가져오기를 위해 webpack이 번들할 파일 수를 줄이는 정규식 패턴을 추가할 수 있습니다.
 
 #### Magic Comments
 
-Inline comments to make features work. By adding comments to the import, we can do things such as name our chunk or select different modes. For a full list of these magic comments see the code below followed by an explanation of what these comments do.
+기능을 작동시키기 위한 인라인 주석입니다. 가져오기에 주석을 추가하여 청크의 이름을 지정하거나 다른 모드를 선택하는 등의 여러 작업을 할 수 있습니다. 이 특별한 주석의 전체 목록과 주석이 수행하는 작업은 아래 코드와 설명을 참고하세요.
 
 ```js
-// Single target
+// 단일 대상
 import(
   /* webpackChunkName: "my-chunk-name" */
   /* webpackMode: "lazy" */
@@ -121,7 +123,7 @@ import(
   'module'
 );
 
-// Multiple possible targets
+// 여러 가능한 대상
 import(
   /* webpackInclude: /\.json$/ */
   /* webpackExclude: /\.noimport\.json$/ */
@@ -137,36 +139,36 @@ import(
 import(/* webpackIgnore: true */ 'ignored-module.js');
 ```
 
-`webpackIgnore`: Disables dynamic import parsing when set to `true`.
+`webpackIgnore`: `true`로 설정하면 동적 가져오기 구문 파싱을 비활성화합니다.
 
-W> Note that setting `webpackIgnore` to `true` opts out of code splitting.
+W> `webpackIgnore`를 `true`로 설정하면 코드 분할에서 벗어날 수 있습니다.
 
-`webpackChunkName`: A name for the new chunk. Since webpack 2.6.0, the placeholders `[index]` and `[request]` are supported within the given string to an incremented number or the actual resolved filename respectively. Adding this comment will cause our separate chunk to be named [my-chunk-name].js instead of [id].js.
+`webpackChunkName`: 새 청크의 이름입니다. Webpack 2.6.0부터 플레이스홀더 `[index]`와 `[request]`는 주어진 문자열 내에서 증가된 숫자 또는 실제 확인된 파일 이름으로 각각 지원합니다. 이 주석을 추가하면 개별 청크 이름이 [id].js 대신 [my-chunk-name].js로 지정됩니다.
 
-`webpackMode`: Since webpack 2.6.0, different modes for resolving dynamic imports can be specified. The following options are supported:
+`webpackMode`: Webpack 2.6.0부터 동적 가져오기를 해석하기 위한 다른 모드를 지정할 수 있습니다. 다음 옵션이 지원됩니다.
 
-- `'lazy'` (default): Generates a lazy-loadable chunk for each `import()`ed module.
-- `'lazy-once'`: Generates a single lazy-loadable chunk that can satisfy all calls to `import()`. The chunk will be fetched on the first call to `import()`, and subsequent calls to `import()` will use the same network response. Note that this only makes sense in the case of a partially dynamic statement, e.g. `` import(`./locales/${language}.json`) ``, where multiple module paths that can potentially be requested.
-- `'eager'`: Generates no extra chunk. All modules are included in the current chunk and no additional network requests are made. A `Promise` is still returned but is already resolved. In contrast to a static import, the module isn't executed until the call to `import()` is made.
-- `'weak'`: Tries to load the module if the module function has already been loaded in some other way (e.g. another chunk imported it or a script containing the module was loaded). A `Promise` is still returned, but only successfully resolves if the chunks are already on the client. If the module is not available, the `Promise` is rejected. A network request will never be performed. This is useful for universal rendering when required chunks are always manually served in initial requests (embedded within the page), but not in cases where app navigation will trigger an import not initially served.
+- `'lazy'` (기본값): 각 `import()`된 모듈에 대해 지연 로드 가능한 청크를 생성합니다.
+- `'lazy-once'`: `import()`에 대한 모든 호출을 만족시킬 수 있는 단일 지연 로드 가능 청크를 생성합니다. 청크는 `import()`에 대한 첫 번째 호출에서 가져오고, `import()`에 대한 후속 호출은 동일한 네트워크 응답을 사용합니다. 이것은 잠재적으로 요청 가능한 복수의 모듈 경로가 있는 `` import(`./locales/${language}.json`) ``와 같은 부분 동적 문일 경우에만 의미가 있습니다.
+- `'eager'`: 추가 청크를 생성하지 않습니다. 모든 모듈은 현재 청크에 포함되며 추가 네트워크 요청은 발생하지 않습니다. 이미 해석된 `Promise`가 반환됩니다. 정적 가져오기와 달리 모듈은 `import()`가 호출될 때까지 실행되지 않습니다.
+- `'weak'`: 모듈 함수가 이미 다른 방식으로 로드된 경우 모듈 로드를 시도합니다(예: 다른 청크가 이를 가져왔거나 모듈을 포함하는 스크립트가 로드된 경우). `Promise`가 여전히 반환되지만 청크가 이미 클라이언트에 있는 경우에만 성공적으로 해석됩니다. 모듈을 사용할 수 없으면 `Promise`가 거부됩니다. 네트워크 요청은 발생하지 않습니다. 이는 필요한 청크가 초기 요청에서 항상 수동으로 제공되는 (페이지에 내장된 경우) 범용 렌더링에 유용합니다. 하지만 앱 탐색이 초기에 제공되지 않은 가져오기를 트리거 하는 경우에는 유용하지 않습니다.
 
-`webpackPrefetch`: Tells the browser that the resource is probably needed for some navigation in the future. Check out the guide for more information on [how webpackPrefetch works](/guides/code-splitting/#prefetchingpreloading-modules).
+`webpackPrefetch`: 향후 탐색에 리소스가 필요할 수 있음을 브라우저에 알립니다. [webpackPrefetch 작동 방식](/guides/code-splitting/#prefetchingpreloading-modules)에 대한 자세한 내용은 가이드를 확인하세요.
 
-`webpackPreload`: Tells the browser that the resource might be needed during the current navigation. Check out the guide for more information on [how webpackPreload works](/guides/code-splitting/#prefetchingpreloading-modules).
+`webpackPreload`: 현재 탐색 중에 리소스가 필요할 수 있음을 브라우저에 알립니다. [webpackPreload 작동 방식](/guides/code-splitting/#prefetchingpreloading-modules)에 대한 자세한 내용은 가이드를 확인하세요.
 
-T> Note that all options can be combined like so `/* webpackMode: "lazy-once", webpackChunkName: "all-i18n-data" */`. This is wrapped in a JavaScript object and executed using [node VM](https://nodejs.org/dist/latest-v8.x/docs/api/vm.html). You do not need to add curly brackets.
+T> 모든 옵션은 `/* webpackMode: "lazy-once", webpackChunkName: "all-i18n-data" */`와 같이 결합할 수 있습니다. 이것은 자바스크립트 객체에 래핑 되고 [node VM](https://nodejs.org/dist/latest-v8.x/docs/api/vm.html)을 사용하여 실행됩니다. 중괄호를 추가할 필요는 없습니다.
 
-`webpackInclude`: A regular expression that will be matched against during import resolution. Only modules that match **will be bundled**.
+`webpackInclude`: 가져오기 해석 중 일치하는지 확인할 정규식입니다. 일치하는 모듈만 **번들로 제공됩니다**.
 
-`webpackExclude`: A regular expression that will be matched against during import resolution. Any module that matches **will not be bundled**.
+`webpackExclude`: 가져오기 해석 중 일치하는지 확인할 정규식입니다. 일치하는 모듈은 **번들로 제공되지 않습니다**.
 
-T> Note that `webpackInclude` and `webpackExclude` options do not interfere with the prefix. eg: `./locale`.
+T> `webpackInclude` 및 `webpackExclude` 옵션은 접두사와 간섭이 없습니다. 예: `./locale`.
 
-`webpackExports`: tells webpack to only bundle the specified exports of a dynamically `import()`ed module. It can decrease the output size of a chunk. Available since [webpack 5.0.0-beta.18](https://github.com/webpack/webpack/releases/tag/v5.0.0-beta.18).
+`webpackExports`: 동적으로 `import()`된 모듈의 지정된 내보내기만 번들로 묶도록 webpack에 지시합니다. 청크의 출력 크기를 줄일 수 있습니다. [webpack 5.0.0-beta.18](https://github.com/webpack/webpack/releases/tag/v5.0.0-beta.18)부터 사용 가능합니다.
 
 ## CommonJS
 
-The goal of CommonJS is to specify an ecosystem for JavaScript outside the browser. The following CommonJS methods are supported by webpack:
+CommonJS의 목표는 브라우저 외부에서 JavaScript용 생태계를 지정하는 것입니다. Webpack에서 지원하는 CommonJS 메서드는 다음과 같습니다.
 
 ### require
 
@@ -174,16 +176,16 @@ The goal of CommonJS is to specify an ecosystem for JavaScript outside the brows
 require(dependency: String);
 ```
 
-Synchronously retrieve the exports from another module. The compiler will ensure that the dependency is available in the output bundle.
+다른 모듈의 내보내기를 동기적으로 검색합니다. 컴파일러는 출력 번들에서 의존성을 사용할 수 있는지 확인합니다.
 
 ```javascript
 var $ = require('jquery');
 var myModule = require('my-module');
 ```
 
-It's possible to enable magic comments for `require` as well, see [`module.parser.javascript.commonjsMagicComments`](/configuration/module/#moduleparserjavascriptcommonjsmagiccomments) for more.
+`require`에 대한 특별한 주석도 활성화할 수 있습니다. 자세한 내용은 [`module.parser.javascript.commonjsMagicComments`](/configuration/module/#moduleparserjavascriptcommonjsmagiccomments)를 참고하세요.
 
-W> Using it asynchronously may not have the expected effect.
+W> 비동기식으로 사용하면 예상한 효과가 없을 수 있습니다.
 
 ### require.resolve
 
@@ -191,17 +193,17 @@ W> Using it asynchronously may not have the expected effect.
 require.resolve(dependency: String);
 ```
 
-Synchronously retrieve a module's ID. The compiler will ensure that the dependency is available in the output bundle. It is recommended to treat it as an opaque value which can only be used with `require.cache[id]` or `__webpack_require__(id)` (best to avoid such usage).
+모듈의 ID를 동기적으로 검색합니다. 컴파일러는 출력 번들에서 의존성을 사용할 수 있는지 확인합니다. `require.cache[id]` 또는 `__webpack_require__(id)`와 함께 사용할 수 있는 불투명 값으로 처리하는 것이 좋습니다 (이러한 사용을 피하는 것이 가장 좋습니다).
 
-W> Module ID's type can be a `number` or a `string` depending on the [`optimization.moduleIds`](/configuration/optimization/#optimizationmoduleids) configuration.
+W> 모듈 ID의 유형은 [`optimization.moduleIds`](/configuration/optimization/#optimizationmoduleids) 설정에 따라 `number` 또는 `string`이 될 수 있습니다.
 
-See [`module.id`](/api/module-variables/#moduleid-commonjs) for more information.
+자세한 내용은 [`module.id`](/api/module-variables/#moduleid-commonjs)를 참고하세요.
 
 ### require.cache
 
-Multiple requires of the same module result in only one module execution and only one export. Therefore a cache in the runtime exists. Removing values from this cache causes new module execution and a new export.
+동일한 모듈을 여러 번 require 하면 모듈이 한 번만 실행되고 하나의 내보내기만 발생합니다. 따라서 런타임에 캐시가 존재합니다. 이 캐시에서 값을 제거하면 새 모듈이 실행되고 새 내보내기가 발생합니다.
 
-W> This is only needed in rare cases for compatibility!
+W> 이것은 드문 경우에만 호환성을 위해 필요합니다!
 
 ```javascript
 var d1 = require('dependency');
@@ -211,18 +213,18 @@ require('dependency') !== d1;
 ```
 
 ```javascript
-// in file.js
+// file.js에서
 require.cache[module.id] === module;
 require('./file.js') === module.exports;
 delete require.cache[module.id];
 require.cache[module.id] === undefined;
-require('./file.js') !== module.exports; // in theory; in praxis this causes a stack overflow
+require('./file.js') !== module.exports; // 이론상 실제로 이것은 스택 오버플로를 일으킵니다.
 require.cache[module.id] !== module;
 ```
 
 ### require.ensure
 
-W> `require.ensure()` is specific to webpack and superseded by `import()`.
+W> `require.ensure()`는 webpack에만 해당하며 `import()`로 대체되었습니다.
 
 ```ts
 require.ensure(
@@ -233,9 +235,9 @@ require.ensure(
 )
 ```
 
-Split out the given `dependencies` to a separate bundle that will be loaded asynchronously. When using CommonJS module syntax, this is the only way to dynamically load dependencies. Meaning, this code can be run within execution, only loading the `dependencies` if certain conditions are met.
+비동기식으로 로드될 지정된 `dependencies`를 별도의 번들로 분할합니다. CommonJS 모듈 구문을 사용할 때 이것은 의존성을 동적으로 로드하는 유일한 방법입니다. 즉, 이 코드는 작업 중에 실행될 수 있으며 특정 조건이 충족되는 경우에만 `dependencies`를 로드합니다.
 
-W> This feature relies on [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) internally. If you use `require.ensure` with older browsers, remember to shim `Promise` using a polyfill such as [es6-promise](https://github.com/stefanpenner/es6-promise) or [promise-polyfill](https://github.com/taylorhakes/promise-polyfill).
+W> 이 기능은 내부적으로 [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)에 의존합니다. 이전 브라우저에서 `require.ensure`를 사용하는 경우 [es6-promise](https://github.com/stefanpenner/es6-promise) 또는 [promise-polyfill]( https://github.com/taylorhakes/promise-polyfill)과 같은 폴리필을 사용하여 `Promise`를 대체해야 합니다.
 
 ```javascript
 var a = require('normal-dep');
@@ -244,23 +246,23 @@ if (module.hot) {
   require.ensure(['b'], function (require) {
     var c = require('c');
 
-    // Do something special...
+    // 특별한 작업을 수행...
   });
 }
 ```
 
-The following parameters are supported in the order specified above:
+다음 파라미터는 위에서 지정한 순서대로 지원됩니다.
 
-- `dependencies`: An array of strings declaring all modules required for the code in the `callback` to execute.
-- `callback`: A function that webpack will execute once the dependencies are loaded. An implementation of the `require` function is sent as a parameter to this function. The function body can use this to further `require()` modules it needs for execution.
-- `errorCallback`: A function that is executed when webpack fails to load the dependencies.
-- `chunkName`: A name given to the chunk created by this particular `require.ensure()`. By passing the same `chunkName` to various `require.ensure()` calls, we can combine their code into a single chunk, resulting in only one bundle that the browser must load.
+- `dependencies`: `callback`의 코드 실행에 필요한 모든 모듈을 선언하는 문자열 배열입니다.
+- `callback`: 의존성이 로드되면 webpack이 실행할 함수입니다. `require` 함수 구현은 이 함수에 대한 파라미터로 전송됩니다. 함수 본문은 이것을 사용하여 실행에 필요한 추가 `require()` 모듈을 사용할 수 있습니다.
+- `errorCallback`: Webpack이 의존성을 불러오지 못했을 때 실행되는 함수입니다.
+- `chunkName`: 특별히 이 `require.ensure()`에 의해 생성된 청크에 부여된 이름입니다. 다양한 `require.ensure()` 호출에 동일한 `chunkName`을 전달하면 해당 코드를 단일 청크로 결합할 수 있으므로 브라우저에서 로드하는 번들이 하나만 생성됩니다.
 
-W> Although the implementation of `require` is passed as an argument to the `callback` function, using an arbitrary name e.g. `require.ensure([], function(request) { request('someModule'); })` isn't handled by webpack's static parser. Use `require` instead, e.g. `require.ensure([], function(require) { require('someModule'); })`.
+W> `require`의 구현이 `callback` 함수에 인수로 전달되어도 `require.ensure([], function(request) { request('someModule'); })` 같은 임의의 이름을 사용하면 webpack의 정적 파서에서 처리되지 않습니다. 대신 `require.ensure([], function(require) { require('someModule'); })`와 같이 `require`를 사용하세요. 
 
 ## AMD
 
-Asynchronous Module Definition (AMD) is a JavaScript specification that defines an interface for writing and loading modules. The following AMD methods are supported by webpack:
+AMD(Asynchronous Module Definition)는 모듈을 작성하고 로드하기 위한 인터페이스를 정의하는 JavaScript 사양입니다. Webpack에서 지원하는 AMD 방식은 다음과 같습니다.
 
 ### define (with factory)
 
@@ -268,22 +270,22 @@ Asynchronous Module Definition (AMD) is a JavaScript specification that defines 
 define([name: String], [dependencies: String[]], factoryMethod: function(...))
 ```
 
-If `dependencies` are provided, `factoryMethod` will be called with the exports of each dependency (in the same order). If `dependencies` are not provided, `factoryMethod` is called with `require`, `exports` and `module` (for compatibility!). If this function returns a value, this value is exported by the module. The compiler ensures that each dependency is available.
+`dependencies`가 제공되면 `factoryMethod`가 각 의존성의 내보내기와 함께 같은 순서로 호출됩니다. `dependencies`가 제공되지 않으면 `factoryMethod`가 `require`, `exports` 및 `module`과 함께 호출됩니다(호환성을 위함입니다!). 이 함수가 값을 반환하면 모듈에서 이 값을 내보냅니다. 컴파일러는 각 의존성을 사용할 수 있는지 확인합니다.
 
-W> Note that webpack ignores the `name` argument.
+W> Webpack은 `name` 인수를 무시합니다.
 
 ```javascript
 define(['jquery', 'my-module'], function ($, myModule) {
-  // Do something with $ and myModule...
-
-  // Export a function
+  // $와 myModule로 작업을 수행하세요...
+  
+  // 함수 내보내기
   return function doSomething() {
     // ...
   };
 });
 ```
 
-W> This CANNOT be used in an asynchronous function.
+W> 비동기 함수에서는 사용할 수 없습니다.
 
 ### define (with value)
 
@@ -291,7 +293,7 @@ W> This CANNOT be used in an asynchronous function.
 define(value: !Function)
 ```
 
-This will export the provided `value`. The `value` here can be anything except a function.
+제공된 `value`를 내보냅니다. 여기서 `value`는 함수를 제외한 모든 것이 될 수 있습니다.
 
 ```javascript
 define({
@@ -299,7 +301,7 @@ define({
 });
 ```
 
-W> This CANNOT be used in an async function.
+W> 비동기 함수에서는 사용할 수 없습니다.
 
 ### require (amd-version)
 
@@ -307,9 +309,9 @@ W> This CANNOT be used in an async function.
 require(dependencies: String[], [callback: function(...)])
 ```
 
-Similar to `require.ensure`, this will split the given `dependencies` into a separate bundle that will be loaded asynchronously. The `callback` will be called with the exports of each dependency in the `dependencies` array.
+`require.ensure`와 유사하게, 주어진 `dependencies`를 비동기식으로 로드되는 별도의 번들로 분할합니다. `callback`은 `dependencies` 배열의 각 종속성을 내보낼 때 호출됩니다.
 
-W> This feature relies on [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) internally. If you use AMD with older browsers (e.g. Internet Explorer 11), remember to shim `Promise` using a polyfill such as [es6-promise](https://github.com/stefanpenner/es6-promise) or [promise-polyfill](https://github.com/taylorhakes/promise-polyfill).
+W> 이 기능은 내부적으로 [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)에 의존합니다. Internet Explorer 11과 같은 이전 브라우저에서 AMD를 사용하는 경우 [es6-promise](https://github.com/stefanpenner/es6-promise) 또는 [promise-polyfill]( https://github.com/taylorhakes/promise-polyfill)과 같은 폴리필을 사용하여 `Promise`를 대체해야 합니다.
 
 ```javascript
 require(['b'], function (b) {
@@ -317,35 +319,35 @@ require(['b'], function (b) {
 });
 ```
 
-W> There is no option to provide a chunk name.
+W> 청크 이름을 제공하는 옵션이 없습니다.
 
 ## Labeled Modules
 
-The internal `LabeledModulesPlugin` enables you to use the following methods for exporting and requiring within your modules:
+내부 `LabeledModulesPlugin`을 통해 모듈 내에서 다음과 같은 내보내기 및 요청을 위한 메서드 사용이 가능합니다.
 
 ### export label
 
-Export the given `value`. The label can occur before a function declaration or a variable declaration. The function name or variable name is the identifier under which the value is exported.
+제공된 `value`를 내보냅니다. label은 함수 선언이나 변수 선언 앞에 올 수 있습니다. 함수 이름 또는 변수 이름은 값을 내보내는 데 사용되는 식별자입니다.
 
 ```ts
 export: var answer = 42;
 export: function method(value) {
-  // Do something...
+  // 작업을 수행하세요...
 };
 ```
 
-W> Using it in an async function may not have the expected effect.
+W> 비동기 함수에서 사용하면 기대한 효과가 없을 수 있습니다.
 
 ### require label
 
-Make all exports from the dependency available in the current scope. The `require` label can occur before a string. The dependency must export values with the `export` label. CommonJS or AMD modules cannot be consumed.
+현재 범위에서 사용 가능한 의존성의 모든 내보내기를 만듭니다. `require` label은 문자열 앞에 올 수 있습니다. 의존성은 `export` label이 있는 값을 내보내야 합니다. CommonJS 또는 AMD 모듈은 사용할 수 없습니다.
 
 **some-dependency.js**
 
 ```ts
 export: var answer = 42;
 export: function method(value) {
-  // Do something...
+  // 작업을 수행하세요...
 };
 ```
 
@@ -357,36 +359,36 @@ method(...);
 
 ## Webpack
 
-Aside from the module syntaxes described above, webpack also allows a few custom, webpack-specific methods:
+위에서 설명한 모듈 구문 외에도 webpack에 한정된 몇가지 사용자 정의 메서드를 허용합니다.
 
 ### require.context
 
 ```ts
 require.context(
   (directory: String),
-  (includeSubdirs: Boolean) /* optional, default true */,
-  (filter: RegExp) /* optional, default /^\.\/.*$/, any file */,
-  (mode: String) /* optional, 'sync' | 'eager' | 'weak' | 'lazy' | 'lazy-once', default 'sync' */
+  (includeSubdirs: Boolean) /* 선택, 기본값 true */,
+  (filter: RegExp) /* 선택, 기본값 /^\.\/.*$/, 모든 파일 */,
+  (mode: String) /* 선택, 'sync' | 'eager' | 'weak' | 'lazy' | 'lazy-once', 기본값 'sync' */
 );
 ```
 
-Specify a whole group of dependencies using a path to the `directory`, an option to `includeSubdirs`, a `filter` for more fine grained control of the modules included, and a `mode` to define the way how loading will work. Underlying modules can then be easily resolved later on:
+`directory`에 대한 경로, `includeSubdirs` 옵션, 포함된 모듈을 좀 더 세밀하게 제어하기 위한 `filter`, 로드 작동 방식을 정의하는 `mode`를 사용하여 전체 의존성 그룹을 지정합니다. 기본 모듈은 나중에 쉽게 해석할 수 있습니다.
 
 ```javascript
 var context = require.context('components', true, /\.html$/);
 var componentA = context.resolve('componentA');
 ```
 
-If `mode` is set to `'lazy'`, the underlying modules will be loaded asynchronously:
+`mode`가 `'lazy'`로 설정되면 기본 모듈이 비동기식으로 로드됩니다.
 
 ```javascript
 var context = require.context('locales', true, /\.json$/, 'lazy');
 context('localeA').then((locale) => {
-  // do something with locale
+  // locale로 작업을 수행
 });
 ```
 
-The full list of available modes and their behavior is described in [`import()`](#import-1) documentation.
+사용 가능한 모드의 전체 목록과 그 동작은 [`import()`](#import-1) 문서에 설명되어 있습니다.
 
 ### require.include
 
@@ -394,7 +396,7 @@ The full list of available modes and their behavior is described in [`import()`]
 require.include((dependency: String));
 ```
 
-Include a `dependency` without executing it. This can be used for optimizing the position of a module in the output chunks.
+실행하지 않고 `dependency`를 포함합니다. 출력 청크에서 모듈의 위치를 최적화하는 데 사용할 수 있습니다.
 
 ```javascript
 require.include('a');
@@ -406,30 +408,30 @@ require.ensure(['a', 'c'], function (require) {
 });
 ```
 
-This will result in the following output:
+결과는 다음과 같습니다.
 
-- entry chunk: `file.js` and `a`
-- anonymous chunk: `b`
-- anonymous chunk: `c`
+- 엔트리 청크: `file.js` 와 `a`
+- 익명 청크: `b`
+- 익명 청크: `c`
 
-Without `require.include('a')` it would be duplicated in both anonymous chunks.
+`require.include('a')`가 없으면 두 익명 청크에 복제됩니다.
 
 ### require.resolveWeak
 
-Similar to `require.resolve`, but this won't pull the `module` into the bundle. It's what is considered a "weak" dependency.
+`require.resolve`와 유사하지만, `module`을 번들로 가져오지 않습니다. 이것은 "약한" 의존성으로 간주합니다.
 
 ```javascript
 if (__webpack_modules__[require.resolveWeak('module')]) {
-  // Do something when module is available...
+  // 모듈을 사용할 수 있을 때 수행...
 }
 if (require.cache[require.resolveWeak('module')]) {
-  // Do something when module was loaded before...
+  // 이전에 모듈이 로드된 경우 수행...
 }
 
-// You can perform dynamic resolves ("context")
-// similarly to other require/import methods.
+// 동적 해석("context")을 수행할 수 있습니다.
+// 다른 require/import 메서드와 유사합니다.
 const page = 'Foo';
 __webpack_modules__[require.resolveWeak(`./page/${page}`)];
 ```
 
-T> `require.resolveWeak` is the foundation of _universal rendering_ (SSR + Code Splitting), as used in packages such as [react-universal-component](https://github.com/faceyspacey/react-universal-component). It allows code to render synchronously on both the server and initial page-loads on the client. It requires that chunks are manually served or somehow available. It's able to require modules without indicating they should be bundled into a chunk. It's used in conjunction with `import()` which takes over when user navigation triggers additional imports.
+T> `require.resolveWeak`은 [react-universal-component](https://github.com/faceyspacey/react-universal-component)와 같은 패키지에서 사용되는 _universal rendering_(SSR + Code Splitting)의 기초입니다. 코드가 서버와 클라이언트의 초기 페이지 로드에서 동기적으로 렌더링되도록 합니다. 청크가 수동으로 제공되거나 어떻게든 사용할 수 있어야 합니다. 청크로 번들 되어야 함을 나타내지 않고 모듈을 요구할 수 있습니다. 사용자 탐색이 추가 가져오기를 트리거할 때 인계받는 `import()`와 함께 사용됩니다.
