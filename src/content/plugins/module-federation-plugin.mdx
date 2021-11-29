@@ -49,7 +49,7 @@ module.exports = {
 
 ### Specify package versions
 
-여러 공유 라이브러리의 버전을 지정하는 세 가지 방법이 있습니다.
+공유 라이브러리의 버전을 지정하는 세 가지 방법이 있습니다.
 
 #### Array syntax
 
@@ -60,9 +60,9 @@ const { ModuleFederationPlugin } = require('webpack').container;
 module.exports = {
   plugins: [
     new ModuleFederationPlugin({
-      // lodash을 공유모듈로 추가합니다.
+      // lodash를 공유 모듈로 추가합니다.
       // package.json으로부터 버전을 추론합니다.
-      // 필요한 버전에 대한 버전 확인이 없습니다.
+      // 필수 버전을 확인하지 않습니다.
       // 그래서 항상 발견된 더 높은 버전을 사용합니다.
       shared: ['lodash'],
     }),
@@ -72,15 +72,15 @@ module.exports = {
 
 #### Object syntax
 
-이 구문은 패키지 이름을 키로 정의하고 버전([semver](https://semver.org/))을 값으로 정의할 수 있는 각 공유 라이브러리에 대한 더 많은 제어를 제공합니다.
+이 구문을 사용하면 패키지 이름을 키로 정의하고 버전([semver](https://semver.org/))을 값으로 정의할 수 있는 각 공유 라이브러리를 보다 세부적으로 제어할 수 있습니다.
 
 ```js
 module.exports = {
   plugins: [
     new ModuleFederationPlugin({
       shared: {
-        // lodash을 공유모듈로 추가합니다.
-        // package.json 으로부터 버전 추론합니다.
+        // lodash를 공유 모듈로 추가합니다.
+        // package.json 으로부터 버전을 추론합니다.
         // 4.17 이상 5 미만의 버전 중 최상위 버전을 사용하게 됩니다.
         lodash: '^4.17.0',
       },
@@ -91,7 +91,7 @@ module.exports = {
 
 #### Object syntax with sharing hints
 
-이 구문을 사용하면 각 공유 패키지에 힌트를 추가로 제공할 수 있습니다. 패키지의 이름을 키로, 공유 동작을 수정하기 위한 힌트를 포함한 객체를 값으로 정의하여 제공합니다.
+이 구문을 사용하면 각 공유 패키지에 힌트를 추가로 제공할 수 있습니다. 패키지의 이름을 키로, 공유 동작을 수정하기 위한 힌트를 포함한 객체를 값으로 정의하여 제공할 수 있습니다.
 
 ```js
 const deps = require('./package.json').dependencies;
@@ -117,7 +117,7 @@ module.exports = {
 
 `boolean`
 
-이 힌트를 사용하면 webpack이 비동기식 요청을 통해 라이브러리를 가져오는 대신 제공된 모듈이나 대체 모듈을 직접 포함할 수 있습니다. 즉, 초기 청크에서 이 공유 모듈을 사용할 수 있습니다. 또한 이 힌트가 활성화되면 제공된 모든 모듈과 대체 모듈이 항상 다운로드된다는 점에 주의해야합니다.
+이 힌트를 사용하면 webpack이 비동기식 요청을 통해 라이브러리를 가져오는 대신 제공된 모듈이나 대체 모듈을 직접 포함할 수 있습니다. 즉, 초기 청크에서 이 공유 모듈을 사용할 수 있습니다. 또한 이 힌트가 활성화되면 제공된 모든 모듈과 대체 모듈이 항상 다운로드된다는 점에 주의해야 합니다.
 
 #### **`import`**
 
@@ -153,19 +153,19 @@ module.exports = {
 
 `boolean`
 
-‘singleton’는 공유 범위에서 단일 버전의 공유 모듈만 허용합니다.(기본적으로 비활성화됨). 일부 라이브러리는 전역 내부 상태를 사용합니다.(예: react, react-dom). 따라서 한 번에 하나의 라이브러리 인스턴스만 실행하는 것이 중요합니다.
+‘singleton’은 공유 범위에서 단일 버전의 공유 모듈만 허용합니다.(기본적으로 비활성화됨) 일부 라이브러리는 전역 내부 상태를 사용합니다.(예: react, react-dom) 따라서 한 번에 하나의 라이브러리 인스턴스만 실행하는 것이 중요합니다.
 
 #### **`strictVersion`**
 
 `boolean`
 
-‘strictVersion’를 사용하면 버전이 유효하지 않은 경우 webpack이 공유 모듈을 거부할 수 있습니다(로컬 폴백 모듈을 사용할 수 있고 공유 모듈이 singleton이 아닌 경우 기본값은 `true`로 설정되고, 그렇지 않으면 `false`로 설정되며 필수 버전이 지정되지 않은 경우 효과가 없습니다).
+‘strictVersion’을 사용하면 버전이 유효하지 않은 경우 webpack이 공유 모듈을 거부할 수 있습니다(로컬 폴백 모듈을 사용할 수 있고 공유 모듈이 singleton이 아닌 경우 기본값은 `true`로 설정되고, 그렇지 않으면 `false`로 설정되며 필수 버전이 지정되지 않은 경우 효과가 없습니다).
 
 #### **`version`**
 
 `false | string`
 
-제공된 모듈의 버전입니다. webpack이 일치하는 낮은 버전을 대체할 수 있지만, 더 높은 버전은 대체할 수 없습니다.
+제공된 모듈의 버전입니다. Webpack이 일치하는 낮은 버전을 대체할 수 있지만, 더 높은 버전은 대체할 수 없습니다.
 
 #### **Additional examples**
 
@@ -173,8 +173,8 @@ module.exports = {
 module.exports = {
   plugins: [
     new ModuleFederationPlugin({
-      // vue를 공유모듈로 추가합니다.
-      // package.json 으로부터 버전 추론합니다.
+      // vue를 공유 모듈로 추가합니다.
+      // package.json 으로부터 버전을 추론합니다.
       // 항상 공유 버전을 사용하지만 공유된 vue가 2.6.5 미만 또는 3 이상 버전인 경우 경고를 출력합니다.
       shared: {
         vue: {
@@ -191,7 +191,7 @@ module.exports = {
 module.exports = {
   plugins: [
     new ModuleFederationPlugin({
-      // vue를 공유모듈로 추가합니다.
+      // vue를 공유 모듈로 추가합니다.
       // 제공된 로컬 버전이 없습니다.
       // 공유된 vue가 2.6.5 미만 또는 3 이상 버전이면 경고를 내보냅니다.
       shared: {
@@ -209,7 +209,7 @@ module.exports = {
 module.exports = {
   plugins: [
     new ModuleFederationPlugin({
-      // vue를 공유모듈로 추가합니다.
+      // vue를 공유 모듈로 추가합니다.
       // 제공된 로컬 버전이 없습니다.
       // 공유된 vue가 2.6.5 미만 또는 3 이상 버전이면 오류가 발생합니다.
       shared: {
@@ -235,7 +235,7 @@ module.exports = {
           shareKey: 'shared-vue', // 'shared-vue'이름으로 공유된 모듈은 공유 유효범위에 배치됩니다.
           shareScope: 'default', // 'default'로 공유 유효범위가 적용됩니다.
           singleton: true, // 공유 모듈의 단일 버전만 허용됩니다.
-          strictVersion: true, // 버전이 유효하지 않을 때 공유 버전을 사용하지 마십시오. fallback이 없는 Singleton 또는 모듈은 넘겨집니다. 그렇지 않으면 fallback이 사용됩니다.
+          strictVersion: true, // 버전이 유효하지 않을 때 공유 버전을 사용하지 말아야 합니다. fallback이 없는 Singleton 또는 모듈은 넘겨집니다. 그렇지 않으면 fallback이 사용됩니다.
           version: '1.2.3', // 공유 모듈의 버전입니다.
           requiredVersion: '^1.0.0', // 공유 모듈의 최소 버전 입니다.
         },
