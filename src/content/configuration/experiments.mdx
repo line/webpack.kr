@@ -6,6 +6,7 @@ contributors:
   - wizardofhogwarts
   - chenxsan
   - anshumanv
+  - snitin315
 translators:
   - choilim
 ---
@@ -20,7 +21,8 @@ W> 실험적 기능은 시멘틱 버저닝을 완화하고 주요 변경 사항�
 
 사용 가능한 옵션은 다음과 같습니다.
 
-- `asyncWebAssembly`: [업데이트된 사양](https://github.com/WebAssembly/esm-integration)에 따라 새로운 웹 어셈블리를 지원하여, 웹 어셈블리 모듈을 비동기 모듈로 만듭니다.
+- `asyncWebAssembly`: [업데이트된 사양](https://github.com/WebAssembly/esm-integration)에 따라 새로운 웹 어셈블리를 지원하여, 웹 어셈블리 모듈을 비동기 모듈로 만듭니다. 그리고 [`experiments.futureDefaults`](#experimentsfuturedefaults)가 `true`로 설정되면 기본적으로 활성화됩니다.
+- [`backCompat`](#experimentsbackcompat)
 - [`buildHttp`](#experimentsbuildhttp)
 - [`cacheUnaffected`](#experimentscacheunaffected)
 - [`futureDefaults`](#experimentsfuturedefaults)
@@ -28,7 +30,7 @@ W> 실험적 기능은 시멘틱 버저닝을 완화하고 주요 변경 사항�
 - [`lazyCompilation`](#experimentslazycompilation)
 - [`outputModule`](#experimentsoutputmodule)
 - `syncWebAssembly`: webpack 4에서와 같이 이전 웹 어셈블리를 지원합니다.
-- `topLevelAwait`: [Top Level Await Stage 3 제안](https://github.com/tc39/proposal-top-level-await)을 지원하여, 최상위에서 `await` 사용 시 모듈을 비동기 모듈로 만듭니다.
+- `topLevelAwait`: [Top Level Await Stage 3 제안](https://github.com/tc39/proposal-top-level-await)을 지원하여, 최상위에서 `await` 사용 시 모듈을 비동기 모듈로 만듭니다. 그리고 [`experiments.futureDefaults`](#experimentsfuturedefaults)가 `true`로 설정되면 기본적으로 활성화됩니다.
 
 **webpack.config.js**
 
@@ -38,12 +40,26 @@ module.exports = {
   experiments: {
     asyncWebAssembly: true,
     buildHttp: true,
-    executeModule: true,
     layers: true,
     lazyCompilation: true,
     outputModule: true,
     syncWebAssembly: true,
     topLevelAwait: true,
+  },
+};
+```
+
+### experiments.backCompat
+
+다수의 webpack 4 API에 대한 지원 중단 경고와 함께 이전 버전과 호환되는 레이어를 활성화합니다.
+
+- Type: `boolean`
+
+```js
+module.exports = {
+  //...
+  experiments: {
+    backCompat: true,
   },
 };
 ```
@@ -54,12 +70,14 @@ module.exports = {
 
 - Type:
 
-  다음 중 하나:
+  - `(string | RegExp | ((uri: string) => boolean))[]`
 
-  - `boolean`
+    [`experiments.buildHttp.allowedUris`](#experimentsbuildhttpalloweduris)의 바로가기입니다.
+
   - `HttpUriOptions`
     ```ts
     {
+      allowedUris: (string|RegExp|(uri: string) => boolean)[],
       cacheLocation?: false | string,
       frozen?: boolean,
       lockfileLocation?: string,
@@ -85,6 +103,28 @@ module.exports = {
   import pMap1 from 'https://cdn.skypack.dev/p-map';
   // `buildHttp`가 활성화되면, webpack은 일반 로컬 모듈처럼 pMap1을 빌드합니다.
   console.log(pMap1);
+  ```
+
+#### experiments.buildHttp.allowedUris
+
+허용된 URI 목록입니다.
+
+- Type: `(string|RegExp|(uri: string) => boolean)[]`
+- Example
+
+  ```javascript
+  // webpack.config.js
+  module.exports = {
+    //...
+    experiments: {
+      buildHttp: {
+        allowedUris: [
+          'http://localhost:9990/',
+          'https://raw.githubusercontent.com/',
+        ],
+      },
+    },
+  };
   ```
 
 #### experiments.buildHttp.cacheLocation
@@ -148,7 +188,7 @@ module.exports = {
 ```js
 module.exports = {
   //...
-  experimental: {
+  experiments: {
     futureDefaults: true,
   },
 };
@@ -159,31 +199,51 @@ module.exports = {
 엔트리 포인트와 동적 `import`는 사용 중일 때만 컴파일하세요. Web 또는 Node.js에 사용할 수 있습니다.
 
 - Type
+
   - `boolean`
   - `object`
+
     ```ts
     {
-      // 커스텀 백엔드 정의
-      backend?: ((
-        compiler: webpack.Compiler,
-        client: string,
-        callback: (err?: Error, api?: any) => void
+    // 커스텀 백엔드 정의
+    backend?: ((
+      compiler: Compiler,
+      callback: (err?: Error, api?: BackendApi) => void
       ) => void)
-      | ((
-          compiler: webpack.Compiler,
-          client: string
-        ) => Promise<any>)
-      client?: string,
-      entries?: boolean,
-      imports?: boolean,
-      test?: RegExp | string | ((module: import("../lib/Module")) => boolean)
+      | ((compiler: Compiler) => Promise<BackendApi>)
+      | {
+        /**
+         * 커스텀 클라이언트
+        */
+        client?: string;
+
+        /**
+         * 서버에 수신할 위치를 지정합니다.
+         */
+        listen?: number | ListenOptions | ((server: typeof Server) => void);
+
+        /**
+         * 클라이언트가 서버에 연결하는 데 사용해야 하는 프로토콜을 지정합니다.
+         */
+        protocol?: "http" | "https";
+
+        /**
+         * EventSource 요청을 처리하는 서버를 생성하는 방법을 지정합니다.
+         */
+        server?: ServerOptionsImport | ServerOptionsHttps | (() => typeof Server);
+
+    },
+    entries?: boolean,
+    imports?: boolean,
+    test?: string | RegExp | ((module: Module) => boolean)
     }
     ```
-    - `client`: 커스텀 클라이언트의 경로, 기본값은 `webpack/hot/lazy-compilation-{node|web}.js`입니다.
-    - `backend`: 백엔드를 커스터마이즈 합니다. 기본값은 `webpack/lib/hmr/lazyCompilationBackend`입니다.
+
+    - `backend`: 백엔드를 커스터마이즈 합니다.
     - `entries`: 엔트리에 대한 지연 컴파일을 활성화합니다.
     - `imports` <Badge text = '5.20.0 +'/> : 동적 import에 대해 지연 컴파일을 사용합니다.
     - `test` <Badge text='5.20.0+' />: 어떤 import 모듈을 지연 컴파일할지 지정합니다.
+
 - Available: 5.17.0+
 - Example 1:
   ```js

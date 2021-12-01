@@ -36,6 +36,8 @@ related:
 
 webpack 및 CLI를 아직 설치하지 않은 경우 [설치 가이드](/guides/installation)를 읽어보세요.
 
+W> `npx`를 사용하여 webpack을 실행하려면 `webpack-cli`가 설치되어 있는지 확인하세요.
+
 ## Commands
 
 webpack-cli는 webpack을 더 쉽게 사용할 수 있도록 다양한 명령을 제공합니다. 기본적으로 webpack은 다음과 같은 명령어를 제공합니다.
@@ -44,7 +46,7 @@ webpack-cli는 webpack을 더 쉽게 사용할 수 있도록 다양한 명령을
 | --------------------------- | ----------------------------------------------------- | -------------------------------------------------------------------------- |
 | [`build`](#build)           | `build\|bundle\|b [entries...] [options]`             | webpack을 실행합니다. (기본 명령어, 생략 가능).                            |
 | [`configtest`](#configtest) | `configtest\|t [config-path]`                         | webpack 설정을 검증합니다.                                                 |
-| [`help`](#help)             | `help\|h [command] [option]`                          | 명렁어 및 옵션에 대한 도움말을 표시합니다.                                 |
+| [`help`](#help)             | `help\|h [command] [option]`                          | 명령어 및 옵션에 대한 도움말을 표시합니다.                                 |
 | [`info`](#info)             | `info\|i [options]`                                   | 시스템 정보를 출력합니다.                                                  |
 | [`init`](#init)             | `init\|create\|c\|new\|n [generation-path] [options]` | 새로운 webpack 프로젝트를 초기화합니다.                                    |
 | [`loader`](#loader)         | `loader\|l [output-path] [options]`                   | 로더를 스캐폴드합니다.                                                     |
@@ -168,6 +170,12 @@ npx webpack info --output=json
 ```
 
 #### Options for info
+
+**`-a`, `--additional-package`**
+
+`string`
+
+출력에 패키지를 추가합니다.
 
 **`-o`, `--output`**
 
@@ -650,6 +658,7 @@ NODE_OPTIONS="--max-old-space-size=4096 -r /path/to/preload/file.js" webpack
 | `WEBPACK_CLI_SKIP_IMPORT_LOCAL`       | `true`이면 `webpack-cli`의 로컬 인스턴스 사용을 건너뜁니다. |
 | `WEBPACK_CLI_FORCE_LOAD_ESM_CONFIG`   | `true`이면 ESM 설정을 강제로 로드합니다.                    |
 | [`WEBPACK_PACKAGE`](#webpack_package) | CLI에서 사용자 정의 webpack 버전을 사용합니다.              |
+| `WEBPACK_DEV_SERVER_PACKAGE`          | CLI에서 사용자 정의 webpack-dev-server 버전을 사용합니다.   |
 | `WEBPACK_CLI_HELP_WIDTH`              | 도움말 출력에 사용자 정의 너비를 사용합니다.                |
 
 ```bash
@@ -694,3 +703,5 @@ TypeScript에서 기본 ESM을 사용하는 경우 이와 같은 오류가 발�
 ```bash
 NODE_OPTIONS="--loader ts-node/esm" npx webpack --entry ./src/index.js --mode production
 ```
+
+자세한 내용은 [`TypeScript`로 webpack 설정 작성](/configuration/configuration-languages/#typescript)에 대한 문서를 참고하세요.

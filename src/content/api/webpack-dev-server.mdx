@@ -1,0 +1,149 @@
+---
+title: webpack-dev-server API
+sort: 3
+contributors:
+  - snitin315
+translator:
+  - dkstyle
+---
+
+`webpack-dev-server`는 Node.js 런타임에서 직접 사용할 수 있는 Node.js API를 제공합니다.
+
+## Installation
+
+`webpack-dev-server` Node.js API를 사용하려면, 먼저 `webpack` 과 `webpack-dev-server`를 설치하세요.
+
+```bash
+npm install --save-dev webpack webpack-dev-server
+```
+
+그런 다음 Node.js 스크립트에 모듈이 필요합니다.
+
+```js
+const Webpack = require('webpack');
+const WebpackDevServer = require('webpack-dev-server');
+```
+
+## start
+
+`webpack-dev-server` 인스턴스에 서버를 시작하도록 지시합니다.
+
+**server.js**
+
+```js
+const Webpack = require('webpack');
+const WebpackDevServer = require('webpack-dev-server');
+const webpackConfig = require('./webpack.config.js');
+
+const compiler = Webpack(webpackConfig);
+const devServerOptions = { ...webpackConfig.devServer, open: true };
+const server = new WebpackDevServer(devServerOptions, compiler);
+
+const runServer = async () => {
+  console.log('Starting server...');
+  await server.start();
+};
+
+runServer();
+```
+
+그런 다음 아래 명령으로 서버를 실행합니다.
+
+```bash
+node server.js
+```
+
+## startCallback(callback)
+
+`webpack-dev-server` 인스턴스에 서버를 시작한 후 콜백 함수를 실행하도록 지시합니다.
+
+**server.js**
+
+```js
+const Webpack = require('webpack');
+const WebpackDevServer = require('webpack-dev-server');
+const webpackConfig = require('./webpack.config.js');
+
+const compiler = Webpack(webpackConfig);
+const devServerOptions = { ...webpackConfig.devServer, open: true };
+const server = new WebpackDevServer(devServerOptions, compiler);
+
+server.startCallback(() => {
+  console.log('Successfully started server on http://localhost:8080');
+});
+```
+
+그런 다음 아래 명령으로 서버를 실행합니다.
+
+```bash
+node server.js
+```
+
+## stop
+
+`webpack-dev-server` 인스턴스에 서버를 중지하도록 지시합니다.
+
+**server.js**
+
+```js
+const Webpack = require('webpack');
+const WebpackDevServer = require('webpack-dev-server');
+const webpackConfig = require('./webpack.config.js');
+
+const compiler = Webpack(webpackConfig);
+const devServerOptions = { ...webpackConfig.devServer, open: true };
+const server = new WebpackDevServer(devServerOptions, compiler);
+
+const runServer = async () => {
+  console.log('Starting server...');
+  await server.start();
+};
+
+const stopServer = async () => {
+  console.log('Stopping server...');
+  await server.stop();
+};
+
+runServer();
+
+setTimeout(stopServer, 5000);
+```
+
+그런 다음 아래 명령으로 서버를 실행합니다.
+
+```bash
+node server.js
+```
+
+## stopCallback(callback)
+
+`webpack-dev-server` 인스턴스에 서버를 중지하고 콜백 함수를 실행하도록 지시합니다.
+
+**server.js**
+
+```js
+const Webpack = require('webpack');
+const WebpackDevServer = require('webpack-dev-server');
+const webpackConfig = require('./webpack.config.js');
+
+const compiler = Webpack(webpackConfig);
+const devServerOptions = { ...webpackConfig.devServer, open: true };
+const server = new WebpackDevServer(devServerOptions, compiler);
+
+server.startCallback(() => {
+  console.log('Successfully started server on http://localhost:8080');
+});
+
+const stopServer = () =>
+  server.stopCallback(() => {
+    console.log('Server stopped.');
+  });
+
+setTimeout(stopServer, 5000);
+```
+
+그런 다음 아래 명령으로 서버를 실행합니다.
+
+```bash
+node server.js
+```

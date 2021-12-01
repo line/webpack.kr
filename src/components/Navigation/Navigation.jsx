@@ -168,7 +168,8 @@ function Navigation({ links, pathname, hash = '', toggleSidebar }) {
           <div className="inline-flex items-center ml-[18px]">
             <HelloDarkness />
             <DocSearch
-              apiKey={'8535036d0982242833e1380d8649b88c'}
+              appId="78PIF746H9"
+              apiKey="0bf212faf8487900d5d5ee6754c1572a"
               indexName="webpack_korea"
               disableUserPersonalization={true}
               placeholder="Search webpack documentation"
@@ -217,7 +218,9 @@ function Navigation({ links, pathname, hash = '', toggleSidebar }) {
                       className="text-blue-400 py-5 text-sm capitalize hover:text-black dark:hover:text-white"
                       activeClassName="active-submenu"
                     >
-                      {child.content}
+                      {child.content === 'api'
+                        ? child.content.toUpperCase()
+                        : child.content}
                     </NavLink>
                   ))}
                 </div>
