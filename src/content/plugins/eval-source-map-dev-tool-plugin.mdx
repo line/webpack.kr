@@ -11,6 +11,7 @@ contributors:
   - jamesgeorge007
   - anshumanv
   - EugeneHlushko
+  - nicekim2000
 related:
   - title: Building Eval Source Maps
     url: https://survivejs.com/webpack/building/source-maps/#sourcemapdevtoolplugin-and-evalsourcemapdevtoolplugin
@@ -24,7 +25,7 @@ new webpack.EvalSourceMapDevToolPlugin(options);
 
 ## Options
 
-다음과 같은 옵션이 지원됩니다:
+다음과 같은 옵션이 지원됩니다.:
 
 - `test` (`string|RegExp|array`): 모듈의 확장자를 기반으로 하는 소스맵을 포함합니다(기본값은 `.js` 및 `.css`).
 - `include` (`string|RegExp|array`): 주어진 값과 일치하는 모듈 경로에 대한 소스맵을 포함합니다.
@@ -57,7 +58,7 @@ module.exports = {
 
 ### Exclude Vendor Maps
 
-다음 코드는 `vendor.js` 번들에 있는 모든 모듈에 대한 소스맵을 제외합니다:
+다음 코드는 `vendor.js` 번들에 있는 모든 모듈에 대한 소스맵을 제외합니다.:
 
 ```js
 new webpack.EvalSourceMapDevToolPlugin({
