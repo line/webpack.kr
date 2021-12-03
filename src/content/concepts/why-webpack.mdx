@@ -10,7 +10,7 @@ translators:
   - limong
 ---
 
-webpack을 사용해야 하는 이유를 이해하기 위해서 번들러가 사용되기 전에 어떻게 자바스크립트를 사용했었는지 요약해 보겠습니다.
+Webpack을 사용해야 하는 이유를 이해하기 위해서 번들러가 사용되기 전에 어떻게 JavaScript를 사용했었는지 요약해 보겠습니다.
 
 브라우저에서 JavaScript가 동작하는 두 가지 방법이 있습니다. 먼저 각 기능이 있는 스크립트를 추가합니다. 이 방식은 너무 많은 스크립트로 인해 네트워크의 병목을 유발하는 원인이 될 수 있어서 확장이 어렵습니다. 두 번째 옵션은 모든 프로젝트에 하나의 거대한 `.js` 파일을 만들어 사용하는 것입니다. 그러나 이것은 유효범위와 크기, 가독성, 유지보수에 문제를 발생시킬 수 있습니다.
 
@@ -34,7 +34,7 @@ Node.js가 출시되었을 때 새로운 시대가 시작되었으며, 새로운
 
 ## npm + Node.js + modules – mass distribution
 
-Javascript는 언어로서, 플랫폼으로서, 빠른 개발 방식, 빠른 애플리케이션을 만드는 방법으로 세계적으로 사용되고 있습니다.
+JavaScript는 언어로서, 플랫폼으로서, 빠른 개발 방식, 빠른 애플리케이션을 만드는 방법으로 세계적으로 사용되고 있습니다.
 
 그러나 CommonJS에 대한 브라우저의 지원은 없습니다. [라이브 바인딩](https://medium.com/webpack/the-state-of-javascript-modules-4636d1774358)도 없습니다. 순환 참조의 문제가 있으며, 동기적인 모듈 해석과 로딩이 느립니다. CommonJS가 Node.js 프로젝트에서는 뛰어난 솔루션이었지만 브라우저는 모듈을 지원하지 않았습니다. 때문에 브라우저에서 CommonJS의 실행을 가능하게 하는 Browserify와 RequireJS, SystemJS 같은 번들러와 툴들이 만들어졌습니다.
 
@@ -44,7 +44,7 @@ Javascript는 언어로서, 플랫폼으로서, 빠른 개발 방식, 빠른 애
 
 ## Automatic Dependency Collection
 
-구식의 태스크 러너와 Google Closure Compiler 조차 모든 의존성을 미리 수동으로 선언해야 합니다. webpack같은 번들러는 자동으로 빌드하고, 가져오거나 내보낸 항목을 기반으로 [디펜던시 그래프](/concepts/dependency-graph/)를 추론합니다. 이는 다른 [플러그인](/concepts/plugins/)과 [로더](/concepts/loaders/)와 함께 훌륭한 개발자 경험을 제공합니다.
+구식의 태스크 러너와 Google Closure Compiler 조차 모든 의존성을 미리 수동으로 선언해야 합니다. Webpack같은 번들러는 자동으로 빌드하고, 가져오거나 내보낸 항목을 기반으로 [디펜던시 그래프](/concepts/dependency-graph/)를 추론합니다. 이는 다른 [플러그인](/concepts/plugins/)과 [로더](/concepts/loaders/)와 함께 훌륭한 개발자 경험을 제공합니다.
 
 ## Wouldn't it be nice…
 

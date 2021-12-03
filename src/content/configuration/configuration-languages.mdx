@@ -52,7 +52,7 @@ export default config;
 
 위 예시는 TypeScript 2.7 이상 버전의 `tsconfig.json` 파일에서 새로운 `esModuleInterop` 및 `allowSyntheticDefaultImports` 컴파일러 옵션과 함께 사용된다고 가정합니다.
 
-`tsconfig.json` 파일도 확인해야 합니다. 만약 `tsconfig.json`에서 `compilerOptions`의 `모듈`이 `commonjs`라면 설정이 완료되지만, 그렇지 않으면 webpack이 에러와 함께 실패하게 됩니다. 이는 `ts-node`가 `commonjs` 이외의 다른 모듈 구문은 지원하지 않기 때문입니다.
+`tsconfig.json` 파일도 확인해야 합니다. 만약 `tsconfig.json`에서 `compilerOptions`의 `module`이 `commonjs`라면 설정이 완료되지만, 그렇지 않으면 webpack이 에러와 함께 실패하게 됩니다. 이는 `ts-node`가 `commonjs` 이외의 다른 모듈 구문은 지원하지 않기 때문입니다.
 
 이 문제는 세 가지 해결 방법이 있습니다.
 

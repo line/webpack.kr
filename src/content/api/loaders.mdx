@@ -18,7 +18,7 @@ translators:
   - 1ilsang
 ---
 
-로더는 함수를 내보내는 자바스크립트 모듈입니다. [로드 러너](https://github.com/webpack/loader-runner)는 이 함수를 호출하여 이전 로더 혹은 리소스 파일의 결과를 전달합니다. 함수의 `this` 컨텍스트는 webpack과 [로드러너](https://github.com/webpack/loader-runner)에 의해 채워지며, 로더가 호출스타일을 비동기로 변경하거나 쿼리 매개변수를 가져올 수 있도록 하는 몇가지 유용한 메소드를 제공합니다.
+로더는 함수를 내보내는 자바스크립트 모듈입니다. [로드 러너](https://github.com/webpack/loader-runner)는 이 함수를 호출하여 이전 로더 혹은 리소스 파일의 결과를 전달합니다. 함수의 `this` 컨텍스트는 webpack과 [로드 러너](https://github.com/webpack/loader-runner)에 의해 채워지며, 로더가 호출스타일을 비동기로 변경하거나 쿼리 매개변수를 가져올 수 있도록 하는 몇가지 유용한 메소드를 제공합니다.
 
 첫 번째 로더에는 리소스 파일의 내용이라는 하나의 인수를 넘깁니다. 컴파일러는 마지막 로더의 결과를 기대합니다. 결과는 모듈의 자바스크립트 소스 코드를 나타내는 `String` 또는 `Buffer`(문자열로 변환됨)여야 합니다. 선택적 소스맵 결과(JSON 객체로)도 전달할 수 있습니다.
 
@@ -409,7 +409,7 @@ export const green = '#0f0';
 
 ```js
 import stylesheet from './stylesheet.js';
-// 스타일시트는 빌드시 문자열 `body { background: #f00; color: #0f0; }`가 됩니다
+// 스타일 시트는 빌드시 문자열 `body { background: #f00; color: #0f0; }`가 됩니다
 ```
 
 위 예에서 다음과 같은 사실을 알 수 있습니다
@@ -476,7 +476,7 @@ loaders = [{request: string, path: string, query: string, module: function}]
 
 ### this.request
 
-resolve된 요청 문자열입니다.
+해석된 요청 문자열입니다.
 
 [예제](#example-for-the-loader-context)의 `'/abc/loader1.js?xyz!/abc/node_modules/loader2/index.js!/abc/resource.js?rrr'`
 

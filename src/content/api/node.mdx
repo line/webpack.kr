@@ -18,7 +18,7 @@ translators:
 
 webpack은 Node.js 런타임에서 직접 사용할 수 있는 Node.js API를 제공합니다.
 
-Node.js API는 모든 보고 및 오류 처리를 수동으로 처리되어야 하므로, webpack이 컴파일 부분만 수행하고 빌드 또는 개발 프로세스는 사용자 정의하는 경우 유용합니다. 이러한 이유로 [`stats`](/configuration/stats) 설정 옵션은 `webpack()` 호출에 영향을 미치지 않습니다.
+Node.js API는 모든 보고 및 오류 처리가 수동으로 처리되어야 하므로, webpack이 컴파일 부분만 수행하고 빌드 또는 개발 프로세스는 사용자 정의하는 경우 유용합니다. 이러한 이유로 [`stats`](/configuration/stats) 설정 옵션은 `webpack()` 호출에 영향을 미치지 않습니다.
 
 ## Installation
 
@@ -84,7 +84,7 @@ T> `webpack` 함수는 설정 배열로 제공할 수 있습니다.
 [`WebpackOptionsApply`](https://github.com/webpack/webpack/blob/master/lib/WebpackOptionsApply.js) 유틸리티는
 webpack에서 모든 내장 플러그인으로 `Compiler` 인스턴스를 설정하는 데 사용됩니다.
 
-그런 다음 `run` 메서드를 사용하여 모든 컴파일 작업을 시작합니다.
+그런 다음 `run` 메소드를 사용하여 모든 컴파일 작업을 시작합니다.
 완료되면 지정된 `callback` 함수가 실행됩니다.
 최종 통계 및 오류 로깅은 이 `callback` 함수에서 수행되어야 합니다.
 
@@ -117,7 +117,7 @@ W> 낮은 우선순위 작업(예: 영구 캐싱)을 완료할 수 있도록 컴
 
 ## Watching
 
-`watch` 메서드를 호출하면 webpack 러너를 트리거 하지만, 곧이어 변경 사항을 감시합니다 (`webpack --watch` CLI와 유사합니다).
+`watch` 메소드를 호출하면 webpack 러너를 트리거 하지만, 곧이어 변경 사항을 감시합니다 (`webpack --watch` CLI와 유사합니다).
 webpack이 변경사항을 감지하는 즉시 다시 실행합니다.
 `Watching` 인스턴스를 반환합니다.
 
