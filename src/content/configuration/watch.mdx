@@ -10,6 +10,7 @@ contributors:
   - spicalous
   - Neob91
   - Loonride
+  - snitin315
 translators:
   - dkstyle
 ---
@@ -146,7 +147,7 @@ T> 만약 감시 기능이 작동하지 않는다면, 이 옵션을 사용해 �
 
 ### watchOptions.followSymlinks
 
-Follow symbolic links while looking for a file. This is usually not needed as webpack already resolves symlinks with [`resolve.symlinks`](/configuration/resolve/#resolvesymlinks).
+파일을 찾는 동안 심볼릭 링크를 따릅니다. Webpack이 이미 [`resolve.symlinks`](/configuration/resolve/#resolvesymlinks)를 사용하여 심볼릭 링크를 해석하므로 일반적으로는 필요하지 않습니다.
 
 - Type: `boolean`
 - Example:
@@ -155,6 +156,21 @@ Follow symbolic links while looking for a file. This is usually not needed as we
     //...
     watchOptions: {
       followSymlinks: true,
+    },
+  };
+  ```
+
+### watchOptions.stdin
+
+stdin 스트림이 종료되면 감시를 중단합니다.
+
+- Type: `boolean`
+- Example:
+  ```js
+  module.exports = {
+    //...
+    watchOptions: {
+      stdin: true,
     },
   };
   ```

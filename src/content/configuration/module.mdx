@@ -20,6 +20,7 @@ contributors:
   - Mistyyyy
   - anshumanv
   - chenxsan
+  - snitin315
 translators:
   - YukJiSoo
 ---
@@ -158,6 +159,63 @@ CommonJS를 위해 [magic comments](/api/module-methods/#magic-comments)지원�
 ```js
 const x = require(/* webpackIgnore: true */ 'x');
 ```
+
+#### module.parser.javascript.exportsPresence
+
+`\"import ... from ...\"` 와 `\"export ... from ...\"`에서 내보내기 이름이 잘못된 경우의 동작을 지정합니다.
+
+- Type: `'error' | 'warn' | 'auto' | false`
+- Available: 5.62.0+
+- Example:
+  ```js
+  module.exports = {
+    module: {
+      parser: {
+        javascript: {
+          exportsPresence: 'error',
+        },
+      },
+    },
+  };
+  ```
+
+#### module.parser.javascript.importExportsPresence
+
+`\"import ... from ...\"`에서 내보내기 이름이 잘못된 경우의 동작을 지정합니다.
+
+- Type: `'error' | 'warn' | 'auto' | false`
+- Available: 5.62.0+
+- Example:
+  ```js
+  module.exports = {
+    module: {
+      parser: {
+        javascript: {
+          importExportsPresence: 'error',
+        },
+      },
+    },
+  };
+  ```
+
+#### module.parser.javascript.reexportExportsPresence
+
+`\"export ... from ...\"`에서 내보내기 이름이 잘못된 경우의 동작을 지정합니다. 이것은 TypeScript에서 타입을 다시 내보낼때 `\"export ... from ...\"`에서 `\"export type ... from ...\"`으로 마이그레이션하는 동안 비활성화하는 데 유용합니다.
+
+- Type: `'error' | 'warn' | 'auto' | false`
+- Available: 5.62.0+
+- Example:
+  ```js
+  module.exports = {
+    module: {
+      parser: {
+        javascript: {
+          reexportExportsPresence: 'error',
+        },
+      },
+    },
+  };
+  ```
 
 #### module.parser.javascript.url
 
@@ -1112,7 +1170,7 @@ module.exports = {
     wrappedContextCritical: false,
     wrappedContextRecursive: true,
     wrappedContextRegExp: /.*/,
-    strictExportPresence: false, // webpack 2.3.0 이후부터
+    strictExportPresence: false,
   },
 };
 ```
@@ -1126,3 +1184,5 @@ T> `ContextReplacementPlugin`을 사용하여 개별 종속성에 대한 값을 
 - `require('./templates/'+ expr)`은 기본적으로 하위 디렉터리를 포함하지 않아야 합니다(`wrappedContextRecursive : false`).
 - `strictExportPresence`는 export가 누락되면 경고 대신 오류를 발생시킵니다.
 - 부분적 동적 종속성에 대한 내부 정규식 설정(`wrappedContextRegExp: /\\.\\*/`)
+
+W> `strictExportPresence`는 더 이상 사용되지 않으며 [`exportsPresence`](#moduleparserjavascriptexportspresence) 옵션이 사용됩니다.
