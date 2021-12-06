@@ -10,6 +10,7 @@ contributors:
   - spicalous
   - Neob91
   - Loonride
+  - snitin315
 translators:
   - dkstyle
 ---
@@ -155,6 +156,21 @@ T> 만약 감시 기능이 작동하지 않는다면, 이 옵션을 사용해 �
     //...
     watchOptions: {
       followSymlinks: true,
+    },
+  };
+  ```
+
+### watchOptions.stdin
+
+stdin 스트림이 종료되면 감시를 중단합니다.
+
+- Type: `boolean`
+- Example:
+  ```js
+  module.exports = {
+    //...
+    watchOptions: {
+      stdin: true,
     },
   };
   ```

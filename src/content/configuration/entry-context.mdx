@@ -75,6 +75,7 @@ module.exports = {
       import: './catalog.js',
       filename: 'pages/catalog.js',
       dependOn: 'shared',
+      chunkLoading: false, // 요청 시 로드되는 청크를 비활성화하고 모든 것을 기본 청크에 넣습니다.
     },
     personal: {
       import: './personal.js',

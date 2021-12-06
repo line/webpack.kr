@@ -465,6 +465,23 @@ module.exports = {
 
 W> 캐시된 경로를 변경하는 것은 간혹 실패의 원인이 될 수 있습니다.
 
+### resolve.useSyncFileSystemCalls
+
+`boolean`
+
+리졸버에 대한 동기 파일 시스템 호출을 사용합니다.
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  //...
+  resolve: {
+    useSyncFileSystemCalls: true,
+  },
+};
+```
+
 ### resolve.plugins
 
 [`[Plugin]`](/plugins/)

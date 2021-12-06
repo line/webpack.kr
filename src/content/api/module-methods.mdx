@@ -25,14 +25,14 @@ translators:
 이 섹션에서는 webpack으로 컴파일된 코드에서 사용할 수 있는 모든 메서드를 다룹니다. Webpack을 사용하여 애플리케이션을 번들할 때 [ES6](https://en.wikipedia.org/wiki/ECMAScript#6th_Edition_-_ECMAScript_2015), [CommonJS](https://en.wikipedia.org/wiki/CommonJS) 및 [AMD](https://en.wikipedia.org/wiki/Asynchronous_module_definition)와 같은 여러 가지 구문 스타일 중 선택할 수 있습니다.
 
 Webpack은 여러 모듈 구문을 지원하지만, 일관성을 유지하고 이상한 동작이나 버그를 피하려면 단일 구문을 따르는 것이 좋습니다. 실제로 webpack은 가장 가까운 상위 `package.json` 파일에 값이 `"module"` 이거나 `commonjs`인 `"type"` 필드가 포함된 경우, `.mjs` 파일, `.cjs` 파일 또는 `.js` 파일에 대한 권장 사항을 적용합니다. 계속해서 읽기 전에 다음 적용 사항을 알아보세요.
-  
+
 - `package.json`에 `"type": "module"`이 있는 `.mjs` 또는 `.js`.
   - CommonJS가 허용되지 않습니다. 예를 들면 `require`, `module.exports` 또는 `exports`를 사용할 수 없습니다.
   - 가져올 때 파일 확장자가 필요합니다. 예를 들어 `import './src/App'` 대신에 `import './src/App.mjs'`를 사용해야 합니다. ([`Rule.resolve.fullySpecified`](/configuration/module/#resolvefullyspecified)를 사용하여 이 사항을 비활성화할 수 있습니다.)
 - `package.json`에 `"type": "commonjs"`가 있는 `.cjs` 또는 `.js`.
-   - `import`도 `export`도 사용할 수 없습니다.
+  - `import`도 `export`도 사용할 수 없습니다.
 - `package.json`에 `"type": "module"`이 있는 `.wasm`.
-   - wasm 파일을 가져올 때 파일 확장자가 필요합니다.
+  - wasm 파일을 가져올 때 파일 확장자가 필요합니다.
 
 ## ES6 (Recommended)
 
@@ -92,7 +92,7 @@ if (module.hot) {
 }
 ```
 
-W> 이 기능은 내부적으로 [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)에 의존합니다. 이전 브라우저에서 `import()`를 사용하는 경우 [es6-promise](https://github.com/stefanpenner/es6-promise) 또는 [promise-polyfill]( https://github.com/taylorhakes/promise-polyfill)과 같은 폴리필을 사용하여 `Promise`를 대체해야 합니다.
+W> 이 기능은 내부적으로 [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)에 의존합니다. 이전 브라우저에서 `import()`를 사용하는 경우 [es6-promise](https://github.com/stefanpenner/es6-promise) 또는 [promise-polyfill](https://github.com/taylorhakes/promise-polyfill)과 같은 폴리필을 사용하여 `Promise`를 대체해야 합니다.
 
 ### Dynamic expressions in import()
 
@@ -237,7 +237,7 @@ require.ensure(
 
 비동기식으로 로드될 지정된 `dependencies`를 별도의 번들로 분할합니다. CommonJS 모듈 구문을 사용할 때 이것은 의존성을 동적으로 로드하는 유일한 방법입니다. 즉, 이 코드는 작업 중에 실행될 수 있으며 특정 조건이 충족되는 경우에만 `dependencies`를 로드합니다.
 
-W> 이 기능은 내부적으로 [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)에 의존합니다. 이전 브라우저에서 `require.ensure`를 사용하는 경우 [es6-promise](https://github.com/stefanpenner/es6-promise) 또는 [promise-polyfill]( https://github.com/taylorhakes/promise-polyfill)과 같은 폴리필을 사용하여 `Promise`를 대체해야 합니다.
+W> 이 기능은 내부적으로 [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)에 의존합니다. 이전 브라우저에서 `require.ensure`를 사용하는 경우 [es6-promise](https://github.com/stefanpenner/es6-promise) 또는 [promise-polyfill](https://github.com/taylorhakes/promise-polyfill)과 같은 폴리필을 사용하여 `Promise`를 대체해야 합니다.
 
 ```javascript
 var a = require('normal-dep');
@@ -258,7 +258,7 @@ if (module.hot) {
 - `errorCallback`: Webpack이 의존성을 불러오지 못했을 때 실행되는 함수입니다.
 - `chunkName`: 특별히 이 `require.ensure()`에 의해 생성된 청크에 부여된 이름입니다. 다양한 `require.ensure()` 호출에 동일한 `chunkName`을 전달하면 해당 코드를 단일 청크로 결합할 수 있으므로 브라우저에서 로드하는 번들이 하나만 생성됩니다.
 
-W> `require`의 구현이 `callback` 함수에 인수로 전달되어도 `require.ensure([], function(request) { request('someModule'); })` 같은 임의의 이름을 사용하면 webpack의 정적 파서에서 처리되지 않습니다. 대신 `require.ensure([], function(require) { require('someModule'); })`와 같이 `require`를 사용하세요. 
+W> `require`의 구현이 `callback` 함수에 인수로 전달되어도 `require.ensure([], function(request) { request('someModule'); })` 같은 임의의 이름을 사용하면 webpack의 정적 파서에서 처리되지 않습니다. 대신 `require.ensure([], function(require) { require('someModule'); })`와 같이 `require`를 사용하세요.
 
 ## AMD
 
@@ -277,7 +277,7 @@ W> Webpack은 `name` 인수를 무시합니다.
 ```javascript
 define(['jquery', 'my-module'], function ($, myModule) {
   // $와 myModule로 작업을 수행하세요...
-  
+
   // 함수 내보내기
   return function doSomething() {
     // ...
@@ -311,7 +311,7 @@ require(dependencies: String[], [callback: function(...)])
 
 `require.ensure`와 유사하게, 주어진 `dependencies`를 비동기식으로 로드되는 별도의 번들로 분할합니다. `callback`은 `dependencies` 배열의 각 종속성을 내보낼 때 호출됩니다.
 
-W> 이 기능은 내부적으로 [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)에 의존합니다. Internet Explorer 11과 같은 이전 브라우저에서 AMD를 사용하는 경우 [es6-promise](https://github.com/stefanpenner/es6-promise) 또는 [promise-polyfill]( https://github.com/taylorhakes/promise-polyfill)과 같은 폴리필을 사용하여 `Promise`를 대체해야 합니다.
+W> 이 기능은 내부적으로 [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)에 의존합니다. Internet Explorer 11과 같은 이전 브라우저에서 AMD를 사용하는 경우 [es6-promise](https://github.com/stefanpenner/es6-promise) 또는 [promise-polyfill](https://github.com/taylorhakes/promise-polyfill)과 같은 폴리필을 사용하여 `Promise`를 대체해야 합니다.
 
 ```javascript
 require(['b'], function (b) {

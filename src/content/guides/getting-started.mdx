@@ -25,6 +25,7 @@ contributors:
   - myshov
   - anshumanv
   - d3lm
+  - snitin315
 translators:
   - limong
 ---
@@ -61,6 +62,7 @@ npm install webpack webpack-cli --save-dev
 ```diff
   webpack-demo
   |- package.json
+  |- package-lock.json
 + |- index.html
 + |- /src
 +   |- index.js
@@ -142,6 +144,7 @@ T> `package.json`의 내부 동작을 더 알고 싶으면 [npm 문서](https://
 ```diff
   webpack-demo
   |- package.json
+  |- package-lock.json
 + |- /dist
 +   |- index.html
 - |- index.html
@@ -234,6 +237,7 @@ webpack은 `import`와 `export` 문 이외는 코드를 변경하지 않습니�
 ```diff
   webpack-demo
   |- package.json
+  |- package-lock.json
 + |- webpack.config.js
   |- /dist
     |- index.html
@@ -331,6 +335,7 @@ T> 사용자 지정 파라미터는 `npm run build` 명령과 파라미터 사�
 ```diff
 webpack-demo
 |- package.json
+|- package-lock.json
 |- webpack.config.js
 |- /dist
   |- main.js
@@ -339,8 +344,6 @@ webpack-demo
   |- index.js
 |- /node_modules
 ```
-
-T> npm 5+ 이상을 사용하는 경우에는 디렉터리에 `package-lock.json` 파일도 표시될 것입니다.
 
 W> 신뢰할 수 없는 코드는 webpack으로 컴파일하지 마세요. 이로 인해 컴퓨터, 원격 서버 또는 애플리케이션 최종 사용자의 웹 브라우저에서 악성 코드가 실행될 수 있습니다.
 
