@@ -3,11 +3,13 @@ title: ContextExclusionPlugin
 group: webpack
 contributors:
   - jeffin
+translators:
+  - hellomh
 ---
 
-_Context_ refers to a [require with an expression](/guides/dependency-management/#require-with-expression) such as `require('./locale/' + name + '.json')`.
+_컨텍스트_ 는 `require('./locale/' + name + '.json')`와 같은 [표현식으로 구성된 요청](/guides/dependency-management/#require-with-expression)을 의미합니다.
 
-The `ContextExclusionPlugin` allows you to exclude context. Provide RegExp as an argument when initializing the Plugin to exclude all context that matches it.
+`ContextExclusionPlugin`을 사용하면 컨텍스트를 제외할 수 있습니다. 정규 표현식과 일치하는 모든 컨텍스트를 제외하려면 플러그인을 초기화할 때 정규 표현식을 인수로 제공하세요.
 
 **webpack.config.js**
 
