@@ -31,8 +31,8 @@ new webpack.EvalSourceMapDevToolPlugin(options);
 - `test` (`string|RegExp|array`): 모듈의 확장자를 기반으로 하는 소스맵을 포함합니다(기본값은 `.js` 및 `.css`).
 - `include` (`string|RegExp|array`): 주어진 값과 일치하는 모듈 경로에 대한 소스맵을 포함합니다.
 - `exclude` (`string|RegExp|array`): 소스맵 생성에서 주어진 값과 일치하는 모듈을 제외합니다.
-- `append` (`string`): 원래 애셋에 주어진 값을 추가합니다. 보통 `#sourceMappingURL` 을 주석으로 합니다. `[url]`은 소스맵 파일의 URL로 대체됩니다. 'false'는 추가를 비활성화합니다.
-- `moduleFilenameTemplate` (`string`):  [`output.devtoolModuleFilenameTemplate`](/configuration/output/#outputdevtoolmodulefilenametemplate)를 참조하세요.
+- `append` (`string`): 원래 애셋에 주어진 값을 추가합니다. 보통 `#sourceMappingURL` 을 주석으로 합니다. `[url]`은 소스맵 파일의 URL로 대체됩니다. `false`는 추가를 비활성화합니다.
+- `moduleFilenameTemplate` (`string`):  [`output.devtoolModuleFilenameTemplate`](/configuration/output/#outputdevtoolmodulefilenametemplate)을 참조하세요.
 - `module` (`boolean`): 로더가 소스맵을 생성해야 하는지 여부를 나타냅니다(기본값은 `true`).
 - `columns` (`boolean`): 열 매핑을 사용해야 하는지 여부를 나타냅니다(기본값은 `true`).
 - `protocol` (`string`): 사용자가 기본 프로토콜(`webpack-internal://`)을 오버라이드 할 수 있습니다.
