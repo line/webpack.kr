@@ -20,7 +20,7 @@ translators:
   - dlwnsgud8406
 ---
 
-+ 다음 섹션에서는 webpack 1에서 2로의 주요 변경 사항을 설명합니다.
+- 다음 섹션에서는 webpack 1에서 2로의 주요 변경 사항을 설명합니다.
 
 T> webpack 2와 3 사이에 변경 사항이 훨씬 적으므로 마이그레이션이 그렇게 나쁘지 않을 것입니다. 문제가 발생하는 경우, 자세한 내용은 [the changelog](https://github.com/webpack/webpack/releases)를 참고하세요.
 
@@ -151,7 +151,7 @@ JSON 파일에 대해 설정된 로더가 없으면, webpack은 자동으로 [`j
   }
 ```
 
-webpack, node.js 및 browserify 간의 [환경차이를 없애기 위해 그렇게 하기로 결정했습니다.](https://github.com/webpack/webpack/issues/3363) 
+webpack, node.js 및 browserify 간의 [환경차이를 없애기 위해 그렇게 하기로 결정했습니다.](https://github.com/webpack/webpack/issues/3363)
 
 ## Loaders in configuration resolve relative to context
 
@@ -308,7 +308,7 @@ plugins: [
 
 표현식(즉, `require(expr)`)만 있는 종속성은 이제 전체 디렉토리의 컨텍스트 대신 빈 컨텍스트를 생성합니다.
 
-이와 같은 코드는 ES2015 모듈에서 작동하지 않으므로 리팩토링해야 합니다. 
+이와 같은 코드는 ES2015 모듈에서 작동하지 않으므로 리팩토링해야 합니다.
 이것이 가능하지 않다면 `ContextReplacementPlugin`을 사용하여 컴파일러가 올바른 해결을 하도록 힌트를 줄 수 있습니다.
 
 ?> 동적 의존성에 대한 기사 링크.
@@ -499,7 +499,7 @@ typeof fs.readFileSync === 'function';
 typeof readFileSync === 'function';
 ```
 
-Webpack이 사용할 수 있도록 이러한 모듈 기호를 구문 분석하지 않도록 Babel에 지시하는 것이 중요합니다. 
+Webpack이 사용할 수 있도록 이러한 모듈 기호를 구문 분석하지 않도록 Babel에 지시하는 것이 중요합니다.
 `.babelrc` 또는 `babel-loader` 옵션에서 다음을 설정하면 됩니다.
 
 **.babelrc**

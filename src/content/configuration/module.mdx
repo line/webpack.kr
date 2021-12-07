@@ -20,6 +20,7 @@ contributors:
   - Mistyyyy
   - anshumanv
   - chenxsan
+  - snitin315
 translators:
   - YukJiSoo
 ---
@@ -158,6 +159,63 @@ CommonJS를 위해 [magic comments](/api/module-methods/#magic-comments)지원�
 ```js
 const x = require(/* webpackIgnore: true */ 'x');
 ```
+
+#### module.parser.javascript.exportsPresence
+
+`\"import ... from ...\"` 와 `\"export ... from ...\"`에서 내보내기 이름이 잘못된 경우의 동작을 지정합니다.
+
+- Type: `'error' | 'warn' | 'auto' | false`
+- Available: 5.62.0+
+- Example:
+  ```js
+  module.exports = {
+    module: {
+      parser: {
+        javascript: {
+          exportsPresence: 'error',
+        },
+      },
+    },
+  };
+  ```
+
+#### module.parser.javascript.importExportsPresence
+
+`\"import ... from ...\"`에서 내보내기 이름이 잘못된 경우의 동작을 지정합니다.
+
+- Type: `'error' | 'warn' | 'auto' | false`
+- Available: 5.62.0+
+- Example:
+  ```js
+  module.exports = {
+    module: {
+      parser: {
+        javascript: {
+          importExportsPresence: 'error',
+        },
+      },
+    },
+  };
+  ```
+
+#### module.parser.javascript.reexportExportsPresence
+
+`\"export ... from ...\"`에서 내보내기 이름이 잘못된 경우의 동작을 지정합니다. 이것은 TypeScript에서 타입을 다시 내보낼때 `\"export ... from ...\"`에서 `\"export type ... from ...\"`으로 마이그레이션하는 동안 비활성화하는 데 유용합니다.
+
+- Type: `'error' | 'warn' | 'auto' | false`
+- Available: 5.62.0+
+- Example:
+  ```js
+  module.exports = {
+    module: {
+      parser: {
+        javascript: {
+          reexportExportsPresence: 'error',
+        },
+      },
+    },
+  };
+  ```
 
 #### module.parser.javascript.url
 
@@ -946,7 +1004,6 @@ module.exports = {
 
 `boolean = true`
 
-When enabled, you should provide the file extension when `import`ing a module in `.mjs` files or any other `.js` files when their nearest parent `package.json` file contains a `"type"` field with a value of `"module"`, otherwise webpack would fail the compiling with a `Module not found` error. And webpack won't resolve directories with filenames defined in the [`resolve.mainFiles`](/configuration/resolve/#resolvemainfiles), you have to specify the filename yourself.
 활성화되면 `.mjs` 파일 또는 다른 `.js` 파일에서 모듈을 `import`할 때 가장 가까운 상위 `package.json`파일에 `"type"`필드가 `"module"`을 값으로 가지고 있는 경우 파일 확장자를 제공해야합니다. 그렇지 않으면 webpack이 `Module not found` 오류와 함께 컴파일에 실패합니다. 그리고 webpack은 [`resolve.mainFiles`](/configuration/resolve/#resolvemainfiles)에 정의된 파일 이름으로 디렉터리를 확인하지 않으므로 파일 이름을 직접 지정해야합니다.
 
 **webpack.config.js**
@@ -1021,7 +1078,6 @@ module.exports = {
 
 호환성을 위해 `options` 프로퍼티의 별칭인 `query` 속성도 가능합니다. `options` 프로퍼티를 사용하는 것을 권장합니다.
 
-Note that webpack needs to generate a unique module identifier from the resource and all loaders including options. It tries to do this with a `JSON.stringify` of the options object. This is fine in 99.9% of cases, but may be not unique if you apply the same loaders with different options to the resource and the options have some stringified values.
 webpack은 옵션을 포함한 모든 로더와 리소스에서 고유한 모듈 식별자를 생성해야합니다. 옵션 객체의 `JSON.stringify`로 이를 시도합니다. 99.9%의 경우에 문제가 없지만 리소스에 다른 옵션이 있는 동일한 로더를 적용하고 옵션에 일부 문자열 값이 있는 경우 고유하지 않을 수 있습니다.
 
 순환 JSON 같은 옵션 객체를 문자열화 할 수 없는 경우에도 중단됩니다. 이를 해결하기 위해 고유 식별자로 사용되는 옵션 객체에서 `ident` 속성을 가질 수 있습니다.
@@ -1112,7 +1168,7 @@ module.exports = {
     wrappedContextCritical: false,
     wrappedContextRecursive: true,
     wrappedContextRegExp: /.*/,
-    strictExportPresence: false, // webpack 2.3.0 이후부터
+    strictExportPresence: false,
   },
 };
 ```
@@ -1126,3 +1182,5 @@ T> `ContextReplacementPlugin`을 사용하여 개별 종속성에 대한 값을 
 - `require('./templates/'+ expr)`은 기본적으로 하위 디렉터리를 포함하지 않아야 합니다(`wrappedContextRecursive : false`).
 - `strictExportPresence`는 export가 누락되면 경고 대신 오류를 발생시킵니다.
 - 부분적 동적 종속성에 대한 내부 정규식 설정(`wrappedContextRegExp: /\\.\\*/`)
+
+W> `strictExportPresence`는 더 이상 사용되지 않으며 [`exportsPresence`](#moduleparserjavascriptexportspresence) 옵션이 사용됩니다.

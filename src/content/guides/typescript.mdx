@@ -7,6 +7,8 @@ contributors:
   - mtrivera
   - byzyk
   - EugeneHlushko
+  - chenxsan
+  - snitin315
 translators:
   - dkstyle
 ---
@@ -30,6 +32,7 @@ npm install --save-dev typescript ts-loader
 ```diff
   webpack-demo
   |- package.json
+  |- package-lock.json
 + |- tsconfig.json
   |- webpack.config.js
   |- /dist
@@ -177,6 +180,15 @@ W> `ts-loader` 는 TypeScript 컴파일러인 `tsc`를 사용하고, `tsconfig.j
 ```
 
 자세한 내용은 [개발자 도구 문서를](/configuration/devtool/) 참고하세요.
+
+## Client types
+
+TypeScript 코드에서 [`import.meta.webpack`](/api/module-variables/#importmetawebpack)과 같은 webpack 관련 기능을 사용할 수 있습니다. 그리고 webpack은 이에 대한 타입도 제공합니다. TypeScript [`reference`](https://www.typescriptlang.org/docs/handbook/triple-slash-directives.html#-reference-types-) 지시문을 추가하여 선언하기만 하면 됩니다.
+
+```ts
+/// <reference types="webpack/module" />
+console.log(import.meta.webpack); // 위에서 선언된 참조가 없으면 TypeScript에서 에러가 발생합니다.
+```
 
 ## Using Third Party Libraries
 
