@@ -166,7 +166,7 @@ npx webpack info [options]
 **예시**
 
 ```bash
-npx webpack info --output=json
+npx webpack info --output json --addition-package postcss
 ```
 
 #### Options for info
@@ -177,11 +177,23 @@ npx webpack info --output=json
 
 출력에 패키지를 추가합니다.
 
+**예시**
+
+```bash
+npx webpack info --additional-package postcss
+```
+
 **`-o`, `--output`**
 
 `string : 'json' | 'markdown'`
 
 지정된 형식으로 출력을 가져옵니다.
+
+**예시**
+
+```bash
+npx webpack info --output markdown
+```
 
 ### Configtest
 
