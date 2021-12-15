@@ -458,6 +458,10 @@ module.exports = {
       forOf: true,
       // ECMAScript 모듈을 가져오는 ECMAScript Module syntax를 지원합니다(import ... from '...' 처럼 사용합니다).
       module: false,
+      // 환경이 옵셔널 체이닝('obj?.a' 또는 'obj?.()')을 지원합니다.
+      optionalChaining: true,
+      // 환경이 템플릿 리터럴을 지원합니다.
+      templateLiteral: true,
     },
   },
 };
@@ -682,6 +686,8 @@ module.exports = {
 `number = 20`
 
 사용할 해시 다이제스트의 접두사 길이입니다.
+
+T> `webpack v5.65.0+`의 경우, [`experiments.futureDefaults`](/configuration/experiments/#experimentsfuturedefaults)가 활성화되면 `16`이 `hashDigestLength` 옵션의 기본값으로 사용됩니다.
 
 ## output.hashFunction
 
