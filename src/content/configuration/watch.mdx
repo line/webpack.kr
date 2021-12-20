@@ -143,7 +143,7 @@ module.exports = {
 };
 ```
 
-T> 만약 감시 기능이 작동하지 않는다면, 이 옵션을 사용해 보세요. 감시 기능은 VirtualBox의 NFS 및 시스템에서는 작동하지 않습니다.
+T> 만약 감시 기능이 작동하지 않는다면, 이 옵션을 사용해 보세요. 이는 VirtualBox, WSL, Containers 또는 Docker의 NFS 및 시스템 문제해결에 도움이 될 수 있습니다. 이 경우 폴링 간격을 사용하고 `/node_modules/`와 같은 큰 폴더를 무시하여 CPU 사용량을 최소화하세요.
 
 ### watchOptions.followSymlinks
 

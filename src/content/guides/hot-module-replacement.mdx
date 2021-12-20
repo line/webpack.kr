@@ -183,31 +183,48 @@ HMR을 활성화하려면 HMR 엔트리 포인트를 포함하도록 webpack 설
 **dev-server.js**
 
 ```javascript
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+
 const webpack = require('webpack');
-const DevServer = require('webpack-dev-server');
+const webpackDevServer = require('webpack-dev-server');
+
 const config = {
+  mode: 'development',
   entry: [
     // hot module replacement를 위한 런타임 코드
     'webpack/hot/dev-server.js',
     // 웹 소켓 전송, hot 및 live 리로드 로직을 위한 개발 서버 클라이언트
     'webpack-dev-server/client/index.js?hot=true&live-reload=true',
     // 엔트리
-    './src/entry.js',
+    './src/index.js',
   ],
-  plugin: [
+  devtool: 'inline-source-map',
+  plugins: [
     // hot module replacement를 위한 플러그인
     new webpack.HotModuleReplacementPlugin(),
+    new HtmlWebpackPlugin({
+      title: 'Hot Module Replacement',
+    }),
   ],
+  output: {
+    filename: '[name].bundle.js',
+    path: path.resolve(__dirname, 'dist'),
+    clean: true,
+  },
 };
 const compiler = webpack(config);
+
 // `hot` 및 `client` 옵션을 수동으로 추가했기 때문에 비활성화됩니다.
-const server = new DevServer({ hot: false, client: false }, compiler);
+const server = new webpackDevServer({ hot: false, client: false }, compiler);
 
 (async () => {
   await server.start();
   console.log('dev server is running');
 })();
 ```
+
+[`webpack-dev-server` Node.js API 전체 문서](/api/webpack-dev-server/)를 참고하세요.
 
 T> [`webpack-dev-middleware` 사용](/guides/development/#using-webpack-dev-middleware)의 경우 [`webpack-hot-middleware`](https://github.com/webpack-contrib/webpack-hot-middleware) 패키지를 사용하여 커스텀 개발 서버에서 HMR을 활성화합니다.
 
