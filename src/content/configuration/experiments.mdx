@@ -25,6 +25,7 @@ W> 실험적 기능은 시멘틱 버저닝을 완화하고 주요 변경 사항�
 - [`backCompat`](#experimentsbackcompat)
 - [`buildHttp`](#experimentsbuildhttp)
 - [`cacheUnaffected`](#experimentscacheunaffected)
+- [`css`](#experimentscss)
 - [`futureDefaults`](#experimentsfuturedefaults)
 - `layers`: 모듈 및 청크 레이어를 활성화합니다.
 - [`lazyCompilation`](#experimentslazycompilation)
@@ -168,6 +169,12 @@ module.exports = {
 #### experiments.buildHttp.upgrade
 
 원격 리소스의 변경 사항을 감지하고 자동으로 업그레이드합니다.
+
+- Type: `boolean`
+
+### experiments.css
+
+네이티브 CSS 지원을 활성화합니다. 아직 개발 중인 실험적인 기능이고 webpack v6에서 기본적으로 활성화될 예정이지만, [GitHub](https://github.com/webpack/webpack/issues/14893)에서 진행 상황을 확인할 수 있습니다.
 
 - Type: `boolean`
 
