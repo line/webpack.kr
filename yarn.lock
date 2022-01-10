@@ -2993,11 +2993,6 @@ ansi-regex@^6.0.1:
   resolved "https://registry.yarnpkg.com/ansi-regex/-/ansi-regex-6.0.1.tgz#3183e38fae9a65d7cb5e53945cd5897d0260a06a"
   integrity sha512-n5M855fKb2SsfMIiFFoVrABHJC8QtHwVx+mHWP3QcEqBHYienj5dHSgjbxtC0WEZXYt4wcD6zrQElDPhFuZgfA==
 
-ansi-regex@^6.0.1:
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/ansi-regex/-/ansi-regex-6.0.1.tgz#3183e38fae9a65d7cb5e53945cd5897d0260a06a"
-  integrity sha512-n5M855fKb2SsfMIiFFoVrABHJC8QtHwVx+mHWP3QcEqBHYienj5dHSgjbxtC0WEZXYt4wcD6zrQElDPhFuZgfA==
-
 ansi-styles@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/ansi-styles/-/ansi-styles-2.2.1.tgz#b432dd3358b634cf75e1e4664368240533c1ddbe"
@@ -6333,10 +6328,10 @@ husky@^7.0.4:
   resolved "https://registry.yarnpkg.com/husky/-/husky-7.0.4.tgz#242048245dc49c8fb1bf0cc7cfb98dd722531535"
   integrity sha512-vbaCKN2QLtP/vD4yvs6iz6hBEo6wkSzs8HpRah1Z6aGmF2KW5PdYuAd7uX5a+OyBZHBhd+TFLqgjUgytQr4RvQ==
 
-hyperlink@^5.0.3:
-  version "5.0.3"
-  resolved "https://registry.yarnpkg.com/hyperlink/-/hyperlink-5.0.3.tgz#39281b98cb2e5f63bf1b818e454c6bdf9cfc8099"
-  integrity sha512-jp0SjVPhUEYQnvqQDmPEVhcrcxjtfvjHRkSswrrX1SeW2vYSIVMX7CECGA4AqYWpVy0+WMbtRyu1BU98/gcUBQ==
+hyperlink@^5.0.4:
+  version "5.0.4"
+  resolved "https://registry.yarnpkg.com/hyperlink/-/hyperlink-5.0.4.tgz#b48056fef322ccc8d91c61d32ab3c83de1a17f57"
+  integrity sha512-McN25ky/8OszPWctZJbvNYb4odYQSYeqE8hNK1aH/oM9GtmOyBZNE4ObkIEKOxIntG1PVfPp7uP7QoIdFEKkDg==
   dependencies:
     "@munter/tap-render" "^0.2.0"
     assetgraph "^7.3.1"
@@ -11292,13 +11287,6 @@ strip-ansi@^6.0.0, strip-ansi@^6.0.1:
     ansi-regex "^5.0.1"
 
 strip-ansi@^7.0.0, strip-ansi@^7.0.1:
-  version "7.0.1"
-  resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-7.0.1.tgz#61740a08ce36b61e50e65653f07060d000975fb2"
-  integrity sha512-cXNxvT8dFNRVfhVME3JAe98mkXDYN2O1l7jmcwMnOslDeESg1rF/OZMtK0nRAhiari1unG5cD4jG3rapUAkLbw==
-  dependencies:
-    ansi-regex "^6.0.1"
-
-strip-ansi@^7.0.1:
   version "7.0.1"
   resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-7.0.1.tgz#61740a08ce36b61e50e65653f07060d000975fb2"
   integrity sha512-cXNxvT8dFNRVfhVME3JAe98mkXDYN2O1l7jmcwMnOslDeESg1rF/OZMtK0nRAhiari1unG5cD4jG3rapUAkLbw==
