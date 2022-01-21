@@ -384,7 +384,7 @@ module.exports = {
 
 `string`
 
-이 옵션은 [`output.devtoolModuleFilenameTemplate`](#outputdevtoolmodulefilenametemplate)과 함께 사용되는 모듈의 네임스페이스를 결정합니다. 지정되지 않은 경우 기본값은 [`output.library`](#outputlibrary)입니다. webpack으로 빌드된 여러 라이브러리를 로드할 때 소스맵에서 소스 파일 경로 충돌을 방지하는 경우 사용됩니다.
+이 옵션은 [`output.devtoolModuleFilenameTemplate`](#outputdevtoolmodulefilenametemplate)과 함께 사용되는 모듈의 네임스페이스를 결정합니다. 지정되지 않은 경우 기본값은 [`output.uniqueName`](#outputuniquename)입니다. webpack으로 빌드된 여러 라이브러리를 로드할 때 소스맵에서 소스 파일 경로 충돌을 방지하는 경우 사용됩니다.
 
 예를 들어, 네임스페이스가 `library1`과 `library2`인 라이브러리가 2개 있고 둘 다 `./src/index.js`파일(잠재적으로 다른 내용 포함)이 있는 경우 이 파일은 `webpack://library1/./src/index.js`, `webpack://library2/./src/index.js`로 내보내집니다.
 

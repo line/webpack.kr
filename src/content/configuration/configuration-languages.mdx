@@ -12,6 +12,8 @@ contributors:
   - Nek-
   - liyiming22
   - daimalou
+  - ChocolateLoverRaj
+  - snitin315
 translators:
   - dkstyle
 ---
@@ -24,7 +26,7 @@ Webpack은 여러 프로그래밍과 데이터 언어로 작성된 설정 파일
 
 ```bash
 npm install --save-dev typescript ts-node @types/node @types/webpack
-# and, if using webpack-dev-server
+# webpack-dev-server < v4.7.0을 사용하는 경우
 npm install --save-dev @types/webpack-dev-server
 ```
 
@@ -35,7 +37,7 @@ npm install --save-dev @types/webpack-dev-server
 ```typescript
 import * as path from 'path';
 import * as webpack from 'webpack';
-// just in case you run into any typescript error when configuring `devServer`
+// `devServer`를 설정할 때 typescript 오류가 발생하는 경우를 대비하여
 import 'webpack-dev-server';
 
 const config: webpack.Configuration = {
