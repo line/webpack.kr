@@ -5,18 +5,20 @@ contributors:
   - simon04
   - byzyk
   - chenxsan
+translators:
+  - dkstyle
 related:
   - title: banner-plugin-hashing test
     url: https://github.com/webpack/webpack/blob/master/test/configCases/plugins/banner-plugin-hashing/webpack.config.js
 ---
 
-Adds a banner to the top of each generated chunk.
+생성된 각 청크의 상단에 배너를 추가합니다.
 
 ```javascript
 const webpack = require('webpack');
 
 new webpack.BannerPlugin(banner);
-// or
+// 또는
 new webpack.BannerPlugin(options);
 ```
 
@@ -24,12 +26,12 @@ new webpack.BannerPlugin(options);
 
 ```ts
 {
-  banner: string | function, // the banner as string or function, it will be wrapped in a comment
-  raw: boolean, // if true, banner will not be wrapped in a comment
-  entryOnly: boolean, // if true, the banner will only be added to the entry chunks
-  test: string | RegExp | [string, RegExp], // Include all modules that pass test assertion.
-  include: string | RegExp | [string, RegExp], // Include all modules matching any of these conditions.
-  exclude: string | RegExp | [string, RegExp], // Exclude all modules matching any of these conditions.
+  banner: string | function, // 배너를 문자열 또는 함수로 사용하면, 주석으로 감싸집니다.
+  raw: boolean, // true이면, 배너가 주석에 감싸지지 않습니다.
+  entryOnly: boolean, // true이면, 배너는 항목 청크에만 추가됩니다.
+  test: string | RegExp | [string, RegExp], // 테스트를 통과하는 모든 모듈이 포함됩니다.
+  include: string | RegExp | [string, RegExp], // 다음 조건 중 하나라도 일치하는 모든 모듈이 포함됩니다.
+  exclude: string | RegExp | [string, RegExp], // 다음 조건 중 하나라도 일치하는 모든 모듈이 제외됩니다.
 }
 ```
 
@@ -38,12 +40,12 @@ new webpack.BannerPlugin(options);
 ```javascript
 import webpack from 'webpack';
 
-// string
+// 문자열
 new webpack.BannerPlugin({
   banner: 'hello world',
 });
 
-// function
+// 함수
 new webpack.BannerPlugin({
   banner: (yourVariable) => {
     return `yourVariable: ${yourVariable}`;
@@ -53,7 +55,7 @@ new webpack.BannerPlugin({
 
 ## Placeholders
 
-Since webpack 2.5.0, placeholders are evaluated in the `banner` string:
+webpack 2.5.0 부터, placeholder는 `배너` 문자열로 평가됩니다.
 
 ```javascript
 import webpack from 'webpack';
