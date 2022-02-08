@@ -147,3 +147,39 @@ setTimeout(stopServer, 5000);
 ```bash
 node server.js
 ```
+
+## internalIP(family: "v4" | "v6")
+
+내부 `IPv4`/`IPv6` 주소를 비동기적으로 반환합니다.
+
+**server.js**
+
+```js
+const WebpackDevServer = require('webpack-dev-server');
+
+const logInternalIPs = async () => {
+  const localIPv4 = await WebpackDevServer.internalIP('v4');
+  const localIPv6 = await WebpackDevServer.internalIP('v6');
+
+  console.log('Local IPv4 address:', localIPv4);
+  console.log('Local IPv6 address:', localIPv6);
+};
+
+logInternalIPs();
+```
+
+## internalIPSync(family: "v4" | "v6")
+
+내부 `IPv4`/`IPv6` 주소를 동기적으로 반환합니다.
+
+**server.js**
+
+```js
+const WebpackDevServer = require('webpack-dev-server');
+
+const localIPv4 = WebpackDevServer.internalIPSync('v4');
+const localIPv6 = WebpackDevServer.internalIPSync('v6');
+
+console.log('Local IPv4 address:', localIPv4);
+console.log('Local IPv6 address:', localIPv6);
+```

@@ -541,18 +541,22 @@ module.exports = {
 
 ### stats.context
 
-`string = '../src/'`
+`string`
 
-요청 정보를 단축하기 위한 컨텍스트 디렉터리를 설정합니다.
+stats 기본 디렉터리이며, 요청 정보를 단축하기 위한 **절대경로** 입니다.
 
 ```javascript
+const path = require('path');
+
 module.exports = {
   //...
   stats: {
-    context: '../src/components/',
+    context: path.resolve(__dirname, 'src/components'),
   },
 };
 ```
+
+기본적으로 [`context`](/configuration/entry-context/#context) 또는 Node.js의 현재 작업 디텍터리 값이 사용됩니다.
 
 ### stats.colors
 
