@@ -680,7 +680,7 @@ module.exports = {
 
 `string = 'hex'`
 
-해시를 생성할 때 사용하는 인코딩입니다. Node.JS의 모든 인코딩 [`hash.digest`](https://nodejs.org/api/crypto.html#crypto_hash_digest_encoding)가 지원됩니다. 파일 이름에`'base64'`를 사용하면 알파벳에 `/` 문자가 있으므로 문제가 될 수 있습니다. 마찬가지로`'latin1'`은 모든 문자를 포함 할 수 있습니다.
+해시를 생성할 때 사용하는 인코딩입니다. Node.JS의 모든 인코딩 [`hash.digest`](https://nodejs.org/api/buffer.html#buffers-and-character-encodings)가 지원됩니다. 파일 이름에`'base64'`를 사용하면 알파벳에 `/` 문자가 있으므로 문제가 될 수 있습니다. 마찬가지로`'latin1'`은 모든 문자를 포함 할 수 있습니다.
 
 ## output.hashDigestLength
 
@@ -969,7 +969,9 @@ MyLibrary = _entry_return_;
 
 `MyLibrary`가 이전에 정의되지 않은 경우 라이브러리는 전역 범위로 설정됩니다.
 
-##### type: 'assign-properties' <Badge text='5.16.0+' />
+##### type: 'assign-properties'
+
+<Badge text="5.16.0+" />
 
 ```js
 module.exports = {
@@ -1619,7 +1621,9 @@ MyLibrary = _entry_return_;
 
 `MyLibrary`가 이전에 정의되지 않은 경우 라이브러리는 전역 범위로 설정됩니다.
 
-#### libraryTarget: 'assign-properties' <Badge text='5.16.0+' />
+#### libraryTarget: 'assign-properties'
+
+<Badge text="5.16.0+" />
 
 W> [output.library.type: 'assign-properties'`](#type-assign-properties)를 사용하는 것이 좋습니다.
 
