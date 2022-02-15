@@ -44,7 +44,10 @@ module.exports = {
         // asset 모듈 제너레이터 옵션
 
         // asset 모듈을 위한 publicPath 사용자 정의. webpack 5.28.0 이후로 사용 가능.
-        publicPath: 'assets/',
+        publicPath: 'https://cdn/assets/',
+
+        // Webpack 5.67.0부터 사용 가능한 'output.path'를 기준으로 지정된 폴더의 애셋을 내보냅니다.
+        outputPath: 'cdn-assets/',
       },
       'asset/inline': {
         // asset/inline 모듈 제너레이터 옵션
@@ -53,7 +56,10 @@ module.exports = {
         // asset/resource 모듈 제너레이터 옵션
 
         // asset/resource 모듈을 위한 publicPath 사용자 정의. webpack 5.28.0 이후로 사용 가능.
-        publicPath: 'assets/',
+        publicPath: 'https://cdn/assets/',
+
+        // Webpack 5.67.0부터 사용 가능한 'output.path'를 기준으로 지정된 폴더의 애셋을 내보냅니다.
+        outputPath: 'cdn-assets/',
       },
       javascript: {
         // 이 모듈 유형에는 아직 제너레이터 옵션이 지원되지 않습니다.
@@ -743,6 +749,34 @@ module.exports = {
         type: 'asset/resource',
         generator: {
           publicPath: 'assets/',
+        },
+      },
+    ],
+  },
+};
+```
+
+### Rule.generator.outputPath
+
+'output.path'를 기준으로 지정된 폴더의 애셋을 내보냅니다. 사용자 지정 'publicPath'가 폴더 구조와 일치하도록 지정된 경우에만 필요합니다.
+
+- Type: `string | ((pathData: PathData, assetInfo?: AssetInfo) => string)`
+- Available: <Badge text='5.67.0+' />
+
+```js
+module.exports = {
+  //...
+  output: {
+    publicPath: 'static/',
+  },
+  module: {
+    rules: [
+      {
+        test: /\.png$/i,
+        type: 'asset/resource',
+        generator: {
+          publicPath: 'https://cdn/assets/',
+          outputPath: 'cdn-assets/',
         },
       },
     ],

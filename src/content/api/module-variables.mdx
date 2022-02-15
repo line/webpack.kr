@@ -13,6 +13,7 @@ contributors:
   - anikethsaha
   - chenxsan
   - jamesgeorge007
+  - snitin315
 translators:
   - choilim
 related:
@@ -165,6 +166,18 @@ import('./module-a').then((moduleA) => {
   // 이제 webpack은 사용자 정의 __webpack_chunk_load__ 를 사용하여 청크를 로드합니다.
 });
 ```
+
+## \_\_webpack_module\_\_ (webpack-specific)
+
+<Badge text="5.68.0+" />
+
+현재의 `모듈`에 접근할 수 있습니다. 엄격한 ESM에서는 `모듈`을 사용할 수 없습니다.
+
+## \_\_webpack_module\_\_.id (webpack-specific)
+
+<Badge text="5.68.0+" />
+
+현재 `모듈`(`module.id`)의 ID에 접근할 수 있습니다. 엄격한 ESM에서는 `모듈`을 사용할 수 없습니다.
 
 ## \_\_webpack_modules\_\_ (webpack-specific)
 
