@@ -663,18 +663,18 @@ webpack은 의미론적 버전 관리를 따르지만 실험적 기능에 대해
 - `resolve.moduleExtensions` 제거됨
 - `resolve.alias` 값은 이제 배열 또는 `false`일 수 있습니다.
 - `resolve.restrictions` 추가됨: 잠재적 해결 결과를 제한할 수 있습니다.
-- `resolve.fallback` 추가됨: 해결에 실패한 에 별칭 허용
+- `resolve.fallback` 추가됨: 해결에 실패한 요청에 별칭 허용
 - `resolve.preferRelative` 추가됨: 모듈 요청도 적절한 요청으로 해결할 수 있습니다.
 - 기본 Node.js 모듈에 대한 자동 폴리필이 제거되었습니다.
   - `node.Buffer` 제거됨
   - `node.console` 제거됨
   - `node.process` 제거됨
   - `node.*` (Node.js 기본 모듈) 제거됨
-  - **마이그레이션**: `resolve.alias` 및 `ProvidePlugin`. 오류가 힌트를 줄 것입니다. (v4에서 사용되는 폴리필 및 참조는 [node-libs-browser](https://github.com/webpack/node-libs-browser) 참조)
+  - **마이그레이션**: `resolve.alias` 및 `ProvidePlugin`. 오류가 힌트를 줄것입니다. (v4에서 사용되는 폴리필 및 참조는 [node-libs-browser](https://github.com/webpack/node-libs-browser) 참조)
 - `output.filename`은 이제 함수가 될 수 있습니다.
 - `output.assetModuleFilename` 추가됨
 - `output.jsonpScriptType`이 `output.scriptType`으로 이름이 변경되었습니다.
-- `devtool`이 더 엄격합니다.
+- `devtool`이 더 엄격해집니다.
   - 형식: `false | eval | [inline-|hidden-|eval-][nosources-][cheap-[module-]]source-map`
 - `optimization.chunkIds: "deterministic"` 추가됨
 - `optimization.moduleIds: "deterministic"` 추가됨
@@ -682,8 +682,8 @@ webpack은 의미론적 버전 관리를 따르지만 실험적 기능에 대해
 - `optimization.moduleIds: "total-size"` 제거됨
 - 모듈 및 청크 ID에 대하여 더 이상 사용되지 않은 플래그가 제거되었습니다.
   - `optimization.hashedModuleIds` 제거됨
-  - `optimization.namedChunks` 및 `NamedChunksPlugin` 제거됨
-  - `optimization.namedModules` 및 `NamedModulesPlugin` 제거됨
+  - `optimization.namedChunks` 제거됨 (`NamedChunksPlugin`도 같이 제거됨)
+  - `optimization.namedModules` 제거됨 (`NamedModulesPlugin`도 같이 제거됨)
   - `optimization.occurrenceOrder` 제거됨
   - **마이그레이션**: `chunkIds` 및 `moduleIds` 사용
 - `optimization.splitChunks` `test` 더 이상 청크 이름과 일치하지 않습니다.
