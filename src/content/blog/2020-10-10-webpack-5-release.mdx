@@ -660,6 +660,7 @@ webpack은 의미론적 버전 관리를 따르지만 실험적 기능에 대해
 - `snapshot.immutablePaths` 추가됨
 - `resolve.cache` 추가됨: 안전한 해결 캐시를 비활성화/활성화할 수 있습니다.
 - `resolve.concord` 제거됨
+- `resolve.moduleExtensions` 제거됨
 - `resolve.alias` 값은 이제 배열 또는 `false`일 수 있습니다.
 - `resolve.restrictions` 추가됨: 잠재적 해결 결과를 제한할 수 있습니다.
 - `resolve.fallback` 추가됨: 해결에 실패한 에 별칭 허용
@@ -1120,9 +1121,11 @@ Webpack은 이제 `Compilation.assets`의 소스를 `SizeOnlySource`의 변형�
 - export 이름을 변경할 수 있습니까? yes, no, not determined
 
   .
+
 - export 이름이 변경된 경우 새 이름입니다(`optimization.mangleExports` 참조)
 
   .
+
 - 내포된 ExportsInfo, export가 정보가 첨부된 객체인 경우
   - 네임스페이스 객체를 다시 export 하는 데 사용됩니다. `import * as X from "..."; export { X };`
   - JSON 모듈에서 구조를 나타내는 데 사용
