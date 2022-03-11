@@ -1117,7 +1117,7 @@ module.exports = {
 
 ## devServer.open
 
-`boolean` `string` `[string]` `object` `[object]`
+`boolean` `string` `object` `[string, object]`
 
 Tells dev-server to open the browser after server had been started. Set it to `true` to open your default browser.
 
@@ -1578,6 +1578,19 @@ module.exports = {
         response.send('setup-middlewares option GET');
       });
 
+      // Use the `unshift` method if you want to run a middleware before all other middlewares
+      // or when you are migrating from the `onBeforeSetupMiddleware` option
+      middlewares.unshift({
+        name: 'fist-in-array',
+        // `path` is optional
+        path: '/foo/path',
+        middleware: (req, res) => {
+          res.send('Foo!');
+        },
+      });
+
+      // Use the `push` method if you want to run a middleware after all other middlewares
+      // or when you are migrating from the `onAfterSetupMiddleware` option
       middlewares.push({
         name: 'hello-world-test-one',
         // `path` is optional
@@ -1599,7 +1612,7 @@ module.exports = {
 
 ## devServer.static
 
-`boolean` `string` `[string]` `object` `[object]`
+`boolean` `string` `object` `[string, object]`
 
 This option allows configuring options for serving static files from the directory (by default 'public' directory). To disable set it to `false`:
 
@@ -1869,7 +1882,7 @@ module.exports = {
 
 ## devServer.watchFiles
 
-`string` `[string]` `object` `[object]`
+`string` `object` `[string, object]`
 
 This option allows you to configure a list of globs/directories/files to watch for file changes. For example:
 
