@@ -682,8 +682,8 @@ webpack은 의미론적 버전 관리를 따르지만 실험적 기능에 대해
 - `optimization.moduleIds: "total-size"` 제거됨
 - 모듈 및 청크 ID에 대하여 더 이상 사용되지 않은 플래그가 제거되었습니다.
   - `optimization.hashedModuleIds` 제거됨
-  - `optimization.namedChunks` 제거됨 (`NamedChunksPlugin`도 같이 제거됨)
-  - `optimization.namedModules` 제거됨 (`NamedModulesPlugin`도 같이 제거됨)
+  - `optimization.namedChunks` 및 `NamedChunksPlugin` 제거됨
+  - `optimization.namedModules` 및 `NamedModulesPlugin` 제거됨
   - `optimization.occurrenceOrder` 제거됨
   - **마이그레이션**: `chunkIds` 및 `moduleIds` 사용
 - `optimization.splitChunks` `test` 더 이상 청크 이름과 일치하지 않습니다.
