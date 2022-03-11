@@ -8,7 +8,7 @@ translators:
   - JEONTAK
 ---
 
-webpack 4는 2018년 2월에 릴리스했습니다.
+Webpack 4는 2018년 2월에 릴리스했습니다.
 2018년 2월 이후로 큰 변화 없이 많은 기능을 릴리스했습니다.
 여러 사람이 큰 변화가 있는 주요 변경사항을 싫어 한다는 것을 알고 있습니다.
 특히 webpack의 경우, 일반적으로 1년에 2번만 사용하고 남은 시간동안 '단지 작동'만 합니다.
@@ -22,7 +22,7 @@ webpack 4는 2018년 2월에 릴리스했습니다.
 주요 버전은 또한 일부 기본값을 수정하고 그 동안 나오는 제안과 사양을 일치시킬 수 있는 기회였습니다.
 
 그래서 오늘(2020-10-10) webpack 5.0.0이 릴리스했지만, 버그가 없거나 기능이 완전하다는 것을 의미하지는 않습니다.
-webpack 4와 마찬가지로 문제를 수정하고 기능을 추가하여 개발을 계속합니다.
+Webpack 4와 마찬가지로 문제를 수정하고 기능을 추가하여 개발을 계속합니다.
 다음 날에는 아마도 많은 버그 수정이 있을 것입니다. 기능은 나중에 제공합니다.
 
 ## Common Questions
@@ -40,13 +40,13 @@ webpack 4와 마찬가지로 문제를 수정하고 기능을 추가하여 개�
 
 ## Sponsoring Update
 
-webpack은 전적으로 [후원](https://opencollective.com/webpack)을 기반으로 합니다.
+Webpack은 전적으로 [후원](https://opencollective.com/webpack)을 기반으로 합니다.
 다른 오픈소스 프로젝트와 같이 대기업이 후원 하거나 대기업에 연결되어 있지 않습니다.
 후원 수익의 99%는 기여도에 따라 컨트리뷰터와 메인테이너에게 분배됩니다.
-webpack을 개선하기 위해 돈을 투자한다고 믿습니다.
+Webpack을 개선하기 위해 돈을 투자한다고 믿습니다.
 
 그러나 팬데믹이 있고나서 여러 기업은 더 이상 후원에 개방적이지 않습니다.
-webpack도 이러한 상황에서 (많은 다른 회사 및 여러 사람과 마찬가지로)어려움을 겪고 있습니다.
+Webpack도 이러한 상황에서 (많은 다른 회사 및 여러 사람과 마찬가지로)어려움을 겪고 있습니다.
 
 컨트리뷰터에게 적절한 금액을 지불할 수 없었지만 지금은 사용할 수 있는 돈이 절반 밖에 없기 때문에 더 많은 삭감이 필요합니다.
 상황이 개선될 때 까지 매월 첫 10일동안만 컨트리뷰터와 메인테이너에게만 비용을 드립니다.
@@ -102,7 +102,7 @@ v4에서 더 이상 지원되지 않는 모든 항목이 제거되었습니다.
 
 폴리필과 함께 제공하면 Node.js용으로 작성된 모듈을 더 쉽게 사용할 수 있지만 거대한 폴리필이 번들에 추가됩니다. 많은 경우 폴리필은 필요하지 않습니다.
 
-webpack 5는 코어 모듈을 자동으로 폴리필하는 것을 중지하고 프런트엔드 호환 모듈에 중점을 둡니다. 목표는 Node.js 코어 모듈을 사용할 수 없는 웹 플랫폼과의 호환성을 개선하는 것입니다.
+Webpack 5는 코어 모듈을 자동으로 폴리필하는 것을 중지하고 프런트엔드 호환 모듈에 중점을 둡니다. 목표는 Node.js 코어 모듈을 사용할 수 없는 웹 플랫폼과의 호환성을 개선하는 것입니다.
 
 **마이그레이션**:
 
@@ -133,7 +133,7 @@ webpack 5는 코어 모듈을 자동으로 폴리필하는 것을 중지하고 �
 
 ### Real Content Hash
 
-webpack 5는 이제 `[contenthash]`를 사용할 때 파일 콘텐츠의 실제 해시를 사용합니다. 그 전에는 '오직'내부 구조의 해시를 사용했습니다.
+Webpack 5는 이제 `[contenthash]`를 사용할 때 파일 콘텐츠의 실제 해시를 사용합니다. 그 전에는 '오직'내부 구조의 해시를 사용했습니다.
 실제 해시를 사용하는 것은 주석만 변경되거나 변수 이름이 변경된 경우 장기 캐싱에 긍정적인 영향을 미칠 수 있습니다. 이러한 변경 사항은 최소화 한 후에는 표시되지 않습니다.
 
 ## Major Changes: Development Support
@@ -153,7 +153,7 @@ webpack 5는 이제 `[contenthash]`를 사용할 때 파일 콘텐츠의 실제 
 
 ### Module Federation
 
-webpack 5에는 'Module Federation'이라는 새로운 기능이 추가되어 webpack 빌드가 함께 작동할 수 있습니다.
+Webpack 5에는 'Module Federation'이라는 새로운 기능이 추가되어 webpack 빌드가 함께 작동할 수 있습니다.
 런타임 관점에서 여러 빌드의 모듈은 연결된 거대한 모듈 그래프처럼 작동합니다.
 개발자 관점에서 모듈은 지정된 원격 빌드에서 가져와 최소한의 제한으로 사용할 수 있습니다.
 
@@ -180,7 +180,7 @@ JSON 모듈은 이제 제안과 일치하고 기본이 아닌 export가 사용�
 
 ### Asset modules
 
-webpack 5는 이제 애셋을 나타내는 모듈을 기본적으로 지원합니다.
+Webpack 5는 이제 애셋을 나타내는 모듈을 기본적으로 지원합니다.
 애셋을 나타니는 모듈은 파일을 출력 폴더로 내보내거나 DataURI를 자바스크립트 번들에 삽입합니다.
 어느 쪽이든 작업할 URL을 제공합니다.
 
@@ -201,7 +201,7 @@ webpack 5는 이제 애셋을 나타내는 모듈을 기본적으로 지원합�
 
 ### URIs
 
-webpack 5는 요청에서 프로토콜 처리를 지원합니다.
+Webpack 5는 요청에서 프로토콜 처리를 지원합니다.
 
 - `data:`가 지원됩니다. Base64 또는 raw 인코딩이 지원됩니다. MIME타입은 `module.rules`의 로더 및 모듈 유형에 매핑할 수 있습니다. 예시: `import x from "data:text/javascript,export default 42"`
 - `file:`이 지원됩니다.
@@ -212,14 +212,14 @@ webpack 5는 요청에서 프로토콜 처리를 지원합니다.
 
 ### Async modules
 
-webpack 5는 소위 '비동기 모듈'을 지원합니다.
+Webpack 5는 소위 '비동기 모듈'을 지원합니다.
 이는 동기적으로 평가되지 않지만 대신 비동기 및 Promise 기반 모듈입니다.
 
 `import`를 통한 가져오기는 자동으로 처리되고 추가 구문이 필요하지 않으며 차이점을 거의 알아차릴 수 없습니다.
 
 `require()`를 통해 가져오면 export로 해결되는 promise가 리턴됩니다.
 
-webpack에는 비동기 모듈을 사용하는 여러 가지 방법이 있습니다.
+Webpack에는 비동기 모듈을 사용하는 여러 가지 방법이 있습니다.
 
 - 비동기 external
 - 새로운 사양의 WebAssembly 모듈
@@ -227,7 +227,7 @@ webpack에는 비동기 모듈을 사용하는 여러 가지 방법이 있습니
 
 ### Externals
 
-webpack 5는 더 많은 애플리케이션을 포함하기위해 추가 external 유형을 추가합니다.
+Webpack 5는 더 많은 애플리케이션을 포함하기위해 추가 external 유형을 추가합니다.
 
 `promise`: promise로 평가되는 표현식입니다. External 모듈은 비동기 모듈이며 해석된 값은 모듈 export로 사용됩니다.
 
@@ -303,7 +303,7 @@ new webpack.ProgressPlugin({ percentBy: 'entries' });
 
 청크 로드에 동일한 전역 변수를 사용하기 때문에 webpack 4에서 여러 webpack 런타임은 동일한 HTML 페이지에서 충돌할 수 있습니다. 이 문제를 수정하려면 `output.jsonpFunction` 구성에 커스텀 이름을 제공해야 합니다.
 
-webpack 5는 `package.json` 및 `name`에서 빌드의 고유 이름을 자동으로 유추하고 이를 `output.uniqueName`의 기본값으로 사용합니다.
+Webpack 5는 `package.json` 및 `name`에서 빌드의 고유 이름을 자동으로 유추하고 이를 `output.uniqueName`의 기본값으로 사용합니다.
 
 `output.uniqueName`값은 잠재적으로 충돌하는 모든 전역을 고유하게 만드는 데 사용됩니다.
 
@@ -311,11 +311,11 @@ webpack 5는 `package.json` 및 `name`에서 빌드의 고유 이름을 자동�
 
 ### Automatic public path
 
-webpack 5는 가능한 경우 `output.publicPath`을 자동으로 결정합니다.
+Webpack 5는 가능한 경우 `output.publicPath`을 자동으로 결정합니다.
 
 ### Typescript typings
 
-webpack 5는 소스 코드에서 타입을 생성하고 npm 패키지를 통해 나타냅니다.
+Webpack 5는 소스 코드에서 타입을 생성하고 npm 패키지를 통해 나타냅니다.
 
 **마이그레이션**: `@types/webpack`을 제거합니다. 이름이 다른 경우 참조를 업데이트하세요.
 
@@ -323,7 +323,7 @@ webpack 5는 소스 코드에서 타입을 생성하고 npm 패키지를 통해 
 
 ### Nested tree-shaking
 
-webpack은 이제 export의 중첩 속성에 대한 접근을 추적할 수 있습니다. 네임스페이스 객체를 다시 export할때 Tree Shaking (미샤용 export 제거 및 export 맹글링)을 개선할 수 있습니다.
+Webpack은 이제 export의 중첩 속성에 대한 접근을 추적할 수 있습니다. 네임스페이스 객체를 다시 export할때 Tree Shaking (미샤용 export 제거 및 export 맹글링)을 개선할 수 있습니다.
 
 ```js
 // inner.js
@@ -343,7 +343,7 @@ console.log(module.inner.a);
 
 ### Inner-module tree-shaking
 
-webpack 4는 모듈의 export와 import 간의 의존성을 분석하지 않았습니다. webpack 5에는 프로덕션 모드에서 기본적으로 활성화되어 있는 새로운 옵션 `optimization.innerGraph`가 있습니다. `optimization.innerGraph`은 export에서 import까지의 의존성을 파악하기 위해 모듈의 기호에 대한 분석을 실행합니다.
+Webpack 4는 모듈의 export와 import 간의 의존성을 분석하지 않았습니다. Webpack 5에는 프로덕션 모드에서 기본적으로 활성화되어 있는 새로운 옵션 `optimization.innerGraph`가 있습니다. `optimization.innerGraph`은 export에서 import까지의 의존성을 파악하기 위해 모듈의 기호에 대한 분석을 실행합니다.
 
 다음과 같은 모듈이 예시입니다.
 
@@ -387,7 +387,7 @@ export function test() {
 
 CommonJs export 및 `require()`호출을 분석하는 사용된 export에서 옵트아웃 하는데 사용되는 webpack입니다.
 
-webpack 5는 일부 CommonJs 구성에 대한 지원을 추가하여 사용하지 않는 CommonJs export를 제거하고 `require()` 호출에서 참조된 export 이름을 추적할 수 있습니다.
+Webpack 5는 일부 CommonJs 구성에 대한 지원을 추가하여 사용하지 않는 CommonJs export를 제거하고 `require()` 호출에서 참조된 export 이름을 추적할 수 있습니다.
 
 다음 구문이 지원됩니다.
 
@@ -437,30 +437,30 @@ package.json의 `"sideEffects"` 플래그를 사용하면 수동으로 모듈에
 
 개발 모드에서의 빌드 성능과 두 모드간의 유사성을 개선하여 프로덕션 전용 문제를 피하는 것 사이에서 좋은 절충안을 찾으려고 노력합니다.
 
-webpack 5는 기본적으로 두 모드 모두에서 `sideEffects` 최적화를 활성화 합니다. webpack 4에서 `sideEffects` 최적화는 package.json의 잘못된 `"sideEffects"` 플래그로 인해 일부 프로덕션 전용 오류로 이어집니다. 개발에서 `sideEffects` 최적화를 활성화하면 이러한 문제를 더 빠르고 쉽게 찾을 수 있습니다.
+Webpack 5는 기본적으로 두 모드 모두에서 `sideEffects` 최적화를 활성화 합니다. Webpack 4에서 `sideEffects` 최적화는 package.json의 잘못된 `"sideEffects"` 플래그로 인해 일부 프로덕션 전용 오류로 이어집니다. 개발에서 `sideEffects` 최적화를 활성화하면 이러한 문제를 더 빠르고 쉽게 찾을 수 있습니다.
 
 대부분의 경우 개발 및 프로덕션은 파일 시스템의 대소문자 구분이 다른 OS에서 발생하므로 webpack 5는 대소문자가 이상한 경우 몇 가지 경고/오류를 추가합니다.
 
 ### Improved Code Generation
 
-webpack은 ASI가 발생하는 시점을 감지하고 세미콜론이 삽입되지 않은 경우 더 짧은 코드를 생성합니다. `Object(...)` -> `(0, ...)`
+Webpack은 ASI가 발생하는 시점을 감지하고 세미콜론이 삽입되지 않은 경우 더 짧은 코드를 생성합니다. `Object(...)` -> `(0, ...)`
 
-webpack은 여러 export getter를 단일 런타임 함수 호출로 병합합니다. `r.d(x, "a", () => a); r.d(x, "b", () => b);` -> `r.d(x, {a: () => a, b: () => b});`
+Webpack은 여러 export getter를 단일 런타임 함수 호출로 병합합니다. `r.d(x, "a", () => a); r.d(x, "b", () => b);` -> `r.d(x, {a: () => a, b: () => b});`
 
 이제 `output.environment`에 추가 옵션이 있습니다.
-webpack에 의해 생성된 런타임 코드에 사용할 수 있는 ECMAScript 기능을 지정할 수 있습니다.
+Webpack에 의해 생성된 런타임 코드에 사용할 수 있는 ECMAScript 기능을 지정할 수 있습니다.
 
 일반적으로 `output.environment` 옵션을 직접 지정하지 않지만 대신 `target` 옵션을 사용합니다.
 
-webpack 4는 ES5 코드만 내보내는 데 사용됩니다.
+Webpack 4는 ES5 코드만 내보내는 데 사용됩니다.
 이제 webpack 5는 ES5 및 ES6/ES2015 코드를 모두 생성할 수 있습니다.
 
 최신 브라우저만 지원하면 화살표 기능을 사용하여 더 짧은 코드를 생성하고 `export default`에 대해 TDZ와 함께 `const`선언을 사용하여 더 많은 사양 준수 코드를 생성합니다.
 
 ### Improved `target` option
 
-webpack 4에서 `target`은 `"web"`과 `"node"` 및 몇가지 다른 것들 사이에서 대략적인 선택이였습니다.
-webpack 5는 여기에 더 많은 옵션을 제공합니다.
+Webpack 4에서 `target`은 `"web"`과 `"node"` 및 몇가지 다른 것들 사이에서 대략적인 선택이였습니다.
+Webpack 5는 여기에 더 많은 옵션을 제공합니다.
 
 `target` 옵션은 이제 생성된 코드에 대해 이전보다 더 많은 영향을 미칩니다.
 
@@ -539,7 +539,7 @@ module.exports = {
 
 중요 참고 사항:
 
-기본적으로 wepback은 webpack이 있는 `node_modules` 디렉토리가 **오직** 패키지 관리자에 의해 수정된다고 가정합니다. `node_modules`에 대해 해싱 및 타임스탬프를 건너뜁니다.
+기본적으로 webpack은 webpack이 있는 `node_modules` 디렉토리가 **오직** 패키지 관리자에 의해 수정된다고 가정합니다. `node_modules`에 대해 해싱 및 타임스탬프를 건너뜁니다.
 대신 성능상의 이유로 패키지 이름과 버전만 사용됩니다.
 심볼릭 링크(예: `npm/yarn link`)는 `resolve.symlinks: false`가 지정되지 않는 한 괜찮습니다. 어쨌든 피하는게 좋습니다.
 `snapshot.managedPaths: []`로 최적화를 옵트아웃하지 않는 한 `node_modules`의 파일을 직접 편집하지 마세요.
@@ -568,15 +568,15 @@ node_modules 사용 시 캐시는 `node_modules/.cache/webpack` resp에 저장�
 
 ### File Emitting
 
-webpack은 첫 번째 빌드 중에 항상 모든 출력 파일을 내보내는 데 사용되었지만 증분 빌드 중에 변경되지 않은 파일 쓰기를 건너뛰었습니다.
-webpack이 실행되는 동안 다른 어떤 것도 출력 파일을 변경하지 않는다고 가정합니다.
+Webpack은 첫 번째 빌드 중에 항상 모든 출력 파일을 내보내는 데 사용되었지만 증분 빌드 중에 변경되지 않은 파일 쓰기를 건너뛰었습니다.
+Webpack이 실행되는 동안 다른 어떤 것도 출력 파일을 변경하지 않는다고 가정합니다.
 
 영구 캐싱이 추가되면 wepback 프로세스를 다시 시작할 때도 시계와 같은 경험이 제공되어야 하지만 wepback이 실행되지 않을 때 출력 디렉토리가 변경되지 않는다고 생각하는 것은 지나친 가정입니다.
 
 따라서 wepback은 이제 출력 디렉토리의 기존 파일을 확인하고 파일의 내용을 메모리의 출력 파일과 비교합니다. 파일이 변경된 경우에만 기록합니다.
 비교하는 것은 첫 번째 빌드에서만 수행됩니다. 모든 증분 빌드는 실행 중인 webpack 프로세스에서 새 애셋이 생성될 때 항상 파일을 작성합니다.
 
-webpack과 플러그인은 콘텐츠가 변경된 경우에만 새 애셋을 생성한다고 가정합니다. 입력이 같을 때 새 애셋이 생성되지 않도록 하려면 캐싱을 사용해야 합니다.
+Webpack과 플러그인은 콘텐츠가 변경된 경우에만 새 애셋을 생성한다고 가정합니다. 입력이 같을 때 새 애셋이 생성되지 않도록 하려면 캐싱을 사용해야 합니다.
 위 조언을 따르지 않으면 성능이 저하됩니다.
 
 콘텐츠 해시를 포함하고있는 `[immutable]` 플래그가 지정된 파일은 동일한 이름의 파일이 이미 존재하는 경우 절대 작성되지 않습니다.
@@ -612,15 +612,15 @@ JS 코드가 포함되지 않은 청크는 더 이상 JS 파일을 생성하지 
 
 ### Experiments
 
-모든 기능이 처음부터 안정적인 것은 아닙니다. webpack 4에서 실험적 기능을 추가하고 체인지로그에 실험적이라고 언급했지만 실험적이라는 구성이 항상 명확한 것은 아닙니다.
+모든 기능이 처음부터 안정적인 것은 아닙니다. Webpack 4에서 실험적 기능을 추가하고 체인지로그에 실험적이라고 언급했지만 실험적이라는 구성이 항상 명확한 것은 아닙니다.
 
-webpack 5에는 실험 기능을 활성화할 수 있는 새로운 `experiments` 설정 옵션이 있습니다. 새로운 설정 옵션으로 활성화/사용되는 항목이 명확해집니다.
+Webpack 5에는 실험 기능을 활성화할 수 있는 새로운 `experiments` 설정 옵션이 있습니다. 새로운 설정 옵션으로 활성화/사용되는 항목이 명확해집니다.
 
-webpack은 의미론적 버전 관리를 따르지만 실험적 기능에 대해서는 예외가 됩니다. 실험적 기능에는 마이너 webpack 버전의 주요 변경 사항이 포함될 수 있습니다. 주요 변경 사항이 포함될 경우 변경 로그에 명확한 메모를 추가합니다. 메모를 추가함으로서 실험적 기능을 더 빠르게 반복할 수 있으며 안정적인 기능을 위해 메이저 버전을 더 오래 유지할 수 있습니다.
+Webpack은 의미론적 버전 관리를 따르지만 실험적 기능에 대해서는 예외가 됩니다. 실험적 기능에는 마이너 webpack 버전의 주요 변경 사항이 포함될 수 있습니다. 주요 변경 사항이 포함될 경우 변경 로그에 명확한 메모를 추가합니다. 메모를 추가함으로서 실험적 기능을 더 빠르게 반복할 수 있으며 안정적인 기능을 위해 메이저 버전을 더 오래 유지할 수 있습니다.
 
 다음 실험은 webpack 5와 함께 제공됩니다.
 
-- webpack 4와 같은 오래된 WebAssembly 지원 (`experiments.syncWebAssembly`)
+- Webpack 4와 같은 오래된 WebAssembly 지원 (`experiments.syncWebAssembly`)
 - [업데이트 된 사양](https://github.com/WebAssembly/esm-integration)에 따른 새로운 WebAssembly 지원 (`experiments.asyncWebAssembly`)
   - WebAssembly 모듈을 비동기 모듈로 만듭니다.
 - [최상위 수준 대기](https://github.com/tc39/proposal-top-level-await) 3단계 제안 (`experiments.topLevelAwait`)
@@ -806,7 +806,7 @@ webpack은 의미론적 버전 관리를 따르지만 실험적 기능에 대해
 
 로더 API의 `getResolve(options)` 다른 방식으로 옵션을 병합합니다. `module.rules` `resolve`를 참조하세요.
 
-webpack 5는 발행 의존성마다 다르기 때문에 `dependencyType`를 옵션으로 전달하는 것이 합리적일 수 있습니다.(예:`"esm"`, `"commonjs"` 또는 기타).
+Webpack 5는 발행 의존성마다 다르기 때문에 `dependencyType`를 옵션으로 전달하는 것이 합리적일 수 있습니다.(예:`"esm"`, `"commonjs"` 또는 기타).
 
 ## Major Internal Changes
 
@@ -835,7 +835,7 @@ webpack 5는 발행 의존성마다 다르기 때문에 `dependencyType`를 옵�
 
 ### Serialization
 
-webpack에서 복잡한 객체의 직렬화를 허용하기 위해 직렬화 메커니즘이 추가되었습니다. 옵트인 의미 체계가 있으므로 직렬화해야 하는 클래스에 명시적으로 플래그를 지정하고 직렬화를 구현해야 합니다. 직렬화 메커니즘은 대부분의 모듈, 모든 의존성 및 일부 오류에 대해 수행되었습니다.
+Webpack에서 복잡한 객체의 직렬화를 허용하기 위해 직렬화 메커니즘이 추가되었습니다. 옵트인 의미 체계가 있으므로 직렬화해야 하는 클래스에 명시적으로 플래그를 지정하고 직렬화를 구현해야 합니다. 직렬화 메커니즘은 대부분의 모듈, 모든 의존성 및 일부 오류에 대해 수행되었습니다.
 
 **마이그레이션**: 커스텀 모듈 또는 의존성을 사용할 때 영구 캐싱의 이점을 얻으려면 직렬화할 수 있도록 하는 것이 좋습니다.
 
@@ -853,7 +853,7 @@ webpack에서 복잡한 객체의 직렬화를 허용하기 위해 직렬화 메
 
 ### Tapable Upgrade
 
-webpack 3 플러그인에 대한 compat 레이어가 제거되었습니다. webpack 4에서는 이미 더 이상 사용되지 않습니다.
+Webpack 3 플러그인에 대한 compat 레이어가 제거되었습니다. Webpack 4에서는 이미 더 이상 사용되지 않습니다.
 
 덜 사용되는 Tapable API가 제거되거나 더 이상 사용되지 않습니다.
 
@@ -1028,7 +1028,7 @@ HMR 런타임의 자바스크립트 부분은 코어 HMR 런타임에서 분리�
 
 ### Work Queues
 
-webpack은 함수를 호출하는 함수에 의한 모듈 처리와 병렬 처리를 제한하는 `semaphore`를 처리하는데 사용됩니다. `Compilation.semaphore`가 제거되었으며 이제 비동기 대기열이 작업 대기열 및 프로세싱을 처리합니다. 각 단계에는 별도의 대기열이 있습니다.
+Webpack은 함수를 호출하는 함수에 의한 모듈 처리와 병렬 처리를 제한하는 `semaphore`를 처리하는데 사용됩니다. `Compilation.semaphore`가 제거되었으며 이제 비동기 대기열이 작업 대기열 및 프로세싱을 처리합니다. 각 단계에는 별도의 대기열이 있습니다.
 
 - `Compilation.factorizeQueue`: 의존성 그룹에 대한 모듈 팩토리 호출
 - `Compilation.addModuleQueue`: 모듈을 컴파일 대기열에 추가합니다(캐시에서 모듈을 복원할 수 있음).
