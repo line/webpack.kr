@@ -107,6 +107,40 @@ console.log(import.meta.webpack); // webpack 5의 경우 `5` 출력
 
 Webpack 특유의 속성입니다. [`module.hot`](#modulehot-webpack-specific)의 별칭으로, `import.meta.webpackHot`은 [strict ESM](/guides/ecma-script-modules/#flagging-modules-as-esm)에서 사용할 수 있지만 `module.hot`은 할 수 없습니다.
 
+## import.meta.webpackContext
+
+Returns the same value as `require.context` but only for `javascript/auto` and `javascript/esm`.
+
+- Type:
+
+  ```ts
+  (
+    request: string,
+    options?: {
+      recursive?: boolean;
+      regExp?: RegExp;
+      include?: RegExp;
+      exclude?: RegExp;
+      preload?: boolean | number;
+      prefetch?: boolean | number;
+      chunkName?: string;
+      exports?: string | string[][];
+      mode?: 'sync' | 'eager' | 'weak' | 'lazy' | 'lazy-once';
+    }
+  ) => webpack.Context;
+  ```
+
+- Available: 5.70.0+
+- Example:
+  ```js
+  const contextRequire = import.meta.webpackContext('.', {
+    recursive: false,
+    regExp: /two/,
+    mode: 'weak',
+    exclude: /three/,
+  });
+  ```
+
 ## \_\_filename (NodeJS)
 
 `node.__filename`의 설정 옵션은 다음과 같습니다.
