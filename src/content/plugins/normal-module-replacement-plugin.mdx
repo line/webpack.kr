@@ -5,25 +5,27 @@ contributors:
   - gonzoyumo
   - byzyk
   - chenxsan
+translators:
+  - dajeongPark-dev
 ---
 
-The `NormalModuleReplacementPlugin` allows you to replace resources that match `resourceRegExp` with `newResource`. If `newResource` is relative, it is resolved relative to the previous resource. If `newResource` is a function, it is expected to overwrite the request attribute of the supplied resource.
+`NormalModuleReplacementPlugin`을 사용하면 `resourceRegExp`와 일치하는 리소스를 `newResource`로 교체할 수 있습니다. `newResource`가 상대적인 경우 이전 리소스를 기준으로 해결됩니다. `newResource`가 함수인 경우 제공된 리소스의 요청 속성을 덮어쓸 것으로 예상됩니다.
 
-This can be useful for allowing different behaviour between builds.
+이는 빌드 간에 다른 동작을 허용하는 데 유용할 수 있습니다.
 
 ```js
 new webpack.NormalModuleReplacementPlugin(resourceRegExp, newResource);
 ```
 
-Note that the `resourceRegExp` is tested against the request you write in your code, not the resolved resource. For instance, `'./sum'` will be used to test instead of `'./sum.js'` when you have code `import sum from './sum'`.
+`resourceRegExp`는 확인된 리소스가 아니라 코드에 작성한 요청에 대해 테스트 됩니다. 예를 들어, `import sum from './sum'' 코드가 있을 때 `'./sum.js'' 대신 `'./sum'`이 테스트에 사용됩니다.
 
 ## Basic Example
 
-Replace a specific module when building for a [development environment](/guides/production).
+[개발 환경](/guides/production)용으로 빌드할 때 특정 모듈을 교체합니다.
 
-Say you have a configuration file `some/path/config.development.module.js` and a special version for production in `some/path/config.production.module.js`
+`some/path/config.development.module.js` 설정 파일과 `some/path/config.production.module.js`에 프로덕션용 특수 버전이 있다면
 
-Add the following plugin when building for production:
+프로덕션용으로 빌드할 때 다음 플러그인을 추가합니다.
 
 ```javascript
 new webpack.NormalModuleReplacementPlugin(
@@ -34,9 +36,9 @@ new webpack.NormalModuleReplacementPlugin(
 
 ## Advanced Example
 
-Conditional build depending on an [specified environment](/configuration/configuration-types).
+[지정된 환경](/configuration/configuration-types)에 따른 조건부 빌드에 관한 내용입니다.
 
-Say you want a configuration with specific values for different build targets.
+다른 빌드 대상에 대한 특정 값이 포함된 설정을 원한다고 가정해 보겠습니다.
 
 ```javascript
 module.exports = function (env) {
@@ -57,7 +59,7 @@ module.exports = function (env) {
 };
 ```
 
-Create the two configuration files:
+2개의 설정 파일을 생성합니다.
 
 **app/config-VERSION_A.js**
 
@@ -75,14 +77,14 @@ export default {
 };
 ```
 
-Then import that configuration using the keyword you're looking for in the regexp:
+그다음 정규 표현식에서 찾고 있는 키워드를 사용하여 해당 설정을 가져옵니다.
 
 ```javascript
 import config from 'app/config-APP_TARGET';
 console.log(config.title);
 ```
 
-And now you get the right configuration imported depending on which target you're building for:
+이제 빌드하려는 대상에 따라 올바른 설정을 가져올 수 있습니다.
 
 ```bash
 npx webpack --env APP_TARGET=VERSION_A
