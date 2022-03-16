@@ -72,7 +72,7 @@ Webpack도 이러한 상황에서 (많은 다른 회사 및 여러 사람과 마
 
 ## **Migration** Guide
 
-[**마이그레이션** 가이드는 여기를 참조하세요](/migrate/5)
+[**마이그레이션** 가이드는 여기를 참고하세요](/migrate/5)
 
 ## Major Changes: Removals
 
@@ -157,7 +157,7 @@ Webpack 5에는 "Module Federation"이라는 새로운 기능이 추가되어 we
 런타임 관점에서 여러 빌드의 모듈은 연결된 거대한 모듈 그래프처럼 작동합니다.
 개발자 관점에서 모듈은 지정된 원격 빌드에서 가져와 최소한의 제한으로 사용할 수 있습니다.
 
-자세한 내용은 [별도 가이드](/concepts/module-federation)를 참조하세요.
+자세한 내용은 [별도 가이드](/concepts/module-federation)를 참고하세요.
 
 ## Major Changes: New Web Platform Features
 
@@ -245,7 +245,7 @@ Webpack 5는 더 많은 애플리케이션을 포함하기 위해 추가 externa
 
 Yarn PnP는 기본적으로 지원됩니다.
 
-자세한 내용은 [패키지 export](/guides/package-exports/)를 참조하세요.
+자세한 내용은 [패키지 export](/guides/package-exports/)를 참고하세요.
 
 ## Major Changes: Development Experience
 
@@ -804,7 +804,7 @@ Webpack은 의미론적 버전 관리를 따르지만 실험적 기능에 대해
 
 ### `this.getResolve`
 
-로더 API의 `getResolve(options)` 다른 방식으로 옵션을 병합합니다. `module.rules` `resolve`를 참조하세요.
+로더 API의 `getResolve(options)` 다른 방식으로 옵션을 병합합니다. `module.rules` `resolve`를 참고하세요.
 
 Webpack 5는 발행 의존성마다 다르기 때문에 `dependencyType`를 옵션으로 전달하는 것이 합리적일 수 있습니다.(예:`"esm"`, `"commonjs"` 또는 기타).
 
@@ -861,7 +861,7 @@ Webpack 3 플러그인에 대한 compat 레이어가 제거되었습니다. Webp
 
 ### Staged Hooks
 
-실링 프로세스의 여러 단계에 대해 여러개의 후크가 있었습니다. 즉 `optimizeDependenciesBasic` `optimizeDependencies` 및 `optimizeDependenciesAdvanced`는 `stage` 옵션과 함께 사용할 수 있는 단일 후크를 위해 제거되었습니다. 가능한 단계 값은 `OptimizationStages`를 참조하세요.
+실링 프로세스의 여러 단계에 대해 여러개의 후크가 있었습니다. 즉 `optimizeDependenciesBasic` `optimizeDependencies` 및 `optimizeDependenciesAdvanced`는 `stage` 옵션과 함께 사용할 수 있는 단일 후크를 위해 제거되었습니다. 가능한 단계 값은 `OptimizationStages`를 참고하세요.
 
 **마이그레이션**: 대신 나머지 후크에 연걸합니다.`stage` 옵션을 추가할 수 있습니다.
 
