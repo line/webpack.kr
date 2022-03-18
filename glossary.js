@@ -49,7 +49,7 @@ const checkLine = (line, index) => {
 
 process.argv.forEach((cmd, index) => {
   if (index < 2) return;
-  log('CDM', cmd);
+  log('CMD', cmd);
 
   const targetPaths = getTargetPaths(cmd);
 
