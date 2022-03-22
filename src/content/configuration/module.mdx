@@ -205,6 +205,25 @@ const x = require(/* webpackIgnore: true */ 'x');
   };
   ```
 
+#### module.parser.javascript.importMetaContext
+
+[`import.meta.webpackContext`](/api/module-variables/#importmetawebpackcontext) 평가를 사용하거나 사용하지 않도록 설정합니다.
+
+- Type: `boolean`
+- Available: 5.70.0+
+- Example:
+  ```js
+  module.exports = {
+    module: {
+      parser: {
+        javascript: {
+          importMetaContext: true,
+        },
+      },
+    },
+  };
+  ```
+
 #### module.parser.javascript.reexportExportsPresence
 
 `\"export ... from ...\"`에서 내보내기 이름이 잘못된 경우의 동작을 지정합니다. 이것은 TypeScript에서 타입을 다시 내보낼때 `\"export ... from ...\"`에서 `\"export type ... from ...\"`으로 마이그레이션하는 동안 비활성화하는 데 유용합니다.
