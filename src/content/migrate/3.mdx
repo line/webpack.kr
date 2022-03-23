@@ -306,7 +306,7 @@ plugins: [
 
 ## Full dynamic requires now fail by default
 
-표현식(즉, `require(expr)`)만 있는 종속성은 이제 전체 디렉토리의 컨텍스트 대신 빈 컨텍스트를 생성합니다.
+표현식(즉, `require(expr)`)만 있는 종속성은 이제 전체 디렉터리의 컨텍스트 대신 빈 컨텍스트를 생성합니다.
 
 이와 같은 코드는 ES2015 모듈에서 작동하지 않으므로 리팩토링해야 합니다.
 이것이 가능하지 않다면 `ContextReplacementPlugin`을 사용하여 컴파일러가 올바른 해결을 하도록 힌트를 줄 수 있습니다.
