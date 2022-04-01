@@ -476,7 +476,7 @@ module.exports = {
 
 이 옵션은 각 출력 번들의 이름을 결정합니다. 번들은 [`output.path`](#outputpath) 옵션으로 지정된 디렉터리에 작성됩니다.
 
-단일 [`entry`](/configuration/entry-context/#entry) 지점의 경우 정적인 이름으로 설정할 수 있습니다.
+단일 [`엔트리`](/configuration/entry-context/#entry) 포인트의 경우 정적인 이름으로 설정할 수 있습니다.
 
 **webpack.config.js**
 
@@ -658,9 +658,11 @@ T> 일부 컨텍스트에서 프로퍼티는 원시 값 대신 JavaScript 코드
 
 ## output.globalObject
 
-`string = 'window'`
+`string = 'self'`
 
 라이브러리를 대상으로 할 때, 특히 `libraryTarget`이 `'umd'`인 경우 이 옵션은 라이브러리를 마운트하는 데 사용할 전역 객체를 나타냅니다. UMD빌드를 브라우저와 Node.js에서 모두 사용할 수 있도록 하려면 `output.globalObject`를 `'this'`로 설정하세요. 웹과 유사한 대상의 경우 기본값은 `self`입니다.
+
+엔트리 포인트의 반환 값은 `output.library.name` 값을 사용하여 전역 객체에 할당됩니다. `target` 옵션의 값에 따라 전역 객체가 각각 저마다 변경될 수 있습니다. (예: `self`, `global`, `globalThis`)
 
 예제:
 

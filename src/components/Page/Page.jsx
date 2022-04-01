@@ -97,6 +97,15 @@ export default function Page(props) {
       <Markdown>
         <h1>{title}</h1>
 
+        {rest.thirdParty ? (
+          <div className="italic my-[20px]">
+            <strong className="font-bold">면책 사항:</strong> {title} 은/는
+            커뮤니티 구성원에 의해 유지되는 서드파티 패키지로 webpack과 동일한
+            지원, 보안 정책 또는 라이선스가 없을 수 있으며 webpack에 의해 관리
+            및 유지되지 않습니다.
+          </div>
+        ) : null}
+
         {contentRender}
 
         {loadRelated && (
