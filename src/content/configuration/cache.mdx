@@ -441,3 +441,43 @@ module.exports = {
 ```
 
 W> 다른 옵션을 사용하는 호출간에 캐시를 공유하지 마세요.
+
+## Setup cache in CI/CD system
+
+파일 시스템 캐시를 사용하면 CI의 빌드 간에 캐시를 공유할 수 있습니다. 캐시를 설정하려면,
+
+- CI에는 빌드 간에 캐시를 공유하는 옵션이 있어야 합니다.
+- CI는 동일한 절대 경로에서 작업을 실행해야 합니다. Webpack 캐시 파일은 절대 경로를 저장하기 때문에 중요합니다.
+
+### GitLab CI/CD
+
+일반적인 설정은 다음과 같습니다.
+
+```yaml
+variables:
+  # "main" 브랜치 캐시를 사용하기 위한 폴백, GitLab Runner 13.4 필요
+  CACHE_FALLBACK_KEY: main
+
+# 이것은 webpack 빌드 작업입니다
+build-job:
+  cache:
+    key: '$CI_COMMIT_REF_SLUG' # 브랜치/태그 이름
+    paths:
+      # 캐시 디렉터리
+      # 이 작업에서 "npm ci"를 실행하거나 기본 캐시 디렉터리를 변경하시 않았는지 확인하세요
+      # 그렇지 않으면 "npm ci"가 캐시 파일을 정리합니다.
+      - node_modules/.cache/webpack/
+```
+
+### Github actions
+
+```yaml
+- uses: actions/cache@v3
+  with:
+    # 캐시 디렉터리
+    path: node_modules/.cache/webpack/
+    key: ${{ GITHUB_REF_NAME }}-webpack-build
+    # "main" 브랜치 캐시를 사용하기 위한 폴백
+    restore-keys: |
+      main-webpack-build
+```
