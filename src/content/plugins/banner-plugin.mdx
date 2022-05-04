@@ -32,6 +32,7 @@ new webpack.BannerPlugin(options);
   test: string | RegExp | [string, RegExp], // 테스트를 통과하는 모든 모듈이 포함됩니다.
   include: string | RegExp | [string, RegExp], // 다음 조건 중 하나라도 일치하는 모든 모듈이 포함됩니다.
   exclude: string | RegExp | [string, RegExp], // 다음 조건 중 하나라도 일치하는 모든 모듈이 제외됩니다.
+  footer?: boolean, // true이면, 배너는 편집이 끝날 때 배치됩니다.
 }
 ```
 
