@@ -205,6 +205,25 @@ const x = require(/* webpackIgnore: true */ 'x');
   };
   ```
 
+#### module.parser.javascript.importMeta
+
+`import.meta` 평가를 활성화 또는 비활성화합니다.
+
+- Type: `boolean = true`
+- Available: 5.68.0+
+- Example:
+  ```js
+  module.exports = {
+    module: {
+      parser: {
+        javascript: {
+          importMeta: false,
+        },
+      },
+    },
+  };
+  ```
+
 #### module.parser.javascript.importMetaContext
 
 [`import.meta.webpackContext`](/api/module-variables/#importmetawebpackcontext) 평가를 사용하거나 사용하지 않도록 설정합니다.
