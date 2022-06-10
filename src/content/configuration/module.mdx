@@ -167,6 +167,63 @@ CommonJS를 위해 [magic comments](/api/module-methods/#magic-comments)지원�
 const x = require(/* webpackIgnore: true */ 'x');
 ```
 
+#### module.parser.javascript.dynamicImportMode
+
+Specifies global mode for dynamic import.
+
+- Type: `'eager' | 'weak' | 'lazy' | 'lazy-once'`
+- Available: 5.73.0+
+- Example:
+  ```js
+  module.exports = {
+    module: {
+      parser: {
+        javascript: {
+          dynamicImportMode: 'lazy',
+        },
+      },
+    },
+  };
+  ```
+
+#### module.parser.javascript.dynamicImportPrefetch
+
+Specifies global prefetch for dynamic import.
+
+- Type: ` number | boolean`
+- Available: 5.73.0+
+- Example:
+  ```js
+  module.exports = {
+    module: {
+      parser: {
+        javascript: {
+          dynamicImportPrefetch: false,
+        },
+      },
+    },
+  };
+  ```
+
+#### module.parser.javascript.dynamicImportPreload
+
+Specifies global preload for dynamic import.
+
+- Type: ` number | boolean`
+- Available: 5.73.0+
+- Example:
+  ```js
+  module.exports = {
+    module: {
+      parser: {
+        javascript: {
+          dynamicImportPreload: false,
+        },
+      },
+    },
+  };
+  ```
+
 #### module.parser.javascript.exportsPresence
 
 `\"import ... from ...\"` 와 `\"export ... from ...\"`에서 내보내기 이름이 잘못된 경우의 동작을 지정합니다.
