@@ -9968,10 +9968,10 @@ react-textarea-autosize@^5.2.1:
   dependencies:
     prop-types "^15.6.0"
 
-react-tiny-popover@5:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/react-tiny-popover/-/react-tiny-popover-5.1.0.tgz#a205b39844352f32b4b0658fd96a9738d8626d9c"
-  integrity sha512-VjBp6Q1f4cJ2xiuyU1rhFnrs+fdnWCYFSrKRN4DTGD2ovchOAGR1jbJ9vgV34TtvMPON+SqBBZFnahVsAGmrUQ==
+react-tiny-popover@7:
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/react-tiny-popover/-/react-tiny-popover-7.1.0.tgz#809bffefd54c7921eba96991f964953858e3388f"
+  integrity sha512-vlZFs8/uFWwLY+JwXL4Fwjvz+c5rqKUlg5b9UOgc/gJiRdp1lk+FachCdZlDIQwk8UOADMu8YxYp0VV3rXLU9g==
 
 react-universal-interface@^0.6.2:
   version "0.6.2"
