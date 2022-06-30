@@ -435,3 +435,15 @@ __webpack_modules__[require.resolveWeak(`./page/${page}`)];
 ```
 
 T> `require.resolveWeak`은 [react-universal-component](https://github.com/faceyspacey/react-universal-component)와 같은 패키지에서 사용되는 _universal rendering_(SSR + Code Splitting)의 기초입니다. 코드가 서버와 클라이언트의 초기 페이지 로드에서 동기적으로 렌더링되도록 합니다. 청크가 수동으로 제공되거나 어떻게든 사용할 수 있어야 합니다. 청크로 번들 되어야 함을 나타내지 않고 모듈을 요구할 수 있습니다. 사용자 탐색이 추가 가져오기를 트리거할 때 인계받는 `import()`와 함께 사용됩니다.
+
+### warning
+
+모듈 소스에 정적으로 분석할 수 없는 요구 사항이 포함되어 있으면, 중요한 종속성 경고가 표시됩니다.
+
+예제 코드:
+
+```javascript
+someFn(require);
+require.bind(null);
+require(variable);
+```
