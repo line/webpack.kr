@@ -81,7 +81,7 @@ DataURIs에서 `text/javascript` 또는 `application/javascript` mime 유형을 
 
 모듈 형식뿐 아니라 모듈 플래그를 ESM으로 지정하는 것은 로직 해석, interop 로직 및 모듈에서 사용 가능한 심볼에 영향을 줍니다.
 
-ESM의 import는 더 엄격하게 해석됩니다. 상대적 요청에는 파일 이름과 파일 확장자가 포함되어야 합니다.
+ESM의 import는 더 엄격하게 해석됩니다. 상대적 요청에는 [`fullySpecified=false`](/configuration/module/#resolvefullyspecified)로 동작을 비활성화하지 않는 한 파일 이름과 파일 확장자가 포함되어야 합니다 (예를 들면 `*.js` 또는 `*.mjs`).
 
 T> import "lodash" 같이 패키지에 대한 요청은 여전히 지원됩니다.
 
