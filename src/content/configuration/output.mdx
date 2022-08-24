@@ -174,6 +174,8 @@ module.exports = {
 
 청크의 포맷 (기본적으로 포함되는 포맷은 `'array-push'` (web/WebWorker), `'commonjs'` (node.js), `'module'` (ESM) 등이지만 플러그인에 의해 추가될 수 있습니다).
 
+T> 이 옵션의 기본값은 [`target`](/configuration/target/) 과 [`output.module`](#outputmodule) 설정에 따라 달라집니다. 더 자세한 내용은 [webpack의 기본값](https://github.com/webpack/webpack/blob/main/lib/config/defaults.js)에서 `"chunkFormat"` 을 검색하세요.
+
 **webpack.config.js**
 
 ```javascript
@@ -227,6 +229,8 @@ module.exports = {
 `false` `string: 'jsonp' | 'import-scripts' | 'require' | 'async-node' | 'import' | <any string>`
 
 청크를 로드하는 메소드(기본적으로 포함된 메소드는 `'jsonp'` (web), `'import'` (ESM), `'importScripts'` (WebWorker), `'require'` (sync node.js), `'async-node'` (async node.js) 등이지만 플러그인에 의해 추가될 수 있습니다).
+
+T> 이 옵션의 기본 값은 [`target`](/configuration/target/)과 [`chunkFormat `](#outputchunkformat) 설정에 따라 달라집니다. 더 자세한 내용은 [webpack의 기본값](https://github.com/webpack/webpack/blob/main/lib/config/defaults.js)에서 `"chunkLoading"` 을 검색하세요.
 
 **webpack.config.js**
 
@@ -355,7 +359,7 @@ module.exports = {
 };
 ```
 
-아래의 substitution 항목은 webpack의 내부 [`ModuleFilenameHelpers`](https://github.com/webpack/webpack/blob/master/lib/ModuleFilenameHelpers.js)를 통해 템플릿 문자열에서 사용할 수 있습니다.
+아래의 substitution 항목은 webpack의 내부 [`ModuleFilenameHelpers`](https://github.com/webpack/webpack/blob/main/lib/ModuleFilenameHelpers.js)를 통해 템플릿 문자열에서 사용할 수 있습니다.
 
 | Template                 | Description                                                                                             |
 | ------------------------ | ------------------------------------------------------------------------------------------------------- |
@@ -566,7 +570,7 @@ module.exports = {
 
 ### Template strings
 
-다음 substitution은 webpack의 내부 [`TemplatedPathPlugin`](https://github.com/webpack/webpack/blob/master/lib/TemplatedPathPlugin.js)를 통해 템플릿 문자열에서 사용할 수 있습니다.
+다음 substitution은 webpack의 내부 [`TemplatedPathPlugin`](https://github.com/webpack/webpack/blob/main/lib/TemplatedPathPlugin.js)를 통해 템플릿 문자열에서 사용할 수 있습니다.
 
 컴파일 수준에서 사용할 수 있는 substitution입니다.
 
@@ -866,7 +870,7 @@ export function hello(name) {
    </script>
    ```
 
-   자세한 정보는 [이 예제](https://github.com/webpack/webpack/tree/master/examples/multi-part-library)를 참고하세요.
+   자세한 정보는 [이 예제](https://github.com/webpack/webpack/tree/main/examples/multi-part-library)를 참고하세요.
 
    엔트리 포인트 별로 라이브러리 옵션을 설정하려는 경우 위 설정이 예상대로 작동하지 않습니다. [각 엔트리 별 설정](/concepts/entry-points/#entrydescription-object)에 대한 방법은 아래와 같습니다.
 
@@ -1264,7 +1268,7 @@ module.exports = {
 
 즉시 실행되는 AMD `require(dependencies, factory)`래퍼로 출력을 패키징합니다.
 
-`'amd-require'` 타입을 사용하면 나중에 별도의 호출없이 AMD 디펜던시를 사용할 수 있습니다. `'amd'` 타입과 마찬가지로 이는 webpack 출력이 로드되는 환경에서 사용할 수 있는 적절한 [`require` 함수](https://github.com/amdjs/amdjs-api/blob/master/require.md)에 따라 다릅니다.
+`'amd-require'` 타입을 사용하면 나중에 별도의 호출없이 AMD 디펜던시를 사용할 수 있습니다. `'amd'` 타입과 마찬가지로 이는 webpack 출력이 로드되는 환경에서 사용할 수 있는 적절한 [`require` 함수](https://github.com/amdjs/amdjs-api/blob/master/require.md)에 따라 달라집니다.
 
 이 타입에서는 라이브러리 이름을 사용할 수 없습니다.
 
@@ -1797,7 +1801,7 @@ W> [`output.library.type: 'amd-require'`](#type-amd-require)를 사용하는 것
 
 이 옵션은 즉시 실행되는 AMD `require(dependencies, factory)`래퍼로 출력을 패키징합니다.
 
-`'amd-require'`를 사용하면 나중에 별도의 호출없이 AMD 디펜던시를 사용할 수 있습니다. `'amd'`와 마찬가지로 이는 webpack 출력이 로드되는 환경에서 사용할 수 있는 적절한 [`require` 함수](https://github.com/amdjs/amdjs-api/blob/master/require.md)에 따라 다릅니다.
+`'amd-require'`를 사용하면 나중에 별도의 호출없이 AMD 디펜던시를 사용할 수 있습니다. `'amd'`와 마찬가지로 이는 webpack 출력이 로드되는 환경에서 사용할 수 있는 적절한 [`require` 함수](https://github.com/amdjs/amdjs-api/blob/master/require.md)에 따라 달라집니다.
 
 `'amd-require'`를 사용하면 라이브러리 이름이 무시됩니다.
 
@@ -2288,7 +2292,7 @@ module.exports = {
 
 새로운 옵션 `workerChunkLoading`은 worker의 청크 로드를 제어합니다.
 
-T> 이 옵션의 기본값은 `target` 설정에 따라 다릅니다. 자세한 내용은 [webpack default에서](https://github.com/webpack/webpack/blob/master/lib/config/defaults.js) `"workerChunkLoading"`을 검색하세요.
+T> 이 옵션의 기본값은 [`target`](/configuration/target/) 설정에 따라 달라집니다. 자세한 내용은 [webpack default에서](https://github.com/webpack/webpack/blob/main/lib/config/defaults.js) `"workerChunkLoading"`을 검색하세요.
 
 **webpack.config.js**
 
