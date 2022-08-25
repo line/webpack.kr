@@ -86,14 +86,12 @@ function tryToAdd(group, module) {
 
 ### Debugging Optimization Bailouts
 
-webpack CLI를 사용할 경우 `--display-optimization-bailout` 플래그는 bailout 원인을 보여줍니다. webpack config를 사용할 경우 `stats` 객체에 다음을 추가하세요.
+webpack CLI를 사용할 경우 `--stats-optimization-bailout` 플래그는 bailout 원인을 보여줍니다. webpack config를 사용할 경우 `stats` 객체에 다음을 추가하세요.
 
 ```js
 module.exports = {
   //...
   stats: {
-    // Examine all modules
-    maxModules: Infinity,
     // Display bailout reasons
     optimizationBailout: true,
   },
