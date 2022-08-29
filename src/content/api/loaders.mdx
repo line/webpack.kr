@@ -212,7 +212,15 @@ addDependency(file: string)
 dependency(file: string) // 단축
 ```
 
-파일을 감시할 수 있게 만들기 위해 로더 결과의 의존성으로 파일을 추가합니다. 예를 들어, [`sass-loader`](https://github.com/webpack-contrib/sass-loader), [`less-loader`](https://github.com/webpack-contrib/less-loader)는 가져온 `css` 파일이 변경될 때마다 이를 사용하여 재컴파일합니다.
+기존 파일을 감시할 수 있게 만들기 위해 로더 결과의 의존성으로 파일을 추가합니다. 예를 들어, [`sass-loader`](https://github.com/webpack-contrib/sass-loader), [`less-loader`](https://github.com/webpack-contrib/less-loader)는 가져온 `css` 파일이 변경될 때마다 이를 사용하여 재컴파일합니다.
+
+### this.addMissingDependency
+
+```typescript
+addMissingDependency(file: string)
+```
+
+존재하지 않는 파일을 감시할 수 있게 만들기 위해 로더 결과의 의존성으로 파일을 추가합니다. `addDependency`와 유사하지만 감시자가 올바르게 연결되기 전에 컴파일하는 동안 파일 생성을 처리합니다.
 
 ### this.async
 

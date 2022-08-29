@@ -107,6 +107,40 @@ console.log(import.meta.webpack); // webpack 5의 경우 `5` 출력
 
 Webpack 특유의 속성입니다. [`module.hot`](#modulehot-webpack-specific)의 별칭으로, `import.meta.webpackHot`은 [strict ESM](/guides/ecma-script-modules/#flagging-modules-as-esm)에서 사용할 수 있지만 `module.hot`은 할 수 없습니다.
 
+## import.meta.webpackContext
+
+`require.context`와 동일한 값을 반환하지만 `javascript/auto` 및 `javascript/esm`에 대해서만 반환합니다.
+
+- Type:
+
+  ```ts
+  (
+    request: string,
+    options?: {
+      recursive?: boolean;
+      regExp?: RegExp;
+      include?: RegExp;
+      exclude?: RegExp;
+      preload?: boolean | number;
+      prefetch?: boolean | number;
+      chunkName?: string;
+      exports?: string | string[][];
+      mode?: 'sync' | 'eager' | 'weak' | 'lazy' | 'lazy-once';
+    }
+  ) => webpack.Context;
+  ```
+
+- Available: 5.70.0+
+- Example:
+  ```js
+  const contextRequire = import.meta.webpackContext('.', {
+    recursive: false,
+    regExp: /two/,
+    mode: 'weak',
+    exclude: /three/,
+  });
+  ```
+
 ## \_\_filename (NodeJS)
 
 `node.__filename`의 설정 옵션은 다음과 같습니다.
@@ -237,6 +271,8 @@ webpack에 의해 파싱되지 않는 `require` 함수를 생성합니다. 가�
   - 정보가 없을 경우 `undefined`
 
 - nested export에서 정보에 접근할 수 있습니다. 예. `__webpack_exports_info__.<exportName>.<exportName>.<exportName>.used`
+
+- export가 `__webpack_exports_info__.<name>.canMangle`로 맹글링될 수 있는지 확인합니다.
 
 ## \_\_webpack_is_included\_\_ (webpack-specific)
 

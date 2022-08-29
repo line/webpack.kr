@@ -250,7 +250,7 @@ function Site(props) {
                 ),
               },
               { content: 'Contribute', url: '/contribute/' },
-              { content: 'Vote', url: 'https://v4.webpack.js.org/vote/' },
+              { content: 'Vote', url: '/vote/' },
               { content: 'Blog', url: '/blog/' },
             ]}
           />
@@ -277,7 +277,6 @@ function Site(props) {
             <Route path="app-shell" element={<Fragment />} />
             {pages.map((page) => {
               let path = page.path.replace('src/content/', '');
-              let content = props.import(path);
               const { previous, next } = getAdjacentPages(
                 sidebarPages,
                 page,
@@ -288,20 +287,15 @@ function Site(props) {
                   key={page.url}
                   path={page.url}
                   element={
-                    <Fragment>
-                      <Sponsors />
-                      <Sidebar
-                        className="site__sidebar"
-                        currentPage={location.pathname}
-                        pages={sidebarPages}
-                      />
-                      <Page
-                        {...page}
-                        content={content}
-                        previous={previous}
-                        next={next}
-                      />
-                    </Fragment>
+                    <PageElement
+                      currentPage={location.pathname}
+                      sidebarPages={sidebarPages}
+                      page={page}
+                      next={next}
+                      previous={previous}
+                      import={props.import}
+                      path={path}
+                    />
                   }
                 />
               );
@@ -316,3 +310,27 @@ function Site(props) {
   );
 }
 export default Site;
+PageElement.propTypes = {
+  currentPage: PropTypes.string,
+  sidebarPages: PropTypes.array,
+  previous: PropTypes.object,
+  next: PropTypes.object,
+  page: PropTypes.object,
+  import: PropTypes.func,
+  path: PropTypes.string,
+};
+function PageElement(props) {
+  const { currentPage, sidebarPages, page, previous, next } = props;
+  const content = props.import(props.path);
+  return (
+    <Fragment>
+      <Sponsors />
+      <Sidebar
+        className="site__sidebar"
+        currentPage={currentPage}
+        pages={sidebarPages}
+      />
+      <Page {...page} content={content} previous={previous} next={next} />
+    </Fragment>
+  );
+}

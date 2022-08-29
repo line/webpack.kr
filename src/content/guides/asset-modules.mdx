@@ -111,7 +111,7 @@ import mainImage from './images/main.png';
 img.src = mainImage; // '/dist/151cfcfa1bd74779aadb.png'
 ```
 
-모든 `.png` 파일을 출력 디렉터리로 내보내고 해당 경로를 번들에 삽입합니다.
+모든 `.png` 파일을 출력 디렉터리로 내보내고 해당 경로를 번들에 삽입합니다. 게다가 [`outputPath`](/configuration/module/#rulegeneratoroutputpath) 및 [`publicPath`](/configuration/module/#rulegeneratorpublicpath)를 사용자 지정할 수 있습니다.
 
 ### Custom output filename
 
@@ -400,7 +400,7 @@ module.exports = {
 
 ## Replacing Inline Loader Syntax
 
-Asset Modules 및 Webpack 5 이전에는, 위에 언급한 레거시 로더와 함께 [inline syntax](https://webpack.js.org/concepts/loaders/#inline)를 사용할 수 있었습니다.
+Asset Modules 및 Webpack 5 이전에는, 위에 언급한 레거시 로더와 함께 [inline syntax](https://webpack.kr/concepts/loaders/#inline)를 사용할 수 있었습니다.
 
 현재는 모든 인라인 로더 구문을 제거하고 resourceQuery 조건을 사용하여 인라인 구문의 기능을 모방하는 것이 좋습니다.
 

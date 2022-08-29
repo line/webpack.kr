@@ -250,7 +250,7 @@ module.exports = {
 module.exports = {
   //...
   output: {
-    clean: true, // 내보내기 전에 output 디렉토리를 정리합니다.
+    clean: true, // 내보내기 전에 output 디렉터리를 정리합니다.
   },
 };
 ```
@@ -476,7 +476,7 @@ module.exports = {
 
 이 옵션은 각 출력 번들의 이름을 결정합니다. 번들은 [`output.path`](#outputpath) 옵션으로 지정된 디렉터리에 작성됩니다.
 
-단일 [`entry`](/configuration/entry-context/#entry) 지점의 경우 정적인 이름으로 설정할 수 있습니다.
+단일 [`엔트리`](/configuration/entry-context/#entry) 포인트의 경우 정적인 이름으로 설정할 수 있습니다.
 
 **webpack.config.js**
 
@@ -658,9 +658,11 @@ T> 일부 컨텍스트에서 프로퍼티는 원시 값 대신 JavaScript 코드
 
 ## output.globalObject
 
-`string = 'window'`
+`string = 'self'`
 
 라이브러리를 대상으로 할 때, 특히 `libraryTarget`이 `'umd'`인 경우 이 옵션은 라이브러리를 마운트하는 데 사용할 전역 객체를 나타냅니다. UMD빌드를 브라우저와 Node.js에서 모두 사용할 수 있도록 하려면 `output.globalObject`를 `'this'`로 설정하세요. 웹과 유사한 대상의 경우 기본값은 `self`입니다.
+
+엔트리 포인트의 반환 값은 `output.library.name` 값을 사용하여 전역 객체에 할당됩니다. `target` 옵션의 값에 따라 전역 객체가 각각 저마다 변경될 수 있습니다. (예: `self`, `global`, `globalThis`)
 
 예제:
 
@@ -1971,7 +1973,7 @@ W> `output.module`은 실험적 기능이며 [`experiments.outputModule`](/confi
 
 `string = path.join(process.cwd(), 'dist')`
 
-**절대** 경로로 출력 디렉토리를 설정합니다.
+**절대** 경로로 출력 디렉터리를 설정합니다.
 
 **webpack.config.js**
 
@@ -2015,7 +2017,7 @@ T> 또한 생성된 번들에 트리 쉐이킹에 대한 정보를 추가합니�
 
 이것은 온 디맨드 로드를 사용하거나 이미지, 파일 등과 같은 외부 리소스를 로드할 때 중요한 옵션입니다. 잘못된 값을 지정하면 리소스를 로드하는 동안 404 오류가 발생합니다.
 
-이 옵션은 브라우저에서 참조될 때 출력 디렉토리의 **공용 URL** 을 지정합니다. 상대 URL은 HTML 페이지 또는`<base>`태그를 기준으로 확인됩니다. 서버 상대 URL, 프로토콜 상대 URL 또는 절대 URL도 가능하며 때로는 필요합니다(CDN에서 애셋을 호스팅 하는 경우).
+이 옵션은 브라우저에서 참조될 때 출력 디렉터리의 **공용 URL** 을 지정합니다. 상대 URL은 HTML 페이지 또는`<base>`태그를 기준으로 확인됩니다. 서버 상대 URL, 프로토콜 상대 URL 또는 절대 URL도 가능하며 때로는 필요합니다(CDN에서 애셋을 호스팅 하는 경우).
 
 옵션의 값은 런타임 또는 로더가 생성한 모든 URL에 접두사로 추가됩니다. 이 때문에 **이 옵션의 값은 대부분의 경우 `/`** 로 끝납니다.
 

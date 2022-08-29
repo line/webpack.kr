@@ -12,10 +12,10 @@ jobs:
         node-version: [16.x]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
           cache: yarn
@@ -31,7 +31,7 @@ jobs:
         os: [ubuntu-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Vale
         uses: errata-ai/vale-action@v1.4.2
@@ -48,15 +48,25 @@ jobs:
         node-version: [16.x]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
           cache: yarn
 
       - run: yarn
+
+      - name: Enable webpack persistent caching
+        uses: actions/cache@v3
+        id: build-webpack-persistent-cache
+        with:
+          path: node_modules/.cache
+          key: build-${{ hashFiles('**/webpack.*.mjs') }}-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |-
+            build-${{ hashFiles('**/webpack.*.mjs') }}-${{ hashFiles('**/yarn.lock') }}
+            build-${{ hashFiles('**/webpack.*.mjs') }}-
 
       - name: Build site
         run: yarn build
@@ -72,16 +82,22 @@ jobs:
         node-version: [16.x]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+      - name: Enable webpack persistent caching
+        uses: actions/cache@v3
+        id: build-webpack-persistent-cache
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: yarn
+          path: node_modules/.cache
+          key: build-${{ hashFiles('**/webpack.*.mjs') }}-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |-
+            build-${{ hashFiles('**/webpack.*.mjs') }}-${{ hashFiles('**/yarn.lock') }}
+            build-${{ hashFiles('**/webpack.*.mjs') }}-
 
-      - run: |
-          yarn
-          yarn cypress install
-          yarn cypress verify
-          yarn cypress:ci
+      - name: Cypress run
+        uses: cypress-io/github-action@v4
+        with:
+          config-file: cypress.config.js
+          build: yarn build
+          start: yarn serve-dist
+          command: yarn cypress:run

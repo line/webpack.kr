@@ -15,13 +15,23 @@ jobs:
         node-version: [16.x]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
           cache: yarn
+
+      - name: Enable webpack persistent caching
+        uses: actions/cache@v3
+        id: build-webpack-persistent-cache
+        with:
+          path: node_modules/.cache
+          key: build-${{ hashFiles('**/webpack.*.mjs') }}-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |-
+             build-${{ hashFiles('**/webpack.*.mjs') }}-${{ hashFiles('**/yarn.lock') }}
+             build-${{ hashFiles('**/webpack.*.mjs') }}-
 
       - run: yarn --frozen-lockfile
       - name: Build site
@@ -31,7 +41,7 @@ jobs:
       - run: yarn lint:links
 
       - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@4.1.8
+        uses: JamesIves/github-pages-deploy-action@v4.2.5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: gh-pages

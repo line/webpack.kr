@@ -229,6 +229,26 @@ module.exports = {
 };
 ```
 
+### resolve.extensionAlias
+
+`object`
+
+확장자를 확장자 별칭에 매핑하는 객체입니다.
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  //...
+  resolve: {
+    extensionAlias: {
+      '.js': ['.ts', '.js'],
+      '.mjs': ['.mts', '.mjs'],
+    },
+  },
+};
+```
+
 ### resolve.extensions
 
 `[string] = ['.js', '.json', '.wasm']`

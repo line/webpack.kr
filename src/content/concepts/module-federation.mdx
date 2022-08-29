@@ -45,7 +45,7 @@ related:
 특정 모듈에 대한 비동기 접근을 노출하는 컨테이너 엔트리를 통해 컨테이너가 생성됩니다. 노출된 접근은 두 단계로 구분됩니다.
 
 1. 모듈 로드(비동기)
-2. 모듈 평가(비동기)
+2. 모듈 평가(동기)
 
 1단계는 청크 로드 중에 수행됩니다. 2단계는 다른 로컬 및 원격 모듈과 인터리브된 모듈 평가 중에 수행됩니다. 이렇게 하면, 모듈을 로컬에서 원격으로 또는 그 반대로 변환해도 평가 순서가 영향을 받지 않습니다.
 
@@ -258,7 +258,7 @@ export function set(value) {
 const publicPath = await import('remote/public-path');
 publicPath.set('/your-public-path');
 
-//boostrap app  e.g. import('./boostrap.js')
+//bootstrap app  e.g. import('./bootstrap.js')
 ```
 
 ### Infer publicPath from script
