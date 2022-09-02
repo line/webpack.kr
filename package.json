@@ -21,7 +21,7 @@
     "url": "https://github.com/webpack/webpack.js.org/issues"
   },
   "engines": {
-    "node": ">=14"
+    "node": "^14.20.0 || ^16.15.0 || >=18.0.0"
   },
   "scripts": {
     "clean-dist": "rimraf ./dist",
@@ -86,7 +86,7 @@
     "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.7.1",
     "css-minimizer-webpack-plugin": "^4.0.0",
-    "cypress": "^10.6.0",
+    "cypress": "^10.7.0",
     "directory-tree": "^3.3.0",
     "directory-tree-webpack-plugin": "^1.0.3",
     "duplexer": "^0.1.1",
@@ -127,7 +127,7 @@
     "remark-html": "^15.0.1",
     "remark-refractor": "montogeek/remark-refractor",
     "rimraf": "^3.0.2",
-    "sass": "^1.54.5",
+    "sass": "^1.54.7",
     "sass-loader": "^13.0.2",
     "sirv-cli": "^2.0.2",
     "sitemap-static": "^0.4.2",

@@ -926,7 +926,7 @@ module.exports = {
 
   기본적으로 포함되는 타입은 `'var'`, `'module'`, `'assign'`, `'assign-properties'`, `'this'`, `'window'`, `'self'`, `'global'`, `'commonjs'`, `'commonjs2'`, `'commonjs-module'`, `'commonjs-static'`, `'amd'`, `'amd-require'`, `'umd'`, `'umd2'`, `'jsonp'` 그리고 `'system'`입니다. 다른 것들은 플러그인에 의해 추가될 수 있습니다.
 
-다음 예에서는 `__entry_return_`을 사용하여 엔트리 포인트에서 반환한 값을 나타냅니다.
+다음 예에서는 `_entry_return_`을 사용하여 엔트리 포인트에서 반환한 값을 나타냅니다.
 
 #### Expose a Variable
 
@@ -1503,7 +1503,7 @@ module.exports = {
   //Test Comment
   else root['MyLibrary'] = factory();
 })(self, function () {
-  return __entry_return_;
+  return _entry_return_;
 });
 ```
 
