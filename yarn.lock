@@ -2030,10 +2030,10 @@
     "@parcel/css-linux-x64-musl" "1.12.0"
     "@parcel/css-win32-x64-msvc" "1.12.0"
 
-"@pkgr/utils@^2.3.0":
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/@pkgr/utils/-/utils-2.3.0.tgz#3b8491f112a80839450498816767eb03b7db6139"
-  integrity sha512-7dIJ9CRVzBnqyEl7diUHPUFJf/oty2SeoVzcMocc5PeOUDK9KGzvgIBjGRRzzlRDaOjh3ADwH0WeibQvi3ls2Q==
+"@pkgr/utils@^2.3.1":
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/@pkgr/utils/-/utils-2.3.1.tgz#0a9b06ffddee364d6642b3cd562ca76f55b34a03"
+  integrity sha512-wfzX8kc1PMyUILA+1Z/EqoE4UCXGy0iRGMhPwdfae1+f0OXlLqCk+By+aMzgJBzR9AzS4CDizioG6Ss1gvAFJw==
   dependencies:
     cross-spawn "^7.0.3"
     is-glob "^4.0.3"
@@ -2425,6 +2425,13 @@
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/@types/estree-jsx/-/estree-jsx-0.0.1.tgz#c36d7a1afeb47a95a8ee0b7bc8bc705db38f919d"
   integrity sha512-gcLAYiMfQklDCPjQegGn0TBAn9it05ISEsEhlKQUddIk7o2XDokOcTN7HBO8tznM0D9dGezvHEfRZBfZf6me0A==
+  dependencies:
+    "@types/estree" "*"
+
+"@types/estree-jsx@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@types/estree-jsx/-/estree-jsx-1.0.0.tgz#7bfc979ab9f692b492017df42520f7f765e98df1"
+  integrity sha512-3qvGd0z8F2ENTGr/GG1yViqfiKmRfrXVx5sJyHGFu3z7m5g5utCQtGp/g29JnjflhtQJBv1WDQukHiT58xPcYQ==
   dependencies:
     "@types/estree" "*"
 
@@ -4902,23 +4909,23 @@ eslint-config-prettier@^8.5.0:
   resolved "https://registry.yarnpkg.com/eslint-config-prettier/-/eslint-config-prettier-8.5.0.tgz#5a81680ec934beca02c7b1a61cf8ca34b66feab1"
   integrity sha512-obmWKLUNCnhtQRKc+tmnYuQl0pFU1ibYJQ5BGhTVB08bHe9wC8qUeG7c08dj9XX+AuPj1YSGSQIHl1pnDHZR0Q==
 
-eslint-mdx@^2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/eslint-mdx/-/eslint-mdx-2.0.2.tgz#ef7db81517459517f5f63b170c05ece10f59426f"
-  integrity sha512-MEVpk4Up8DNvabR9chGE2sKhInmSgSdtqEW9CueYTExZB0t+qaT3KGctbDjbcD5YkDbvYhgSCYo/J72ncIPIbw==
+eslint-mdx@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/eslint-mdx/-/eslint-mdx-2.0.4.tgz#f3c7dfebf852e960ecc0d2f44de8fd3c9599f8eb"
+  integrity sha512-SEgeWByCKYNRSqV+FtxHIcBadW7xCDtfZVACEZgFN1woGuPbr1XQicUMHO5pE0LSSQfWNHXTXP9MCMBkRRVS4A==
   dependencies:
     acorn "^8.8.0"
     acorn-jsx "^5.3.2"
     cosmiconfig "^7.0.1"
-    espree "^9.3.2"
-    estree-util-visit "^1.1.0"
-    remark-mdx "^2.1.2"
+    espree "^9.4.0"
+    estree-util-visit "^1.2.0"
+    remark-mdx "^2.1.3"
     remark-parse "^10.0.1"
     remark-stringify "^10.0.2"
-    synckit "^0.8.1"
+    synckit "^0.8.4"
     tslib "^2.4.0"
     unified "^10.1.2"
-    unist-util-visit "^4.1.0"
+    unist-util-visit "^4.1.1"
     uvu "^0.5.6"
     vfile "^5.3.4"
 
@@ -4936,14 +4943,14 @@ eslint-plugin-markdown@^3.0.0:
   dependencies:
     mdast-util-from-markdown "^0.8.5"
 
-eslint-plugin-mdx@^2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-mdx/-/eslint-plugin-mdx-2.0.2.tgz#df870d86db8924b23940c918407956fb17d35a46"
-  integrity sha512-9mHBCxfB15YaewEHRwmFZVOlnYn7CAWKA4F43oJ8UGYWERTxJjiEqZgfK3QL9wP3zOIubOWcq4gUKzNmGbolVg==
+eslint-plugin-mdx@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-mdx/-/eslint-plugin-mdx-2.0.4.tgz#ae5226c6340f46b007198921d3c6872196f1e153"
+  integrity sha512-dDxtpaQl4EFAj8pZKa3Wk5s6QH2wz22Ba25j4OtW40zkB2Bb/Su/8xWoikF61bZoL99Y3aUV24eUTS39n0PJLQ==
   dependencies:
-    eslint-mdx "^2.0.2"
+    eslint-mdx "^2.0.4"
     eslint-plugin-markdown "^3.0.0"
-    remark-mdx "^2.1.2"
+    remark-mdx "^2.1.3"
     remark-parse "^10.0.1"
     remark-stringify "^10.0.2"
     tslib "^2.4.0"
@@ -5058,6 +5065,15 @@ espree@^9.3.2:
     acorn-jsx "^5.3.2"
     eslint-visitor-keys "^3.3.0"
 
+espree@^9.4.0:
+  version "9.4.0"
+  resolved "https://registry.yarnpkg.com/espree/-/espree-9.4.0.tgz#cd4bc3d6e9336c433265fc0aa016fc1aaf182f8a"
+  integrity sha512-DQmnRpLj7f6TgN/NYb0MTzJXL+vJF9h3pHy4JhCIs3zwcgez8xmGg3sXHcEO97BrmO2OSvCwMdfdlyl+E9KjOw==
+  dependencies:
+    acorn "^8.8.0"
+    acorn-jsx "^5.3.2"
+    eslint-visitor-keys "^3.3.0"
+
 esprima@^4.0.0, esprima@^4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/esprima/-/esprima-4.0.1.tgz#13b04cdb3e6c5d19df91ab6987a8695619b0aa71"
@@ -5112,12 +5128,20 @@ estree-util-is-identifier-name@^2.0.0:
   resolved "https://registry.yarnpkg.com/estree-util-is-identifier-name/-/estree-util-is-identifier-name-2.0.1.tgz#cf07867f42705892718d9d89eb2d85eaa8f0fcb5"
   integrity sha512-rxZj1GkQhY4x1j/CSnybK9cGuMFQYFPLq0iNyopqf14aOVLFtMv7Esika+ObJWPWiOHuMOAHz3YkWoLYYRnzWQ==
 
-estree-util-visit@^1.0.0, estree-util-visit@^1.1.0:
+estree-util-visit@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/estree-util-visit/-/estree-util-visit-1.1.0.tgz#c0ea7942c40ac7889a77b57a11e92f987744bc6f"
   integrity sha512-3lXJ4Us9j8TUif9cWcQy81t9p5OLasnDuuhrFiqb+XstmKC1d1LmrQWYsY49/9URcfHE64mPypDBaNK9NwWDPQ==
   dependencies:
     "@types/estree-jsx" "^0.0.1"
+    "@types/unist" "^2.0.0"
+
+estree-util-visit@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/estree-util-visit/-/estree-util-visit-1.2.0.tgz#aa0311a9c2f2aa56e9ae5e8b9d87eac14e4ec8f8"
+  integrity sha512-wdsoqhWueuJKsh5hqLw3j8lwFqNStm92VcwtAOAny8g/KS/l5Y8RISjR4k5W6skCj3Nirag/WUCMS0Nfy3sgsg==
+  dependencies:
+    "@types/estree-jsx" "^1.0.0"
     "@types/unist" "^2.0.0"
 
 estree-walker@^1.0.1:
@@ -10102,10 +10126,10 @@ remark-mdx@2.0.0-next.9:
     micromark-extension-mdx "^0.2.0"
     micromark-extension-mdxjs "^0.3.0"
 
-remark-mdx@^2.1.2:
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/remark-mdx/-/remark-mdx-2.1.2.tgz#eea2784fa5697e14f6e0686700077986b88b8078"
-  integrity sha512-npQagPdczPAv0xN9F8GSi5hJfAe/z6nBjylyfOfjLOmz086ahWrIjlk4BulRfNhA+asutqWxyuT3DFVsxiTVHA==
+remark-mdx@^2.1.3:
+  version "2.1.3"
+  resolved "https://registry.yarnpkg.com/remark-mdx/-/remark-mdx-2.1.3.tgz#6273e8b94d27ade35407a63bc8cdd04592f7be9f"
+  integrity sha512-3SmtXOy9+jIaVctL8Cs3VAQInjRLGOwNXfrBB9KCT+EpJpKD3PQiy0x8hUNGyjQmdyOs40BqgPU7kYtH9uoR6w==
   dependencies:
     mdast-util-mdx "^2.0.0"
     micromark-extension-mdxjs "^1.0.0"
@@ -11205,12 +11229,12 @@ symbol-tree@^3.2.4:
   resolved "https://registry.yarnpkg.com/symbol-tree/-/symbol-tree-3.2.4.tgz#430637d248ba77e078883951fb9aa0eed7c63fa2"
   integrity sha512-9QNk5KwDF+Bvz+PyObkmSYjI5ksVUYtjW7AU22r2NKcfLJcXp96hkDWU3+XndOsUb+AQ9QhfzfCT2O+CNWT5Tw==
 
-synckit@^0.8.1:
-  version "0.8.1"
-  resolved "https://registry.yarnpkg.com/synckit/-/synckit-0.8.1.tgz#697111240114a15a393fcb92786a4218bfead47f"
-  integrity sha512-rJEeygO5PNmcZICmrgnbOd2usi5zWE1ESc0Gn5tTmJlongoU8zCTwMFQtar2UgMSiR68vK9afPQ+uVs2lURSIA==
+synckit@^0.8.4:
+  version "0.8.4"
+  resolved "https://registry.yarnpkg.com/synckit/-/synckit-0.8.4.tgz#0e6b392b73fafdafcde56692e3352500261d64ec"
+  integrity sha512-Dn2ZkzMdSX827QbowGbU/4yjWuvNaCoScLLoMo/yKbu+P4GBR6cRGKZH27k6a9bRzdqcyd1DE96pQtQ6uNkmyw==
   dependencies:
-    "@pkgr/utils" "^2.3.0"
+    "@pkgr/utils" "^2.3.1"
     tslib "^2.4.0"
 
 table-layout@^1.0.1:
@@ -11797,6 +11821,14 @@ unist-util-visit-parents@^5.0.0:
     "@types/unist" "^2.0.0"
     unist-util-is "^5.0.0"
 
+unist-util-visit-parents@^5.1.1:
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/unist-util-visit-parents/-/unist-util-visit-parents-5.1.1.tgz#868f353e6fce6bf8fa875b251b0f4fec3be709bb"
+  integrity sha512-gks4baapT/kNRaWxuGkl5BIhoanZo7sC/cUT/JToSRNL1dYoXRFl75d++NkjYk4TAu2uv2Px+l8guMajogeuiw==
+  dependencies:
+    "@types/unist" "^2.0.0"
+    unist-util-is "^5.0.0"
+
 unist-util-visit@1.3.1:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/unist-util-visit/-/unist-util-visit-1.3.1.tgz#c019ac9337a62486be58531bc27e7499ae7d55c7"
@@ -11830,6 +11862,15 @@ unist-util-visit@^4.0.0, unist-util-visit@^4.1.0:
     "@types/unist" "^2.0.0"
     unist-util-is "^5.0.0"
     unist-util-visit-parents "^5.0.0"
+
+unist-util-visit@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/unist-util-visit/-/unist-util-visit-4.1.1.tgz#1c4842d70bd3df6cc545276f5164f933390a9aad"
+  integrity sha512-n9KN3WV9k4h1DxYR1LoajgN93wpEi/7ZplVe02IoB4gH5ctI1AaF2670BLHQYbwj+pY83gFtyeySFiyMHJklrg==
+  dependencies:
+    "@types/unist" "^2.0.0"
+    unist-util-is "^5.0.0"
+    unist-util-visit-parents "^5.1.1"
 
 universal-user-agent@^6.0.0:
   version "6.0.0"
