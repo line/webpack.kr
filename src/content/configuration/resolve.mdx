@@ -195,6 +195,52 @@ module.exports = {
 };
 ```
 
+Webpack은 `resolve.conditionNames` 배열 내에 나열된 [export 조건](https://nodejs.org/api/packages.html#conditional-exports)과 일치합니다.
+
+`exports` 필드의 키 순서는 중요합니다. 조건 일치 시 이전 항목이 더 높은 우선 순위를 가지며 이후 항목보다 우선합니다.
+
+예를들면 다음과 같습니다.
+
+**package.json**
+
+```json
+{
+  "name": "foo",
+  "exports": {
+    ".": {
+      "import": "./index-import.js",
+      "require": "./index-require.js",
+      "node": "./index-node.js"
+    },
+    "./bar": {
+      "node": "./bar-node.js",
+      "require": "./bar-require.js"
+    },
+    "./baz": {
+      "import": "./baz-import.js",
+      "node": "./baz-node.js"
+    }
+  }
+}
+```
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  //...
+  resolve: {
+    conditionNames: ['require', 'node'],
+  },
+};
+```
+
+importing
+
+- `'foo'`는 `'foo/index-require.js'`로 해석됩니다.
+- `'foo/bar'`는 `"node"` 키가 조건부 export 객체의 `"require"`키보다 앞에 오기 때문에 `'foo/bar-node.js'`로 해석됩니다.
+- `'foo/baz'`는 `'foo/baz-node.js'`로 해석됩니다.
+
 ### resolve.descriptionFiles
 
 `[string] = ['package.json']`
