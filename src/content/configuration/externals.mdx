@@ -61,42 +61,45 @@ import $ from 'jquery';
 $('.my-element').animate(/* ... */);
 ```
 
-외부 종속성이 있는 번들은 [CommonJS, AMD, global 그리고 ES2015 모듈](/concepts/modules)과 같은 다양한 모듈 컨텍스트에서 사용할 수 있습니다. 외부 라이브러리는 다음 형식 중 하나로 사용할 수 있습니다.
+위의 `webpack.config.js`에서 `externals`에 지정된 속성 이름 `jquery`는 `import $ from 'jquery'`의 모듈인 `jquery`가 번들링에서 제외되어야 함을 나타냅니다. 기본 외부 라이브러리 유형이 `var`이므로 이 모듈을 대체하기 위해 `jQuery`값이 전역 `jQuery`변수를 검색하는 데 사용됩니다. [externalsType](#externalstype)를 참고하세요.
 
-- **root**: 라이브러리는 전역변수로 사용할 수 있어야 합니다. (예. 스크립트 태그를 통해)
-- **commonjs**: 라이브러리는 CommonJS 모듈로 사용할 수 있어야 합니다.
-- **commonjs2**: 위와 비슷하지만, export는 `module.exports.default`입니다.
-- **amd**: `commonjs`와 유사하지만, AMD 모듈 시스템을 사용합니다.
-
-다음 구문이 허용됩니다.
+위에서는 외부 전역 변수를 사용하는 예를 보여주었지만, 실제로 외부 속성에는 전역변수, CommonJS, AMD, ES2015 모듈과 같은 형식으로 사용할 수 있습니다. 자세한 내용은 [externalsType](#externalstype)을 참고하세요.
 
 ### string
 
-위의 예를 참고하세요. 프로퍼티 이름 `jquery`는 `import $ from 'jquery'`에서 `jquery` 모듈이 제외되어야 함을 나타냅니다. 이 모듈을 대체하기 위해, `jQuery` 값을 사용하여 전역 `jQuery` 변수를 검색합니다. 즉, 문자열이 제공되면 위와 아래에 정의된 `root`로서 처리됩니다.
+[externalsType](#externalstype)에 따라 전역 변수([`'global'`](#externalstypeglobal), [`'this'`](#externalstypethis), [`'var'`](#externalstypevar), [`'window'`](#externalstypewindow))의 이름이 될 수 있습니다. 또는 모듈 이름 (`amd`, [`commonjs`](#externalstypecommonjs), [`module`](#externalstypemodule), `umd`)을 참고하세요.
 
-반면에, CommonJS 모듈로 사용 가능한 라이브러리를 외부화하려는 경우, 라이브러리 이름과 유형을 제공할 수 있습니다.
-
-예를 들어, 출력 번들에서 `fs-extra` 번들을 제외하고 대신 런타임 중에 가져오려면, 다음과 같이 지정할 수 있습니다.
+1개의 외부 속성만 정의하는 경우에도 축약된 구문을 사용할 수 있습니다.
 
 ```javascript
 module.exports = {
-  // ...
+  //...
+  externals: 'jquery',
+};
+```
+
+이는 아래와 동일합니다.
+
+```javascript
+module.exports = {
+  //...
   externals: {
-    'fs-extra': 'commonjs2 fs-extra',
+    jquery: 'jquery',
   },
 };
 ```
 
-이렇게 하면 종속 모듈이 변경되지 않습니다. 예. 아래 표시된 코드.
+`${externalsType} ${libraryName}` 구문을 사용하여 외부에 [외부 라이브러리 유형](#externalstype)을 지정할 수 있습니다. 이는 [externalsType](#externalstype)옵션에 지정된 기본 외부 라이브러리 유형을 재정의합니다.
+
+예를들어 외부 라이브러리가 [CommonJS 모듈](#externalstypecommonjs)인 경우, 다음과 같이 지정할 수 있습니다.
 
 ```javascript
-import fs from 'fs-extra';
-```
-
-다음과 같이 컴파일됩니다.
-
-```javascript
-const fs = require('fs-extra');
+module.exports = {
+  //...
+  externals: {
+    jquery: 'commonjs jquery',
+  },
+};
 ```
 
 ### [string]
@@ -110,7 +113,7 @@ module.exports = {
 };
 ```
 
-`subtract: ['./math', 'subtract']`을 사용하면 commonjs 모듈의 일부를 선택할 수 있으며, 여기서 `./math`는 모듈이고 번들에는 `subtract` 변수 아래의 하위 집합만 필요합니다. 이 예제는 `require('./math').subtract;`로 번역됩니다.
+`subtract: ['./math', 'subtract']`을 사용하면 모듈의 일부를 선택할 수 있으며, 여기서 `./math`는 모듈이고 번들에는 `subtract` 변수 아래의 하위 집합만 필요합니다. 이 예제는 `require('./math').subtract;`로 번역됩니다.
 
 ### object
 
@@ -157,15 +160,15 @@ webpack에서 외부화하려는 동작을 제어하기 위해 자체 함수를 
 - `ctx` (`object`): 파일 세부 정보를 포함하는 객체입니다.
   - `ctx.context` (`string`): import를 포함하는 파일의 디렉터리입니다.
   - `ctx.request` (`string`): 요청 중인 import 경로입니다.
-  - `ctx.contextInfo` (`string`): issuer(예. 레이어)에 대한 정보를 포함합니다.
+  - `ctx.contextInfo` (`object`): issuer(예. 레이어, 컴파일)에 대한 정보를 포함합니다.
   - `ctx.getResolve` <Badge text='5.15.0+' />: 현재 리졸브 옵션으로 리졸브 함수 가져오기.
 - `callback` (`function (err, result, type)`): 모듈을 외부화하는 방법을 나타내는 데 사용되는 콜백 함수입니다.
 
 콜백 함수는 세 가지 인수를 사용합니다.
 
 - `err` (`Error`): import를 외부화하는 동안 오류가 있었는지 나타내는 데 사용됩니다. 오류가 있는 경우 이 파라미터만 사용해야 합니다.
-- `result` (`string` `[string]` `object`): 외부 모듈을 설명합니다. `${type} ${path}` 형식의 문자열 또는 다른 표준 외부 형식([`string`](#string), [`[string]`](#string-1), 또는 [`object`](#object)) 중 하나를 허용할 수 있습니다.
-- `type` (`string`): 모듈 유형을 나타내는 선택적 파라미터입니다(`result` 파라미터에 아직 표시되지 않은 경우).
+- `result` (`string` `[string]` `object`): 다른 외부 형식([`string`](#string), [`[string]`](#string-1), 또는 [`object`](#object))를 사용하여 외부 모듈을 설명합니다.
+- `type` (`string`): 모듈 [external type](#externalstype)을 나타내는 선택적 파라미터입니다(`result` 파라미터에 아직 표시되지 않은 경우).
 
 예를들어, import 경로가 정규 표현식과 일치하는 모든 import를 외부화 하려면 다음을 수행할 수 있습니다.
 
@@ -331,23 +334,23 @@ module.exports = {
 
 - `'amd'`
 - `'amd-require'`
-- `'assign'`
-- `'commonjs'`
+- `'assign'` - same as `'var'`
+- [`'commonjs'`](#externalstypecommonjs)
 - `'commonjs-module'`
-- `'global'`
+- [`'global'`](#externalstypeglobal)
 - `'import'` - `import()`를 사용하여 네이티브 EcmaScript 모듈을 로드합니다(비동기 모듈)
 - `'jsonp'`
 - [`'module'`](#externalstypemodule)
 - [`'node-commonjs'`](#externalstypenode-commonjs)
-- `'promise'` - `'var'`과 동일하지만, 결과를 기다립니다(비동기 모듈)
-- `'self'`
+- [`'promise'`](#externalstypepromise) - `'var'`과 동일하지만, 결과를 기다립니다(비동기 모듈)
+- [`'self'`](#externalstypeself)
 - `'system'`
 - [`'script'`](#externalstypescript)
-- `'this'`
+- [`'this'`](#externalstypethis)
 - `'umd'`
 - `'umd2'`
-- `'var'`
-- `'window'`
+- [`'var'`](#externalstypevar)
+- [`'window'`](#externalstypewindow)
 
 **webpack.config.js**
 
@@ -358,11 +361,81 @@ module.exports = {
 };
 ```
 
+### externalsType.commonjs
+
+외부속성의 기본 유형을 `'commonjs'`로 지정합니다. Webpack은 모듈에서 사용되는 외부속성에 대해 `const X = require('...')`와 같은 코드를 생성합니다.
+
+#### Example
+
+```javascript
+import fs from 'fs-extra';
+```
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  // ...
+  externalsType: 'commonjs',
+  externals: {
+    'fs-extra': 'fs-extra',
+  },
+};
+```
+
+이는 다음과 같이 생성됩니다.
+
+```javascript
+const fs = require('fs-extra');
+```
+
+출력 번들에 `require()`가 있다는 점을 유의하세요.
+
+### externalsType.global
+
+외부 속성의 기본 유형을 `'global'`로 지정합니다. Webpack은 외부 속성을 [`globalObject`](/configuration/output/#outputglobalobject)의 전역 변수로 읽습니다.
+
+#### Example
+
+```javascript
+import jq from 'jquery';
+jq('.my-element').animate(/* ... */);
+```
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  // ...
+  externalsType: 'global',
+  externals: {
+    jquery: '$',
+  },
+  output: {
+    globalObject: 'global',
+  },
+};
+```
+
+이는 다음과 같이 생성됩니다.
+
+```javascript
+const jq = global['$'];
+jq('.my-element').animate(/* ... */);
+```
+
 ### externalsType.module
 
 외부의 기본 유형을 `'module'`로 지정하세요. Webpack은 모듈에서 사용되는 외부 요소에 대해 `import * as X from '...'`와 같은 코드를 생성합니다.
 
 우선 [`experiments.outputModule`](/configuration/experiments/#experimentsoutputmodule)을 활성화해야 합니다. 그렇지 않으면 webpack에서 오류가 발생합니다.
+
+#### Example
+
+```javascript
+import jq from 'jquery';
+jq('.my-element').animate(/* ... */);
+```
 
 **webpack.config.js**
 
@@ -372,12 +445,35 @@ module.exports = {
     outputModule: true,
   },
   externalsType: 'module',
+  externals: {
+    jquery: 'jquery',
+  },
 };
 ```
+
+이는 다음과 같이 생성됩니다.
+
+```javascript
+import * as __WEBPACK_EXTERNAL_MODULE_jquery__ from 'jquery';
+
+const jq = __WEBPACK_EXTERNAL_MODULE_jquery__['default'];
+jq('.my-element').animate(/* ... */);
+```
+
+출력 번들에 `import` 구문이 있다는 점을 유의하세요.
 
 ### externalsType.node-commonjs
 
 외부의 기본 유형을 `'node-commonjs'`로 지정하세요. Webpack은 모듈에서 사용되는 외부 요소를 로드하기 위한 require 함수를 구성하기 위해 `'module'`에서 [`createRequire`](https://nodejs.org/api/module.html#module_module_createrequire_filename)를 가져올 것입니다.
+
+#### Example
+
+```javascript
+import jq from 'jquery';
+jq('.my-element').animate(/* ... */);
+```
+
+**webpack.config.js**
 
 ```js
 module.export = {
@@ -385,7 +481,81 @@ module.export = {
     outputModule: true,
   },
   externalsType: 'node-commonjs',
+  externals: {
+    jquery: 'jquery',
+  },
 };
+```
+
+이는 다음과 같이 생성됩니다.
+
+```javascript
+import { createRequire } from 'module';
+
+const jq = createRequire(import.meta.url)('jquery');
+jq('.my-element').animate(/* ... */);
+```
+
+출력 번들에 `import` 구문이 있다는 점을 유의하세요.
+
+### externalsType.promise
+
+외부 속성의 기본 유형을 `'promise'`로 지정합니다. Webpack은 외부 속성을 전역변수([`'var'`](#externalstypevar)와 유사함)로 읽고 `await` 합니다.
+
+#### Example
+
+```javascript
+import jq from 'jquery';
+jq('.my-element').animate(/* ... */);
+```
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  // ...
+  externalsType: 'promise',
+  externals: {
+    jquery: '$',
+  },
+};
+```
+
+이는 다음과 같이 생성됩니다.
+
+```javascript
+const jq = await $;
+jq('.my-element').animate(/* ... */);
+```
+
+### externalsType.self
+
+외부 속성의 기본 유형을 `'self'`로 지정합니다. Webpack은 외부 속성을 `self` 객체의 전역 변수로 읽습니다.
+
+#### Example
+
+```javascript
+import jq from 'jquery';
+jq('.my-element').animate(/* ... */);
+```
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  // ...
+  externalsType: 'self',
+  externals: {
+    jquery: '$',
+  },
+};
+```
+
+이는 다음과 같이 생성됩니다.
+
+```javascript
+const jq = self['$'];
+jq('.my-element').animate(/* ... */);
 ```
 
 ### externalsType.script
@@ -471,6 +641,96 @@ console.log(window._.head(['a', 'b'])); // 여기 로그는 a 입니다
 T> HTML `<script>` 태그를 사용하여 코드를 로드할 때, webpack 런타임은 `src` 속성과 일치하거나 특정 `data-webpack` 속성이 있는 기존 `<script>` 태그를 찾으려고 시도합니다. 청크 로딩의 경우 `data-webpack` 속성은 `'[output.uniqueName]:chunk-[chunkId]'` 값을 가지며 외부 스크립트의 값은 `'[output.uniqueName]:[global]'` 입니다.
 
 T> `output.chunkLoadTimeout`, `output.crossOriginLoading` 및 `output.scriptType`와 같은 옵션은 이러한 방식으로 로드된 외부 스크립트에도 영향을 줍니다.
+
+### externalsType.this
+
+외부 속성의 기본 유형을 `'this'`로 지정합니다. Webpack은 외부 속성을 `this` 객체의 전역 변수로 읽습니다.
+
+#### Example
+
+```javascript
+import jq from 'jquery';
+jq('.my-element').animate(/* ... */);
+```
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  // ...
+  externalsType: 'this',
+  externals: {
+    jquery: '$',
+  },
+};
+```
+
+이는 다음과 같이 생성됩니다.
+
+```javascript
+const jq = this['$'];
+jq('.my-element').animate(/* ... */);
+```
+
+### externalsType.var
+
+외부 속성의 기본 유형을 `'var'`로 지정합니다. Webpack은 외부 속성을 전역 변수로 읽습니다.
+
+#### Example
+
+```javascript
+import jq from 'jquery';
+jq('.my-element').animate(/* ... */);
+```
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  // ...
+  externalsType: 'var',
+  externals: {
+    jquery: '$',
+  },
+};
+```
+
+이는 다음과 같이 생성됩니다.
+
+```javascript
+const jq = $;
+jq('.my-element').animate(/* ... */);
+```
+
+### externalsType.window
+
+외부 속성의 기본 유형을 `'window'`로 지정합니다. Webpack은 외부 속성을 `window` 객체의 전역 변수로 읽습니다.
+
+#### Example
+
+```javascript
+import jq from 'jquery';
+jq('.my-element').animate(/* ... */);
+```
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  // ...
+  externalsType: 'window',
+  externals: {
+    jquery: '$',
+  },
+};
+```
+
+이는 다음과 같이 생성됩니다.
+
+```javascript
+const jq = window['$'];
+jq('.my-element').animate(/* ... */);
+```
 
 ## externalsPresets
 

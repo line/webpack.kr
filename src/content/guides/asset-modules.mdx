@@ -463,3 +463,24 @@ module: {
     ]
   },
 ```
+
+## Disable emitting assets
+
+서버 사이드 랜더링과 같은 사용 사례의 경우 애셋 방출을 비활성화할 수 있습니다. 이는 `Rule.generator` 하위의 [`emit`](/configuration/module/#rulegeneratoremit) 옵션을 통해 설정 가능합니다.
+
+```js
+module.exports = {
+  // …
+  module: {
+    rules: [
+      {
+        test: /\.png$/i,
+        type: 'asset/resource',
+        generator: {
+          emit: false,
+        },
+      },
+    ],
+  },
+};
+```

@@ -58,6 +58,13 @@ module.exports = function (source) {
 };
 ```
 
+위의 `my-webpack-plugin.js` 예제에서 볼 수 있듯이, 두 가지 유형의 로깅 방법이 있습니다.
+
+1. `compilation.getLogger`
+2. `compiler.getInfrastructureLogger`
+
+플러그인/로깅이 컴파일과 관련된 경우 `compilation.getLogger`를 사용하는 것이 좋으며 통계 안에 저장됩니다. 컴파일 주기 밖에서 발생하는 로깅의 경우에는 대신 `compiler.getInfrastructureLogger`를 사용하세요.
+
 ## Logger methods
 
 - `logger.error(...)`: 에러 메시지용입니다.

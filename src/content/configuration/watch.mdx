@@ -11,6 +11,7 @@ contributors:
   - Neob91
   - Loonride
   - snitin315
+  - chenxsan
 translators:
   - dkstyle
 ---
@@ -130,7 +131,7 @@ T> `require.context`를 사용하면 webpack이 전체 디렉터리를 감시합
 
 `boolean = false` `number`
 
-`true`를 전달하거나 폴링 간격을 밀리초(ms)로 지정하여 [polling](<https://en.wikipedia.org/wiki/Polling_(computer_science)>)을 사용할 수 있습니다.
+기본 폴링 간격을 [`5007`](https://github.com/webpack/watchpack/blob/a54bcdb95759558ca5a9fc2819c4d71b771c162f/lib/DirectoryWatcher.js#L79)로 설정하는 `true`를 전달하거나 폴링 간격을 밀리초(ms)로 지정하여 [polling](<https://en.wikipedia.org/wiki/Polling_(computer_science)>)을 사용할 수 있습니다.
 
 **webpack.config.js**
 

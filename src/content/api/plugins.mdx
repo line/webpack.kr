@@ -9,6 +9,7 @@ contributors:
   - byzyk
   - EugeneHlushko
   - wizardofhogwarts
+  - snitin315
 translators:
   - Eunbin-Kim
 ---
@@ -89,18 +90,52 @@ compiler.hooks.run.tapPromise(
 
 ## Custom Hooks
 
-다른 플러그인이 `tap` 할 수 있도록 컴파일에 새 훅을 추가하려면
-`tapable`에서 필요한 훅 클래스를 `require` 하여 만들면 됩니다.
+다른 플러그인이 `tap` 할 수 있도록 컴파일에 사용자 정의 훅을 제공하려면,
+다음을 수행해야 합니다.
 
-```js
-const SyncHook = require('tapable').SyncHook;
+1. 컴파일 훅을 위한 모듈 범위 `WeakMap`을 만듭니다.
 
-if (compiler.hooks.myCustomHook) throw new Error('Already in use');
-compiler.hooks.myCustomHook = new SyncHook(['a', 'b', 'c']);
+   ```ts
+   const compilationHooks = new WeakMap<Compilation, MyHooks>();
 
-// 언제 어디서든 훅을 발생시키고 싶을 때에 작성
-compiler.hooks.myCustomHook.call(a, b, c);
-```
+   interface MyHooks {
+     custom: SyncHook<[number, string]>;
+   }
+   ```
+
+2. 플러그인에 정적 메서드를 만듭니다.
+
+   ```ts
+   static getCompilationHooks(compilation: Compilation) : MyHooks {
+     let hooks = compilationHooks.get(compilation);
+     if(hooks === undefined) {
+       compilationHooks.set(compilation, hooks = {
+         custom: new SyncHook()
+       });
+     }
+     return hooks;
+   }
+   ```
+
+3. 플러그인에서 아래와 같이 훅을 호출합니다.
+
+   ```ts
+   const hooks = MyPlugin.getCompilationHooks(compilation);
+
+   hooks.custom.call(1, 'hello');
+   ```
+
+4. 다른 플러그인도 사용자 정의 훅에 접근할 수 있습니다.
+
+   ```ts
+   import MyPlugin from 'my-plugin';
+
+   const hooks = MyPlugin.getCompilationHooks(compilation);
+
+   hooks.custom.tap('OtherPlugin', (n, s) => {
+     // magic
+   });
+   ```
 
 다양한 훅 클래스와 동작 방식에 대해 자세히 알고 싶다면
 `tapable` [문서](https://github.com/webpack/tapable)를 참고하세요.

@@ -74,7 +74,7 @@ W> [여러 설정을 내보낼 때](/configuration/configuration-types/#exportin
 
 T> 문제가 있는 경우, `/webpack-dev-server` 경로로 이동하면 파일이 제공되는 위치가 표시됩니다. 예를 들면, `http://localhost:9000/webpack-dev-server` 처럼 표시됩니다.
 
-T> 번들을 수동으로 다시 컴파일하려는 경우, `/invalidate` 경로로 이동하면 번들의 현재 컴파일이 [무효화](/api/node/#invalidate-watching) 되고 [webpack-dev-middleware](https://github.com/webpack/webpack-dev-middleware#invalidate)를 통해 다시 컴파일됩니다. 설정에 따라, URL은 `http://localhost:9000/invalidate`처럼 보일 수 있습니다.
+T> 번들을 수동으로 다시 컴파일하려는 경우, `/webpack-dev-server/invalidate` 경로로 이동하면 번들의 현재 컴파일이 [무효화](/api/node/#invalidate-watching) 되고 [webpack-dev-middleware](https://github.com/webpack/webpack-dev-middleware#invalidate)를 통해 다시 컴파일됩니다. 설정에 따라, URL은 `http://localhost:9000/webpack-dev-server/invalidate`처럼 보일 수 있습니다.
 
 T> 번들을 제공하려면 HTML 템플릿이 필요합니다. 일반적으로, 이는 `index.html` 파일입니다. 스크립트 참조가 HTML에 추가되었는지 확인하세요. webpack-dev-server는 스크립트 참조를 자동으로 삽입하지 않습니다.
 
@@ -1583,7 +1583,7 @@ module.exports = {
       // 다른 모든 미들웨어보다 먼저 미들웨어를 실행하려면 `unshift` 메소드를 사용하세요
       // 또는 `onBeforeSetupMiddleware` 옵션에서 마이그레이션 할 때 사용하세요
       middlewares.unshift({
-        name: 'fist-in-array',
+        name: 'first-in-array',
         // `path`는 옵셔널입니다
         path: '/foo/path',
         middleware: (req, res) => {
