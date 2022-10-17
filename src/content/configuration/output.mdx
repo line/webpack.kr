@@ -914,6 +914,7 @@ module.exports = {
 라이브러리 이름을 설정할 수 있습니다.
 
 - Type:
+
   ```ts
   string | string[] | {amd?: string, commonjs?: string, root?: string | string[]}
   ```
@@ -1971,7 +1972,7 @@ module.exports = {
 };
 ```
 
-W> `output.module`은 실험적 기능이며 [`experiments.outputModule`](/configuration/experiments/#experiments)을 `true`로 설정해야만 활성화 할 수 있습니다.
+W> `output.module`은 실험적 기능이며 [`experiments.outputModule`](/configuration/experiments/#experiments)을 `true`로 설정해야만 활성화 할 수 있습니다. [알려진 문제 중 하나](https://github.com/webpack/webpack/issues/11277#issuecomment-992565287)는 이러한 라이브러리가 webpack4 기반(및 다른 가능성도 있음) 응용 프로그램에서 사용할 수 없다는 것입니다.
 
 ## output.path
 
