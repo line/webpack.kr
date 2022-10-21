@@ -62,28 +62,25 @@ module.exports = {
 
 로더는 오른쪽에서 왼쪽으로 (또는 아래에서 위로) 평가/실행됩니다. 아래 예제에서는 sass-loader로 실행이 시작되고, css-loader로 이어지며 마지막으로 style-loader로 끝납니다. 로더 순서에 대한 더 자세한 내용은 ["로더 기능"](/concepts/loaders/#loader-features)을 참고하세요.
 
-```js-with-links
+```js
 module.exports = {
   module: {
     rules: [
       {
         test: /\.css$/,
         use: [
-          // [style-loader](/loaders/style-loader)
           { loader: 'style-loader' },
-          // [css-loader](/loaders/css-loader)
           {
             loader: 'css-loader',
             options: {
-              modules: true
-            }
+              modules: true,
+            },
           },
-          // [sass-loader](/loaders/sass-loader)
-          { loader: 'sass-loader' }
-        ]
-      }
-    ]
-  }
+          { loader: 'sass-loader' },
+        ],
+      },
+    ],
+  },
 };
 ```
 

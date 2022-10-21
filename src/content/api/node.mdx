@@ -44,14 +44,12 @@ import webpack from 'webpack';
 
 가져온 `webpack` 함수는 webpack [설정 객체](/configuration/)를 제공하며 콜백 함수가 제공되면 webpack 컴파일러를 실행합니다.
 
-```js-with-links
+```js
 const webpack = require('webpack');
 
-webpack({
-  // [설정 객체](/configuration/)
-}, (err, stats) => { // [Stats 객체](#stats-object)
+webpack({}, (err, stats) => {
   if (err || stats.hasErrors()) {
-    // [에러는 여기에서 처리합니다](#error-handling)
+    // ...
   }
   // 프로세싱 완료
 });
@@ -97,14 +95,14 @@ W> API는 한 번에 하나의 동시 컴파일만 지원합니다. `run` 또는
 `Compiler` 인스턴스에서 `run` 메소드를 호출하는 것은
 위에서 언급한 빠른 실행 메소드와 매우 유사합니다.
 
-```js-with-links
+```js
 const webpack = require('webpack');
 
 const compiler = webpack({
-  // [Configuration Object](/configuration/)
+  // ...
 });
 
-compiler.run((err, stats) => { // [Stats Object](#stats-object)
+compiler.run((err, stats) => {
   // ...
 
   compiler.close((closeErr) => {
@@ -125,21 +123,24 @@ webpack이 변경사항을 감지하는 즉시 다시 실행합니다.
 watch(watchOptions, callback);
 ```
 
-```js-with-links
+```js
 const webpack = require('webpack');
 
 const compiler = webpack({
-  // [Configuration Object](/configuration/)
+  // ...
 });
 
-const watching = compiler.watch({
-  // [watchOptions](/configuration/watch/#watchoptions) 예시
-  aggregateTimeout: 300,
-  poll: undefined
-}, (err, stats) => { // [Stats Object](#stats-object)
-  // watch/build 결과를 여기에 출력...
-  console.log(stats);
-});
+const watching = compiler.watch(
+  {
+    // 예시
+    aggregateTimeout: 300,
+    poll: undefined,
+  },
+  (err, stats) => {
+    // watch/build 결과를 여기에 출력...
+    console.log(stats);
+  }
+);
 ```
 
 `Watching` 옵션은
@@ -207,8 +208,8 @@ T> [`MultiCompiler`](#multicompiler)를 사용할 때,
 컴파일 정보를 JSON 객체로 반환합니다.
 `options`는 문자열(사전 설정) 또는 보다 세분화된 제어를 위한 객체일 수 있습니다.
 
-```js-with-links
-stats.toJson('minimal'); // [more options: 'verbose', etc](/configuration/stats).
+```js
+stats.toJson('minimal');
 ```
 
 ```js
@@ -239,22 +240,27 @@ stats.toString({
 
 다음은 `stats.toString()` 사용법의 예시입니다.
 
-```js-with-links
+```js
 const webpack = require('webpack');
 
-webpack({
-  // [설정 객체](/configuration/)
-}, (err, stats) => {
-  if (err) {
-    console.error(err);
-    return;
-  }
+webpack(
+  {
+    // ...
+  },
+  (err, stats) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
 
-  console.log(stats.toString({
-    chunks: false,  // 빌드를 훨씬 조용하게 만듭니다.
-    colors: true    // 콘솔에 색상을 표시합니다.
-  }));
-});
+    console.log(
+      stats.toString({
+        chunks: false, // 빌드를 훨씬 조용하게 만듭니다.
+        colors: true, // 콘솔에 색상을 표시합니다.
+      })
+    );
+  }
+);
 ```
 
 ## MultiCompiler
@@ -264,15 +270,18 @@ webpack NodeJS API에 있는 `options` 파라미터가 옵션의 배열일 경�
 webpack은 별도의 컴파일러를 적용하고
 모든 컴파일러가 실행된 후 `callback`을 호출합니다.
 
-```js-with-links
+```js
 var webpack = require('webpack');
 
-webpack([
-  { entry: './index1.js', output: { filename: 'bundle1.js' } },
-  { entry: './index2.js', output: { filename: 'bundle2.js' } }
-], (err, stats) => { // [Stats 객체](#stats-object)
-  process.stdout.write(stats.toString() + '\n');
-})
+webpack(
+  [
+    { entry: './index1.js', output: { filename: 'bundle1.js' } },
+    { entry: './index2.js', output: { filename: 'bundle2.js' } },
+  ],
+  (err, stats) => {
+    process.stdout.write(stats.toString() + '\n');
+  }
+);
 ```
 
 W> 다중 설정은 **병렬로 실행되지 않습니다**.
@@ -288,32 +297,35 @@ W> 다중 설정은 **병렬로 실행되지 않습니다**.
 
 다음은 이 모든 작업을 수행하는 예시입니다.
 
-```js-with-links
+```js
 const webpack = require('webpack');
 
-webpack({
-  // [설정 객체](/configuration/)
-}, (err, stats) => {
-  if (err) {
-    console.error(err.stack || err);
-    if (err.details) {
-      console.error(err.details);
+webpack(
+  {
+    // ...
+  },
+  (err, stats) => {
+    if (err) {
+      console.error(err.stack || err);
+      if (err.details) {
+        console.error(err.details);
+      }
+      return;
     }
-    return;
+
+    const info = stats.toJson();
+
+    if (stats.hasErrors()) {
+      console.error(info.errors);
+    }
+
+    if (stats.hasWarnings()) {
+      console.warn(info.warnings);
+    }
+
+    // Log result...
   }
-
-  const info = stats.toJson();
-
-  if (stats.hasErrors()) {
-    console.error(info.errors);
-  }
-
-  if (stats.hasWarnings()) {
-    console.warn(info.warnings);
-  }
-
-  // 결과 로그...
-});
+);
 ```
 
 ## Custom File Systems

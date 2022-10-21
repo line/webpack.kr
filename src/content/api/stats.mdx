@@ -26,46 +26,39 @@ npx webpack --profile --json=compilation-stats.json
 
 출력 JSON 파일의 최상위 구조는 매우 간단하지만 몇 가지 중첩된 데이터 구조도 있습니다. 각 중첩 구조에는 이 문서를 보다 유용하게 사용할 수 있도록 아래에 전용 섹션이 있습니다. 아래의 최상위 구조 내의 링크를 클릭하면 관련 섹션 및 문서로 이동할 수 있습니다.
 
-```js-with-links
+```json
 {
-  'version': '5.9.0', // 컴파일에 사용된 webpack 버전
-  'hash': '11593e3b3ac85436984a', // 컴파일 특정 해시
-  'time': 2469, // 컴파일 시간 밀리초
-  'publicPath': 'auto',
-  'outputPath': '/', // webpack 출력 디렉터리 경로
-  'assetsByChunkName': {
+  "version": "5.9.0", // 컴파일에 사용된 webpack 버전
+  "hash": "11593e3b3ac85436984a", // 컴파일 특정 해시
+  "time": 2469, // 컴파일 시간 밀리초
+  "publicPath": "auto",
+  "outputPath": "/", // webpack 출력 디렉터리 경로
+  "assetsByChunkName": {
     // 내보낸 애셋 매핑에 대한 청크 이름
-    'main': [
-      'web.js?h=11593e3b3ac85436984a'
-    ],
-    'named-chunk': [
-      'named-chunk.web.js'
-    ],
-    'other-chunk': [
-      'other-chunk.js',
-      'other-chunk.css'
-    ]
+    "main": ["web.js?h=11593e3b3ac85436984a"],
+    "named-chunk": ["named-chunk.web.js"],
+    "other-chunk": ["other-chunk.js", "other-chunk.css"]
   },
-  'assets': [
+  "assets": [
     // [애셋 객체](#asset-objects) 목록
   ],
-  'chunks': [
+  "chunks": [
     // [청크 객체](#chunk-objects) 목록
   ],
-  'modules': [
+  "modules": [
     // [모듈 객체](#module-objects) 목록
   ],
-  'entryPoints': {
+  "entryPoints": {
     // [엔트리 객체](#entry-objects) 목록
   },
-  'errors': [
+  "errors": [
     // [에러 객체](#errors-and-warnings) 목록
   ],
-  'errorsCount': 0, // 오류 개수
-  'warnings': [
+  "errorsCount": 0, // 오류 개수
+  "warnings": [
     // [경고 객체](#errors-and-warnings) 목록
   ],
-  'warningsCount': 0, // 경고 개수
+  "warningsCount": 0, // 경고 개수
 }
 ```
 
@@ -98,7 +91,7 @@ T> 애셋의 `info` 프로퍼티는 webpack v4.40.0부터 사용할 수 있습�
 
 각 `chunks` 객체는 [청크](/glossary/#c)로 알려진 모듈 그룹을 나타냅니다. 각 객체는 다음의 구조를 따릅니다.
 
-```js-with-links
+```json
 {
   "entry": true, // 청크에 webpack 런타임이 포함되었는지 여부
   "files": [
@@ -125,7 +118,7 @@ T> 애셋의 `info` 프로퍼티는 webpack v4.40.0부터 사용할 수 있습�
 
 `chunks` 객체에는 주어진 청크가 어떻게 생성되었는지 설명하는 `origins` 목록도 포함됩니다. 각 `origins` 객체는 다음 스키마를 따릅니다.
 
-```js-with-links
+```json
 {
   "loc": "", // 이 청크를 생성한 코드 라인
   "module": "(webpack)\\test\\browsertest\\lib\\index.web.js", // 모듈 경로
@@ -143,7 +136,7 @@ T> 애셋의 `info` 프로퍼티는 webpack v4.40.0부터 사용할 수 있습�
 
 컴파일된 애플리케이션의 실제 모듈에 대한 설명이 없으면 이런 통계가 무슨 의미가 있겠습니까? 의존성 그래프의 각 모듈은 다음 구조로 표시됩니다.
 
-```js-with-links
+```json
 {
   "assets": [
     // [애셋 객체](#asset-objects) 목록
@@ -177,7 +170,7 @@ T> 애셋의 `info` 프로퍼티는 webpack v4.40.0부터 사용할 수 있습�
 
 모든 모듈에는 해당 모듈이 의존성 그래프에 포함된 이유를 설명하는 `reasons` 객체 목록도 포함되어 있습니다. 각 "reason"은 위의 [청크 객체](#chunk-objects) 섹션에서 본 `origins`와 유사합니다.
 
-```js-with-links
+```json
 {
   "loc": "33:24-93", // 모듈을 포함하게 만든 코드의 라인
   "module": "./lib/index.web.js", // [context](/configuration/entry-context/#context) 기반 모듈의 상대 경로
