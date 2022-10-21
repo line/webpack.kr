@@ -659,13 +659,13 @@ module.exports = {
           requireJs: false, // requirejs.* 비활성화
           node: false, // __dirname, __filename, module, require.extensions, require.main, 등 비활성화
           commonjsMagicComments: false, // CommonJS를 위한 magic comments 지원 비활성화
-          node: {...}, // 모듈 수준에서 [node](/configuration/node) 계층 재구성
-          worker: ["default from web-worker", "..."] // javascript 파일에 대한 WebWorker 처리를 커스터마이즈합니다. "..."는 기본값을 나타냅니다.
-        }
-      }
-    ]
-  }
-}
+          node: {}, // 모듈 수준에서 [node](/configuration/node) 계층 재구성
+          worker: ['default from web-worker', '...'], // javascript 파일에 대한 WebWorker 처리를 커스터마이즈합니다. "..."는 기본값을 나타냅니다.
+        },
+      },
+    ],
+  },
+};
 ```
 
 `Rule.type`이 `asset`이면 `Rules.parser` 옵션은 파일 내용을 Base64로 인코딩할지 또는 별도의 파일로 출력 디렉터리에 내보낼 지 여부를 나타내는 조건을 설명하는 객체 또는 함수일 수 있습니다.
