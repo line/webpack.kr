@@ -294,7 +294,7 @@ module.exports = {
 }
 ```
 
-키 `main`은 [`package.json`의 표준](https://docs.npmjs.com/files/package.json#main)을, `module`은 JavaScript 생태계 업그레이드가 하위 호환성을 깨지 않고 ES2015 모듈을 사용할 수 있도록 하는 제안[[1]](https://github.com/dherman/defense-of-dot-js/blob/master/proposal.md)[[2]](https://github.com/rollup/rollup/wiki/pkg.module)을 의미합니다.
+키 `main`은 [`package.json`의 표준](https://docs.npmjs.com/files/package.json#main)을, `module`은 JavaScript 생태계 업그레이드가 하위 호환성을 깨지 않고 ES2015 모듈을 사용할 수 있도록 하는 제안[[1]](https://github.com/dherman/defense-of-dot-js/blob/master/proposal.md) [[2]](https://github.com/rollup/rollup/wiki/pkg.module)을 의미합니다.
 
 W> `module` 속성은 ES2015 모듈 구문을 사용하는 스크립트를 가리켜야 하지만 아직 브라우저나 노드에서 지원하지 않는 다른 구문 기능은 없습니다. 이를 통해 webpack은 사용자가 라이브러리의 특정 부분만 소비하는 경우 모듈 구문 자체를 파싱하여 [트리 쉐이킹](https://webpack.kr/guides/tree-shaking/)을 통해 보다 가벼운 번들을 제공할 수 있습니다.
 
