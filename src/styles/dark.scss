@@ -17,6 +17,7 @@ body {
   code,
   tt {
     text-shadow: none;
+    background-color: transparentize(getColor(fiord), 0.55);
   }
   blockquote {
     border-left-color: #343434;
@@ -53,11 +54,42 @@ body {
   }
   pre {
     background-color: #131b1f;
+    code {
+      background: transparent;
+    }
   }
   a code {
     color: #69a8ee;
     &:hover {
       color: #82b7f6;
+    }
+  }
+
+  aside.tip,
+  aside.warning,
+  aside.preview,
+  aside.todo {
+    background-color: #222222;
+    color: #fff;
+  }
+  aside.tip {
+    > .tip__prefix {
+      color: #fff;
+    }
+  }
+  aside.warning {
+    > .warning__prefix {
+      color: #fff;
+    }
+  }
+  aside.preview {
+    > .preview__prefix {
+      color: #fff;
+    }
+  }
+  aside.todo {
+    > .todo__prefix {
+      color: #fff;
     }
   }
 }

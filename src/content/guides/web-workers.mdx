@@ -17,6 +17,8 @@ new Worker(new URL('./worker.js', import.meta.url));
 
 이 구문은 번들러 없이 코드를 실행할 수 있도록 선택되었으며, 브라우저의 기본 ECMAScript 모듈에서도 사용할 수 있습니다.
 
+[`Worker` API](https://developer.mozilla.org/en-US/docs/Web/API/Worker/Worker)에서는 `Worker` 생성자가 스크립트의 URL을 나타내는 문자열을 허용한다고 설명하지만, webpack 5에서는 `URL`만 사용할 수 있다는 점에 유의하세요.
+
 ## Example
 
 **src/index.js**

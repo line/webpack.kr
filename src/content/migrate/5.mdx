@@ -70,6 +70,7 @@ webpack 5는 이제는 사용되지 않는 기능을 모두 제거하므로 계�
 - `Compilation.entries` → `Compilation.entryDependencies`
 - `serve` → [`DevServer`](/configuration/dev-server/)를 위해 `serve`가 제거되었습니다.
 - [`Rule.query`](/configuration/module/#ruleoptions--rulequery) (v3부터 사용 중단됨) → `Rule.options`/`UseEntry.options`
+- `Rule.loaders` → [`Rule.use`](/configuration/module/#ruleuse)
 
 ### Test webpack 5 compatibility
 
@@ -263,7 +264,7 @@ webpack 5로 성공적으로 마이그레이션 했다고 트윗해주세요. [T
 
 ## Something missing in this guide?
 
-[Pull Request](https://github.com/webpack/webpack.js.org/edit/master/src/content/migrate/5.mdx)를 만들어 이 가이드를 사용하는 다음 사람을 도와주세요.
+[Pull Request](https://github.com/webpack/webpack.js.org/edit/main/src/content/migrate/5.mdx)를 만들어 이 가이드를 사용하는 다음 사람을 도와주세요.
 
 ## Changes to internals
 

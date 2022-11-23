@@ -28,7 +28,9 @@ will do this automatically. This step pulls in documentation for loaders/plugins
 in separate repositories such as the ones found in the [webpack-contrib][4] organization.
 See the `package.json` for the full list of `scripts`.
 
-> Note that **Node 12.x** or above is required for the build process to run properly.
+> **Note**
+>
+> **Node v14.20** or above is required for the build process to run properly.
 
 ## Contributor License Agreement
 
@@ -70,7 +72,7 @@ After getting some feedback, push to your fork branch and submit a pull request.
 suggest some changes or improvements or alternatives, but for small changes your pull
 request should be accepted and merged fairly quick.
 
-Issue the PR to the [master][8] branch.
+Issue the PR to the [main][8] branch.
 
 > See [GitHub documentation][9] for more help.
 
@@ -108,9 +110,9 @@ any time spent fixing typos or clarifying sections in the documentation.
 [3]: http://localhost:3000/
 [4]: https://github.com/webpack-contrib
 [5]: https://github.com/settings/emails
-[6]: https://github.com/webpack/webpack.js.org/blob/master/.editorconfig
+[6]: https://github.com/webpack/webpack.js.org/blob/main/.editorconfig
 [7]: http://editorconfig.org/#download
-[8]: https://github.com/webpack/webpack.js.org/tree/master
+[8]: https://github.com/webpack/webpack.js.org/tree/main
 [9]: https://help.github.com/articles/proposing-changes-to-your-work-with-pull-requests/
 [10]: http://conventionalcommits.org/
 [11]: https://github.com/conventional-changelog/standard-version
