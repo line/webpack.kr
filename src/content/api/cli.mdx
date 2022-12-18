@@ -605,9 +605,7 @@ module.exports = (env, argv) => {
 
 ### node-env
 
-`webpack-cli v4`의 경우.
-
-`--node-env` 옵션을 사용하여 `process.env.NODE_ENV`를 설정할 수 있습니다.
+`--node-env` 옵션을 사용하여 `process.env.NODE_ENV`를 설정할 수 있으며, 이는 사용자 코드와 webpack 설정 모두에서 사용할 수 있습니다.
 
 ```bash
 npx webpack --node-env production   # process.env.NODE_ENV = 'production'
@@ -619,7 +617,7 @@ T> `mode` 옵션은 명시적으로 설정하지 않으면 `--node-env` 옵션�
 
 `webpack-cli v5+`의 경우.
 
-`--define-process-env-node-env` 옵션을 사용하여 `process.env.NODE_ENV`를 설정할 수 있습니다.
+`process.env.NODE_ENV`를 설정하기 위한 [`--node-env`](/api/cli/#node-env)의 별칭입니다.
 
 ```bash
 npx webpack --define-process-env-node-env production   # process.env.NODE_ENV = 'production'
