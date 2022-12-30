@@ -199,6 +199,7 @@ webpack으로 애플리케이션을 번들해보았다면 익숙할 것입니다
      path: path.resolve(__dirname, 'dist'),
      filename: 'webpack-numbers.js',
 -    library: 'webpackNumbers',
++    globalObject: 'this',
 +    library: {
 +      name: 'webpackNumbers',
 +      type: 'umd',

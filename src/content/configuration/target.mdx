@@ -11,6 +11,7 @@ contributors:
   - byzyk
   - EugeneHlushko
   - smelukov
+  - chenxsan
 translators:
   - limong
 ---
@@ -21,7 +22,9 @@ Webpack은 다양한 환경과 _target을_ 컴파일합니다. `target`이 무�
 
 `string` `[string]` `false`
 
-특정 환경을 대상으로 하도록 webpack에 지정합니다. browserslist 설정이 없으면 `'browserslist'` 혹은 `'web'`으로 설정됩니다.
+특정 환경에 대한 런타임 코드를 생성하도록 webpack에 지시합니다. webpack 런타임 코드는 작성하는 사용자 코드와 동일하지 않습니다. 예를 들어 소스 코드에 화살표 함수가 있고 ES5 환경에서 번들된 코드를 실행하려면, Babel과 같은 트랜스파일러로 해당 코드를 트랜스파일해야 합니다. Webpack은 `target`이 구성된 상태에서는 자동으로 트랜스파일하지 않습니다.
+
+browserslist 설정이 없으면 `'browserslist'` 혹은 `'web'`으로 설정됩니다.
 
 ### string
 

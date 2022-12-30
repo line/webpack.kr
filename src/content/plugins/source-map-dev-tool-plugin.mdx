@@ -7,6 +7,7 @@ contributors:
   - neilkennedy
   - byzyk
   - EugeneHlushko
+  - chenxsan
 translators:
   - Eunbin-Kim
 related:
@@ -69,7 +70,7 @@ module.exports = {
 
 ```js
 new webpack.SourceMapDevToolPlugin({
-  filename: '[name].js.map',
+  filename: '[file].map[query]',
   exclude: ['vendor.js'],
 });
 ```

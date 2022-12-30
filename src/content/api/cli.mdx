@@ -36,6 +36,8 @@ related:
 
 webpack 및 CLI를 아직 설치하지 않은 경우 [설치 가이드](/guides/installation)를 읽어보세요.
 
+W> `webpack-cli` v5.0.0+에는 node >= v14.15.0, `webpack >= v5.0.0`, `webpack-dev-server >= v4.0.0`이 필요합니다.
+
 W> `npx`를 사용하여 webpack을 실행하려면 `webpack-cli`가 설치되어 있는지 확인하세요.
 
 ## Commands
@@ -247,30 +249,30 @@ npx webpack watch --mode development
 
 기본적으로 webpack은 다음 플래그와 함께 제공됩니다.
 
-| 플래그 / 별칭                       | 타입            | 설명                                                                   |
-| ----------------------------------- | --------------- | ---------------------------------------------------------------------- |
-| [`--entry`](#entry)                 | string[]        | 애플리케이션의 엔트리 포인트입니다. (예: `./src/main.js`)              |
-| [`--config, -c`](#config)           | string[]        | webpack 설정 파일의 경로를 제공합니다. (예: `./webpack.config.js`)     |
-| [`--config-name`](#config-name)     | string[]        | 사용할 설정의 이름입니다.                                              |
-| `--name`                            | string          | 사용할 설정의 이름. 복수의 설정을 로드할 때 사용합니다.                |
-| `--color`                           | boolean         | 콘솔에서 색상 활성화                                                   |
-| [`--merge, -m`](#merge)             | boolean         | `webpack-merge`를 사용하여 둘 이상의 구성을 병합합니다.                |
-| [`--env`](#env)                     | string[]        | 함수일 때 설정에 전달된 환경입니다.                                    |
-| [`--node-env`](#node-env)           | string          | `process.env.NODE_ENV`를 지정된 값으로 설정합니다.                     |
-| [`--progress`](#progress)           | boolean, string | 빌드 중 컴파일 진행률을 출력합니다.                                    |
-| [`--help`](#help)                   | boolean         | 지원되는 플래그 및 명령 목록을 출력합니다.                             |
-| [`--output-path, -o`](#output-path) | string          | webpack에 의해 생성된 파일의 출력 위치입니다. (예: `./dist`)           |
-| `--target, -t`                      | string[]        | 빌드 대상을 설정합니다.                                                |
-| `--watch, -w`                       | boolean         | 파일 변경 사항을 확인합니다.                                           |
-| `--watch-options-stdin`             | boolean         | stdin 스트림이 종료되면 감시를 중단합니다.                             |
-| `--hot, -h`                         | boolean         | Hot Module Replacement를 활성화합니다.                                 |
-| `--devtool, -d`                     | string          | 소스 맵 생성 여부와 방법을 제어합니다.                                 |
-| `--prefetch`                        | string          | 이 요청을 미리 가져옵니다.                                             |
-| [`--json, -j`](#json)               | boolean, string | 결과를 JSON으로 출력하거나 파일으로 저장합니다.                        |
-| `--mode`                            | string          | webpack에 전달할 모드를 정의합니다.                                    |
-| [`--version, -v`](#version)         | boolean         | 현재 버전을 가져옵니다.                                                |
-| `--stats`                           | boolean, string | webpack에 통계 처리 방법을 지시합니다.                                 |
-| [`--analyze`](#analyzing-bundle)    | boolean         | 번들 정보를 얻기 위해 `webpack-bundle-analyzer` 플러그인을 호출합니다. |
+| 플래그 / 별칭                                                    | 타입            | 설명                                                               |
+| --------------------------------------------------------------- | --------------- | ------------------------------------------------------------------------- |
+| [`--entry`](#entry)                                             | string[]        | 애플리케이션의 엔트리 포인트입니다. (예: `./src/main.js`)               |
+| [`--config, -c`](#config)                                       | string[]        | webpack 설정 파일의 경로를 제공합니다. (예: `./webpack.config.js`)   |
+| [`--config-name`](#config-name)                                 | string[]        | 사용할 설정의 이름입니다.                                          |
+| `--name`                                                        | string          | 사용할 설정의 이름. 복수의 설정을 로드할 때 사용합니다.      |
+| `--color`                                                       | boolean         | 콘솔에서 색상 활성화                                                  |
+| [`--merge, -m`](#merge)                                         | boolean         | `webpack-merge`를 사용하여 둘 이상의 구성을 병합합니다.                    |
+| [`--env`](#env)                                                 | string[]        | 함수일 때 설정에 전달된 환경입니다.             |
+| [`--define-process-env-node-env`](#define-process-env-node-env) | string          | `process.env.NODE_ENV`를 지정된 값으로 설정합니다.                         |
+| [`--progress`](#progress)                                       | boolean, string | 빌드 중 컴파일 진행률을 출력합니다.                                   |
+| [`--help`](#help)                                               | boolean         | 지원되는 플래그 및 명령 목록을 출력합니다.                              |
+| [`--output-path, -o`](#output-path)                             | string          | webpack에 의해 생성된 파일의 출력 위치입니다. (예: `./dist`)            |
+| `--target, -t`                                                  | string[]        | 빌드 대상을 설정합니다.                                                     |
+| `--watch, -w`                                                   | boolean         | 파일 변경 사항을 확인합니다.                                                    |
+| `--watch-options-stdin`                                         | boolean         | stdin 스트림이 종료되면 감시를 중단합니다.                                 |
+| `--devtool, -d`                                                 | string          | 소스 맵 생성 여부와 방법을 제어합니다.                            |
+| [`--json, -j`](#json)                                           | boolean, string | 결과를 JSON으로 출력하거나 파일으로 저장합니다.                               |
+| `--mode`                                                        | string          | webpack에 전달할 모드를 정의합니다.                                       |
+| [`--version, -v`](#version)                                     | boolean         | 현재 버전을 가져옵니다.                                                       |
+| `--stats`                                                       | boolean, string | webpack에 통계 처리 방법을 지시합니다.                            |
+| `--disable-interpret`                                           | boolean         | 설정 파일을 로드할 때 해석을 사용하지 않도록 설정합니다.                            |
+| `--fail-on-warnings`                                            | boolean         | webpack의 경고에서 0이 아닌 종료 코드로 webpack-cli 프로세스를 중지합니다. |
+| [`--analyze`](#analyzing-bundle)                                | boolean         | 번들 정보를 얻기 위해 `webpack-bundle-analyzer` 플러그인을 호출합니다.     |
 
 ### Negated Flags
 
@@ -323,22 +325,24 @@ npx webpack --entry ./first.js --entry ./second.js --output-path /build
 다음은 CLI를 통해 엔트리 파일을 지정하는 여러 가지 방법입니다.
 
 ```bash
-npx webpack ./first-entry.js
+npx webpack --entry-reset ./first-entry.js
 ```
 
 ```bash
-npx webpack --entry ./first-entry.js
+npx webpack --entry-reset --entry ./first-entry.js
 ```
 
 ```bash
-npx webpack ./first-entry.js ./other-entry.js
+npx webpack --entry-reset ./first-entry.js ./other-entry.js
 ```
 
 ```bash
-npx webpack --entry ./first-entry.js ./other-entry.js
+npx webpack --entry-reset --entry ./first-entry.js ./other-entry.js
 ```
 
-T> `webpack [command] [entries ...] [option]`구문을 사용합니다. 일부 옵션은 복수의 값을 허용할 수 있으므로 `webpack --target node ./entry.js`는 `target: ['node', './entry.js']`를 의미합니다.
+W> 기존 [entry](/configuration/entry-context/#entry) 옵션을 대체하려면 `--entry-reset` 옵션이 필요하지만, 이 옵션이 없으면 `--entry` 옵션이 기존 항목에 다른 항목을 추가합니다.
+
+T> `webpack [command] --entry-reset [entries ...] [option]`구문을 사용합니다. 일부 옵션은 복수의 값을 허용할 수 있으므로 `webpack --target node ./entry.js`는 `target: ['node', './entry.js']`를 의미합니다.
 
 #### output-path
 
@@ -601,13 +605,25 @@ module.exports = (env, argv) => {
 
 ### node-env
 
-`--node-env` 옵션을 사용하여 `process.env.NODE_ENV`를 설정할 수 있습니다.
+`--node-env` 옵션을 사용하여 `process.env.NODE_ENV`를 설정할 수 있으며, 이는 사용자 코드와 webpack 설정 모두에서 사용할 수 있습니다.
 
 ```bash
 npx webpack --node-env production   # process.env.NODE_ENV = 'production'
 ```
 
 T> `mode` 옵션은 명시적으로 설정하지 않으면 `--node-env` 옵션을 받듭니다. 즉, `--node-env production`은 `process.env.NODE_ENV`와 `mode`를 모두 `'production'`으로 설정합니다.
+
+### define-process-env-node-env
+
+`webpack-cli v5+`의 경우.
+
+`process.env.NODE_ENV`를 설정하기 위한 [`--node-env`](/api/cli/#node-env)의 별칭입니다.
+
+```bash
+npx webpack --define-process-env-node-env production   # process.env.NODE_ENV = 'production'
+```
+
+T> `mode` 옵션을 명시적으로 설정하지 않는 경우 `--define-process-env-node-env` 옵션을 따릅니다. 예를들어, `--define-process-env-node-env production`과 같이 설정하면 ` process.env.NODE_ENV` 와 `mode`는 둘 다 `'production'`으로 설정됩니다.
 
 ## Configuration Options
 

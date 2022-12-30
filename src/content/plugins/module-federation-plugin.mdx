@@ -4,6 +4,7 @@ group: webpack
 contributors:
   - XiaofengXie16
   - chenxsan
+  - burhanuday
 tanslators:
   dlskawo0409
 related:
@@ -137,7 +138,7 @@ module.exports = {
 
 `false | string`
 
-패키지의 필수 버전입니다.
+패키지의 필수 버전입니다. 시멘틱 버전 관리를 허용합니다. 예를들면 "^1.2.3"와 같이 사용합니다. 
 
 #### **`shareKey`**
 
@@ -157,17 +158,21 @@ module.exports = {
 
 ‘singleton’은 공유 범위에서 단일 버전의 공유 모듈만 허용합니다.(기본적으로 비활성화됨) 일부 라이브러리는 전역 내부 상태를 사용합니다.(예: react, react-dom) 따라서 한 번에 하나의 라이브러리 인스턴스만 실행하는 것이 중요합니다.
 
+공유 범위에 동일한 종속성을 갖는 여러 버전이 있는 경우, 가장 높은 시멘틱 버전이 사용됩니다.
+
 #### **`strictVersion`**
 
 `boolean`
 
-‘strictVersion’을 사용하면 버전이 유효하지 않은 경우 webpack이 공유 모듈을 거부할 수 있습니다(로컬 fallback 모듈을 사용할 수 있고 공유 모듈이 singleton이 아닌 경우 기본값은 `true`로 설정되고, 그렇지 않으면 `false`로 설정되며 필수 버전이 지정되지 않은 경우 효과가 없습니다).
+‘strictVersion’을 사용하면 버전이 유효하지 않은 경우 webpack이 공유 모듈을 거부할 수 있습니다(로컬 fallback 모듈을 사용할 수 있고 공유 모듈이 singleton이 아닌 경우 기본값은 `true`로 설정되고, 그렇지 않으면 `false`로 설정되며 필수 버전이 지정되지 않은 경우 효과가 없습니다). 필요한 버전이 없으면 런타임 오류가 발생합니다.
 
 #### **`version`**
 
 `false | string`
 
 제공된 모듈의 버전입니다. Webpack이 일치하는 낮은 버전을 대체할 수 있지만, 더 높은 버전은 대체할 수 없습니다.
+
+Webpack은 기본적으로 디펜던시의 `package.json` 파일에 있는 버전을 사용합니다.
 
 #### **Additional examples**
 
