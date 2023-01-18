@@ -265,7 +265,27 @@ module.exports = {
 };
 ```
 
-`optimization.minimizer`에서 `'...'`를 사용하여 기본값에 접근할 수 있습니다.
+기본적으로 webpack은 `optimization.minimizer`를 [다음 값으로](https://github.com/webpack/webpack/blob/4b4ca3bb53f36a5b8fc6bc1bd976ed7af161bd80/lib/config/defaults.js#L1160-L1174) 설정합니다.
+
+```js
+[
+  {
+    apply: (compiler) => {
+      // Lazy load the Terser plugin
+      const TerserPlugin = require('terser-webpack-plugin');
+      new TerserPlugin({
+        terserOptions: {
+          compress: {
+            passes: 2,
+          },
+        },
+      }).apply(compiler);
+    },
+  },
+]; // eslint-disable-line
+```
+
+`optimization.minimizer`를 사용자 정의할 때 기본 값을 유지하려는 경우 `'...'`로 접근할 수 있습니다.
 
 ```js
 module.exports = {
@@ -274,6 +294,8 @@ module.exports = {
   },
 };
 ```
+
+기본적으로, `'...'`은 [기본 설정값에 접근하는 지름길](https://github.com/webpack/webpack/blob/4b4ca3bb53f36a5b8fc6bc1bd976ed7af161bd80/lib/config/defaults.js#L98-L108) 입니다. 그렇지 않으면 webpack이 우리를 위해 설정합니다.
 
 ## optimization.moduleIds
 
