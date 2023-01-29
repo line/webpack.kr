@@ -446,7 +446,23 @@ module.exports = {
 
 패키지 관리자가 관리하고 수정되지 않도록 신뢰할 수 있는 경로의 배열입니다.
 
-정규식을 사용하는 경우 캡처 그룹의 경로를 래핑해야 합니다.
+정규식을 사용하는 경우 webpack이 경로를 추출할 수 있도록 캡처 그룹의 경로를 래핑해야 합니다. 예를 들어 여기에 `node_modules` 디렉터리와 일치시키기 위해 webpack 내부적으로 사용하는 RegExp가 있습니다.
+
+```text
+/^(.+?[\\/]node_modules)[\\/]/
+```
+
+`managedPaths`의 일반적인 사용 사례는 `node_modules`에서 일부 폴더를 제외하는 것입니다. 예를 들어, `node_modules/@azure/msal-browser` 폴더의 파일이 변경될 것으로 예상된다는 것을 webpack에 알리고자 합니다. 이는 아래와 같은 정규식으로 수행할 수 있습니다.
+
+```js
+module.exports = {
+  snapshot: {
+    managedPaths: [
+      /^(.+?[\\/]node_modules[\\/](?!(@azure[\\/]msal-browser))(@.+?[\\/])?.+?)[\\/]/,
+    ],
+  },
+};
+```
 
 ### module
 
