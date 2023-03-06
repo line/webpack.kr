@@ -154,7 +154,7 @@ _production_ 설정을 계속 추가하는대로 출력이 어떻게 변경되�
 
 ## Specify the Mode
 
-많은 라이브러리는 `process.env.NODE_ENV` 변수를 이용하여 어떤 라이브러리를 포함해야 하는지 결정합니다. 예를 들어 `process.env.NODE_ENV`가 `'production'`으로 설정되지 않으면 몇몇 라이브러리는 디버깅의 편의성을 위해 로그 및 테스트를 추가할 수도 있습니다. 그러나 `process.env.NODE_ENV`가 `'production'`으로 설정되어 있으면 실제 사용자의 작업 실행 방식을 최적화 하기 위해 코드의 중요한 부분을 추가하거나 삭제 할 수 있습니다. webpack v4부터 [`mode`](/configuration/mode/)를 지정하면 [`DefinePlugin`](/plugins/define-plugin)이 자동으로 설정됩니다.
+많은 라이브러리는 `process.env.NODE_ENV` 변수를 이용하여 어떤 라이브러리를 포함해야 하는지 결정합니다. 예를 들어 `process.env.NODE_ENV`가 `'production'`으로 설정되지 않으면 몇몇 라이브러리는 디버깅의 편의성을 위해 로그 및 테스트를 추가할 수도 있습니다. 그러나 `process.env.NODE_ENV`가 `'production'`으로 설정되어 있으면 실제 사용자의 작업 실행 방식을 최적화하기 위해 코드의 중요한 부분을 추가하거나 삭제할 수 있습니다. webpack v4부터 [`mode`](/configuration/mode/)를 지정하면 [`DefinePlugin`](https://github.com/webpack/webpack/blob/fcccd192ce550210186f84a7ca59ee4cd47a8b2d/lib/WebpackOptionsApply.js#L565)을 통해 `process.env.NODE_ENV`가 자동으로 설정됩니다.
 
 **webpack.prod.js**
 
@@ -167,7 +167,7 @@ _production_ 설정을 계속 추가하는대로 출력이 어떻게 변경되�
   });
 ```
 
-T> 기술적으로 `NODE_ENV`는 Node.js가 실행 중인 스크립트가 참고할 수 있는 시스템 환경 변수입니다. 이것은 서버 툴, 빌드 스크립트 및 클라이언트 라이브러리에 의한 dev-vs-prod의 동작을 결정하는 규칙에 사용됩니다. 예상과 달리 `process.env.NODE_ENV`는 빌드 스크립트인 `webpack.config.js` **안에서** `'production'`으로 설정되지 않습니다. [#2537](https://github.com/webpack/webpack/issues/2537)을 참조해 주세요. 따라서 다음과 같은 조건은 `process.env.NODE_ENV === 'production' ? '[name].[contenthash].bundle.js' : '[name].bundle.js'` webpack 설정에서 예상대로 동작하지 않습니다.
+T> 기술적으로 `NODE_ENV`는 Node.js가 실행 중인 스크립트가 참고할 수 있는 시스템 환경 변수입니다. 이것은 서버 툴, 빌드 스크립트 및 클라이언트 라이브러리에 의한 dev-vs-prod의 동작을 결정하는 규칙에 사용됩니다. 예상과 달리 `process.env.NODE_ENV`는 빌드 스크립트인 `webpack.config.js` **안에서** `process.env.NODE_ENV`가 자동으로 설정되지 않습니다.  따라서 `process.env.NODE_ENV === 'production' ? '[name].[contenthash].bundle.js' : '[name].bundle.js'`와 같은 조건은 CLI를 통해 `NODE_ENV=production`으로 명시적으로 `NODE_ENV`를 지정하지 않는 한 webpack 설정에서 예상대로 동작하지 않습니다.
 
 [`react`](https://reactjs.org/)와 같은 라이브러리를 사용한다면 `DefinePlugin`을 추가한 후에 명확하게 번들 크기가 줄어야 합니다. 또한 로컬 `/src`의 코드 역시 제어 할 수 있습니다. 따라서 다음 검사는 유효합니다.
 

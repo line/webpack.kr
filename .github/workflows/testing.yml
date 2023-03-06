@@ -3,13 +3,17 @@ name: Ensure PR
 on:
   pull_request:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   unitTest:
     name: Unit Test
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node-version: [16.x]
+        node-version: [lts/*]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
@@ -28,7 +32,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node-version: [16.x]
+        node-version: [lts/*]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
@@ -64,7 +68,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node-version: [16.x]
+        node-version: [lts/*]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
@@ -98,7 +102,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node-version: [16.x]
+        node-version: [lts/*]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
@@ -121,3 +125,5 @@ jobs:
           build: yarn build
           start: yarn serve-dist
           command: yarn cypress:run
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
