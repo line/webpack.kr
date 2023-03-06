@@ -154,7 +154,7 @@ _production_ 설정을 계속 추가하는대로 출력이 어떻게 변경되�
 
 ## Specify the Mode
 
-많은 라이브러리는 `process.env.NODE_ENV` 변수를 이용하여 어떤 라이브러리를 포함해야 하는지 결정합니다. 예를 들어 `process.env.NODE_ENV`가 `'production'`으로 설정되지 않으면 몇몇 라이브러리는 디버깅의 편의성을 위해 로그 및 테스트를 추가할 수도 있습니다. 그러나 `process.env.NODE_ENV`가 `'production'`으로 설정되어 있으면 실제 사용자의 작업 실행 방식을 최적화 하기 위해 코드의 중요한 부분을 추가하거나 삭제 할 수 있습니다. webpack v4부터 [`mode`](/configuration/mode/)를 지정하면 [`DefinePlugin`](https://github.com/webpack/webpack/blob/fcccd192ce550210186f84a7ca59ee4cd47a8b2d/lib/WebpackOptionsApply.js#L565)을 통해 `process.env.NODE_ENV`가 자동으로 설정됩니다.
+많은 라이브러리는 `process.env.NODE_ENV` 변수를 이용하여 어떤 라이브러리를 포함해야 하는지 결정합니다. 예를 들어 `process.env.NODE_ENV`가 `'production'`으로 설정되지 않으면 몇몇 라이브러리는 디버깅의 편의성을 위해 로그 및 테스트를 추가할 수도 있습니다. 그러나 `process.env.NODE_ENV`가 `'production'`으로 설정되어 있으면 실제 사용자의 작업 실행 방식을 최적화하기 위해 코드의 중요한 부분을 추가하거나 삭제할 수 있습니다. webpack v4부터 [`mode`](/configuration/mode/)를 지정하면 [`DefinePlugin`](https://github.com/webpack/webpack/blob/fcccd192ce550210186f84a7ca59ee4cd47a8b2d/lib/WebpackOptionsApply.js#L565)을 통해 `process.env.NODE_ENV`가 자동으로 설정됩니다.
 
 **webpack.prod.js**
 
