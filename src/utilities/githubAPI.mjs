@@ -14,7 +14,11 @@ if (
   });
   console.log('api is authenticated');
 } else {
-  api = new GithubAPI();
+  // pass a private token to run internal build.
+  const token = process.env.token || '';
+  api = new GithubAPI({
+    auth: token
+  });
   console.log('api is not authenticated');
 }
 export default api;
