@@ -2305,3 +2305,20 @@ module.exports = {
   },
 };
 ```
+
+## output.workerPublicPath
+
+`string`
+
+Worker에 대한 공용 경로를 설정합니다. 기본값은 [output.publicPath](#outputpublicpath)입니다. Worker 스크립트가 다른 경로에 있는 경우에만 이 옵션을 사용하세요.
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  //...
+  output: {
+    workerPublicPath: '/workerPublicPath2/',
+  },
+};
+```
