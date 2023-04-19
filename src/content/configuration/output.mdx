@@ -28,6 +28,7 @@ contributors:
   - anshumanv
   - mrzalyaul
   - JakobJingleheimer
+  - long76
 translators:
   - YukJiSoo
 ---
@@ -902,7 +903,9 @@ export function hello(name) {
 
 <Badge text="5.78.0+" />
 
-AMD 모듈에서 `define`/`require` 기능에 대한 네임스페이스를 정의합니다.
+컨테이너(전역 공간에 정의됨)를 사용하여 AMD 모듈에서 `define`/`require` 함수를 호출합니다.
+
+W> `amdContainer` 값은 **반드시** 전역 변수로 설정되어야 합니다.
 
 ```js
 module.exports = {
@@ -916,14 +919,10 @@ module.exports = {
 };
 ```
 
-결과 코드는 다음과 같습니다.
+그러면 다음과 같은 번들이 생성됩니다.
 
 ```js
-function define(name, deps, fn) {
-  fn();
-}
-const window = {};
-window['clientContainer'] = { define };
+window['clientContainer'].define(/*define args*/); // 또는 'amd-require' window['clientContainer'].require(/*require args*/);
 ```
 
 ### output.library.name
