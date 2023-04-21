@@ -10,6 +10,7 @@ contributors:
   - byzyk
   - EugeneHlushko
   - EslamHiko
+  - snitin315
 translators:
   - moonheekim0118
 related:
@@ -25,7 +26,7 @@ related:
 
 - `context` (선택): 매니페스트 파일의 요청 컨텍스트 (기본값은 webpack 컨텍스트)
 - `format` (boolean = false): `true`인 경우 매니페스트 json 파일(출력)이 형식화됩니다.
-- `name`: 노출된 dll 함수의 이름 ([TemplatePaths](https://github.com/webpack/webpack/blob/master/lib/TemplatedPathPlugin.js): `[fullhash]` & `[name]` )
+- `name`: 노출된 dll 함수의 이름 ([TemplatePaths](https://github.com/webpack/webpack/blob/master/lib/TemplatedPathPlugin.js): `[fullhash]`, `[chunkhash]`, `[contenthash]`, & `[name]` )
 - `path`: 매니페스트 json 파일의 **절대 경로** (출력)
 - `entryOnly` (boolean = true): `true`인 경우 엔트리 포인트만 노출됩니다.
 - `type`: dll 번들의 유형
