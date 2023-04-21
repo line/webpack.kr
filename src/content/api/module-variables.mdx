@@ -83,7 +83,22 @@ exports.aFunction = function doSomething() {
 
 파서에 의해 파싱되는 표현식 내부에서 사용되는 경우, 설정 옵션은 `true`로 처리됩니다.
 
-## import.meta.url
+## import.meta
+
+`import.meta`는 모듈의 URL과 같은 컨텍스트별 메타데이터를 JavaScript 모듈에 노출합니다. [ESM](/guides/ecma-script-modules/)에서만 사용할 수 있습니다.
+
+Webpack은 `import.meta`에 대한 직접 액세스를 지원하지 않습니다. 대신 해당 속성에 액세스하거나 디스트럭처링 할당을 사용해야 합니다. 예를 들면,
+
+```js
+// webpack은 이에 대해 경고할 것입니다.
+Object.keys(import.meta);
+
+// 사용해도 괜찮습니다.
+console.log(import.meta.url);
+const { url } = import.meta;
+```
+
+### import.meta.url
 
 모듈의 절대 `file:` URL을 반환합니다.
 
@@ -93,7 +108,7 @@ exports.aFunction = function doSomething() {
 console.log(import.meta.url); // `file:///path/to/your/project/src/index.js`와 같은 출력
 ```
 
-## import.meta.webpack
+### import.meta.webpack
 
 webpack 버전을 반환합니다.
 
@@ -103,11 +118,11 @@ webpack 버전을 반환합니다.
 console.log(import.meta.webpack); // webpack 5의 경우 `5` 출력
 ```
 
-## import.meta.webpackHot
+### import.meta.webpackHot
 
 Webpack 특유의 속성입니다. [`module.hot`](#modulehot-webpack-specific)의 별칭으로, `import.meta.webpackHot`은 [strict ESM](/guides/ecma-script-modules/#flagging-modules-as-esm)에서 사용할 수 있지만 `module.hot`은 할 수 없습니다.
 
-## import.meta.webpackContext
+### import.meta.webpackContext
 
 `require.context`와 동일한 값을 반환하지만 `javascript/auto` 및 `javascript/esm`에 대해서만 반환합니다.
 

@@ -27,6 +27,8 @@ new Worker(
 
 [`Worker` API](https://developer.mozilla.org/en-US/docs/Web/API/Worker/Worker)에서는 `Worker` 생성자가 스크립트의 URL을 나타내는 문자열을 허용한다고 설명하지만, webpack 5에서는 `URL`만 사용할 수 있다는 점에 유의하세요.
 
+W> `Worker` 생성자에서 변수를 사용하는 것은 webpack에서 지원되지 않습니다. 예를들어 다음과 같은 코드는 동작하지 않습니다. `const url = new URL('./path/to/worker.ts', import.meta.url); const worker = new Worker(url);`. Webpack은 구문을 정적으로 분석할 수 없기 때문입니다. Webpack에서 `Worker` 구문을 사용할 때는 이러한 제한이 있다는 것을 알고 있어야 합니다.
+
 ## Example
 
 **src/index.js**

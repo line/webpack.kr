@@ -28,6 +28,7 @@ contributors:
   - anshumanv
   - mrzalyaul
   - JakobJingleheimer
+  - long76
 translators:
   - YukJiSoo
 ---
@@ -897,6 +898,32 @@ export function hello(name) {
      },
    };
    ```
+
+### output.library.amdContainer
+
+<Badge text="5.78.0+" />
+
+컨테이너(전역 공간에 정의됨)를 사용하여 AMD 모듈에서 `define`/`require` 함수를 호출합니다.
+
+W> `amdContainer` 값은 **반드시** 전역 변수로 설정되어야 합니다.
+
+```js
+module.exports = {
+  // …
+  output: {
+    library: {
+      amdContainer: 'window["clientContainer"]',
+      type: 'amd', // or 'amd-require'
+    },
+  },
+};
+```
+
+그러면 다음과 같은 번들이 생성됩니다.
+
+```js
+window['clientContainer'].define(/*define args*/); // 또는 'amd-require' window['clientContainer'].require(/*require args*/);
+```
 
 ### output.library.name
 
@@ -2302,6 +2329,23 @@ module.exports = {
   //...
   output: {
     workerChunkLoading: false,
+  },
+};
+```
+
+## output.workerPublicPath
+
+`string`
+
+Worker에 대한 공용 경로를 설정합니다. 기본값은 [output.publicPath](#outputpublicpath)입니다. Worker 스크립트가 다른 경로에 있는 경우에만 이 옵션을 사용하세요.
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  //...
+  output: {
+    workerPublicPath: '/workerPublicPath2/',
   },
 };
 ```
