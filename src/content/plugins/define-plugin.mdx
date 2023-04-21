@@ -47,7 +47,7 @@ console.log('Running App version ' + VERSION);
 if (!BROWSER_SUPPORTS_HTML5) require('html5shiv');
 ```
 
-W> `process`의 값을 정의할 때 `process: { env: { NODE_ENV: JSON.stringify('production') } }` 보다 `'process.env.NODE_ENV': JSON.stringify('production')`를 선호합니다. 만약 후자의 방식을 사용하면 process 객체를 덮어쓰게 되므로 `process` 객체에 다른 값이 정의될 것으로 예상되는 일부 모듈과의 호환성이 깨질 수 있습니다.
+W> `process`의 값을 정의할 때 `process: { env: { NODE_ENV: JSON.stringify('production') } }` 보다 `'process.env.NODE_ENV': JSON.stringify('production')`를 선호합니다. 만약 전자의 방식을 사용하면 process 객체를 덮어쓰게 되므로 `process` 객체에 다른 값이 정의될 것으로 예상되는 일부 모듈과의 호환성이 깨질 수 있습니다.
 
 T> 플러그인은 텍스트에 직접 수정 작업을 진행하기 때문에 주어진 값은 반드시 문자열 자체에 **실제 따옴표**를 포함해야 합니다. 일반적으로 이것은 `'"production"'`과 같은 대체 따옴표를 사용하거나 `JSON.stringify('production')`를 사용하여 수행됩니다.
 
