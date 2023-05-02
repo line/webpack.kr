@@ -776,6 +776,25 @@ module.exports = {
 };
 ```
 
+## output.ignoreBrowserWarnings
+
+<Badge text="5.81.0+" />
+
+`boolean = false`
+
+프로덕션 환경에서 브라우저 콘솔의 경고를 숨깁니다. 이 옵션은 터미널/콘솔 출력에 영향을 주지 않습니다.
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  //...
+  output: {
+    ignoreBrowserWarnings: true,
+  },
+};
+```
+
 ## output.importFunctionName
 
 `string = 'import'`

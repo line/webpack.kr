@@ -703,6 +703,23 @@ module.exports = {
 };
 ```
 
+### stats.errorsSpace
+
+<Badge text="5.80.0+" />
+
+`number`
+
+오류를 표시하기 위해 할당할 줄 수를 제한하도록 `stats`에 알려줍니다.
+
+```javascript
+module.exports = {
+  //...
+  stats: {
+    errorsSpace: 5,
+  },
+};
+```
+
 ### stats.excludeAssets
 
 `array = []: string | RegExp | function (assetName) => boolean` `string` `RegExp` `function (assetName) => boolean`
@@ -1171,6 +1188,23 @@ module.exports = {
   //...
   stats: {
     warnings: false,
+  },
+};
+```
+
+### stats.warningsSpace
+
+<Badge text="5.80.0+" />
+
+`number`
+
+Tells `stats` to limit the number of lines to allocate for displaying a warning.
+
+```javascript
+module.exports = {
+  //...
+  stats: {
+    warningsSpace: 5,
   },
 };
 ```

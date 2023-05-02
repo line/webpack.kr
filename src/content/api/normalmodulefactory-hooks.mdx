@@ -4,6 +4,7 @@ group: Plugins
 sort: 13
 contributors:
   - iguessitsokay
+  - chenxsan
 translators:
   - chopmozzi
 ---
@@ -69,6 +70,18 @@ NormalModuleFactory.hooks.someHook.for('identifier').tap(/* ... */);
 `AsyncSeriesBailHook`
 
 `NormalModule` 인스턴스를 만들기 전에 호출됩니다.
+
+- 콜백 파라미터: `createData` `resolveData`
+
+### createModuleClass
+
+`HookMap<SyncBailHook>`
+
+<Badge text="5.81.0+" />
+
+모듈을 생성할 때 `NormalModule` 클래스를 재정의할 수 있는 훅입니다. 이 훅은 [`createModule`](#createmodule) 훅 이후와 [`module`](#module) 훅 이전에 호출됩니다.
+
+- 훅 파라미터: `identifier`
 
 - 콜백 파라미터: `createData` `resolveData`
 
