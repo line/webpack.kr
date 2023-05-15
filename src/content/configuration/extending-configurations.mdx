@@ -1,0 +1,153 @@
+---
+title: Extends
+sort: 12
+contributors:
+  - burhanuday
+---
+
+## extends
+
+`string | string[]`
+
+<Badge text="webpack v5.82.0+" /> <Badge text="webpack-cli v5.1.0+" />
+
+'extends' 속성을 사용하면 기존 설정을 확장하여 기본으로 사용할 수 있습니다. 내부적으로 `webpack-merge` 패키지를 사용하여 설정을 병합하고 여러 설정 간에 설정이 중복되지 않도록 도와줍니다.
+
+W> **이 옵션은 Node API를 통해 지원되지 않습니다.** 확장은 Node API를 사용할 때 효과가 없습니다. 이 기능을 사용하려면 webpack-cli가 필요합니다.
+
+**base.webpack.config.js**
+
+```javascript
+module.exports = {
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        use: 'babel-loader',
+        exclude: /node_modules/,
+      },
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader'],
+      },
+    ],
+  },
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify('production'),
+    }),
+  ],
+};
+```
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  extends: path.resolve(__dirname, './base.webpack.config.js'),
+  entry: './src/index.js',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'bundle.js',
+  },
+};
+```
+
+## Extending multiple configurations
+
+`extends` 속성에 설정 경로 배열을 전달하여 한 번에 여러 설정을 확장할 수 있습니다.
+
+'extends' 속성의 설정은 오른쪽에서 왼쪽으로 병합됩니다. 즉, 오른쪽의 설정이 왼쪽의 설정으로 병합됩니다. 오른쪽 설정에서 동일한 속성을 전달하여 설정을 재정의할 수 있습니다.
+
+**js.webpack.config.js**
+
+```javascript
+module.exports = {
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        use: 'babel-loader',
+        exclude: /node_modules/,
+      },
+    ],
+  },
+};
+```
+
+**css.webpack.config.js**
+
+```javascript
+module.exports = {
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader'],
+      },
+    ],
+  },
+};
+```
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  extends: [
+    path.resolve(__dirname, './js.webpack.config.js'),
+    path.resolve(__dirname, './css.webpack.config.js'),
+  ],
+  entry: './src/index.js',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'bundle.js',
+  },
+};
+```
+
+## Overridding Configurations
+
+확장된 설정에서 확장된 설정과 동일한 속성을 전달하여 확장된 설정의 설정을 재정의할 수 있습니다.
+
+**base.webpack.config.js**
+
+```javascript
+module.exports = {
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'bundle.js',
+  },
+};
+```
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  extends: path.resolve(__dirname, './base.webpack.config.js'),
+  entry: './src/index.js',
+  // overriding the output path and filename
+  output: {
+    path: path.resolve(__dirname, 'build'),
+    filename: '[name].bundle.js',
+  },
+};
+```
+
+## Loading configuration from external packages
+
+패키지 이름을 `extends` 속성에 전달하여 타사 패키지에서 설정을 로드할 수도 있습니다. 패키지는 package.json에서 webpack 설정을 내보내야 합니다.
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  extends: require.resolve('webpack-config-foo'),
+  entry: './src/index.js',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'bundle.js',
+  },
+};
+```
