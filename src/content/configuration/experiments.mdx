@@ -31,7 +31,7 @@ W> 실험적 기능은 시멘틱 버저닝을 완화하고 주요 변경 사항�
 - [`lazyCompilation`](#experimentslazycompilation)
 - [`outputModule`](#experimentsoutputmodule)
 - `syncWebAssembly`: webpack 4에서와 같이 이전 웹 어셈블리를 지원합니다.
-- `topLevelAwait`: [Top Level Await Stage 3 제안](https://github.com/tc39/proposal-top-level-await)을 지원하여, 최상위에서 `await` 사용 시 모듈을 비동기 모듈로 만듭니다. 그리고 [`experiments.futureDefaults`](#experimentsfuturedefaults)가 `true`로 설정되면 기본적으로 활성화됩니다.
+- [`topLevelAwait`](#experimentstoplevelawait)
 
 **webpack.config.js**
 
@@ -303,6 +303,20 @@ module.exports = {
 module.exports = {
   experiments: {
     outputModule: true,
+  },
+};
+```
+
+### experiments.topLevelAwait
+
+`boolean = true`
+
+`topLevelAwait` 옵션은 `await`가 최상위 수준에서 사용될 때 모듈을 `async` 모듈로 변환합니다. Webpack 버전 `5.83.0`부터는 이 기능이 기본적으로 활성화됩니다. 그러나 그 이전 버전에서는 'experiments.topLevelAwait'를 'true'로 설정하여 활성화할 수 있습니다.
+
+```js
+module.exports = {
+  experiments: {
+    topLevelAwait: true,
   },
 };
 ```
