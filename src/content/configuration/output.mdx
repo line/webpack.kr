@@ -2281,7 +2281,7 @@ module.exports = {
 
 <Badge text="5.82.0+" />
 
-Determine whether to proceed with loading in anticipation that [`require-trusted-types-for 'script'`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/require-trusted-types-for) has not been enforced or to immediately fail when the call to `trustedTypes.createPolicy(...)` fails due to the policy name being absent from the CSP `trusted-types` list or being a duplicate.
+[`require-trusted-types-for 'script'`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security- Policy/require-trusted-types-for)가 적용되지 않았거나 정책 이름이 CSP 'trusted-types' 목록에 없거나 중복되어 'trustedTypes.createPolicy(...)'에 대한 호출이 실패하는 경우 즉시 실패 처리합니다.
 
 ```javascript
 module.exports = {
