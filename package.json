@@ -76,7 +76,7 @@
     "@babel/preset-env": "^7.22.4",
     "@babel/preset-react": "^7.22.3",
     "@mdx-js/loader": "^2.0.0-next.9",
-    "@octokit/auth-action": "^2.0.4",
+    "@octokit/auth-action": "^2.1.1",
     "@octokit/rest": "^19.0.11",
     "@pmmmwh/react-refresh-webpack-plugin": "next",
     "@svgr/webpack": "^8.0.1",
@@ -127,7 +127,7 @@
     "remark-refractor": "montogeek/remark-refractor",
     "rimraf": "^5.0.1",
     "sass": "^1.62.1",
-    "sass-loader": "^13.3.0",
+    "sass-loader": "^13.3.1",
     "sirv-cli": "^2.0.2",
     "sitemap-static": "^0.4.2",
     "static-site-generator-webpack-plugin": "^3.4.1",
@@ -135,12 +135,12 @@
     "tailwindcss": "^3.3.2",
     "tap-spot": "^1.1.2",
     "unist-util-visit": "^4.1.2",
-    "webpack": "^5.84.1",
-    "webpack-bundle-analyzer": "^4.8.0",
+    "webpack": "^5.85.0",
+    "webpack-bundle-analyzer": "^4.9.0",
     "webpack-cli": "^5.1.1",
     "webpack-dev-server": "^4.15.0",
     "webpack-merge": "^5.9.0",
-    "workbox-webpack-plugin": "^6.6.0",
+    "workbox-webpack-plugin": "^7.0.0",
     "yarn-deduplicate": "^6.0.2"
   },
   "dependencies": {
@@ -156,7 +156,7 @@
     "react-use": "^17.4.0",
     "react-visibility-sensor": "^5.0.2",
     "webpack-pwa-manifest": "^4.3.0",
-    "workbox-window": "^6.6.0"
+    "workbox-window": "^7.0.0"
   },
   "resolutions": {
     "sitemap-static/minimist": "1.2.5",
