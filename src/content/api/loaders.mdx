@@ -320,6 +320,39 @@ Here is a Warning!
 
 T> `stats.warnings`가 `false`로 설정되어 있거나 `none` 또는 `errors-only`와 같은 일부 다른 생략 설정이 `stats`에 사용되는 경우 경고가 표시되지 않습니다. [stats 사전 설정](/configuration/stats/#stats-presets)을 참고하세요.
 
+### this.environment
+
+생성된 런타임 코드에서 어떤 종류의 ES 기능을 사용할 수 있는지 확인하세요.
+
+예시:
+
+```json
+{
+  // 화살표 함수('() => { ... }')를 지원합니다.
+  "arrowFunction": true,
+  // BigInt를 문자 그대로 지원합니다(예를 들어, 123n).
+  "bigIntLiteral": false,
+  // const 및 let 변수 선언을 지원합니다.
+  "const": true,
+  // destructuring을 지원합니다('{ a, b } = obj' 처럼 사용합니다).
+  "destructuring": true,
+  // EcmaScript 모듈을 가져오는 비동기 import() 함수를 지원합니다.
+  "dynamicImport": false,
+  // 현재 웹 대상에 대해서만 작업자를 만들 때 async import()를 지원합니다.
+  "dynamicImportInWorker": false,
+  // 'for of' 반복자를 지원합니다('for (const x of array) { ... }' 처럼 사용합니다).
+  "forOf": true,
+  // 'globalThis'를 지원합니다.
+  "globalThis": true,
+  // ECMAScript 모듈을 가져오는 ECMAScript Module syntax를 지원합니다(import ... from '...' 처럼 사용합니다).
+  "module": false,
+  // 옵셔널 체이닝('obj?.a' 또는 'obj?.()')을 지원합니다.
+  "optionalChaining": true,
+  // 템플릿 리터럴을 지원합니다.
+  "templateLiteral": true
+}
+```
+
 ### this.fs
 
 `compilation`의 `inputFileSystem` 속성에 접근합니다.

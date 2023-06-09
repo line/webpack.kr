@@ -462,13 +462,17 @@ module.exports = {
       destructuring: true,
       // EcmaScript 모듈을 가져오는 비동기 import() 함수를 지원합니다.
       dynamicImport: false,
+      // 현재 웹 타켓에 대해서만 worker를 생성할 때 비동기 import()를 지원합니다.
+      dynamicImportInWorker: false,
       // 'for of' 반복자를 지원합니다('for (const x of array) { ... }' 처럼 사용합니다).
       forOf: true,
+      // 'globalThis'를 지원합니다.
+      globalThis: true,
       // ECMAScript 모듈을 가져오는 ECMAScript Module syntax를 지원합니다(import ... from '...' 처럼 사용합니다).
       module: false,
-      // 환경이 옵셔널 체이닝('obj?.a' 또는 'obj?.()')을 지원합니다.
+      // 옵셔널 체이닝('obj?.a' 또는 'obj?.()')을 지원합니다.
       optionalChaining: true,
-      // 환경이 템플릿 리터럴을 지원합니다.
+      // 템플릿 리터럴을 지원합니다.
       templateLiteral: true,
     },
   },
