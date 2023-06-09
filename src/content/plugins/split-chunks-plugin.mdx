@@ -100,7 +100,7 @@ W> webpack 5부터 `{cacheGroup}.test`에 엔트리 이름을 전달하고 `{cac
 
 ### splitChunks.chunks
 
-`string = 'async'` `function (chunk)`
+`string = 'async'` `function (chunk)` `RegExp`
 
 이것은 최적화를 위해 선택될 청크를 나타냅니다. 문자열이 제공될 때 유효한 값은 `all`, `async` 및 `initial`입니다. `all`을 제공하는 것은 비동기 청크와 동기 청크 간에도 청크를 공유할 수 있다는 것을 의미하기 때문에 특히 강력할 수 있습니다.
 
@@ -131,6 +131,19 @@ module.exports = {
         // `my-excluded-chunk`를 제외합니다.
         return chunk.name !== 'my-excluded-chunk';
       },
+    },
+  },
+};
+```
+
+Webpack 버전 5.86.0 이상을 사용하는 경우 정규식을 전달할 수도 있습니다.
+
+```js
+module.exports = {
+  //...
+  optimization: {
+    splitChunks: {
+      chunks: /foo/,
     },
   },
 };
