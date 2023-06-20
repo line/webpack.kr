@@ -168,6 +168,26 @@ CommonJS를 위해 [magic comments](/api/module-methods/#magic-comments) 지원�
 const x = require(/* webpackIgnore: true */ 'x');
 ```
 
+#### module.parser.javascript.dynamicImportFetchPriority
+
+동적 import를 위해 전역 [fetchPriority](https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/fetchPriority)를 지정합니다.
+
+- Type: `'low' | 'high' | 'auto' | false`
+- Available: 5.87.0+
+- Example:
+
+  ```js
+  module.exports = {
+    module: {
+      parser: {
+        javascript: {
+          dynamicImportFetchPriority: 'high',
+        },
+      },
+    },
+  };
+  ```
+
 #### module.parser.javascript.dynamicImportMode
 
 동적 import를 위한 전역 프리로드를 지정합니다.
