@@ -28,6 +28,37 @@ translators:
 
 이 옵션은 프로젝트 내에서 [다른 유형의 모듈](/concepts/modules)을 처리하는 방법을 결정합니다.
 
+## module.defaultRules
+
+모듈에 기본적으로 적용되는 규칙의 배열입니다.
+
+자세한 내용은 [소스 코드](https://github.com/webpack/webpack/blob/dc4d97429b2013f7770ba785721b65cf82c2ef04/lib/config/defaults.js#L608)를 참고하세요.
+
+```js
+module.exports = {
+  module: {
+    defaultRules: [
+      '...', // "..."를 사용하여 기본적으로 webpack에 의해 적용되는 규칙을 참조할 수 있습니다.
+    ],
+  },
+};
+```
+
+Webpack 5.87.0부터 `0`, `""`, `false`, `null` 및 `undefined`를 포함한 falsy 값을 `module.defaultRules`로 전달하여 특정 규칙을 조건부로 비활성화할 수 있습니다.
+
+```js
+module.exports = {
+  module: {
+    defaultRules: [
+      false &&
+        {
+          // 이 규칙은 비활성화됩니다.
+        },
+    ],
+  },
+};
+```
+
 ## module.generator
 
 <Badge text="5.12.0+" />
@@ -428,9 +459,11 @@ module.exports = {
 
 ## module.rules
 
-`[Rule]`
+`(Rule | undefined | null | false | "" | 0 | "...")[]`
 
 모듈이 생성 될 때 요청과 일치하는 [Rule](#rule)의 배열입니다. 이러한 규칙은 모듈 생성 방법을 수정할 수 있습니다. 로더를 모듈에 적용시키거나 파서를 수정할 수 있습니다.
+
+As of webpack 5.87.0, falsy values such as `false`, `undefined`, `null` and `0` can be used to conditionally disable a rule.
 
 ## Rule
 
@@ -1008,6 +1041,8 @@ module.exports = {
 ## Rule.use
 
 `[UseEntry]` `function(info)`
+
+Starting with webpack 5.87.0 falsy values such as `undefined` `null` can be used to conditionally disable specific use entry.
 
 **`[UseEntry]`**
 

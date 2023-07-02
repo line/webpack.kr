@@ -225,9 +225,9 @@ T> [mode](/configuration/mode/)가 어떻게 동작하는지 알아보세요.
 
 ## optimization.minimizer
 
-`[TerserPlugin]` and or `[function (compiler)]`
+`[TerserPlugin]` 또는 `[function (compiler)]` 또는 `undefined | null | 0 | false | ""`
 
-하나 이상의 다른 [TerserPlugin](/plugins/terser-webpack-plugin/) 인스턴스를 제공하여 기본 최소화 도구를 다시 설정할 수 있습니다.
+하나 이상의 다른 [TerserPlugin](/plugins/terser-webpack-plugin/) 인스턴스를 제공하여 기본 최소화 도구를 다시 설정할 수 있습니다. Webpack 5.87.0 부터는 falsy 값을 사용하여 특정 최소화 도구를 조건부로 비활성화할 수 있습니다.
 
 **webpack.config.js**
 
