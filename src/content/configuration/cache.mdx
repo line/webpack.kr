@@ -379,6 +379,23 @@ module.exports = {
 };
 ```
 
+### cache.readonly
+
+`boolean` <Badge text='5.85.0' />
+
+webpack이 캐시를 파일 시스템에 저장하지 못하도록 합니다. `cache.type === "filesystem"` 및 `cache.store === 'pack'`인 경우에만 사용할 수 있습니다.
+
+```js
+module.exports = {
+  //...
+  cache: {
+    type: 'filesystem',
+    store: 'pack',
+    readonly: true,
+  },
+};
+```
+
 ### cache.store
 
 `string = 'pack': 'pack'`

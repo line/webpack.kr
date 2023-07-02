@@ -2,6 +2,7 @@
 title: Configuration Languages
 sort: 2
 contributors:
+  - piouson
   - sokra
   - skipjack
   - tarang9211
@@ -35,8 +36,8 @@ npm install --save-dev @types/webpack-dev-server
 **webpack.config.ts**
 
 ```typescript
-import * as path from 'path';
-import * as webpack from 'webpack';
+import path from 'path';
+import webpack from 'webpack';
 // `devServer`를 설정할 때 typescript 오류가 발생하는 경우를 대비하여
 import 'webpack-dev-server';
 
@@ -50,6 +51,17 @@ const config: webpack.Configuration = {
 };
 
 export default config;
+```
+
+**tsconfig.json**
+
+```json
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true
+  }
+}
 ```
 
 위 예시는 TypeScript 2.7 이상 버전의 `tsconfig.json` 파일에서 새로운 `esModuleInterop` 및 `allowSyntheticDefaultImports` 컴파일러 옵션과 함께 사용된다고 가정합니다.

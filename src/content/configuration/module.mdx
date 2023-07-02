@@ -1014,7 +1014,7 @@ T> 자세한 정보는 [`중첩된 rules`](#nested-rules)를 참고하세요.
 
 `string`
 
-가능한 변수: `'javascript/auto' | 'javascript/dynamic' | 'javascript/esm' | 'json' | 'webassembly/sync' | 'webassembly/async' | 'asset' | 'asset/source' | 'asset/resource' | 'asset/inline'`
+가능한 변수: `'javascript/auto' | 'javascript/dynamic' | 'javascript/esm' | 'json' | 'webassembly/sync' | 'webassembly/async' | 'asset' | 'asset/source' | 'asset/resource' | 'asset/inline' | 'css/auto'`
 
 `Rule.type`은 일치하는 모듈의 유형을 설정합니다. 이는 defaultRules 및 기본값 import 동작이 발생하지 않습니다. 예를 들어 커스텀 로더를 통해 `.json`파일을 로드하려면 `type`을 `javascript/auto`로 설정하여 webpack에 내장된 json import를 우회해야합니다.
 
@@ -1037,6 +1037,31 @@ module.exports = {
 ```
 
 > `asset*` 유형에 대한 자세한 내용은 [애셋 모듈 가이드](/guides/asset-modules/)를 참고하세요.
+
+### css/auto
+
+<Badge text="5.87.0+" />
+
+`css/auto` 모듈 유형의 사용 사례는 [여기](https://github.com/webpack/webpack/issues/16572)를 참고하세요. `css/auto`를 사용하려면 [`experiments.css`](/configuration/experiments/#experimentscss)를 활성화해야 합니다.
+
+```js
+module.exports = {
+  target: 'web',
+  mode: 'development',
+  experiments: {
+    css: true,
+  },
+  module: {
+    rules: [
+      {
+        test: /\.less$/,
+        use: 'less-loader',
+        type: 'css/auto',
+      },
+    ],
+  },
+};
+```
 
 ## Rule.use
 
