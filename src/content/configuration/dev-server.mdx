@@ -22,6 +22,7 @@ contributors:
   - snitin315
   - Biki-das
   - SaulSilver
+  - malcolm-kee
 translators:
   - 1ilsang
 ---
@@ -251,7 +252,7 @@ npx webpack serve --client-logging info
 
 ### overlay
 
-`boolean = true` `object: { errors boolean = true, warnings boolean = true }`
+`boolean = true` `object`
 
 컴파일러 오류 또는 경고가 있는 경우 브라우저에 전체 화면 오버레이를 표시합니다.
 
@@ -280,7 +281,17 @@ npx webpack serve --client-overlay
 npx webpack serve --no-client-overlay
 ```
 
-오류만 표시하려면 아래와 같이 할 수 있습니다.
+보다 세분화된 제어를 위해 다음 속성을 가진 개체를 제공할 수 있습니다.
+
+| 속성            | 설명                      |
+| --------------- | ------------------------- |
+| `errors`        | 컴파일 오류               |
+| `runtimeErrors` | 처리되지 않은 런타임 오류 |
+| `warnings`      | 컴파일 경고               |
+
+모든 속성은 선택 사항이며 제공되지 않은 경우 기본값은 'true'입니다.
+
+예를 들어 컴파일 경고를 비활성화하려면 다음 설정을 제공할 수 있습니다.
 
 **webpack.config.js**
 
@@ -292,6 +303,7 @@ module.exports = {
       overlay: {
         errors: true,
         warnings: false,
+        runtimeErrors: true,
       },
     },
   },
@@ -301,8 +313,34 @@ module.exports = {
 CLI를 통한 사용법.
 
 ```bash
-npx webpack serve --client-overlay-errors --no-client-overlay-warnings
+npx webpack serve --client-overlay-errors --no-client-overlay-warnings --client-overlay-runtime-errors
 ```
+
+발생한 오류를 기준으로 필터링하려면 `error` 매개변수를 허용하고 boolean 값을 반환하는 함수를 전달할 수 있습니다.
+
+예를 들어, [`AbortController.abort()`](https://developer.mozilla.org/en-US/docs/Web/API/AbortController/abort)에 의해 발생한 오류를 무시하려면 다음을 수행하세요.
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  //...
+  devServer: {
+    client: {
+      overlay: {
+        runtimeErrors: (error) => {
+          if (error instanceof DOMException && error.name === 'AbortError') {
+            return false;
+          }
+          return true;
+        },
+      },
+    },
+  },
+};
+```
+
+W> 이 함수는 설정 파일 내의 외부 범위에서 선언된 변수에 액세스할 수 없습니다.
 
 ### progress
 

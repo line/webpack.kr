@@ -29,7 +29,14 @@ new webpack.SourceMapDevToolPlugin(options);
 - `include` (`string` `RegExp` `[string, RegExp]`): 값과 일치하는 경로의 소스맵을 포함합니다.
 - `exclude` (`string` `RegExp` `[string, RegExp]`): 값과 일치하는 모듈을 소스맵 생성에서 제외합니다.
 - `filename` (`string`): 소스맵의 파일 이름을 정의합니다 (값이 제공되지 않으면 인라인으로 설정됩니다).
-- `append` (`string`): 기존 애셋에 값을 추가합니다. 일반적으로 `#sourceMappingURL` 주석이 사용됩니다. `[url]`은 소스맵 파일의 URL로 대체됩니다. webpack v4.36.0부터는 `[chunk]`, `[filename]` 및 `[contenthash]`와 같은 경로 파라미터가 지원됩니다. `false`로 설정하면 값 추가가 비활성화됩니다.
+- `append` (`string` `function`): 기존 애셋에 값을 추가합니다. 일반적으로 `#sourceMappingURL` 주석이 사용됩니다. `[url]`은 소스맵 파일의 URL로 대체됩니다. Webpack v4.36.0부터는 `[chunk]`, `[filename]` 및 `[contenthash]`와 같은 경로 파라미터가 지원됩니다. `false`로 설정하면 값 추가가 비활성화됩니다.
+
+  버전 5.84.0부터 webpack은 경로와 애셋 정보 객체를 인수로 받아들이고 문자열을 반환하는 'append' 옵션을 허용합니다.
+
+  ```ts
+  (pathData: PathData, assetInfo?: AssetInfo) => string;
+  ```
+
 - `moduleFilenameTemplate` (`string`): [`output.devtoolModuleFilenameTemplate`](/configuration/output/#outputdevtoolmodulefilenametemplate)를 참고하세요.
 - `fallbackModuleFilenameTemplate` (`string`): 위 링크를 참고하세요.
 - `namespace` (`string`): [`output.devtoolNamespace`](/configuration/output/#outputdevtoolnamespace)를 참고하세요.

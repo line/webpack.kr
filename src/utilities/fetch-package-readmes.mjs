@@ -31,6 +31,10 @@ const loaderGroup = {
   'style-loader': 'CSS',
   'stylus-loader': 'CSS',
 };
+const communityPackages = [{
+  name: 'svg-chunk-webpack-plugin',
+  contributors: ['yoriiis', 'alexander-akait']
+}];
 
 async function main() {
   for (const type of types) {
@@ -45,9 +49,16 @@ async function main() {
 
     for (const repo of repos) {
       const [owner, packageName] = repo.split('/');
-      const url = `https://raw.githubusercontent.com/${repo}/master/README.md`;
+
+      const response = await api.repos.get({
+        owner,
+        repo: packageName,
+      });
+
+      const defaultBranch =  response.data.default_branch;
+      const url = `https://raw.githubusercontent.com/${repo}/${defaultBranch}/README.md`;
       const htmlUrl = `https://github.com/${repo}`;
-      const editUrl = `${htmlUrl}/edit/master/README.md`;
+      const editUrl = `${htmlUrl}/edit/${defaultBranch}/README.md`;
       const fileName = path.resolve(outputDir, `_${packageName}.mdx`);
 
       let title = packageName;
@@ -62,9 +73,17 @@ async function main() {
       let headmatter;
 
       if (type === 'plugins') {
+        let group = 'webpack contrib';
+        let contributors = [];
+        const packageFromCommunity = communityPackages.find((item) => item.name === packageName);
+        if (packageFromCommunity) {
+            group = 'Community';
+            contributors = packageFromCommunity.contributors;
+        }
         headmatter = yamlHeadmatter({
           title: title,
-          group: 'webpack contrib',
+          group,
+          contributors,
           source: url,
           edit: editUrl,
           repo: htmlUrl,

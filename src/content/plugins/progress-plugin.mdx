@@ -6,6 +6,7 @@ contributors:
   - EugeneHlushko
   - byzyk
   - smelukov
+  - chenxsan
 translators:
   - jiwoo0629
 ---
@@ -14,7 +15,7 @@ translators:
 
 ## Usage
 
-`ProgressPlugin`의 인스턴스를 만들고, 허용되는 여러 매개변수 중 하나를 제공합니다.
+`ProgressPlugin`의 인스턴스를 만들고, 허용되는 여러 매개변수 중 하나를 제공하며, 기본 핸들러를 사용자 지정하는 데 사용할 수 있는 정적 메서드 `createDefaultHandler`도 있습니다.
 
 ### Providing `function`
 
@@ -61,6 +62,17 @@ new webpack.ProgressPlugin({
   dependenciesCount: 10000,
   percentBy: null,
 });
+```
+
+### webpack.ProgressPlugin.createDefaultHandler
+
+`ProgressPlugin`의 기본 핸들러가 요구 사항을 충족하지 않는 경우 정적 `ProgressPlugin.createDefaultHandler` 메서드를 사용하여 사용자 지정할 수 있습니다.
+
+```ts
+static createDefaultHandler: (
+  profile: undefined | null | boolean,
+  logger: WebpackLogger
+) => (percentage: number, msg: string, ...args: string[]) => void;
 ```
 
 ## Percentage calculation

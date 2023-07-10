@@ -28,6 +28,37 @@ translators:
 
 이 옵션은 프로젝트 내에서 [다른 유형의 모듈](/concepts/modules)을 처리하는 방법을 결정합니다.
 
+## module.defaultRules
+
+모듈에 기본적으로 적용되는 규칙의 배열입니다.
+
+자세한 내용은 [소스 코드](https://github.com/webpack/webpack/blob/dc4d97429b2013f7770ba785721b65cf82c2ef04/lib/config/defaults.js#L608)를 참고하세요.
+
+```js
+module.exports = {
+  module: {
+    defaultRules: [
+      '...', // "..."를 사용하여 기본적으로 webpack에 의해 적용되는 규칙을 참조할 수 있습니다.
+    ],
+  },
+};
+```
+
+Webpack 5.87.0부터 `0`, `""`, `false`, `null` 및 `undefined`를 포함한 falsy 값을 `module.defaultRules`로 전달하여 특정 규칙을 조건부로 비활성화할 수 있습니다.
+
+```js
+module.exports = {
+  module: {
+    defaultRules: [
+      false &&
+        {
+          // 이 규칙은 비활성화됩니다.
+        },
+    ],
+  },
+};
+```
+
 ## module.generator
 
 <Badge text="5.12.0+" />
@@ -167,6 +198,26 @@ CommonJS를 위해 [magic comments](/api/module-methods/#magic-comments) 지원�
 ```js
 const x = require(/* webpackIgnore: true */ 'x');
 ```
+
+#### module.parser.javascript.dynamicImportFetchPriority
+
+동적 import를 위해 전역 [fetchPriority](https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/fetchPriority)를 지정합니다.
+
+- Type: `'low' | 'high' | 'auto' | false`
+- Available: 5.87.0+
+- Example:
+
+  ```js
+  module.exports = {
+    module: {
+      parser: {
+        javascript: {
+          dynamicImportFetchPriority: 'high',
+        },
+      },
+    },
+  };
+  ```
 
 #### module.parser.javascript.dynamicImportMode
 
@@ -408,9 +459,11 @@ module.exports = {
 
 ## module.rules
 
-`[Rule]`
+`(Rule | undefined | null | false | "" | 0 | "...")[]`
 
 모듈이 생성 될 때 요청과 일치하는 [Rule](#rule)의 배열입니다. 이러한 규칙은 모듈 생성 방법을 수정할 수 있습니다. 로더를 모듈에 적용시키거나 파서를 수정할 수 있습니다.
+
+Webpack 5.87.0부터 `false`, `undefined`, `null` 및 `0`과 같은 falsy 값을 사용하여 조건부로 규칙을 비활성화할 수 있습니다.
 
 ## Rule
 
@@ -606,11 +659,11 @@ module.exports = {
         oneOf: [
           {
             resourceQuery: /inline/, // foo.css?inline
-            use: 'url-loader',
+            type: 'asset/inline',
           },
           {
             resourceQuery: /external/, // foo.css?external
-            use: 'file-loader',
+            type: 'asset/resource',
           },
         ],
       },
@@ -907,7 +960,7 @@ module.exports = {
       {
         test: /\.css$/,
         resourceQuery: /inline/,
-        use: 'url-loader',
+        type: 'asset/inline',
       },
     ],
   },
@@ -961,7 +1014,7 @@ T> 자세한 정보는 [`중첩된 rules`](#nested-rules)를 참고하세요.
 
 `string`
 
-가능한 변수: `'javascript/auto' | 'javascript/dynamic' | 'javascript/esm' | 'json' | 'webassembly/sync' | 'webassembly/async' | 'asset' | 'asset/source' | 'asset/resource' | 'asset/inline'`
+가능한 변수: `'javascript/auto' | 'javascript/dynamic' | 'javascript/esm' | 'json' | 'webassembly/sync' | 'webassembly/async' | 'asset' | 'asset/source' | 'asset/resource' | 'asset/inline' | 'css/auto'`
 
 `Rule.type`은 일치하는 모듈의 유형을 설정합니다. 이는 defaultRules 및 기본값 import 동작이 발생하지 않습니다. 예를 들어 커스텀 로더를 통해 `.json`파일을 로드하려면 `type`을 `javascript/auto`로 설정하여 webpack에 내장된 json import를 우회해야합니다.
 
@@ -985,9 +1038,36 @@ module.exports = {
 
 > `asset*` 유형에 대한 자세한 내용은 [애셋 모듈 가이드](/guides/asset-modules/)를 참고하세요.
 
+### css/auto
+
+<Badge text="5.87.0+" />
+
+`css/auto` 모듈 유형의 사용 사례는 [여기](https://github.com/webpack/webpack/issues/16572)를 참고하세요. `css/auto`를 사용하려면 [`experiments.css`](/configuration/experiments/#experimentscss)를 활성화해야 합니다.
+
+```js
+module.exports = {
+  target: 'web',
+  mode: 'development',
+  experiments: {
+    css: true,
+  },
+  module: {
+    rules: [
+      {
+        test: /\.less$/,
+        use: 'less-loader',
+        type: 'css/auto',
+      },
+    ],
+  },
+};
+```
+
 ## Rule.use
 
 `[UseEntry]` `function(info)`
+
+Webpack 5.87.0부터 `undefined` `null`과 같은 falsy 값을 사용하여 조건부로 특정 사용 항목을 비활성화할 수 있습니다.
 
 **`[UseEntry]`**
 
@@ -1259,21 +1339,19 @@ module.exports = {
   module: {
     rules: [
       {
-        loader: 'file-loader',
-        options: {
-          outputPath: 'svgs',
-        },
+        test: /\.svg$/,
+        type: 'asset',
+        use: (info) => ({
+          loader: 'svgo-loader',
+          options: {
+            plugins: [
+              {
+                cleanupIDs: { prefix: basename(info.resource) },
+              },
+            ],
+          },
+        }),
       },
-      (info) => ({
-        loader: 'svgo-loader',
-        options: {
-          plugins: [
-            {
-              cleanupIDs: { prefix: basename(info.resource) },
-            },
-          ],
-        },
-      }),
     ],
   },
 };

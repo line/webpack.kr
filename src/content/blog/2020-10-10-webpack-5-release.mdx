@@ -558,7 +558,7 @@ node_modules 사용 시 캐시는 `node_modules/.cache/webpack` resp에 저장�
 
 #### Compiler Idle and Close
 
-이제 컴파일러는 사용한 후 닫아야 합니다. 컴파일러는 이제 유휴 상태로 들어가고 나가며 이러한 상태에 대한 후크를 갖습니다. 플러그인은 상태에 대한 후크를 사용하여 중요하지 않은 작업을 수행할 수 있습니다. 즉, 영구 캐시는 캐시를 디스크에 천천히 저장합니다. 컴파일러 종료 시 - 나머지 모든 작업은 가능한 빨리 완료되어야 합니다. 콜백은 종료 신호를 보냅니다.
+이제 컴파일러는 사용한 후 닫아야 합니다. 컴파일러는 이제 유휴 상태로 들어가고 나가며 이러한 상태에 대한 훅을 갖습니다. 플러그인은 상태에 대한 훅을 사용하여 중요하지 않은 작업을 수행할 수 있습니다. 즉, 영구 캐시는 캐시를 디스크에 천천히 저장합니다. 컴파일러 종료 시 - 나머지 모든 작업은 가능한 빨리 완료되어야 합니다. 콜백은 종료 신호를 보냅니다.
 
 플러그인과 해당 작성자는 일부 사용자가 컴파일러를 닫는 것을 잊어버릴 수 있음을 예상해야 합니다. 따라서 모든 작업은 유휴 상태에서도 완료되어야 합니다. 작업이 완료될 때 프로세스가 종료되지 않도록 해야 합니다.
 
@@ -821,7 +821,7 @@ Webpack 5는 발행 의존성마다 다르기 때문에 `dependencyType`를 옵�
 
 그러나 플러그인이 적용될 때 설정할 설정값에 의존할 수 없기 때문에 New plugin order 또한 주요 변경 사항입니다.
 
-**마이그레이션**: 플러그인 후크에서만 설정에 액세스합니다. 또는 설정에 대한 액세스를 무조건 피하고 생성자를 통해 옵션을 사용하는 것이 가장 좋습니다.
+**마이그레이션**: 플러그인 훅에서만 설정에 액세스합니다. 또는 설정에 대한 액세스를 무조건 피하고 생성자를 통해 옵션을 사용하는 것이 가장 좋습니다.
 
 ### Runtime Modules
 
@@ -847,9 +847,9 @@ Webpack에서 복잡한 객체의 직렬화를 허용하기 위해 직렬화 메
 
 ### Hook Object Frozen
 
-`hooks`가 있는 클래스는 `hooks` 객체가 고정되어 있으므로 커스텀 후크를 추가하는 것은 더 이상 `hooks`로 불가능합니다.
+`hooks`가 있는 클래스는 `hooks` 객체가 고정되어 있으므로 커스텀 훅을 추가하는 것은 더 이상 `hooks`로 불가능합니다.
 
-**마이그레이션**: 커스텀 후크를 추가하는 방법 중 권장하는 것은 WeakMap 및 정적 `getXXXHooks(XXX)`(즉 `getCompilationHook(compilation)`) 방법을 사용하는 것입니다. 내부 클래스는 커스텀 후크에 사용되는 것과 동일한 메커니즘을 사용합니다.
+**마이그레이션**: 커스텀 훅을 추가하는 방법 중 권장하는 것은 WeakMap 및 정적 `getXXXHooks(XXX)`(즉 `getCompilationHook(compilation)`) 방법을 사용하는 것입니다. 내부 클래스는 커스텀 훅에 사용되는 것과 동일한 메커니즘을 사용합니다.
 
 ### Tapable Upgrade
 
@@ -861,9 +861,9 @@ Webpack 3 플러그인에 대한 compat 레이어가 제거되었습니다. Webp
 
 ### Staged Hooks
 
-실링 프로세스의 여러 단계에 대해 여러개의 후크가 있었습니다. 즉 `optimizeDependenciesBasic` `optimizeDependencies` 및 `optimizeDependenciesAdvanced`는 `stage` 옵션과 함께 사용할 수 있는 단일 후크를 위해 제거되었습니다. 가능한 단계 값은 `OptimizationStages`를 참고하세요.
+실링 프로세스의 여러 단계에 대해 여러개의 훅이 있었습니다. 즉 `optimizeDependenciesBasic` `optimizeDependencies` 및 `optimizeDependenciesAdvanced`는 `stage` 옵션과 함께 사용할 수 있는 단일 훅을 위해 제거되었습니다. 가능한 단계 값은 `OptimizationStages`를 참고하세요.
 
-**마이그레이션**: 대신 나머지 후크에 연걸합니다.`stage` 옵션을 추가할 수 있습니다.
+**마이그레이션**: 대신 나머지 훅에 연걸합니다.`stage` 옵션을 추가할 수 있습니다.
 
 ### Main/Chunk/ModuleTemplate deprecation
 
@@ -871,11 +871,11 @@ Webpack 3 플러그인에 대한 compat 레이어가 제거되었습니다. Webp
 
 리팩토링 이전에는 JS 출력이 Main/ChunkTemplate에서 처리되고 다른 출력(예: WASM, CSS)은 플러그인에서 처리되었습니다. 각각 다른 곳에서 출력되는 것은 JS이 1급인 반면 다른 출력은 2급인 것처럼 보입니다. 리팩토링은 플러그인에서 모든 출력을 처리하도록 변경합니다.
 
-템플릿의 일부에 연결하는 것은 여전히 가능합니다. 후크는 이제 Main/ChunkTemplate 대신 JavascriptModulesPlugin에 있습니다. 플러그인도 후크를 가질 수 있습니다. 개발자는 첨부된 후크라 부릅니다.
+템플릿의 일부에 연결하는 것은 여전히 가능합니다. 훅은 이제 Main/ChunkTemplate 대신 JavascriptModulesPlugin에 있습니다. 플러그인도 훅을 가질 수 있습니다. 개발자는 첨부된 훅이라 부릅니다.
 
-compat 레이어가 있으므로 Main/Chunk/ModuleTemplate은 여전히 존재하지만 tab 호출만 새 후크 위치에 위임합니다.
+compat 레이어가 있으므로 Main/Chunk/ModuleTemplate은 여전히 존재하지만 tab 호출만 새 훅 위치에 위임합니다.
 
-**마이그레이션**: 지원 중단 메세지의 조언을 따르세요. 주로 다른 위치의 후크를 가리킵니다.
+**마이그레이션**: 지원 중단 메세지의 조언을 따르세요. 주로 다른 위치의 훅을 가리킵니다.
 
 ### Entry point descriptor
 
@@ -984,7 +984,7 @@ module.exports = {
 
 Webpack은 증분된 순서로 ID를 할당하기 위해 특정 방식으로 컴파일 단계에서 모듈과 청크를 순서화하는 데 사용됩니다. 더 이상 그렇지 않습니다. 순서는 더 이상 ID 생성에 사용되지 않으며 대신 ID 생성에 대한 모든 권한은 플러그인에 있습니다.
 
-모듈 및 청크의 순서를 최적화하는 후크가 제거되었습니다.
+모듈 및 청크의 순서를 최적화하는 훅이 제거되었습니다.
 
 **마이그레이션**: 더 이상 컴파일 단계에서 모듈과 청크의 순서에 의존할 수 없습니다.
 
@@ -1036,7 +1036,7 @@ Webpack은 함수를 호출하는 함수에 의한 모듈 처리와 병렬 처�
 - `Compilation.rebuildQueue`: 수동으로 트리거되면 모듈을 다시 빌드합니다.
 - `Compilation.processDependenciesQueue`: 모듈의 의존성을 처리합니다.
 
-대기열에는 작업 처리를 감시하고 가로채기 위한 몇 가지 후크가 있습니다.
+대기열에는 작업 처리를 감시하고 가로채기 위한 몇 가지 훅이 있습니다.
 
 향후 여러 컴파일러가 함께 작동할 수 있으며 대기열을 가로채서 작업 오케스트레이션을 수행할 수 있습니다.
 
@@ -1211,7 +1211,7 @@ Webpack 5에서는 코드베이스의 의존성 참조 부분이 리팩토링 �
   - **마이그레이션**: `message`와 같은 속성 정보에 접근합니다.
 - `Compilation.hooks.normalModuleLoader`는 더 이상 사용되지 않습니다.
   - **마이그레이션**: 대신 `NormalModule.getCompilationHooks(compilation).loader`를 사용합니다.
-- `NormalModuleFactory`의 후크를 워터폴에서 베일링으로 변경하고 워터폴 함수를 반환하는 후크를 변경하고 이름을 변경했습니다.
+- `NormalModuleFactory`의 훅을 워터폴에서 베일링으로 변경하고 워터폴 함수를 반환하는 훅을 변경하고 이름을 변경했습니다.
 - `compilationParams.compilationDependencies`가 제거되었습니다.
   - 플러그인은 `compilation.file/context/missingDependencies`에 추가하여 컴파일에 의존성을 추가할 수 있습니다.
   - Compat 계층은 `compilationDependencies.add`를 `fileDependencies.add`에 위임합니다.

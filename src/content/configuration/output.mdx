@@ -462,13 +462,17 @@ module.exports = {
       destructuring: true,
       // EcmaScript 모듈을 가져오는 비동기 import() 함수를 지원합니다.
       dynamicImport: false,
+      // 현재 웹 타켓에 대해서만 worker를 생성할 때 비동기 import()를 지원합니다.
+      dynamicImportInWorker: false,
       // 'for of' 반복자를 지원합니다('for (const x of array) { ... }' 처럼 사용합니다).
       forOf: true,
+      // 'globalThis'를 지원합니다.
+      globalThis: true,
       // ECMAScript 모듈을 가져오는 ECMAScript Module syntax를 지원합니다(import ... from '...' 처럼 사용합니다).
       module: false,
-      // 환경이 옵셔널 체이닝('obj?.a' 또는 'obj?.()')을 지원합니다.
+      // 옵셔널 체이닝('obj?.a' 또는 'obj?.()')을 지원합니다.
       optionalChaining: true,
-      // 환경이 템플릿 리터럴을 지원합니다.
+      // 템플릿 리터럴을 지원합니다.
       templateLiteral: true,
     },
   },
@@ -772,6 +776,25 @@ module.exports = {
   //...
   output: {
     iife: true,
+  },
+};
+```
+
+## output.ignoreBrowserWarnings
+
+<Badge text="5.81.0+" />
+
+`boolean = false`
+
+프로덕션 환경에서 브라우저 콘솔의 경고를 숨깁니다. 이 옵션은 터미널/콘솔 출력에 영향을 주지 않습니다.
+
+**webpack.config.js**
+
+```javascript
+module.exports = {
+  //...
+  output: {
+    ignoreBrowserWarnings: true,
   },
 };
 ```
@@ -2251,6 +2274,27 @@ module.exports = {
     //...
     trustedTypes: {
       policyName: 'my-application#webpack',
+    },
+  },
+};
+```
+
+### output.trustedTypes.onPolicyCreationFailure
+
+`string = 'stop': 'continue' | 'stop'`
+
+<Badge text="5.82.0+" />
+
+[`require-trusted-types-for 'script'`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security- Policy/require-trusted-types-for)가 적용되지 않았거나 정책 이름이 CSP 'trusted-types' 목록에 없거나 중복되어 'trustedTypes.createPolicy(...)'에 대한 호출이 실패하는 경우 즉시 실패 처리합니다.
+
+```javascript
+module.exports = {
+  //...
+  output: {
+    //...
+    trustedTypes: {
+      policyName: 'my-application#webpack',
+      onPolicyCreationFailure: 'continue',
     },
   },
 };

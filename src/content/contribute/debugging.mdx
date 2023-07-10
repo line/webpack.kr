@@ -21,7 +21,7 @@ related:
 코어 저장소에 기여할 때나, 로더 또는 플러그인을 작성할 때, 아니면 복잡한 프로젝트를 작업할 때도 디버깅 도구가 워크 플로에서 중심이 될 수 있습니다. 규모가 큰 프로젝트에서의 느린 성능이나 도움이 되지 않는 트레이스백이 문제라면, 다음의 유틸리티를 사용하여 문제를 보다 수월하게 파악할 수 있습니다.
 
 - [Node](/api/node/#stats-object)와 [CLI](/api/cli/#common-options)를 통해 제공되는 [`stats` 데이터](/api/stats).
-- 최신 Node.js 버전 및 `node-nightly`으로 사용하는 Chrome **DevTools**.
+- Chrome **DevTools** 및 최신 Node.js 버전.
 
 ## Stats
 
@@ -40,26 +40,12 @@ related:
 
 [`console`](https://nodejs.org/api/console.html) 문은 간단한 시나리오에서는 잘 작동하지만 때로는 더 강력한 솔루션이 필요합니다. 대부분의 프런트엔드 개발자가 이미 알고 있듯이 Chrome DevTools는 웹 애플리케이션을 디버깅할 때 생명의 은인 같은 역할을 합니다. _하지만 거기서 멈추지 않고 더 나아갈 수 있습니다_. Node v6.3.0+부터 개발자는 내장된 `--inspect` 플래그를 사용하여 DevTools에서 Node 프로그램을 디버깅할 수 있습니다.
 
-이를 통해 중단점을 쉽게 생성하고, 메모리 사용을 디버그 하며, 콘솔에서 객체를 노출하여 검사하는 등, 여러 작업을 수행할 수 있습니다. 이 짧은 데모에서는 가장 최신의, 가장 훌륭한 검사 기능을 사용 가능하게 하는 [`node-nightly`] (https://github.com/hemanth/node-nightly) 패키지를 활용합니다.
+`node --inspect`로 webpack을 호출하여 시작합니다.
 
-W> `--inspect` 인터페이스는 v6.3.0부터 사용할 수 있으므로 로컬 버전에서 사용해보세요. 하지만 특정 기능과 플래그는 데모에 보이는 것과 다를 수 있습니다.
-
-패키지를 전역으로 설치하여 시작해보세요.
+npm `scripts`(예를 들어 `npm run build`)를 실행할 수 없으므로, 전체 `node_modules` 경로를 지정해야 합니다.
 
 ```bash
-npm install --global node-nightly
-```
-
-이제 설치를 완료하려면 한 번 실행해야 합니다.
-
-```bash
-node-nightly
-```
-
-이제 `--inspect` 플래그로 간단하게 `node-nightly`를 사용하여 webpack 기반 프로젝트에서 빌드를 시작할 수 있습니다. 참고로, `npm run build`과 같은 NPM `scripts`를 실행할 수 없으므로 전체 `node_modules` 경로를 지정해야 합니다.
-
-```bash
-node-nightly --inspect ./node_modules/webpack/bin/webpack.js
+node --inspect ./node_modules/webpack/bin/webpack.js
 ```
 
 이는 다음과 같이 출력될 것입니다.

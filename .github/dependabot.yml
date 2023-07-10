@@ -10,3 +10,15 @@ updates:
     ignore:
       - dependency-name: "react"
       - dependency-name: "react-dom"
+      - dependency-name: "@docsearch/react" # unfortunately I don't have the app id
+      - dependency-name: "@mdx-js/loader" # we can't update this due to incompatibility with our code base
+      - dependency-name: "remark-gfm" # breaking change
+    groups:
+      dependencies:
+        patterns:
+          - "*"
+  # Maintain dependencies for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"

@@ -116,6 +116,19 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `modules`
 
+### afterChunks
+
+`SyncHook`
+
+<Badge text="5.83.0+" />
+
+'afterChunks' 훅은 청크 및 모듈 그래프 생성 후 최적화 전에 호출됩니다.
+이 훅은 필요한 경우 청크 그래프를 검사, 분석 및 수정할 수 있는 기회를 제공합니다.
+
+다음은 `compilation.hooks.afterChunks` 훅을 활용하는 방법에 대한 [예시](https://github.com/webpack/webpack/blob/10be3f9e3fb34078af8c5841a77025a6722f11bf/lib/wasm-sync/WebAssemblyModulesPlugin.js#L114-L137)입니다.
+
+- Callback Parameters: `chunks`
+
 ### optimize
 
 `SyncHook`
