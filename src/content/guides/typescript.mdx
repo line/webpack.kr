@@ -192,15 +192,15 @@ console.log(import.meta.webpack); // 위에서 선언된 참조가 없으면 Typ
 
 ## Using Third Party Libraries
 
-npm으로부터 타사 라이브러리를 설치할 때는 해당 라이브러리에 대한 타입 정의를 설치해야 한다는 사실을 기억해야 합니다. 이런 정의는 [TypeSearch에서](https://microsoft.github.io/TypeSearch/) 찾을 수 있습니다.
+npm으로부터 타사 라이브러리를 설치할 때는 해당 라이브러리에 대한 타입 정의를 설치해야 한다는 사실을 기억해야 합니다.
 
-예를 들어 lodash를 설치하려는 경우 다음 명령을 실행해서 타입을 가져올 수 있습니다.
+예를 들어, lodash를 설치하려는 경우 다음 명령을 실행해서 타입을 가져올 수 있습니다.
 
 ```bash
 npm install --save-dev @types/lodash
 ```
 
-자세한 내용은 [블로그 포스트를](https://blogs.msdn.microsoft.com/typescript/2016/06/15/the-future-of-declaration-files/) 참고하세요.
+npm 패키지가 이미 패키지 번들에 선언 유형을 포함하고 있는 경우 해당 `@types` 패키지를 다운로드할 필요가 없습니다. 자세한 내용은 [TypeScript 변경 로그 블로그](https://github.blog/changelog/2020-12-16-npm-displays-packages-with-bundled-typescript-declarations/)를 참고하세요.
 
 ## Importing Other Assets
 
