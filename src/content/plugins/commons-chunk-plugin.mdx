@@ -176,7 +176,7 @@ new webpack.optimize.CommonsChunkPlugin({
 또한 `minChunks` 속성에 함수를 전달할 수도 있습니다. 이 함수는 `CommonsChunkPlugin`에 의해 호출되며 `module` 및 `count` 인수로 함수를 호출합니다.
 
 `module` 인수는 `name`/`names` 속성을 통해 제공된 청크의 각 모듈을 나타냅니다.
-`module`은 [NormalModule](https://github.com/webpack/webpack/blob/master/lib/NormalModule.js)의 형태로, 이 사용 사례에 특히 유용한 두 개의 속성이 있습니다.
+`module`은 [NormalModule](https://github.com/webpack/webpack/blob/main/lib/NormalModule.js)의 형태로, 이 사용 사례에 특히 유용한 두 개의 속성이 있습니다.
 
 - `module.context`: 파일을 저장하는 디렉터리입니다. 예: `'/my_project/node_modules/example-dependency'`
 - `module.resource`: 처리중인 파일의 이름입니다. 예: `'/my_project/node_modules/example-dependency/index.js'`
