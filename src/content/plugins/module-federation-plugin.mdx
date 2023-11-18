@@ -5,8 +5,9 @@ contributors:
   - XiaofengXie16
   - chenxsan
   - burhanuday
+  - christian24
 tanslators:
-  dlskawo0409
+  - dlskawo0409
 related:
   - title: Module Federation
     url: /concepts/module-federation/
@@ -50,11 +51,53 @@ module.exports = {
 };
 ```
 
-### Specify package versions
+### Sharing libraries
+
+설정의 'shared' 키를 사용하면 모듈 연합 사이에 공유되는 라이브러리를 정의할 수 있습니다. 패키지 이름은 package.json의 'dependencies' 섹션에 있는 이름과 동일합니다. 그러나 기본적으로 webpack은 라이브러리의 루트 레벨만 공유합니다.
+
+```js
+const { ModuleFederationPlugin } = require('webpack').container;
+module.exports = {
+  plugins: [
+    new ModuleFederationPlugin({
+      // date-fns를 공유 모듈로 추가합니다.
+      shared: ['date-fns'],
+    }),
+  ],
+};
+```
+
+따라서 응용 프로그램에서 다음과 같은 작업을 수행할 수 있습니다.
+
+```js
+import { format } from 'date-fns';
+
+format(new Date(2014, 1, 11), 'MM/dd/yyyy');
+```
+
+그리고 webpack은 `date-fns`를 공유 라이브러리로 정의하는 모든 모듈 연합 사이에 `date-fns`를 자동으로 공유합니다.
+그러나 패키지의 루트 레벨에 없는 항목(예: `date-fns/locale/en-GB/index.js`)에 액세스하려면 '공유' 설정에서 패키지 이름에 `/`를 추가해야 합니다.
+
+```js
+const { ModuleFederationPlugin } = require('webpack').container;
+module.exports = {
+  plugins: [
+    new ModuleFederationPlugin({
+      // date-fns를 공유 모듈로 추가합니다.
+      // 패키지의 모든 파일이 공유됩니다
+      shared: ['date-fns/'],
+    }),
+  ],
+};
+```
+
+The `/` 구문을 사용하면 패키지의 모든 파일에 액세스할 수 있습니다. 그러나 특히 `개발` 모드에서는 성능에 영향을 미치므로 필요한 경우에만 사용해야 합니다.
+
+#### Specify package versions
 
 공유 라이브러리의 버전을 지정하는 세 가지 방법이 있습니다.
 
-#### Array syntax
+##### Array syntax
 
 이 구문을 사용하면 패키지 이름만 있는 라이브러리를 공유할 수 있습니다. 이 접근 방식은 프로토타이핑에 적합하지만 `react` 및 `react-dom`과 같은 라이브러리에 추가 요구 사항이 필요하기 때문에 대규모 프로덕션 환경으로 확장할 수 없습니다.
 
@@ -73,7 +116,7 @@ module.exports = {
 };
 ```
 
-#### Object syntax
+##### Object syntax
 
 이 구문을 사용하면 패키지 이름을 키로 정의하고 버전([semver](https://semver.org/))을 값으로 정의할 수 있는 각 공유 라이브러리를 보다 세부적으로 제어할 수 있습니다.
 
@@ -92,7 +135,7 @@ module.exports = {
 };
 ```
 
-#### Object syntax with sharing hints
+##### Object syntax with sharing hints
 
 이 구문을 사용하면 각 공유 패키지에 힌트를 추가로 제공할 수 있습니다. 패키지의 이름을 키로, 공유 동작을 수정하기 위한 힌트를 포함한 객체를 값으로 정의하여 제공할 수 있습니다.
 
@@ -114,45 +157,45 @@ module.exports = {
 };
 ```
 
-### Sharing hints
+#### Sharing hints
 
-#### **`eager`**
+##### **`eager`**
 
 `boolean`
 
 이 힌트를 사용하면 webpack이 비동기식 요청을 통해 라이브러리를 가져오는 대신 제공된 모듈이나 대체 모듈을 직접 포함할 수 있습니다. 즉, 초기 청크에서 이 공유 모듈을 사용할 수 있습니다. 또한 이 힌트가 활성화되면 제공된 모든 모듈과 대체 모듈이 항상 다운로드된다는 점에 주의해야 합니다.
 
-#### **`import`**
+##### **`import`**
 
 `false | string`
 
 제공된 모듈은 공유 유효범위에 배치되어야 합니다. 이 제공된 모듈은 공유 유효범위에 공유 모듈이 없거나 버전이 유효하지 않은 경우 대체 모듈 역할도 합니다. (이 힌트의 값은 기본적으로 프로퍼티 이름으로 설정됩니다.)
 
-#### **`packageName`**
+##### **`packageName`**
 
 `string`
 
 설명 파일에서 필요한 버전을 결정하는 데 사용되는 패키지 이름입니다. ‘packageName’은 요청으로부터 패키지 이름을 자동으로 결정할 수 없는 경우에만 필요합니다.
 
-#### **`requiredVersion`**
+##### **`requiredVersion`**
 
 `false | string`
 
-패키지의 필수 버전입니다. 시멘틱 버전 관리를 허용합니다. 예를들면 "^1.2.3"와 같이 사용합니다. 
+패키지의 필수 버전입니다. 시멘틱 버전 관리를 허용합니다. 예를들면 "^1.2.3"와 같이 사용합니다.
 
-#### **`shareKey`**
+##### **`shareKey`**
 
 `string`
 
 요청된 공유 모듈은 공유 유효범위에서 ‘shareKey’ 키 안에서 조회됩니다.
 
-#### **`shareScope`**
+##### **`shareScope`**
 
 `string`
 
 공유 범위의 이름입니다.
 
-#### **`singleton`**
+##### **`singleton`**
 
 `boolean`
 
@@ -160,13 +203,13 @@ module.exports = {
 
 공유 범위에 동일한 종속성을 갖는 여러 버전이 있는 경우, 가장 높은 시멘틱 버전이 사용됩니다.
 
-#### **`strictVersion`**
+##### **`strictVersion`**
 
 `boolean`
 
 ‘strictVersion’을 사용하면 버전이 유효하지 않은 경우 webpack이 공유 모듈을 거부할 수 있습니다(로컬 fallback 모듈을 사용할 수 있고 공유 모듈이 singleton이 아닌 경우 기본값은 `true`로 설정되고, 그렇지 않으면 `false`로 설정되며 필수 버전이 지정되지 않은 경우 효과가 없습니다). 필요한 버전이 없으면 런타임 오류가 발생합니다.
 
-#### **`version`**
+##### **`version`**
 
 `false | string`
 

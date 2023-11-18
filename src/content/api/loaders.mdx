@@ -473,7 +473,7 @@ import stylesheet from './stylesheet.js';
 loadModule(request: string, callback: function(err, source, sourceMap, module))
 ```
 
-모듈에 대한 주어진 요청을 해석하고 설정된 모든 로더를 적용하고 생성된 소스, 소스맵 및 모듈 인스턴스(일반적으로 [`NormalModule`](https://github.com/webpack/webpack/blob/master/lib/NormalModule.js)의 인스턴스)로 콜백합니다. 결과를 생성하기 위해 다른 모듈의 소스 코드를 알아야 하는 경우 이 기능을 사용합니다.
+모듈에 대한 주어진 요청을 해석하고 설정된 모든 로더를 적용하고 생성된 소스, 소스맵 및 모듈 인스턴스(일반적으로 [`NormalModule`](https://github.com/webpack/webpack/blob/main/lib/NormalModule.js)의 인스턴스)로 콜백합니다. 결과를 생성하기 위해 다른 모듈의 소스 코드를 알아야 하는 경우 이 기능을 사용합니다.
 
 로더 컨텍스트의 `this.loadModule`은 기본적으로 CommonJS 해석 규칙을 사용합니다. `'esm'`, `'commonjs'` 또는 사용자 정의와 같은 다른 해석을 사용하기 전에 적절한 `dependencyType`과 함께 `this.getResolve`를 사용하세요.
 

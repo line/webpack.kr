@@ -743,7 +743,7 @@ module.exports = {
 
 `array = []: string | RegExp | function (assetName) => boolean` `string` `RegExp` `function (assetName) => boolean` `boolean: false`
 
-일치하는 모듈 정보를 제외하도록 `stats`에 지시합니다. 이는 `string`, `RegExp`, 모듈의 소스를 인자로 받고 `boolean`을 반환하는 `function`로 수행할 수 있습니다. `stats.excludeModules`는 위 요소를 원소로 가지는 `배열`일 수 있습니다. `stats.excludeModules`은 `stats.exclude`와 [병합](https://github.com/webpack/webpack/blob/master/lib/Stats.js#L215)됩니다.
+일치하는 모듈 정보를 제외하도록 `stats`에 지시합니다. 이는 `string`, `RegExp`, 모듈의 소스를 인자로 받고 `boolean`을 반환하는 `function`로 수행할 수 있습니다. `stats.excludeModules`는 위 요소를 원소로 가지는 `배열`일 수 있습니다. `stats.excludeModules`은 `stats.exclude`와 [병합](https://github.com/webpack/webpack/blob/main/lib/Stats.js#L215)됩니다.
 
 ```javascript
 module.exports = {
