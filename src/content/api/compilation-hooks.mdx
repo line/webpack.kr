@@ -373,6 +373,8 @@ W> `additionalChunkAssets`은 더이상 지원하지 않습니다. 대신 [Compi
 
 `AsyncSeriesHook`
 
+W> `additionalAssets`는 더 이상 사용되지 않습니다. 대신 [Compilation.hook.processAssets](#processassets) 훅을 사용하고 Compilation.PROCESS_ASSETS_STAGE\_\* 중 하나를 스테이지 옵션으로 사용합니다.
+
 컴파일을 위한 추가 애셋을 만듭니다.
 이 훅은 이미지를 다운로드하는 데 사용할 수 있습니다. 예를 들면 다음과 같습니다.
 
@@ -452,6 +454,8 @@ compilation.hooks.afterOptimizeChunkAssets.tap('MyPlugin', (chunks) => {
 
 `AsyncSeriesHook`
 
+W> `optimizeAssets`는 더 이상 사용되지 않습니다. 대신 [Compilation.hook.processAssets](#processassets) 훅을 사용하세요.
+
 `compilation.assets`에 저장된 모든 애셋을 최적화합니다.
 
 - 콜백 파라미터: `assets`
@@ -459,6 +463,8 @@ compilation.hooks.afterOptimizeChunkAssets.tap('MyPlugin', (chunks) => {
 ### afterOptimizeAssets
 
 `SyncHook`
+
+W> `afterOptimizeAssets`는 더 이상 사용되지 않습니다. 대신 [Compilation.hook.afterProcessAssets](#afterprocessassets) 훅을 사용하세요.
 
 애셋이 최적화된 후에 호출됩니다.
 
