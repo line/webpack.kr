@@ -80,6 +80,32 @@ module.exports = {
 }
 ```
 
+## Public Path
+
+기본적으로 `asset` 유형은 `__webpack_public_path__ + import.meta`를 수행합니다. 즉, 설정에서 `output.publicPath`를 설정하면 `asset`이 로드되는 URL을 재정의할 수 있습니다.
+
+### On The Fly Override
+
+코드에서 `__webpack_public_path__`를 설정한 경우 `asset` 로딩 로직을 깨지지 않도록 설정하려면 함수를 사용하지 않고 앱의 첫 번째 코드로 실행해야 합니다. 예시로는 내용이 포함된 `publicPath.js`라는 파일을 갖는 경우입니다.
+
+```javascript
+__webpack_public_path__ = 'https://cdn.url.com';
+```
+
+그런 다음 `webpack.config.js`에서 `entry` 필드를 다음과 같이 업데이트합니다.
+
+```javascript
+module.exports = {
+  entry: ['./publicPath.js', './App.js'],
+};
+```
+
+또는 webpack 설정을 수정하지 않고 `App.js`에서 다음을 수행할 수 있습니다. 유일한 단점은 여기에서 순서를 강제해야 하고, 일부 린팅 도구와 충돌할 수 있다는 것입니다.
+
+```javascript
+import './publicPath.js';
+```
+
 ## Resource assets
 
 **webpack.config.js**
