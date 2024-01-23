@@ -267,7 +267,7 @@ module.exports = {
         /**
          * 서버에 수신할 위치를 지정합니다.
          */
-        listen?: number | ListenOptions | ((server: typeof Server) => void);
+        listen?: number | ListenOptions | ((server: Server) => void);
 
         /**
          * 클라이언트가 서버에 연결하는 데 사용해야 하는 프로토콜을 지정합니다.
@@ -277,7 +277,7 @@ module.exports = {
         /**
          * EventSource 요청을 처리하는 서버를 생성하는 방법을 지정합니다.
          */
-        server?: ServerOptionsImport | ServerOptionsHttps | (() => typeof Server);
+        server?: ServerOptionsImport | ServerOptionsHttps | (() => Server);
 
     },
     entries?: boolean,

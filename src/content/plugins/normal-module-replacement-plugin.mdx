@@ -19,6 +19,8 @@ new webpack.NormalModuleReplacementPlugin(resourceRegExp, newResource);
 
 `resourceRegExp`는 확인된 리소스가 아니라 코드에 작성한 요청에 대해 테스트 됩니다. 예를 들어, `import sum from './sum'` 코드가 있을 때 `'./sum.js'` 대신 `'./sum'`이 테스트에 사용됩니다.
 
+또한 Windows를 사용할 때는 다른 폴더 구분 기호를 사용해야 합니다. 예를 들어 `/src\/environments\/environment\.ts/`는 Windows에서 작동하지 않기 때문에, `/src[\\/]environments[\\/]environment\.ts/,`를 대신 사용해야 합니다.
+
 ## Basic Example
 
 [개발 환경](/guides/production)용으로 빌드할 때 특정 모듈을 교체합니다.
