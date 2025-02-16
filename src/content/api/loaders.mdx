@@ -14,6 +14,7 @@ contributors:
   - snitin315
   - chenxsan
   - jamesgeorge007
+  - alexeyr
 translators:
   - 1ilsang
 ---
@@ -22,7 +23,9 @@ translators:
 
 첫 번째 로더에는 리소스 파일의 내용이라는 하나의 인수를 넘깁니다. 컴파일러는 마지막 로더의 결과를 기대합니다. 결과는 모듈의 자바스크립트 소스 코드를 나타내는 `String` 또는 `Buffer`(문자열로 변환됨)여야 합니다. 선택적 소스맵 결과(JSON 객체로)도 전달할 수 있습니다.
 
-단일 결과는 [동기 모드](#synchronous-loaders)에서 반환될 수 있습니다. 여러 결과의 경우 `this.callback()`을 호출해야 합니다. [비동기 모드](#asynchronous-loaders)에서는 [로드 러너](https://github.com/webpack/loader-runner)가 비동기 결과를 기다려야 함을 나타내기 위해 `this.async()`를 호출해야 합니다. 이는 `this.callback()`을 반환합니다. 그 후 로더는 `undefined`를 반환하고 해당 콜백을 호출해야 합니다.
+[동기 모드](#synchronous-loaders)에서는 단일 결과가 반환될 수 있습니다. 여러 결과의 경우 `this.callback()`을 호출해야 하며 로더는 `undefined`를 반환해야 합니다.
+
+[비동기 모드](#asynchronous-loaders)에서 `비동기 함수`에서 단일 결과를 반환할 수 있습니다. 또는 `this.async()`를 호출하여 [로더 러너](https://github.com/webpack/loader-runner)가 비동기 결과를 기다려야 함을 나타낼 수 있습니다. 이 경우 `this.callback()`을 반환합니다. 이 경우 로더는 `undefined`를 반환하고 해당 콜백을 호출해야 합니다. 이 옵션은 여러 결과에 대한 유일한 옵션입니다.
 
 ```js
 /**
@@ -65,9 +68,20 @@ module.exports = function (content, map, meta) {
 
 ### Asynchronous Loaders
 
-비동기 로더의 경우 [`this.async`](#thisasync)는 `callback` 함수를 가져오기 위해 사용됩니다.
+비동기 로더의 경우 `비동기 함수`에서 변환된 `콘텐츠`를 반환할 수 있습니다.
 
 **async-loader.js**
+
+```javascript
+module.exports = async function (content, map, meta) {
+  var result = await someAsyncOperation(content);
+  return result;
+};
+```
+
+또는 [`this.async`](#thisasync)를 사용하여 `callback` 함수를 검색할 수 있습니다.
+
+**async-loader-with-callback.js**
 
 ```javascript
 module.exports = function (content, map, meta) {
