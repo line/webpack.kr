@@ -171,7 +171,7 @@ function Site(props) {
   return (
     <div className="site">
       <Helmet>
-        <html lang="en" />
+        <html lang="ko" />
         <meta charset="utf-8" />
         <meta name="theme-color" content="#2B3A42" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
