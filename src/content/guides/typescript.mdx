@@ -117,6 +117,42 @@ module.exports = {
 
 T> import 부분에서 기본적으로 이 작업을 하도록 하고 TypeScript에서 `import _ from 'lodash';` 문법을 유지하기 위해 **tsconfig.json** 파일에 `"allowSyntheticDefaultImports" : true` 와 `"esModuleInterop" : true`로 설정 합니다. 이는 TypeScript 설정과 연관이 있기때문에 이 가이드에서는 정보를 제공하기 위해서만 언급하겠습니다.
 
+## Ways to Use TypeScript in `webpack.config.ts`
+
+`webpack.config.ts`에서 TypeScript를 사용하는 방법은 5가지가 있습니다.
+
+1. **TypeScript 구성과 함께 webpack 사용**
+
+   ```bash
+   webpack -c ./webpack.config.ts
+   ```
+
+   (`rechoir`와 `interpret`의 한계로 인해 모든 기능이 지원되지는 않습니다.)
+
+2. **Node.js에 사용자 정의 `--import` 사용:**
+
+   ```bash
+   NODE_OPTIONS='--import tsx'  webpack --disable-interpret -c ./webpack.config.ts
+   ```
+
+3. **Node.js v22.7.0 ≥ 당신의 NODE.JS 버전 < v23.6.0에 내장된 TypeScript 모듈 사용**
+
+   ```bash
+   NODE_OPTIONS='--experimental-strip-types' webpack --disable-interpret -c ./webpack.config.ts
+   ```
+
+4. **Node.js에 내장된 TypeScript 모듈 사용 ≥ v22.6.0:**
+
+   ```bash
+   webpack --disable-interpret -c ./webpack.config.ts
+   ```
+
+5. **Node.js ≥ v22.6.0에 tsx 사용**
+
+   ```bash
+   NODE_OPTIONS='--no-experimental-strip-types --import tsx' webpack --disable-interpret -c ./webpack.config.ts
+   ```
+
 ## Loader
 
 [`ts-loader`](https://github.com/TypeStrong/ts-loader)
