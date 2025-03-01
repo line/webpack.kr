@@ -10,7 +10,7 @@ describe('server side rendered page', () => {
 
   it('should find html tag with lang', () => {
     cy.visit('/');
-    cy.get('html[lang="en"]');
+    cy.get('html[lang="ko"]');
   });
 
   it('should find meta charset', () => {
