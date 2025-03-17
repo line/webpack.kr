@@ -185,10 +185,15 @@ module.exports = {
         localIdentName: '[uniqueName]-[id]-[local]',
       },
       'css/global': {
-        // ditto
+        // 위와 동일
       },
       'css/module': {
-        // ditto
+        // 위와 동일
+      },
+      json: {
+        // JSON 모듈에 대한 생성기 옵션
+        // JSON 문자열이 20자를 넘는 경우 `JSON.parse`를 사용합니다.
+        JSONParse: true,
       },
       // 그외 다른 옵션들…
     },
