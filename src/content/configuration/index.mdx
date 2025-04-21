@@ -48,44 +48,33 @@ T> webpack을 처음 사용하시나요? 시작하려면 webpack의 [핵심 개�
 
 W> webpack은 [plugins defaults](/contribute/writing-a-plugin/#configuration-defaults)가 적용된 후 설정 기본값을 적용합니다.
 
-Webpack에는 방대한 옵션 세트가 있습니다. 프로젝트 요구사항에 대한 webpack 설정 파일을 빠르게 생성할 수 있는 [webpack-cli'의 `init` 명령어](/api/cli/#init)를 활용하세요. 설정 파일을 만들기 전에 몇 가지 질문을 할 것입니다.
+Webpack에는 너무 많은 옵션이 있어서 어려울 수 있습니다. 버전 v6.0.0부터 제공되는 `webpack-cli`의 새로운 도구[create-new-webpack-app](https://github.com/webpack/webpack-cli/)를 활용하세요. 이 도구를 사용하면 프로젝트 요구 사항에 맞는 특정 구성 파일로 Webpack 애플리케이션을 빠르게 생성할 수 있습니다. 설정 파일을 만들기 전에 몇 가지 질문을 할 것입니다.
 
 ```bash
-npx webpack init
+npx create-new-webpack-app [command] [options]
 ```
 
-npx는 `@webpack-cli/generators`가 아직 프로젝트에 설치되지 않았거나 전역으로 설치되지 않은 경우 설치하라는 메시지를 표시 할 수 있습니다. 설정 생성 중에 선택한 사항에 따라 프로젝트에 추가 패키지를 설치할 수도 있습니다.
+npx는 프로젝트 또는 전역에 `create-new-webpack-app`이 아직 설치되지 않은 경우 설치를 요청할 수 있습니다. 또한 새 webpack 애플리케이션 생성 과정에서 선택한 사항에 따라 프로젝트에 추가 패키지가 설치될 수도 있습니다.
 
 ```bash
-$ npx webpack init
+$ npx create-new-webpack-app init
 
-[webpack-cli] For using this command you need to install: '@webpack-cli/generators' package.
-[webpack-cli] Would you like to install '@webpack-cli/generators' package? (That will run 'npm install -D @webpack-cli/generators') (Y/n)
-devDependencies:
-+ @webpack-cli/generators 2.5.0
-? Which of the following JS solutions do you want to use? ES6
+Need to install the following packages:
+create-new-webpack-app@1.1.1
+Ok to proceed? (y)
+
+? Which of the following JS solutions do you want to use? Typescript
 ? Do you want to use webpack-dev-server? Yes
 ? Do you want to simplify the creation of HTML files for your bundle? Yes
 ? Do you want to add PWA support? No
 ? Which of the following CSS solutions do you want to use? CSS only
 ? Will you be using PostCSS in your project? Yes
 ? Do you want to extract CSS for every file? Only for Production
-? Do you like to install prettier to format generated configuration? Yes
-? Pick a package manager: pnpm
-[webpack-cli] ℹ INFO  Initialising project...
-
-devDependencies:
-+ @babel/core 7.19.3
-+ @babel/preset-env 7.19.4
-+ autoprefixer 10.4.12
-+ babel-loader 8.2.5
-+ css-loader 6.7.1
-+ html-webpack-plugin 5.5.0
-+ mini-css-extract-plugin 2.6.1
-+ postcss 8.4.17
-+ postcss-loader 7.0.1
-+ prettier 2.7.1
-+ style-loader 3.3.1
-+ webpack-dev-server 4.11.1
-[webpack-cli] Project has been initialised with webpack!
+? Which package manager do you want to use? npm
+[create-webpack] ℹ️ Initializing a new Webpack project
+...
+...
+...
+[create-webpack] ✅ Project dependencies installed successfully!
+[create-webpack] ✅ Project has been initialised with webpack!
 ```
