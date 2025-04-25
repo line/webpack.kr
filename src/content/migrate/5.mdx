@@ -47,7 +47,7 @@ webpack v4에서 v5로 업그레이드하는 것을 지원하기 위해 [Codemod
 [webpack v5 마이그레이션 codemods](https://go.codemod.com/webpack-v5-recipe)를 실행합니다.
 
 ```bash
-npx codemod webpack/v5/migration-recipe
+npx codemod@latest webpack/v5/migration-recipe
 ```
 
 이렇게 하면 [Codemod 레지스트리](https://codemod.com/registry)에서 다음 codemod가 실행됩니다.
@@ -149,10 +149,10 @@ Webpack 4 및 해당 플러그인/로더 업그레이드 단계에서 일부 플
   }
   ```
 
-  > **Note**: Codemod for this Chnages:
+  > **Note**: Codemod for this change:
   >
   > ```bash
-  > npx codemod set-target-to-false-and-update-plugins
+  > npx codemod webpack/v5/set-target-to-false-and-update-plugins
   > ```
   >
   > (See the [registry here](https://codemod.com/registry/webpack-v5-set-target-to-false-and-update-plugins).)
@@ -179,7 +179,7 @@ Webpack 4 및 해당 플러그인/로더 업그레이드 단계에서 일부 플
   }
   ```
 
-  > **Note**: Codemod for this Chnages:
+  > **Note**: Codemod for this change:
   >
   > ```bash
   > npx codemod webpack/v5/migrate-library-target-to-library-object
@@ -243,10 +243,10 @@ import pkg from './package.json';
 console.log(pkg.version);
 ```
 
-> **Note**: Codemod for this Chnages:
+> **Note**: Codemod for this change:
 >
 > ```bash
-> npx codemod codemod webpack/v5/json-imports-to-default-imports
+> npx codemod webpack/v5/json-imports-to-default-imports
 > ```
 >
 > (See the [registry here](https://codemod.com/registry/webpack-v5-json-imports-to-default-imports).)
