@@ -13,6 +13,7 @@ contributors:
   - getsnoopy
   - yevhen-logosha
   - akash-kumar-dev
+  - EvanSanderson
 translators:
   - maphnew
 ---
@@ -293,6 +294,10 @@ console.log(pkg.version);
   - `auto`가 포함된 URL을 가리키는 404 오류
     - 모든 생태계 도구가 `output.publicPath: "auto"`를 통한 새로운 기본 자동 `publicPath`에 대해 준비된 것은 아닙니다
       - 대신 고정값 `output.publicPath: ""`를 사용하세요.
+  - 정의되지 않은 속성을 읽을 수 없습니다('call' 읽기)
+    - 런타임 중에 이 오류가 발생하면 [ModuleConcatenationPlugin](https://webpack.js.org/plugins/module-concatenation-plugin/)과 관련이 있을 수 있습니다. 해당 플러그인을 사용 중인지 확인하고, 설정 파일의 `plugins` 섹션에 플러그인을 포함시켰으며 해당 설정이 `production` 모드로 설정되어 있는지 확인하세요. 플러그인 목록에서 해당 플러그인(예: `new webpack.optimize.ModuleConcatenationPlugin()`)을 제거하세요. webpack 5에서는 해당 플러그인이 프로덕션 모드에서 기본적으로 활성화되어 있으며, 두 번 포함될 수 있습니다.
+    - 일반적으로 각 플러그인을 비활성화하고 빌드를 테스트하는 것은 문제의 원인을 파악하는 좋은 방법입니다.
+    - 자세한 내용은 [이 문제](https://github.com/webpack/webpack/discussions/15369#discussioncomment-13420496)를 참고하세요.
 
 - Level 6: **Deprecation Warnings**.
 
