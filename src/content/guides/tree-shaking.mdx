@@ -540,38 +540,38 @@ T> [`ModuleConcatenationPlugin`](/plugins/module-concatenation-plugin/)은 tree 
 
 ## Common Pitfalls with Side Effects
 
-When working with tree shaking and the `sideEffects` flag, there are several common pitfalls to avoid:
+트리 쉐이킹과 `sideEffects` 플래그를 사용할 때 피해야 할 몇 가지 일반적인 함정이 있습니다.
 
 ### 1. Over-optimistic `sideEffects: false`
 
-Setting `sideEffects: false` in your package.json is tempting for optimal tree shaking, but this can cause problems if your code actually does have side effects. Examples of hidden side effects:
+package.json 파일에서 `sideEffects: false`를 설정하면 최적의 트리 셰이킹 효과를 얻을 수 있지만, 코드에 실제로 부작용이 있는 경우 문제가 발생할 수 있습니다. 숨겨진 부작용의 예는 다음과 같습니다.
 
-- CSS imports (as demonstrated above)
-- Polyfills that modify global objects
-- Libraries that register global event listeners
-- Code that modifies prototype chains
+- CSS 가져오기(위에서 설명한 대로)
+- 전역 객체를 수정하는 폴리필
+- 글로벌 이벤트 리스너를 등록하는 라이브러리
+- 프로토타입 체인을 수정하는 코드
 
 ### 2. Re-exports with Side Effects
 
-Consider this pattern:
+다음 패턴을 고려해 보세요.
 
 ```javascript
-// This file has side effects that might be skipped
+// 이 파일에는 건너뛸 수 있는 부작용이 있습니다
 import './polyfill';
 
-// Re-export components
+// 컴포넌트 다시 내보내기
 export * from './components';
 ```
 
-If a consumer only imports specific components, the polyfill import might be skipped entirely if not properly marked with side effects.
+소비자가 특정 구성 요소만 가져오는 경우, 부작용에 대한 적절한 표시가 없으면 폴리필 가져오기가 완전히 건너뛰어질 수 있습니다.
 
 ### 3. Forgetting about Nested Dependencies
 
-Your package might correctly mark side effects, but if it depends on third-party packages that incorrectly mark their side effects, you might still encounter issues.
+패키지가 부작용을 올바르게 표시하더라도, 부작용을 잘못 표시하는 타사 패키지에 의존하는 경우 여전히 문제가 발생할 수 있습니다.
 
 ### 4. Testing Only in Development Mode
 
-Tree shaking typically only fully activates in production mode. Testing only in development can hide tree shaking issues until deployment.
+트리 쉐이킹은 일반적으로 프로덕션 모드에서만 완전히 활성화됩니다. 개발 모드에서만 테스트하면 배포될 때까지 트리 쉐이킹 문제를 숨길 수 있습니다.
 
 ## Conclusion
 
