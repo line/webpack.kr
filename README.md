@@ -1,6 +1,6 @@
 <div align="center">
   <a href="https://github.com/line/webpack.kr">
-    <img width="200" height="200" src="https://webpack.js.org/assets/icon-square-big.svg" />
+    <img width="200" height="200" src="https://webpack.js.org/assets/icon-square-big.svg" alt="webpack logo" />
   </a>
   <h1>webpack.kr</h1>
 

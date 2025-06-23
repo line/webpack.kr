@@ -12,6 +12,8 @@ contributors:
   - jamesgeorge007
   - getsnoopy
   - yevhen-logosha
+  - akash-kumar-dev
+  - EvanSanderson
 translators:
   - maphnew
 ---
@@ -36,6 +38,26 @@ Webpack 5는 Node.js 10.13.0 (LTS) 이상의 버전이 필요합니다. 따라�
 
    일부 플러그인 또는 로더에는 webpack 5와 호환되기 위해 사용해야 하는 베타 버전이 있을 수 있습니다.
    최신 버전이 webpack 5만 지원할 수 있고, 이때 v4에서는 실패할 수 있으므로 업그레이드할 때는 개별 플러그인과 로더의 릴리스 정보를 읽어보세요. 이 경우 webpack 4를 지원하는 최신 버전으로 업데이트 하는 것을 권장합니다.
+
+## Codemods
+
+webpack v4에서 v5로 업그레이드하는 것을 지원하기 위해 [Codemod](https://github.com/codemod-com/codemod)는 대부분의 마이그레이션 프로세스를 자동화하는 데 도움이 되는 오픈 소스 커뮤니티 codemod를 제공합니다.
+
+이것들은 공식 webpack codemods가 아니며, 마이그레이션을 간소화하는 것을 목표로 하지만 모든 경우를 포괄하지는 않을 수 있습니다. 업그레이드를 완전히 완료하려면 추가 수동 단계를 수행해야 할 수도 있습니다.
+
+[webpack v5 마이그레이션 codemods](https://go.codemod.com/webpack-v5-recipe)를 실행합니다.
+
+```bash
+npx codemod@latest webpack/v5/migration-recipe
+```
+
+이렇게 하면 [Codemod 레지스트리](https://codemod.com/registry)에서 다음 codemod가 실행됩니다.
+
+- [`webpack/v5/set-target-to-false-and-update-plugins`](https://go.codemod.com/webpack-set-target-false)
+- [`webpack/v5/migrate-library-target-to-library-object`](https://go.codemod.com/webpack-migrate-library-target)
+- [`webpack/v5/json-imports-to-default-imports`](https://go.codemod.com/webpack-json-imports)
+
+이러한 각 codemod는 webpack v5 마이그레이션 가이드에 나열된 변경 사항을 자동화합니다. 사용 가능한 webpack v5 codemod의 전체 목록은 [Codemod 레지스트리](https://go.codemod.com/webpack-v5)를 참고하세요.
 
 ### Make sure your build has no errors or warnings
 
@@ -128,6 +150,14 @@ Webpack 4 및 해당 플러그인/로더 업그레이드 단계에서 일부 플
   }
   ```
 
+  > **Note**: Codemod for this change:
+  >
+  > ```bash
+  > npx codemod webpack/v5/set-target-to-false-and-update-plugins
+  > ```
+  >
+  > ([여기](https://codemod.com/registry/webpack-v5-set-target-to-false-and-update-plugins)에서 registry를 확인하세요.)
+
 - output.library 또는 output.libraryTarget이 정의된 경우 속성 이름을 변경합니다 (output.libraryTarget -> output.library.type, output.library -> output.library.name). 예를 들면 다음과 같습니다.
 
   ```json
@@ -149,6 +179,14 @@ Webpack 4 및 해당 플러그인/로더 업그레이드 단계에서 일부 플
       }
   }
   ```
+
+  > **Note**: Codemod for this change:
+  >
+  > ```bash
+  > npx codemod webpack/v5/migrate-library-target-to-library-object
+  > ```
+  >
+  > ([여기](https://codemod.com/registry/webpack-v5-migrate-library-target-to-library-object)에서 registry를 확인하세요.)
 
 import를 통해 WebAssembly를 사용하는 경우 다음 두 단계 프로세스를 따라야 합니다.
 
@@ -206,6 +244,14 @@ import pkg from './package.json';
 console.log(pkg.version);
 ```
 
+> **Note**: Codemod for this change:
+>
+> ```bash
+> npx codemod webpack/v5/json-imports-to-default-imports
+> ```
+>
+> ([여기](https://codemod.com/registry/webpack-v5-json-imports-to-default-imports)에서 registry를 확인하세요.)
+
 #### Cleanup the build code
 
 - `const compiler = webpack(...);`을 사용할 때 컴파일러를 사용한 후에는 반드시 컴파일러를 닫아야 합니다. `compiler.close(callback);`.
@@ -248,6 +294,10 @@ console.log(pkg.version);
   - `auto`가 포함된 URL을 가리키는 404 오류
     - 모든 생태계 도구가 `output.publicPath: "auto"`를 통한 새로운 기본 자동 `publicPath`에 대해 준비된 것은 아닙니다
       - 대신 고정값 `output.publicPath: ""`를 사용하세요.
+  - 정의되지 않은 속성을 읽을 수 없습니다('call' 읽기)
+    - 런타임 중에 이 오류가 발생하면 [ModuleConcatenationPlugin](https://webpack.js.org/plugins/module-concatenation-plugin/)과 관련이 있을 수 있습니다. 해당 플러그인을 사용 중인지 확인하고, 설정 파일의 `plugins` 섹션에 플러그인을 포함시켰으며 해당 설정이 `production` 모드로 설정되어 있는지 확인하세요. 플러그인 목록에서 해당 플러그인(예: `new webpack.optimize.ModuleConcatenationPlugin()`)을 제거하세요. webpack 5에서는 해당 플러그인이 프로덕션 모드에서 기본적으로 활성화되어 있으며, 두 번 포함될 수 있습니다.
+    - 일반적으로 각 플러그인을 비활성화하고 빌드를 테스트하는 것은 문제의 원인을 파악하는 좋은 방법입니다.
+    - 자세한 내용은 [이 문제](https://github.com/webpack/webpack/discussions/15369#discussioncomment-13420496)를 참고하세요.
 
 - Level 6: **Deprecation Warnings**.
 

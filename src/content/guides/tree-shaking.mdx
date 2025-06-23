@@ -18,6 +18,7 @@ contributors:
   - torifat
   - rahul3v
   - snitin315
+  - vansh5632
 translators:
   - limong
 related:
@@ -314,6 +315,187 @@ export { default as ButtonGroup } from './ButtonGroup';
 
 모듈의 연결에도 적용됩니다. 따라서 이 4개의 모듈과 엔트리 모듈(그리고 아마도 좀 더 많은 의존성)을 연결할 수 있습니다. **결국 `index.js`에는 생성되는 코드가 없습니다.**
 
+## Full Example: Understanding Side Effects with CSS Files
+
+`sideEffects` 플래그의 영향을 더 잘 이해하기 위해 CSS 에셋이 포함된 npm 패키지의 전체 예제와 트리 셰이킹 중에 이러한 에셋이 어떻게 영향을 받을 수 있는지 살펴보겠습니다. "awesome-ui"라는 가상의 UI 컴포넌트 라이브러리를 만들어 보겠습니다.
+
+### Package Structure
+
+예제 패키지는 다음과 같습니다.
+
+```bash
+awesome-ui/
+├── package.json
+├── dist/
+│   ├── index.js
+│   ├── components/
+│   │   ├── index.js
+│   │   ├── Button/
+│   │   │   ├── index.js
+│   │   │   └── Button.css
+│   │   ├── Card/
+│   │   │   ├── index.js
+│   │   │   └── Card.css
+│   │   └── Modal/
+│   │       ├── index.js
+│   │       └── Modal.css
+│   └── theme/
+│       ├── index.js
+│       └── defaultTheme.css
+```
+
+### Package Files Content
+
+**package.json**
+
+```json
+{
+  "name": "awesome-ui",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "sideEffects": false
+}
+```
+
+**dist/index.js**
+
+```javascript
+export * from './components';
+export * from './theme';
+```
+
+**dist/components/index.js**
+
+```javascript
+export { default as Button } from './Button';
+export { default as Card } from './Card';
+export { default as Modal } from './Modal';
+```
+
+**dist/components/Button/index.js**
+
+```javascript
+import './Button.css'; // 이것은 사이드 이펙트가 있습니다. 가져올 때 스타일이 적용됩니다!
+
+export default function Button(props) {
+  // Button component implementation
+  return {
+    type: 'button',
+    ...props,
+  };
+}
+```
+
+**dist/components/Button/Button.css**
+
+```css
+.awesome-ui-button {
+  background-color: #0078d7;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+}
+```
+
+**dist/components/Card/index.js** and **dist/components/Modal/index.js** would have similar structure.
+
+**dist/theme/index.js**
+
+```javascript
+import './defaultTheme.css'; // 이것은 사이드 이펙트가 있습니다!
+
+export const themeColors = {
+  primary: '#0078d7',
+  secondary: '#f3f2f1',
+  danger: '#d13438',
+};
+```
+
+### What Happens When Consuming This Package?
+
+이제 Button 구성 요소만 사용하려는 컨수머 애플리케이션을 상상해 보세요.
+
+```javascript
+import { Button } from 'awesome-ui';
+
+// 버튼 컴포넌트를 사용하세요
+```
+
+#### With `sideEffects: false` in package.json
+
+트리 쉐이킹이 활성화된 상태에서 webpack이 이 가져오기를 처리하는 경우.
+
+1. 버튼에 대한 가져오기만 확인됩니다.
+2. package.json을 보면 `sideEffects: false`가 보입니다.
+3. Button 구성 요소 코드만 포함하면 된다고 판단합니다.
+4. 모든 파일에 사이드 이펙트가 없는 것으로 표시되어 있으므로 **단지** 버튼에 대한 JavaScript 코드만 포함됩니다.
+5. **CSS 파일 가져오기가 중단됩니다!** Button.css가 Button/index.js로 가져와졌더라도 webpack은 이 가져오기에 사이드 이펙트가 없다고 가정합니다.
+
+결과: Button 구성 요소는 렌더링되지만, 트리 셰이킹 중에 Button.css가 제거되었기 때문에 스타일이 적용되지 않습니다.
+
+#### The Correct Configuration for This Package
+
+이 문제를 해결하려면 package.json을 업데이트하여 CSS 파일에 사이드 이펙트가 있음을 올바르게 표시해야 합니다.
+
+```json
+{
+  "name": "awesome-ui",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "sideEffects": ["**/*.css"]
+}
+```
+
+이 설정을 사용하면,
+
+1. Webpack은 여전히 Button 구성 요소만 필요하다고 식별합니다.
+2. 하지만 이제 CSS 파일에는 사이드 이펙트가 있다는 것을 인식합니다.
+3. 따라서 Button/index.js를 처리할 때 Button.css가 포함됩니다.
+
+### The Decision Tree for Side Effects
+
+트리 쉐이킹 중에 WebPack이 모듈을 평가하는 방식은 다음과 같습니다.
+
+1. 이 모듈의 내보내기 기능은 직접 사용되나요, 아니면 간접적으로 사용되나요?
+
+   - 예: 모듈을 포함합니다.
+   - 아니요: 2단계로 계속 진행하세요.
+
+2. 모듈에 사이드 이펙트가 표시되어 있나요?
+   - 예(`sideEffects`가 이 파일을 포함하거나 `true`인 경우): 모듈을 포함합니다.
+   - 아니요(`sideEffects`가 `false`이거나 이 파일을 포함하지 않는 경우): 모듈과 해당 종속성을 제외합니다.
+
+적절한 sideEffects 구성을 갖춘 라이브러리 파일의 경우:
+
+- `dist/index.js`: 직접 내보내기가 사용되지 않음, 사이드 이펙트 없음 -> 건너뛰기
+- `dist/components/index.js`: 직접 내보내기가 사용되지 않음, 사이드 이펙트 없음 -> 건너뛰기
+- `dist/components/Button/index.js`: 직접 내보내기 사용 -> 포함
+- `dist/components/Button/Button.css`: 내보내기가 불가능하고 사이드 이펙트 있음 -> 포함
+- `dist/components/Card/*`: 내보내기가 사용되지 않음, 사이드 이펙트 없음 -> 제외
+- `dist/components/Modal/*`: 내보내기가 사용되지 않음, 사이드 이펙트 없음 -> 제외
+- `dist/theme/*`: 내보내기가 사용되지 않음, 사이드 이펙트 없음 -> 제외
+
+### Real-World Impact
+
+잘못된 사이드 이펙트 설정은 심각한 영향을 미칠 수 있습니다.
+
+1. **CSS 미포함**: 컴포넌트가 스타일 없이 렌더링됨
+2. **전역 JavaScript 미실행**: 폴리필 또는 전역 구성이 실행되지 않음
+3. **초기화 코드 생략**: 컴포넌트를 등록하거나 이벤트 리스너를 설정하는 함수가 실행되지 않음
+
+이러한 문제는 트리 쉐이킹이 활성화된 프로덕션 빌드에서만 발생하는 경우가 많기 때문에 디버깅하기가 특히 어려울 수 있습니다.
+
+### Testing Side Effects Configuration
+
+사이드 이펙트 설정이 올바른지 테스트하는 좋은 방법은 다음과 같습니다.
+
+1. 하나의 컴포넌트만 가져오는 최소 애플리케이션을 만듭니다.
+2. 프로덕션 설정(트리 쉐이킹 활성화)으로 빌드합니다.
+3. 모든 필수 스타일과 동작이 제대로 작동하는지 확인합니다.
+4. 생성된 번들을 보고 올바른 파일이 포함되어 있는지 확인합니다.
+
 ## Mark a function call as side-effect-free
 
 `/*#__PURE__*/`어노테이션을 사용하여 해당 함수 호출이 사이드 이펙트가 없다(side-effect-free)(순수하다)는 것을 webpack에 알릴 수 있습니다. 함수 호출 앞에 추가하여 사이드 이펙트가 없는 것으로 표시할 수 있습니다. 함수에 전달된 인수는 어노테이션으로 표시되지 않고 개별적으로 표시해야 할 수 있습니다. 사용하지 않는 변수의 초기값이 사이드 이펙트가 없다(순수하다)면, 사용하지 않는 코드로 표시되고 실행되지 않으며 최소화할 때 삭제됩니다.
@@ -356,6 +538,41 @@ T> `--optimize-minimize` 플래그를 사용하여 `TerserPlugin`도 활성화 �
 
 T> [`ModuleConcatenationPlugin`](/plugins/module-concatenation-plugin/)은 tree shaking이 동작하기 위해 필요합니다. `mode: 'production'`에 의해 추가됩니다. 만약 사용하지 않는다면, [`ModuleConcatenationPlugin`](/plugins/module-concatenation-plugin/)을 수동으로 추가해야 합니다.
 
+## Common Pitfalls with Side Effects
+
+트리 쉐이킹과 `sideEffects` 플래그를 사용할 때 피해야 할 몇 가지 일반적인 함정이 있습니다.
+
+### 1. Over-optimistic `sideEffects: false`
+
+package.json 파일에서 `sideEffects: false`를 설정하면 최적의 트리 셰이킹 효과를 얻을 수 있지만, 코드에 실제로 부작용이 있는 경우 문제가 발생할 수 있습니다. 숨겨진 부작용의 예는 다음과 같습니다.
+
+- CSS 가져오기(위에서 설명한 대로)
+- 전역 객체를 수정하는 폴리필
+- 글로벌 이벤트 리스너를 등록하는 라이브러리
+- 프로토타입 체인을 수정하는 코드
+
+### 2. Re-exports with Side Effects
+
+다음 패턴을 고려해 보세요.
+
+```javascript
+// 이 파일에는 건너뛸 수 있는 부작용이 있습니다
+import './polyfill';
+
+// 컴포넌트 다시 내보내기
+export * from './components';
+```
+
+소비자가 특정 구성 요소만 가져오는 경우, 부작용에 대한 적절한 표시가 없으면 폴리필 가져오기가 완전히 건너뛰어질 수 있습니다.
+
+### 3. Forgetting about Nested Dependencies
+
+패키지가 부작용을 올바르게 표시하더라도, 부작용을 잘못 표시하는 타사 패키지에 의존하는 경우 여전히 문제가 발생할 수 있습니다.
+
+### 4. Testing Only in Development Mode
+
+트리 쉐이킹은 일반적으로 프로덕션 모드에서만 완전히 활성화됩니다. 개발 모드에서만 테스트하면 배포될 때까지 트리 쉐이킹 문제를 숨길 수 있습니다.
+
 ## Conclusion
 
 그래서 _tree shaking의_ 이점을 살리기 위하여
@@ -363,6 +580,7 @@ T> [`ModuleConcatenationPlugin`](/plugins/module-concatenation-plugin/)은 tree 
 - ES2015 모듈 구문을 사용해야 하는 것을 배웠습니다. (예: `import`와 `export`)
 - 컴파일러가 ES2015 모듈 구문을 CommonJS 모듈로 변환하지 않도록 해야 합니다. (이것은 인기 있는 Babel preset @babel/preset-env의 기본 동작입니다. 자세한 내용은 [documentation](https://babeljs.io/docs/en/babel-preset-env#modules)를 참고하세요.)
 - `package.json` 파일에 `"sideEffects"` 속성을 추가하세요.
+- 특히 CSS 가져오기의 경우 사이드 이펙트가 있는 파일을 올바르게 표시하는 데 주의하세요.
 - 최소화와 tree shaking을 포함한 [다양한 최적화를](/configuration/mode/#usage) 사용하려면 [`production`](/configuration/mode/#mode-production) `mode` 설정 옵션을 사용하세요. (플래그 값을 사용하여 개발 모드에서 사이드 이펙트 최적화가 활성화됩니다)
 - `production` 모드에서는 일부 기능을 사용할 수 없으므로 [`devtool`](/configuration/devtool/#devtool)에 올바른 값을 설정했는지 확인하세요.
 

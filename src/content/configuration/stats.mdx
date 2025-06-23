@@ -446,6 +446,21 @@ module.exports = {
 };
 ```
 
+### stats.errorCause
+
+`boolean` `"auto"`
+
+`stats` 함수에 오류의 [`cause`](https://nodejs.org/en/blog/release/v16.9.0/#error-cause) 속성을 출력에 포함할지 여부를 지정합니다. 기본값은 `true`입니다.
+
+```javascript
+module.exports = {
+  //...
+  stats: {
+    errorCause: true,
+  },
+};
+```
+
 ### stats.errorDetails
 
 `boolean` `string = "auto"`
@@ -457,6 +472,23 @@ module.exports = {
   //...
   stats: {
     errorDetails: false,
+  },
+};
+```
+
+### stats.errorErrors
+
+`boolean` `"auto"`
+
+`stats`에 [`AggregateError`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/AggregateError) 인스턴스의 오류 배열을 출력에 포함할지 여부를 지정합니다. 기본값은 `true`입니다.
+
+단일 오류가 여러 개의 기본 오류로 구성된 경우 유용하며, 그룹화된 오류 구조에 대한 더 깊은 가시성을 제공합니다.
+
+```javascript
+module.exports = {
+  //...
+  stats: {
+    errorErrors: true,
   },
 };
 ```

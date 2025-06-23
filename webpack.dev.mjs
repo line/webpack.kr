@@ -44,5 +44,12 @@ export default (env) =>
       hot: true,
       compress: true,
       historyApiFallback: true,
+      open: true,
+      client: {
+        overlay: {
+          warnings: false,
+          errors: true,
+        },
+      },
     },
   });

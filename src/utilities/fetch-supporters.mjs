@@ -113,7 +113,7 @@ const getAllNodes = async (graphqlQuery, getNodes) => {
     remaining = 100;
   }
   // Handling pagination if necessary
-   
+
   while (true) {
     if (remaining === 0) {
       console.log(`Rate limit exceeded. Sleeping until ${new Date(reset)}.`);

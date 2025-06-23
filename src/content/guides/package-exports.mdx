@@ -202,10 +202,10 @@ throw new ModuleNotFoundError();
 | --------- | ------------------------------------------------------------ | -------------------------------------------------------------------- |
 | `import`  | ESM 또는 유사한 구문에서 요청이 발생합니다.                  | Node.js, webpack, rollup, esinstall<sup>(1)</sup>, wmr<sup>(1)</sup> |
 | `require` | CommonJs/AMD 또는 유사한 구문에서 요청이 발생합니다.         | Node.js, webpack, rollup, esinstall<sup>(1)</sup>, wmr<sup>(1)</sup> |
-| `style`   | 스타일시트 참조에서 요청이 발생합니다.                       |
-| `sass`    | sass 스타일시트 참조에서 요청이 발생합니다.                  |
-| `asset`   | 애셋 참조에서 요청이 발생합니다.                             |
-| `script`  | 모듈 시스템 없이 스크립트 태그를 사용할때 요청이 발생합니다. |
+| `style`   | 스타일시트 참조에서 요청이 발생합니다.                       |                                                                      |
+| `sass`    | sass 스타일시트 참조에서 요청이 발생합니다.                  |                                                                      |
+| `asset`   | 애셋 참조에서 요청이 발생합니다.                             |                                                                      |
+| `script`  | 모듈 시스템 없이 스크립트 태그를 사용할때 요청이 발생합니다. |                                                                      |
 
 부가적으로 아래의 조건도 설정할 수 있습니다.
 
@@ -213,7 +213,7 @@ throw new ModuleNotFoundError();
 | ----------- | ------------------------------------------------------------------------------------------------------------- | -------------------- |
 | `module`    | javascript를 참조 가능한 모든 모듈 구문은 ESM을 지원합니다.<br />(`import` 또는 `require`와 함께 사용했을 때) | webpack, rollup, wmr |
 | `esmodules` | 지원하는 도구에서 항상 설정합니다.                                                                            | wmr                  |
-| `types`     | type 선언과 관련 있는 typescript로부터 요청이 발생합니다.                                                     |
+| `types`     | type 선언과 관련 있는 typescript로부터 요청이 발생합니다.                                                     |                      |
 
 (1) 참조 구문에서 `import`와 `require`는 모두 독립적으로 설정됩니다. `require`는 항상 더 낮은 우선순위를 갖습니다.
 
@@ -329,8 +329,8 @@ CommonJs를 지원하는 시스템에서 스크립트를 전처리하는 경우,
 | Node.js   | 지원   | `--conditions` CLI 인자를 사용.                                    |
 | webpack   | 지원   | `resolve.conditionNames` 설정 옵션을 사용.                         |
 | rollup    | 지원   | `@rollup/plugin-node-resolve` 에서 `exportConditions` 옵션을 사용. |
-| esinstall | 미지원 |
-| wmr       | 미지원 |
+| esinstall | 미지원 |                                                                    |
+| wmr       | 미지원 |                                                                    |
 
 커스텀 조건에는 다음 네이밍 스키마를 권장합니다.
 
