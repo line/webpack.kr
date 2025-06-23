@@ -1,12 +1,12 @@
 <div align="center">
   <a href="https://github.com/webpack/webpack">
-    <img width="200" height="200" src="https://webpack.js.org/assets/icon-square-big.svg" />
+    <img width="200" height="200" src="https://webpack.js.org/assets/icon-square-big.svg" alt="webpack logo" />
   </a>
   <h1>webpack.js.org</h1>
 
 [![Build Status][build-status]][build-status-url]
 [![Standard Version][release]][release-url]
-[![chat on gitter][chat]][chat-url]
+[![GitHub Discussions][discussion]][discussion-url]
 
 Guides, documentation, and all things webpack.
 
@@ -64,10 +64,10 @@ _Vercel_ has given us a Pro account.
 [vercel]: ./src/assets/powered-by-vercel.svg
 [browserstack-url]: http://browserstack.com/
 [vercel-url]: https://vercel.com/?utm_source=webpackdocs
-[chat]: https://badges.gitter.im/webpack/webpack.svg
-[chat-url]: https://gitter.im/webpack/webpack
+[discussion]: https://img.shields.io/github/discussions/webpack/webpack
+[discussion-url]: https://github.com/webpack/webpack/discussions
 [concepts-url]: https://github.com/webpack/webpack.js.org/issues/1386
-[contributing-url]: https://github.com/webpack/webpack.js.org/blob/master/.github/CONTRIBUTING.md
+[contributing-url]: https://github.com/webpack/webpack.js.org/blob/main/.github/CONTRIBUTING.md
 [general-url]: https://github.com/webpack/webpack.js.org/issues/1525
 [guides-url]: https://github.com/webpack/webpack.js.org/issues/1258
 [license-url]: https://creativecommons.org/licenses/by/4.0/
