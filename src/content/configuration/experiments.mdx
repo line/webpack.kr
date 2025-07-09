@@ -27,6 +27,7 @@ W> 실험적 기능은 시멘틱 버저닝을 완화하고 주요 변경 사항�
 - [`buildHttp`](#experimentsbuildhttp)
 - [`cacheUnaffected`](#experimentscacheunaffected)
 - [`css`](#experimentscss)
+- [`deferImport`](#experimentsdeferimport)
 - [`futureDefaults`](#experimentsfuturedefaults)
 - `layers`: 모듈 및 청크 레이어를 활성화합니다.
 - [`lazyCompilation`](#experimentslazycompilation)
@@ -210,6 +211,55 @@ module.exports = {
 - Type: `boolean`
 
 기본값은 [`futureDefaults`](#experimentsfuturedefaults)의 값입니다.
+
+### experiments.deferImport
+
+Enable support of the tc39 proposal [the `import defer` proposal](https://github.com/tc39/proposal-defer-import-eval).
+This allows deferring the evaluation of a module until its first use.
+This is useful to synchronously defer code execution when it's not possible to use `import()` due to its asynchronous nature.
+
+- Type: `boolean`
+
+This feature requires the runtime environment to have [`Proxy`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) (ES6) support.
+
+Enables the following syntaxes:
+
+```js
+import defer * as module from 'module-name';
+// or
+import * as module2 from /* webpackDefer: true */ 'module-name2';
+
+export function f() {
+  // module-name is evaluated synchronously, then call doSomething() on it.
+  module.doSomething();
+}
+```
+
+#### Limitations of magic comments (`/* webpackDefer: true */`)
+
+It's suggested to put the magic comment after the `from` keyword. Other positions may work, but have not been tested.
+
+Putting the magic comment after the `import` keyword is incompatible with the filesystem cache.
+
+```js
+import /* webpackDefer: true */ * as ns from '...'; // known broken
+import * as ns from /* webpackDefer: true */ '...'; // recommended
+```
+
+You should make sure your loaders do not remove the magic comment.
+
+TypeScript, Babel, SWC, and Flow.js can be configured to preserve the magic comment.
+
+Esbuild is _not_ compatible with this feature (see [evanw/esbuild#1439](https://github.com/evanw/esbuild/issues/1439) and [evanw/esbuild#309](https://github.com/evanw/esbuild/issues/309)), but it may support this in the future.
+
+#### Not implemented
+
+The asynchronous form of this proposal is not implemented yet.
+
+```js
+import.defer('module-name'); // not implemented
+import(/* webpackDefer: true */ 'module-name'); // not implemented
+```
 
 ### experiments.futureDefaults
 
