@@ -5,7 +5,7 @@ contributors:
   - xiaoxiaojx
 ---
 
-Allow creating virtual modules of any type, such as `.ts`, `.json`, `.css`, etc. default is `.js`.
+다양한 유형의 가상 모듈을 생성할 수 있습니다. 예를 들어 `.ts`, `.json`, `.css` 등이 있으며, 기본값은 `.js`입니다.
 
 <Badge text="5.100.0+" />
 
@@ -27,7 +27,7 @@ console.log(msg);
 
 ## Basic Example
 
-Create a virtual module that generates build information
+빌드 정보를 생성하는 가상 모듈을 만듭니다.
 
 ```javascript
 const webpack = require('webpack')
@@ -50,7 +50,7 @@ import { buildTime } from 'virtual:buildInfo';
 console.log('App version: ', buildTime);
 ```
 
-Use custom schema
+사용자 정의 스키마 사용
 
 ```javascript
 const webpack = require('webpack');
@@ -73,7 +73,7 @@ console.log(msg);
 
 ## Advanced Example
 
-Create multiple virtual modules of different types
+다양한 유형의 가상 모듈을 여러 개 생성합니다.
 
 ```javascript
 const webpack = require('webpack');
@@ -97,7 +97,7 @@ import json from 'virtual:myJsonModule';
 import 'virtual:myCssModule';
 ```
 
-Virtualize the routing file
+라우팅 파일을 가상화합니다.
 
 ```javascript
 const webpack = require('webpack');
@@ -129,12 +129,12 @@ import { routes } from 'virtual:routes';
 
 ## Options
 
-- `module.type` (`string`): Content type of the virtual module.
+- `module.type` (`string`): 가상 모듈의 콘텐츠 유형.
 
-T> Make sure that these types have a loader set via [module.rules](https://webpack.js.org/configuration/module/#modulerules).
+T> 이러한 유형에 대해 [module.rules](https://webpack.js.org/configuration/module/#modulerules)을 통해 로더가 설정되어 있는지 확인하세요.
 
-- `module.source` (`string | ((loaderContext: import('webpack').LoaderContext<T>) => Promise<string> | string))`: Factory function for generating the content of virtual module.
+- `module.source` (`string | ((loaderContext: import('webpack').LoaderContext<T>) => Promise<string> | string))`: 가상 모듈의 콘텐츠를 생성하는 팩토리 함수.
 
-- `module.version`(`boolean | string | () => string`): When a invalidate is triggered, the source function is called again if the value of the version is different from the previous one. If set to true it will always trigger.
+- `module.version`(`boolean | string | () => string`): 무효화가 발생하면 버전의 값이 이전과 다를 경우 소스 함수가 다시 호출됩니다. true로 설정하면 항상 트리거됩니다.
 
-- `schema` (`string`): Customizable virtual module schema, default is `virtual`.
+- `schema` (`string`): 사용자 정의 가능한 가상 모듈 스키마, 기본값은 `virtual`입니다.
