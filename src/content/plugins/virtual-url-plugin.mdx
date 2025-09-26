@@ -1,0 +1,140 @@
+---
+title: VirtualUrlPlugin
+group: webpack
+contributors:
+  - xiaoxiaojx
+---
+
+다양한 유형의 가상 모듈을 생성할 수 있습니다. 예를 들어 `.ts`, `.json`, `.css` 등이 있으며, 기본값은 `.js`입니다.
+
+<Badge text="5.100.0+" />
+
+```javascript
+const webpack = require('webpack');
+
+new webpack.experiments.schemes.VirtualUrlPlugin({
+  myModule: `export const msg = "from virtual module"`,
+});
+```
+
+**src/app.js**
+
+```javascript
+import { msg } from 'virtual:myModule';
+
+console.log(msg);
+```
+
+## Basic Example
+
+빌드 정보를 생성하는 가상 모듈을 만듭니다.
+
+```javascript
+const webpack = require('webpack')
+
+new webpack.experiments.schemes.VirtualUrlPlugin({
+  buildInfo: {
+    source: () {
+      return `export const buildTime = ${+new Date()}`
+    },
+    version: true
+  }
+});
+```
+
+**src/app.js**
+
+```javascript
+import { buildTime } from 'virtual:buildInfo';
+
+console.log('App version: ', buildTime);
+```
+
+사용자 정의 스키마 사용
+
+```javascript
+const webpack = require('webpack');
+
+new webpack.experiments.schemes.VirtualUrlPlugin(
+  {
+    myModule: `export const msg = "from virtual module"`,
+  },
+  'v'
+);
+```
+
+**src/app.js**
+
+```javascript
+import { msg } from 'v:myModule';
+
+console.log(msg);
+```
+
+## Advanced Example
+
+다양한 유형의 가상 모듈을 여러 개 생성합니다.
+
+```javascript
+const webpack = require('webpack');
+
+new webpack.experiments.schemes.VirtualUrlPlugin({
+  myCssModule: {
+    type: '.css',
+    source: 'body{background-color: powderblue;}',
+  },
+  myJsonModule: {
+    type: '.json',
+    source: `{"name": "virtual-url-plugin"}`,
+  },
+});
+```
+
+**src/app.js**
+
+```javascript
+import json from 'virtual:myJsonModule';
+import 'virtual:myCssModule';
+```
+
+라우팅 파일을 가상화합니다.
+
+```javascript
+const webpack = require('webpack');
+const path = require('path');
+const watchDir = path.join(__dirname, './src/routes');
+
+new webpack.experiments.schemes.VirtualUrlPlugin({
+  routes: {
+    source(loaderContext) {
+      // Use addContextDependency to monitor the addition or removal of subdirectories in watchDir to trigger the rebuilding of virtual modules.
+      loaderContext.addContextDependency(watchDir);
+
+      const files = fs.readdirSync(watchDir);
+      return `
+        export const routes = {
+          ${files.map((key) => `${key.split('.')[0]}: () => import('./src/routes/${key}')`).join(',\n')}
+        }
+      `;
+    },
+  },
+});
+```
+
+**src/app.js**
+
+```javascript
+import { routes } from 'virtual:routes';
+```
+
+## Options
+
+- `module.type` (`string`): 가상 모듈의 콘텐츠 유형.
+
+T> 이러한 유형에 대해 [module.rules](https://webpack.js.org/configuration/module/#modulerules)을 통해 로더가 설정되어 있는지 확인하세요.
+
+- `module.source` (`string | ((loaderContext: import('webpack').LoaderContext<T>) => Promise<string> | string))`: 가상 모듈의 콘텐츠를 생성하는 팩토리 함수.
+
+- `module.version`(`boolean | string | () => string`): 무효화가 발생하면 버전의 값이 이전과 다를 경우 소스 함수가 다시 호출됩니다. true로 설정하면 항상 트리거됩니다.
+
+- `schema` (`string`): 사용자 정의 가능한 가상 모듈 스키마, 기본값은 `virtual`입니다.

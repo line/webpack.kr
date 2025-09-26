@@ -23,7 +23,7 @@ T> 이 가이드는 [코드 스플리팅](/guides/code-splitting)에 대한 작�
 
 지연 로딩 또는 "온 디맨드" 로딩은 사이트나 애플리케이션을 최적화하는 좋은 방법입니다. 이 방법은 기본적으로 논리적인 중단점에서 코드를 분할한 다음 유저가 새로운 코드 블록을 요구하거나 필요로 하는 작업을 수행한 후 코드를 로딩하는 것입니다. 이렇게 하면 애플리케이션의 초기 로드 속도가 빨라지고 일부 블록이 로드되지 않을 수도 있어서 전체 무게가 줄어 듭니다.
 
-## Example
+## Dynamic Import Example
 
 [코드 스플리팅](/guides/code-splitting/#dynamic-imports)의 예제를 가져와 이 개념을 더욱 잘 보여주기 위해 약간 수정해 보겠습니다. 이 코드는 별도의 청크인 `lodash.bundle.js`를 생성하고 스크립트가 실행되자마자 기술적으로 "지연 로드"됩니다. 문제는 번들을 로드하는데 유저 상호 작용이 필요하지 않다는 것입니다. 즉, 페이지가 로드 될 때마다 요청이 실행됩니다. 이것은 우리에게 큰 도움이 되지 않고 성능에 부정적인 영향을 미치게 됩니다.
 
@@ -100,6 +100,124 @@ print.bundle.js  417 bytes       0  [emitted]         print
 index.bundle.js     548 kB       1  [emitted]  [big]  index
      index.html  189 bytes          [emitted]
 ...
+```
+
+## Defer Import Example
+
+W> 이 기능은 모듈을 지연 "로드"하는 것이 아니라, 지연 "평가"합니다. 즉, 모듈은 여전히 다운로드되고 파싱되지만 평가는 지연됩니다.
+
+어떤 경우에는 모듈의 모든 사용을 비동기로 변환하는 것이 귀찮거나 어려울 수 있습니다. 동기적 평가 작업만 지연시키는 기능을 제공하지 않고 모든 함수의 불필요한 비동기화를 강제하기 때문입니다.
+
+TC39 제안[모듈 평가 연기](https://github.com/tc39/proposal-defer-import-eval)는 이 문제를 해결하기 위한 것입니다.
+
+> 제안은 네임스페이스 특수한(exotic) 객체만 반환하는 새로운 구문 가져오기 형식을 갖추는 것입니다. 이 형식을 사용하면 모듈과 해당 종속성은 실행되지 않고, 모듈 그래프가 로드된 것으로 간주되기 전에 실행 준비가 완료될 때까지 완전히 로드됩니다.
+>
+> _이 모듈의 속성에 액세스할 때만 실행 작업이 수행됩니다(필요한 경우)._
+
+이 기능은 [experiments.deferImport](/configuration/experiments/#experimentsdeferimport)를 활성화하면 사용할 수 있습니다.
+
+W> 이 기능은 아직 실험 단계이며, 향후 webpack 버전에서 변경될 수 있습니다.
+
+**project**
+
+```diff
+webpack-demo
+|- package.json
+|- package-lock.json
+|- webpack.config.js
+|- /dist
+|- /src
+  |- index.js
++ |- print.js
+|- /node_modules
+```
+
+**src/print.js**
+
+```js
+console.log(
+  'The print.js module has loaded! See the network tab in dev tools...'
+);
+
+export default () => {
+  console.log('Button Clicked: Here\'s "some text"!');
+};
+```
+
+**src/index.js**
+
+```diff
+  import _ from 'lodash';
++ import defer * as print from './print';
+
+  function component() {
+    const element = document.createElement('div');
+    const button = document.createElement('button');
+    const br = document.createElement('br');
+
+    button.innerHTML = 'Click me and look at the console!';
+    element.innerHTML = _.join(['Hello', 'webpack'], ' ');
+    element.appendChild(br);
+    element.appendChild(button);
+
+-   // 네트워크 요청이 관련되어 있으므로
+-   // 프로덕션 수준의 사이트/앱에서 로딩에 대한 표시가 표시되어야 합니다.
++   // 이 예에서 print 모듈은 다운로드되지만 평가되지 않습니다.
++   // 따라서 버튼을 클릭한 후에는 네트워크 요청이 발생하지 않습니다.
+-   button.onclick = e => import(/* webpackChunkName: "print" */ './print').then(module => {
++   button.onclick = e => {
+      const print = module.default;
++     //                  ^ 여기서 모듈을 평가합니다.
+
+      print();
+-   });
++   };
+
+    return element;
+  }
+
+  getComponent().then(component => {
+    document.body.appendChild(component);
+  });
+  document.body.appendChild(component());
+```
+
+이는 CommonJS 스타일의 지연 로딩과 유사합니다.
+
+**src/index.js**
+
+```diff
+  import _ from 'lodash';
+- import defer * as print from './print';
+
+  function component() {
+    const element = document.createElement('div');
+    const button = document.createElement('button');
+    const br = document.createElement('br');
+
+    button.innerHTML = 'Click me and look at the console!';
+    element.innerHTML = _.join(['Hello', 'webpack'], ' ');
+    element.appendChild(br);
+    element.appendChild(button);
+
+    // 이 예에서 print 모듈은 다운로드되지만 평가되지 않습니다.
+    // 따라서 버튼을 클릭한 후에는 네트워크 요청이 발생하지 않습니다.
+    button.onclick = e => {
++     const print = require('./print');
++     //            ^ 여기서 모듈을 평가합니다.
+      const print = module.default;
+-     //                  ^ 여기서 모듈을 평가합니다.
+
+      print();
+    };
+
+    return element;
+  }
+
+  getComponent().then(component => {
+    document.body.appendChild(component);
+  });
+  document.body.appendChild(component());
 ```
 
 ## Frameworks

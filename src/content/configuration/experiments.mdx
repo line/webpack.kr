@@ -27,6 +27,7 @@ W> 실험적 기능은 시멘틱 버저닝을 완화하고 주요 변경 사항�
 - [`buildHttp`](#experimentsbuildhttp)
 - [`cacheUnaffected`](#experimentscacheunaffected)
 - [`css`](#experimentscss)
+- [`deferImport`](#experimentsdeferimport)
 - [`futureDefaults`](#experimentsfuturedefaults)
 - `layers`: 모듈 및 청크 레이어를 활성화합니다.
 - [`lazyCompilation`](#experimentslazycompilation)
@@ -71,7 +72,6 @@ module.exports = {
 활성화되면, webpack은 `http(s):` 프로토콜로 시작하는 원격 리소스를 빌드할 수 있습니다.
 
 - Type:
-
   - `(string | RegExp | ((uri: string) => boolean))[]`
 
     [`experiments.buildHttp.allowedUris`](#experimentsbuildhttpalloweduris)의 바로가기입니다.
@@ -211,6 +211,55 @@ module.exports = {
 
 기본값은 [`futureDefaults`](#experimentsfuturedefaults)의 값입니다.
 
+### experiments.deferImport
+
+tc39 제안[`import defer` 제안](https://github.com/tc39/proposal-defer-import-eval) 지원을 활성화합니다.
+이 기능을 사용하면 모듈의 평가를 처음 사용할 때까지 연기할 수 있습니다.
+`import()`의 비동기적 특성으로 인해 사용할 수 없는 경우 코드 실행을 동기적으로 연기하는 데 유용합니다.
+
+- Type: `boolean`
+
+이 기능을 사용하려면 런타임 환경에서 [`Proxy`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy)(ES6) 지원이 필요합니다.
+
+다음 구문을 활성화합니다.
+
+```js
+import defer * as module from 'module-name';
+// 또는
+import * as module2 from /* webpackDefer: true */ 'module-name2';
+
+export function f() {
+  // module-name을 동기적으로 평가한 후 doSomething()을 호출합니다.
+  module.doSomething();
+}
+```
+
+#### Limitations of magic comments (`/* webpackDefer: true */`)
+
+매직 주석을 `from` 키워드 뒤에 넣는 것이 좋습니다. 다른 위치에도 작동할 수 있지만 테스트되지 않았습니다.
+
+매직 주석을 `import` 키워드 뒤에 넣는 것은 파일 시스템 캐시와 호환되지 않습니다.
+
+```js
+import /* webpackDefer: true */ * as ns from '...'; // 알려진 문제
+import * as ns from /* webpackDefer: true */ '...'; // 권장
+```
+
+로더가 매직 주석을 제거하지 않도록 해야 합니다.
+
+TypeScript, Babel, SWC 및 Flow.js는 매직 주석을 보존하도록 구성할 수 있습니다.
+
+Esbuild는 이 기능과 호환되지 않습니다([evanw/esbuild#1439](https://github.com/evanw/esbuild/issues/1439) 및 [evanw/esbuild#309](https://github.com/evanw/esbuild/issues/309) 참조). 하지만 향후 지원될 수 있습니다.
+
+#### Not implemented
+
+이 제안의 비동기 형식은 아직 구현되지 않았습니다.
+
+```js
+import.defer('module-name'); // 구현되지 않음
+import(/* webpackDefer: true */ 'module-name'); // 구현되지 않음
+```
+
 ### experiments.futureDefaults
 
 다음 webpack 메이저 버전의 기본값을 사용하고 문제가 있는 위치에 경고를 표시합니다.
@@ -231,7 +280,6 @@ module.exports = {
 엔트리 포인트와 동적 `import`는 사용 중일 때만 컴파일하세요. Web 또는 Node.js에 사용할 수 있습니다.
 
 - Type
-
   - `boolean`
   - `object`
 
