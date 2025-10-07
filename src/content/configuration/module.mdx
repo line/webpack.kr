@@ -143,6 +143,9 @@ module.exports = {
         // type: string | ((pathData: PathData, assetInfo?: AssetInfo) => string)
         outputPath: 'cdn-assets/',
       },
+      'asset/bytes': {
+        // 아직 이 모듈 유형에 대해 지원되는 제너레이터 옵션이 없습니다.
+      }
       javascript: {
         // 이 모듈 유형에는 아직 제너레이터 옵션이 지원되지 않습니다.
       },
@@ -249,6 +252,9 @@ module.exports = {
         // 위와 동일
       },
       'asset/source': {
+        // 위와 동일
+      },
+      'asset/bytes': {
         // 위와 동일
       },
       javascript: {
@@ -1021,6 +1027,28 @@ module.exports = {
 };
 ```
 
+## Rule.extractSourceMap
+
+`boolean = false`
+
+파일에서 기존 소스 맵 데이터를 추출합니다(`//# sourceMappingURL` 주석에서). 이는 타사 라이브러리의 소스 맵을 보존하는 데 유용합니다.
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  // ...
+  module: {
+    rules: [
+      {
+        test: /\.m?js$/,
+        extractSourceMap: true,
+      },
+    ],
+  },
+};
+```
+
 ## Rule.loader
 
 `Rule.loader`는 `Rule.use: [ { loader } ]`의 단축어입니다. 자세한 내용은 [`Rule.use`](#ruleuse)와 [`UseEntry.loader`](#useentry)를 참고하세요.
@@ -1282,11 +1310,11 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.png/,
+        test: /\.png$/,
         type: 'asset/resource',
       },
       {
-        test: /\.html/,
+        test: /\.html$/,
         type: 'asset/resource',
         generator: {
           filename: 'static/[hash][ext]',
@@ -1424,7 +1452,7 @@ T> 자세한 정보는 [`중첩된 rules`](#nested-rules)를 참고하세요.
 
 `string`
 
-가능한 변수: `'javascript/auto' | 'javascript/dynamic' | 'javascript/esm' | 'json' | 'webassembly/sync' | 'webassembly/async' | 'asset' | 'asset/source' | 'asset/resource' | 'asset/inline' | 'css/auto'`
+가능한 변수: `'javascript/auto' | 'javascript/dynamic' | 'javascript/esm' | 'json' | 'webassembly/sync' | 'webassembly/async' | 'asset' | 'asset/source' | 'asset/resource' | 'asset/inline' | 'asset/bytes' | 'css' | 'css/auto' | 'css/module' | 'css/global'`
 
 `Rule.type`은 일치하는 모듈의 유형을 설정합니다. 이는 defaultRules 및 기본값 import 동작이 발생하지 않습니다. 예를 들어 커스텀 로더를 통해 `.json`파일을 로드하려면 `type`을 `javascript/auto`로 설정하여 webpack에 내장된 json import를 우회해야합니다.
 

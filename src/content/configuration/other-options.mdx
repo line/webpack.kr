@@ -262,6 +262,10 @@ module.exports = {
     module: {
       timestamp: true,
     },
+    contextModule: {
+      hash: true,
+      timestamp: true,
+    },
     resolve: {
       timestamp: true,
     },
@@ -338,6 +342,15 @@ module.exports = {
 
 - `hash`: 콘텐츠 해시를 비교하여 무효화를 확인합니다(`timestamp`보다 비용이 많이 들지만 자주 변경되지 않음).
 - `timestamp`: 타임 스탬프를 비교하여 무효화를 확인합니다.
+
+### contextModule
+
+`object = {hash boolean = true, timestamp boolean = true}`
+
+컨텍스트 모듈을 구축하기 위한 스냅샷.
+
+- `hash`: 무효화를 판별하기 위해 콘텐츠 해시를 비교합니다(`타임스탬프`보다 비용이 더 많이 들지만 변경 빈도가 낮습니다).
+- `timestamp`: 타임스탬프를 비교하여 무효 여부를 확인합니다.
 
 ### resolve
 
