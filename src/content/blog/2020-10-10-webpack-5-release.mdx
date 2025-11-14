@@ -589,7 +589,7 @@ Webpack과 플러그인은 콘텐츠가 변경된 경우에만 새 애셋을 생
 
 타겟 파일 시작만 허용하는 대상(예: node, WebWorker, electron main)은 이제 런타임에 의해 자동으로 부트스트랩하는 데 필요한 종속 조각 로드를 지원합니다.
 
-지원할 경우 `chunks: "all"` 및 `optimization.runtimeChunk`가 있는 타겟에 대하여 `opimization.splitChunks`를 사용할 수 있습니다.
+지원할 경우 `chunks: "all"` 및 `optimization.runtimeChunk`가 있는 타겟에 대하여 `optimization.splitChunks`를 사용할 수 있습니다.
 
 청크 로딩이 비동기인 타겟의 경우 초기 평가도 비동기화됩니다. 이제 내보낸 값이 Promise이기 때문에 `output.library`를 사용할 때 문제가 될 수 있습니다.
 
@@ -1300,7 +1300,7 @@ Webpack 5에서는 코드베이스의 의존성 참조 부분이 리팩토링 �
 - `Compilation.addModuleDependencies`가 제거되었습니다.
 - `Compilation.prefetch`가 제거되었습니다.
 - `Compilation.hooks.beforeHash`는 이제 모듈의 해시가 생성된 후 호출됩니다.
-  - **마이그레이션**: 대신 `Compiliation.hooks.beforeModuleHash`를 사용합니다.
+  - **마이그레이션**: 대신 `Compilation.hooks.beforeModuleHash`를 사용합니다.
 - `Compilation.applyModuleIds`가 제거되었습니다.
 - `Compilation.applyChunkIds`가 제거되었습니다.
 - 루트 컴파일러를 가리키는 `Compiler.root`가 추가되었습니다.
@@ -1399,7 +1399,7 @@ Webpack 5에서는 코드베이스의 의존성 참조 부분이 리팩토링 �
 - `ExternalModule.external`이 제거되었습니다.
 - `HarmonyInitDependency`가 제거되었습니다.
 - `Dependency.getInitFragments`는 더 이상 사용되지 않습니다.
-  - **마이그레이션**: 대신 `apply` `initFragements`를 사용합니다.
+  - **마이그레이션**: 대신 `apply` `initFragments`를 사용합니다.
 - DependencyReference는 이제 모듈 대신 모듈에 대한 함수를 사용합니다.
 - HarmonyImportSpecifierDependency.redirectedId가 제거되었습니다.
   - **마이그레이션**: 대신 `setId`를 사용합니다.
