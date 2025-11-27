@@ -510,13 +510,17 @@ module.exports = {
       globalThis: true,
       // ECMAScript 모듈을 가져오는 ECMAScript Module syntax를 지원합니다(import ... from '...' 처럼 사용합니다).
       module: false,
-      // 이를 지원하는 환경에서 코어 모듈 가져오기에 대해 node: prefix가 생성될지 여부를 결정합니다.
+      // 이 환경은 객체 메서드 단축형('{ module() {} }')을 지원합니다.
+      methodShorthand: true,
+      // node 환경이라면 접두사는 코어 모듈 가져오기에 대해 생성됩니다.
       // 이는 Webpack 런타임 코드에만 적용됩니다.
       nodePrefixForCoreModules: false,
       // 옵셔널 체이닝('obj?.a' 또는 'obj?.()')을 지원합니다.
       optionalChaining: true,
       // 템플릿 리터럴을 지원합니다.
       templateLiteral: true,
+      // 이 환경은 `import.meta.dirname`과 `import.meta.filename`을 지원합니다.
+      importMetaDirnameAndFilename: false,
     },
   },
 };
@@ -2159,9 +2163,9 @@ T> 또한 생성된 번들에 트리 쉐이킹에 대한 정보를 추가합니�
 
 ## output.publicPath
 
-`string` `function`
-
-이것은 온 디맨드 로드를 사용하거나 이미지, 파일 등과 같은 외부 리소스를 로드할 때 중요한 옵션입니다. 잘못된 값을 지정하면 리소스를 로드하는 동안 404 오류가 발생합니다.
+- Type:
+  - `function`
+  - `string`
 
 이 옵션은 브라우저에서 참조될 때 출력 디렉터리의 **공용 URL** 을 지정합니다. 상대 URL은 HTML 페이지 또는`<base>`태그를 기준으로 확인됩니다. 서버 상대 URL, 프로토콜 상대 URL 또는 절대 URL도 가능하며 때로는 필요합니다(CDN에서 애셋을 호스팅 하는 경우).
 
