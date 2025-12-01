@@ -19,7 +19,7 @@ translators:
 
 이 기능은 webpack 내부 [`NodeStuffPlugin`](https://github.com/webpack/webpack/blob/main/lib/NodeStuffPlugin.js) 플러그인에서 제공합니다.
 
-W> webpack5 부터, `node` 옵션에서 `global`, `__filename` 또는 `__dirname`만 설정할 수 있습니다. webpack5의 Node.js에서 `fs`를 폴리필할 방법을 찾고 있다면 [resolve.fallback](/configuration/resolve/#resolvefallback)를 참고하세요.
+W> webpack 5부터 `node` 옵션에서 `global`, `__filename`/`import.meta.filename` 또는 `__dirname`/`import.meta.dirname`만 설정할 수 있습니다. webpack 5에서 Node.js의 `fs`를 동일하게 폴리필하는 방법을 찾고 있다면 [resolve.fallback](/configuration/resolve/#resolvefallback)을 참고하세요.
 
 ## node
 
@@ -50,7 +50,7 @@ T> 전역변수가 필요한 모듈을 사용하는 경우 `global` 대신 `Prov
 
 옵션:
 
-- `true`: 폴리필 제공.
+- `true`: 환경에서 지원하는 경우 폴리필을 제공하거나 `globalThis`를 사용하는 방법에 대한 자세한 내용은 [`environment`](/configuration/output/#outputenvironment) 옵션을 참고하세요.
 - `false`: 아무것도 제공하지 않습니다. 이 객체를 예상하는 코드는 `ReferenceError`가 발생할 수 있습니다.
 - `'warn'`: `global`을 사용할 때 경고 표시.
 
@@ -61,11 +61,16 @@ T> 전역변수가 필요한 모듈을 사용하는 경우 `global` 대신 `Prov
 옵션:
 
 - `true`: [`context` 옵션](/configuration/entry-context/#context)에 상대적인 **입력** 파일의 dirname.
-- `false`: Webpack은 `__filename` 코드를 건드리지 않습니다. 즉 일반적인 Node.js `__filename` 동작이 있음을 의미합니다. Node.js 환경에서 실행할 때 **출력** 파일 이름입니다.
-- `'mock'`: 고정값 `'/index.js'`.
-- `'warn-mock'`: `'/index.js'`의 고정값을 사용하되 경고를 표시합니다.
-- `node-module`: `output.module`이 활성화되면 CommonJS 모듈의 `__filename`을 `fileURLToPath(import.meta.url)`로 바꿉니다.
-- `'eval-only'`
+- `false`: Webpack은 `__filename` 및 `import.meta.filename` 코드에 영향을 주지 않으므로 일반적인 Node.js `__filename` 및 `import.meta.filename` 동작을 수행합니다. Node.js 환경에서 실행될 때 **출력** 파일의 파일 이름입니다.
+- `'mock'`: 고정된 값 `'/index.js'`.
+- `'warn-mock'`: `'/index.js'`의 고정된 값을 사용하지만 경고를 표시합니다.
+- `'node-module'`: `output.module`이 활성화된 경우 CommonJS 모듈의 `__filename`을 바꾸고 ES 모듈의 `import.meta.filename` 코드를 `fileURLToPath(import.meta.url)`로 바꿉니다.
+- `'eval-only'`: `__filename`/`import.meta.filename`의 해석은 실행 시점에 Node.js 런타임으로 미루되, `require`/`import`처럼 생성 과정에서 평가하여 모듈을 제대로 해석합니다. `output.module` 옵션에 따라 `__filename`을 `import.meta.filename`으로, 또는 그 반대로 바꿉니다(환경에서 `import.meta.filename`을 지원하지 않는 경우, `import.meta.url`을 사용하여 이 값을 가져오는 대체 방법이 사용됩니다).
+
+기본값은 다양한 [`target`](/configuration/target/)의 영향을 받을 수 있습니다.
+
+- [`target`](/configuration/target/)이 `'node` 또는 노드와 유사한 환경(`async-node`, `electron`) 또는 혼합 대상(`web`과 `node` 함께)으로 설정된 경우 기본값은 `'eval-only`입니다.
+- [`target`](/configuration/target/)이 `'web` 또는 웹과 유사한 환경으로 설정된 경우 기본값은 `'mock`입니다.
 
 ## node.\_\_dirname
 
@@ -73,9 +78,14 @@ T> 전역변수가 필요한 모듈을 사용하는 경우 `global` 대신 `Prov
 
 옵션:
 
-- `true`: [`context` 옵션](/configuration/entry-context/#context)에 상대적인 **입력** 파일의 dirname.
-- `false`: Webpack은 `__dirname` 코드를 건드리지 않습니다. 즉 일반적인 Node.js `__dirname` 동작이 있음을 의미합니다. Node.js 환경에서 실행할 때 **출력** 파일 이름입니다.
-- `'mock'`: 고정값 `'/'`.
-- `'warn-mock'`: `'/'`의 고정값을 사용하되 경고를 표시합니다.
-- `node-module`: `output.module`이 활성화된 경우 CommonJS 모듈의 `__dirname`을 `fileURLToPath(import.meta.url + "/..")`로 바꿉니다.
-- `'eval-only'`
+- `true`: [`context` 옵션](/configuration/entry-context/#context)을 기준으로 한 **입력** 파일의 디렉터리 이름입니다.
+- `false`: Webpack은 `__dirname` 및 `import.meta.dirname` 코드를 수정하지 않으므로 일반적인 Node.js `__dirname` 및 `import.meta.dirname` 동작을 수행합니다. Node.js 환경에서 실행할 때 **출력** 파일의 디렉터리 이름입니다.
+- `'mock`: 고정 값 `'/'`입니다.
+- `'warn-mock'`: 고정 값 `'/'`를 사용하지만 경고를 표시합니다.
+- `'node-module'`: `output.module`이 활성화된 경우 CommonJS 모듈의 `__dirname`을 `fileURLToPath(import.meta.url + "/..")`로 바꿉니다.
+- `'eval-only'`: `__dirname`/`import.meta.dirname`의 해석을 실행 시점에 Node.js 런타임으로 미루지만, `require`/`import`와 같이 생성 단계에서 평가하여 모듈을 올바르게 해석합니다. `output.module` 옵션에 따라 `__dirname`을 `import.meta.dirname`으로, 또는 그 반대로 바꿀 수 있습니다(환경에서 `import.meta.filename`을 지원하지 않는 경우, `import.meta.url`을 사용하여 이 값을 가져오는 대체 방법이 사용됩니다).
+
+기본값은 다른 [`target`](/configuration/target/)의 영향을 받을 수 있습니다.
+
+- [`target`](/configuration/target/)이 `'node`로 설정되거나, 노드 유사 환경(`async-node`, `electron`) 또는 혼합 대상(`web`과 `node`를 함께 사용하는 경우)인 경우 기본값은 `'eval-only'`입니다.
+- [`target`](/configuration/target/)이 `'web` 또는 웹과 유사한 환경으로 설정된 경우 기본값은 `'mock`입니다.

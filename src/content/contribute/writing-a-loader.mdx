@@ -9,6 +9,7 @@ contributors:
   - jamesgeorge007
   - chenxsan
   - dev-itsheng
+  - evenstensberg
 translators:
   - KiKi-Daehaksaeng
 ---
@@ -140,7 +141,7 @@ T> 로더가 연결될 수 있다는 사실은 로더들이 JavaScript를 출력
 
 ### Loader Utilities
 
-다양한 유용한 도구를 제공하는 [`loader-utils`](https://github.com/webpack/loader-utils) 패키지를 활용하세요. `loader-utils`과 함께, [`schema-utils`](https://github.com/webpack-contrib/schema-utils) 패키지는 로더 옵션 유효성에 기반한 일관된 JSON 스키마를 위해 사용돼야 합니다. 여기 둘 다 활용하는 간단한 예시가 있습니다.
+다양한 유용한 도구를 제공하는 [`loader-utils`](https://github.com/webpack/loader-utils) 패키지를 활용하세요. `loader-utils`과 함께, [`schema-utils`](https://github.com/webpack/schema-utils) 패키지는 로더 옵션 유효성에 기반한 일관된 JSON 스키마를 위해 사용돼야 합니다. 여기 둘 다 활용하는 간단한 예시가 있습니다.
 
 **loader.js**
 
@@ -275,7 +276,7 @@ JSON.stringify(
 
 작업하고 있는 로드가 다른 패키지의 간단한 wrapper라면, `peerDependency`로써 패키지를 포함할 수 있습니다. 이런 접근은 애플리케이션 개발자가 필요하다면 `package.json`안의 정확한 버전을 지정하도록 해줍니다.
 
-예를 들어, `sass-loader`는 peer dependency와 같이 [`node-sass`를 지정합니다.](https://github.com/webpack-contrib/sass-loader/blob/master/package.json)
+예를 들어, `sass-loader`는 peer dependency와 같이 [`node-sass`를 지정합니다.](https://github.com/webpack/sass-loader/blob/main/package.json)
 
 ```json
 {

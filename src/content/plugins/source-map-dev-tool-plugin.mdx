@@ -38,16 +38,17 @@ new webpack.SourceMapDevToolPlugin(options);
   (pathData: PathData, assetInfo?: AssetInfo) => string;
   ```
 
-- `moduleFilenameTemplate` (`string`): [`output.devtoolModuleFilenameTemplate`](/configuration/output/#outputdevtoolmodulefilenametemplate)를 참고하세요.
+- `moduleFilenameTemplate` (`string`): [`output.devtoolModuleFilenameTemplate`](/configuration/output/#outputdevtoolmodulefilenametemplate)을 참고하세요.
 - `fallbackModuleFilenameTemplate` (`string`): 위 링크를 참고하세요.
-- `namespace` (`string`): [`output.devtoolNamespace`](/configuration/output/#outputdevtoolnamespace)를 참고하세요.
-- `module = true` (`boolean`): 로더가 소스맵을 생성해야 하는지 여부를 나타냅니다.
+- `ignoreList` (`string|RegExp|array`): 소스 맵에서 지정된 값과 일치하는 소스 파일을 무시할지 여부를 결정합니다.
+- `module = true` (`boolean`): 로더가 소스 맵을 생성해야 하는지 여부를 나타냅니다.
 - `columns = true` (`boolean`): 열 매핑을 사용해야 하는지 여부를 나타냅니다.
-- `noSources = false` (`boolean`): 소스의 내용이 소스맵에 포함되지 않도록 합니다.
-- `publicPath` (`string`): public path 접두사와 함께 절대 URL을 내보냅니다. (예: `https://example.com/project/`)
-- `fileContext` (`string`): 이 디렉터리를 기준으로 `[file]` 인수를 만듭니다.
-- `sourceRoot` (`string`): 소스맵의 `sourceRoot` 프로퍼티에 커스텀 값을 제공합니다.
-- `debugIds` (`boolean`): `true`이면 소스 및 소스맵에서 고유한 ID를 발행하여 여러 빌드에서 소스 맵을 식별하는 것이 간소화됩니다. 자세한 내용은 [TC39 소스맵 디버깅 ID 제안서](https://github.com/tc39/ecma426/blob/main/proposals/debug-id.md)를 참고하세요.
+- `namespace` (`string`): DevTools에서 여러 WebPack 루트를 허용하는 네임스페이스 접두사입니다. [`output.devtoolNamespace`](/configuration/output/#outputdevtoolnamespace)를 참고하세요.
+- `noSources = false` (`boolean`): 소스 파일 콘텐츠가 소스 맵에 포함되지 않도록 합니다.
+- `publicPath` (`string`): 공개 경로 접두사가 있는 절대 URL을 생성합니다(예: `https://example.com/project/`).
+- `fileContext` (`string`): `[file]` 인수를 이 디렉터리를 기준으로 합니다.
+- `sourceRoot` (`string`): SourceMap의 `sourceRoot` 속성에 사용자 지정 값을 제공합니다.
+- `debugIds` (`boolean`): `true`로 설정하면 소스 및 소스맵에서 고유 ID가 생성되어 여러 빌드에서 소스맵을 식별하는 데 도움이 됩니다. 자세한 내용은 [TC39 소스맵 디버그 ID 제안](https://github.com/tc39/ecma426/blob/main/proposals/debug-id.md)을 참고하세요.
 
 `fileContext` 옵션은 `../../`가 절대 `[url]`에 나타나지 않도록 상위 디렉터리에 소스맵을 저장하려는 경우에 유용합니다.
 

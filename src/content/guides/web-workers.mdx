@@ -54,6 +54,31 @@ self.onmessage = ({ data: { question } }) => {
 };
 ```
 
+## Set a public path from a variable
+
+변수에서 `__webpack_public_path__`를 설정하고 `publicPath`를 `auto`로 설정하면, 워커 청크는 별도의 런타임을 갖게 되고, Webpack 런타임은 `publicPath`를 자동으로 계산된 공개 경로로 설정합니다. 이는 예상과 다를 수 있습니다.
+
+이 문제를 해결하려면 워커 코드 내에서 `__webpack_public_path__`를 설정해야 합니다. 예시는 다음과 같습니다.
+
+**worker.js**
+
+```js
+self.onmessage = ({ data: { publicPath, ...otherData } }) => {
+  if (publicPath) {
+    __webpack_public_path__ = publicPath;
+  }
+
+  // 나머지 워커 코드
+};
+```
+
+**app.js**
+
+```js
+const worker = new Worker(new URL('./worker.js', import.meta.url));
+worker.postMessage({ publicPath: window.__MY_GLOBAL_PUBLIC_PATH_VAR__ });
+```
+
 ## Node.js
 
 비슷한 구문이 12.17.0 이상의 Node.js에서 지원됩니다.

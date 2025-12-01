@@ -14,6 +14,7 @@ contributors:
   - jamesgeorge007
   - WofWca
   - snitin315
+  - adriancuadrado
 related:
   - title: CommonJS Wikipedia
     url: https://en.wikipedia.org/wiki/CommonJS
@@ -99,7 +100,8 @@ W> 이 기능은 내부적으로 [`Promise`](https://developer.mozilla.org/en-US
 
 `import(foo)`와 같은 완전히 동적인 import 문을 사용하는 것은 불가능합니다. `foo`는 잠재적으로 시스템이나 프로젝트의 모든 파일에 대한 경로가 될 수 있기 때문입니다.
 
-`import()`는 최소한 모듈 위치에 대한 정보를 포함해야 합니다. 번들링은 특정 디렉터리 또는 파일 집합으로 제한될 수 있습니다. 그러므로 동적 표현 식을 사용할 때 `import()` 호출 시 잠재적으로 요청 가능한 모든 모듈이 포함됩니다. 예를 들어 ``import(`./locale/${language}.json`)``은 `./locale` 디렉터리의 모든 `.json` 파일을 새로운 청크로 번들합니다. 런타임에 `language` 변수가 계산되면 `english.json` 또는 `german.json`과 같은 모든 파일이 사용 가능하게 됩니다.
+`import()`는 최소한 모듈 위치에 대한 정보를 포함해야 합니다. 번들링은 특정 디렉터리 또는 파일 집합으로 제한될 수 있습니다. 그러므로 동적 표현 식을 사용할 때 `import()` 호출 시 잠재적으로 요청 가능한 모든 모듈이 포함됩니다.
+예를 들어, ``import(`./locale/${language}.json`)``는 `./locale` 디렉터리와 하위 디렉터리에 있는 모든 `.json` 파일만 새 청크로 묶고 다른 파일 확장자를 가진 파일은 제외합니다. 런타임에 `language` 변수가 계산되면 `english.json`이나 `german.json`과 같은 모든 파일을 사용할 수 있습니다.
 
 ```javascript
 // 쿠키나 다른 저장소에서 언어를 가져오는 방법이 있다고 상상해 보세요.
@@ -113,7 +115,7 @@ T> [`webpackInclude` 및 `webpackExclude`](/api/module-methods/#magic-comments) 
 
 #### Magic Comments
 
-기능을 작동시키기 위한 인라인 주석입니다. 가져오기에 주석을 추가하여 청크의 이름을 지정하거나 다른 모드를 선택하는 등의 여러 작업을 할 수 있습니다. 이 특별한 주석의 전체 목록과 주석이 수행하는 작업은 아래 코드와 설명을 참고하세요.
+가져오기에 주석을 추가하여 청크의 이름을 지정하거나 다른 모드를 선택하는 등의 여러 작업을 할 수 있습니다. 이 특별한 주석의 전체 목록과 주석이 수행하는 작업은 아래 코드와 설명을 참고하세요.
 
 ```js
 // 단일 대상
@@ -138,6 +140,8 @@ import(
 
 import(/* webpackIgnore: true */ 'ignored-module.js');
 ```
+
+T> Single line comments (`//`) are also supported. JSDoc comments (`/** */`) are not.
 
 ##### webpackIgnore
 

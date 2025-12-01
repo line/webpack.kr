@@ -143,6 +143,9 @@ module.exports = {
         // type: string | ((pathData: PathData, assetInfo?: AssetInfo) => string)
         outputPath: 'cdn-assets/',
       },
+      'asset/bytes': {
+        // 아직 이 모듈 유형에 대해 지원되는 제너레이터 옵션이 없습니다.
+      }
       javascript: {
         // 이 모듈 유형에는 아직 제너레이터 옵션이 지원되지 않습니다.
       },
@@ -251,6 +254,9 @@ module.exports = {
       'asset/source': {
         // 위와 동일
       },
+      'asset/bytes': {
+        // 위와 동일
+      },
       javascript: {
         // javascript 모듈 파서 옵션
         // 예. require.ensure 구문 파싱 활성화
@@ -273,11 +279,15 @@ module.exports = {
         // Webpack 5.97.0부터 사용 가능한 `@import` at-rules 처리를 활성화/비활성화합니다.
         // type: boolean
         import: true,
+        // webpack 5.97.0부터 사용 가능한 url()/image-set()/src()/image() 함수 처리를 활성화/비활성화합니다.
+        // type: boolean
+        url: true,
         // Webpack 5.90.0부터 사용할 수 있는 CSS 내보내기를 위해 export라는 이름의 ES 모듈을 사용하세요.
         // type: boolean
         namedExports: true,
-        // webpack 5.97.0부터 사용 가능한 url()/image-set()/src()/image() 함수 처리를 활성화/비활성화합니다.
-        url: true,
+        // CSS 콘텐츠가 내보내지는 방식을 설정합니다.
+        // type: string
+        exportType: 'link',
       },
       'css/auto': {
         // 위와 동일
@@ -350,6 +360,39 @@ module.exports = {
 
 T> 특정 가져오기를 필터링하려면 Webpack의 기본 제공 [IgnorePlugin](/plugins/ignore-plugin/)을 사용할 수 있습니다. `css-loader`에서 사용 가능한 [`filter` 옵션](/loaders/css-loader/#filter)은 지원되지 않습니다.
 
+#### module.parser.css.url
+
+이 옵션은 CSS 파일 내 `url()`, `image-set()`, `src()`, `image()`와 같은 함수에서 URL 처리를 활성화 또는 비활성화합니다. 활성화하면 이러한 URL은 WebPack에서 확인 및 처리됩니다.
+
+- Type: `boolean`
+- Available: 5.97.0+
+- Example:
+
+  ```js
+  module.exports = {
+    module: {
+      parser: {
+        css: {
+          url: true,
+        },
+      },
+    },
+  };
+  ```
+
+  ```css
+  /* styles.css */
+  .background {
+    background-image: url('./images/bg.jpg');
+  }
+
+  .icon {
+    content: image('./icons/star.svg');
+  }
+  ```
+
+T> 특정 가져오기를 필터링하려면 Webpack의 내장 [IgnorePlugin](/plugins/ignore-plugin/)을 사용할 수 있습니다. `css-loader`에서 제공되는 [`filter` 옵션](/loaders/css-loader/#filter)은 지원되지 않습니다.
+
 #### module.parser.css.namedExports
 
 이 옵션을 사용하면 CSS 내보내기에 export라는 이름의 ES 모듈을 사용할 수 있습니다. `true`로 설정하면 CSS 모듈은 이름이 지정된 내보내기를 사용하여 클래스와 스타일을 내보냅니다.
@@ -403,12 +446,12 @@ import { header, footer } from './styles.module.css';
 
 `namedExports`를 활성화하면 JavaScript 프로젝트에서 CSS를 관리하는 데 더 모듈화되고 유지 관리 가능한 접근 방식을 채택하고 ES 모듈 구문을 활용하여 더 명확하고 명시적인 가져오기를 수행할 수 있습니다.
 
-#### module.parser.css.url
+### module.parser.css.exportType
 
-이 옵션은 CSS 파일 내의 `url()`, `image-set()`, `src()`, `image()`와 같은 함수에서 URL 처리를 활성화하거나 비활성화합니다. 활성화하면 이러한 URL은 webpack에서 해석되고 처리됩니다.
+CSS 콘텐츠를 내보내는 방법을 설정합니다.
 
 - Type: `boolean`
-- Available: 5.97.0+
+- Available: 5.102.0+
 - Example:
 
   ```js
@@ -416,25 +459,19 @@ import { header, footer } from './styles.module.css';
     module: {
       parser: {
         css: {
-          url: true,
+          // ...
+          exportType: 'text',
         },
       },
     },
   };
   ```
 
-  ```css
-  /* styles.css */
-  .background {
-    background-image: url('./images/bg.jpg');
-  }
+가능한 설정 값: `'link' | 'text' | 'css-style-sheet'
 
-  .icon {
-    content: image('./icons/star.svg');
-  }
-  ```
-
-T> 특정 가져오기를 필터링하려면 Webpack의 기본 제공 플러그인[IgnorePlugin](/plugins/ignore-plugin/)을 사용할 수 있습니다. `css-loader`에서 사용 가능한 [`filter` 옵션](/loaders/css-loader/#filter)은 지원되지 않습니다.
+- `link` - CSS를 자체 파일로 추출하고 `link` 태그를 사용하여 DOM에 삽입합니다.
+- `text` - CSS를 JS 파일에 저장하고 기본 내보내기를 사용하여 반환합니다.
+- `css-style-sheet` - 기본 내보내기는 생성 가능한 스타일시트(예: CSSStyleSheet)입니다. 사용자 정의 요소와 Shadow DOM에 유용합니다.
 
 ### module.parser.javascript
 
@@ -759,6 +796,51 @@ module.exports = {
 };
 ```
 
+### module.parser.json.namedExports
+
+객체 유형의 JSON에 대해 명명된 내보내기를 허용합니다.
+
+- Type: `boolean`
+- Available: <Badge text='5.103.0+' />
+- Example:
+
+```js
+module.exports = {
+  module: {
+    parser: {
+      json: {
+        // Example:
+        // import { myField } from "./file.json";
+        //
+        // console.log(myField);
+        namedExports: true,
+      },
+    },
+  },
+};
+```
+
+### module.parser.json.parse
+
+콘텐츠를 파싱하고 JSON을 반환하는 함수입니다.
+
+- Type: `((input: string) => Buffer | JsonValue)`
+- Example:
+
+```js
+const json5 = require('json5');
+
+module.exports = {
+  module: {
+    parser: {
+      json: {
+        parse: json5.parse,
+      },
+    },
+  },
+};
+```
+
 ## module.noParse
 
 `RegExp` `[RegExp]` `function(resource)` `string` `[string]`
@@ -1015,6 +1097,28 @@ module.exports = {
       {
         test: /module-layer-change/,
         layer: 'layer',
+      },
+    ],
+  },
+};
+```
+
+## Rule.extractSourceMap
+
+`boolean = false`
+
+파일에서 기존 소스 맵 데이터를 추출합니다(`//# sourceMappingURL` 주석에서). 이는 타사 라이브러리의 소스 맵을 보존하는 데 유용합니다.
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  // ...
+  module: {
+    rules: [
+      {
+        test: /\.m?js$/,
+        extractSourceMap: true,
       },
     ],
   },
@@ -1282,11 +1386,11 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.png/,
+        test: /\.png$/,
         type: 'asset/resource',
       },
       {
-        test: /\.html/,
+        test: /\.html$/,
         type: 'asset/resource',
         generator: {
           filename: 'static/[hash][ext]',
@@ -1424,7 +1528,7 @@ T> 자세한 정보는 [`중첩된 rules`](#nested-rules)를 참고하세요.
 
 `string`
 
-가능한 변수: `'javascript/auto' | 'javascript/dynamic' | 'javascript/esm' | 'json' | 'webassembly/sync' | 'webassembly/async' | 'asset' | 'asset/source' | 'asset/resource' | 'asset/inline' | 'css/auto'`
+가능한 변수: `'javascript/auto' | 'javascript/dynamic' | 'javascript/esm' | 'json' | 'webassembly/sync' | 'webassembly/async' | 'asset' | 'asset/source' | 'asset/resource' | 'asset/inline' | 'asset/bytes' | 'css' | 'css/auto' | 'css/module' | 'css/global'`
 
 `Rule.type`은 일치하는 모듈의 유형을 설정합니다. 이는 defaultRules 및 기본값 import 동작이 발생하지 않습니다. 예를 들어 커스텀 로더를 통해 `.json`파일을 로드하려면 `type`을 `javascript/auto`로 설정하여 webpack에 내장된 json import를 우회해야합니다.
 

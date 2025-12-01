@@ -29,11 +29,11 @@ W> 실험적 기능은 시멘틱 버저닝을 완화하고 주요 변경 사항�
 - [`css`](#experimentscss)
 - [`deferImport`](#experimentsdeferimport)
 - [`futureDefaults`](#experimentsfuturedefaults)
-- `layers`: 모듈 및 청크 레이어를 활성화합니다.
 - [`lazyCompilation`](#experimentslazycompilation)
 - [`outputModule`](#experimentsoutputmodule)
 - `syncWebAssembly`: webpack 4에서와 같이 이전 웹 어셈블리를 지원합니다.
-- [`topLevelAwait`](#experimentstoplevelawait)
+- `layers`: 모듈 및 청크 레이어를 활성화합니다. `5.102.0` 이후로 추가 옵션 없이도 작동합니다.
+- `topLevelAwait`: 최상위 레벨에서 `await`를 사용하면 모듈을 `async` 모듈로 변환합니다. webpack 버전 `5.83.0`부터 적용됩니다. (하지만 이전 버전에서는 `experiments.topLevelAwait`를 `true`로 설정하여 활성화할 수 있습니다.), 이 기능은 기본적으로 활성화되어 있으며, `5.102.0` 이후로 제거되어 추가 옵션 없이 작동합니다.
 
 **webpack.config.js**
 
@@ -43,7 +43,6 @@ module.exports = {
   experiments: {
     asyncWebAssembly: true,
     buildHttp: true,
-    layers: true,
     lazyCompilation: true,
     outputModule: true,
     syncWebAssembly: true,
@@ -365,20 +364,6 @@ module.exports = {
 module.exports = {
   experiments: {
     outputModule: true,
-  },
-};
-```
-
-### experiments.topLevelAwait
-
-`boolean = true`
-
-`topLevelAwait` 옵션은 `await`가 최상위 수준에서 사용될 때 모듈을 `async` 모듈로 변환합니다. Webpack 버전 `5.83.0`부터는 이 기능이 기본적으로 활성화됩니다. 그러나 그 이전 버전에서는 'experiments.topLevelAwait'를 'true'로 설정하여 활성화할 수 있습니다.
-
-```js
-module.exports = {
-  experiments: {
-    topLevelAwait: true,
   },
 };
 ```
