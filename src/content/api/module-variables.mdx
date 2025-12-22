@@ -38,31 +38,31 @@ related:
 현재 모듈의 ID입니다.
 
 ```javascript
-module.id === require.resolve('./file.js');
+console.log(import.meta.url);
 ```
 
-## module.exports (CommonJS)
+## export default
 
-사용자가 모듈을 `require` 호출할 때 반환할 값을 정의합니다 (기본값은 새 객체).
+소비자가 모듈에 `import` 호출을 할 때 반환될 값을 정의합니다(기본값은 새 객체).
 
 ```javascript
-module.exports = function doSomething() {
+export default function doSomething() {
   // Do something...
-};
+}
 ```
 
 W> 이것은 비동기 함수에서 사용할 수 없습니다.
 
 ## exports (CommonJS)
 
-이 변수는 `module.exports`(즉. 객체)의 기본값과 같습니다. `module.exports`를 덮어쓰면, `exports`를 더 내보내지 않습니다.
+명명된 내보내기를 사용하면 단일 모듈에서 여러 변수, 함수 또는 객체를 내보낼 수 있습니다. 기본 내보내기와 달리 이러한 값을 가져올 때는 정확한 이름을 사용해야 합니다.
 
 ```javascript
-exports.someValue = 42;
-exports.anObject = {
+export const someValue = 42;
+export const anObject = {
   x: 123,
 };
-exports.aFunction = function doSomething() {
+export const aFunction = function doSomething() {
   // Do something
 };
 ```
@@ -169,10 +169,10 @@ Webpack 특유의 속성입니다. [`module.hot`](#modulehot-webpack-specific)�
 
 ## \_\_resourceQuery (webpack-specific)
 
-현재 모듈의 리소스 쿼리입니다. 다음 `require`가 호출된 경우, 쿼리 문자열은 `file.js`에서 사용할 수 있습니다.
+현재 모듈의 리소스 쿼리입니다. 만약 다음과 같은 `import` 호출이 이루어졌다면, 쿼리 문자열은 `file.js` 파일에서 확인할 수 있습니다.
 
 ```javascript
-require('file.js?test');
+import 'file.js?test';
 ```
 
 **file.js**
@@ -267,23 +267,17 @@ webpack에 의해 파싱되지 않는 `require` 함수를 생성합니다. 가�
 - `__webpack_exports_info__.<exportName>.used`는 export가 사용되지 않는 경우 `false`이고, 그렇지 않으면 `true`입니다.
 
 - `__webpack_exports_info__.<exportName>.useInfo`는 다음과 같습니다.
-
   - export가 사용되지 않는 경우 `false`
   - export가 사용되는 경우 `true`
-  - export 사용이 런타임 조건에 따라 달라질 수 있는 경우 `null
-
-    `
-
+  - export 사용이 런타임 조건에 따라 달라질 수 있는 경우 `nul
+    l
   - 정보가 없을 경우 `undefined`
 
 - `__webpack_exports_info__.<exportName>.provideInfo`는 다음과 같습니다.
-
   - export가 제공되지 않는 경우 `false`
   - export가 제공되는 경우 `true`
-  - export 규정이 런타임 조건에 따라 달라질 수 있는 경우 `null
-
-    `
-
+  - export 규정이 런타임 조건에 따라 달라질 수 있는 경우 `nul
+    l
   - 정보가 없을 경우 `undefined`
 
 - nested export에서 정보에 접근할 수 있습니다. 예. `__webpack_exports_info__.<exportName>.<exportName>.<exportName>.used`

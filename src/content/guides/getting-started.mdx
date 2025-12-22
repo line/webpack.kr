@@ -252,9 +252,9 @@ webpack은 `import`와 `export` 문 이외는 코드를 변경하지 않습니�
 **webpack.config.js**
 
 ```javascript
-const path = require('path');
+import path from 'path';
 
-module.exports = {
+export default {
   entry: './src/index.js',
   output: {
     filename: 'main.js',

@@ -20,8 +20,8 @@ npm install --save-dev webpack webpack-dev-server
 그런 다음 Node.js 스크립트에 모듈이 필요합니다.
 
 ```js
-const Webpack = require('webpack');
-const WebpackDevServer = require('webpack-dev-server');
+import Webpack from 'webpack';
+import WebpackDevServer from 'webpack-dev-server';
 ```
 
 ## start
@@ -31,9 +31,9 @@ const WebpackDevServer = require('webpack-dev-server');
 **server.js**
 
 ```js
-const Webpack = require('webpack');
-const WebpackDevServer = require('webpack-dev-server');
-const webpackConfig = require('./webpack.config.js');
+import Webpack from 'webpack';
+import WebpackDevServer from 'webpack-dev-server';
+import webpackConfig from './webpack.config.js';
 
 const compiler = Webpack(webpackConfig);
 const devServerOptions = { ...webpackConfig.devServer, open: true };
@@ -60,9 +60,9 @@ node server.js
 **server.js**
 
 ```js
-const Webpack = require('webpack');
-const WebpackDevServer = require('webpack-dev-server');
-const webpackConfig = require('./webpack.config.js');
+import Webpack from 'webpack';
+import WebpackDevServer from 'webpack-dev-server';
+import webpackConfig from './webpack.config.js';
 
 const compiler = Webpack(webpackConfig);
 const devServerOptions = { ...webpackConfig.devServer, open: true };
@@ -86,9 +86,9 @@ node server.js
 **server.js**
 
 ```js
-const Webpack = require('webpack');
-const WebpackDevServer = require('webpack-dev-server');
-const webpackConfig = require('./webpack.config.js');
+import Webpack from 'webpack';
+import WebpackDevServer from 'webpack-dev-server';
+import webpackConfig from './webpack.config.js';
 
 const compiler = Webpack(webpackConfig);
 const devServerOptions = { ...webpackConfig.devServer, open: true };
@@ -122,9 +122,9 @@ node server.js
 **server.js**
 
 ```js
-const Webpack = require('webpack');
-const WebpackDevServer = require('webpack-dev-server');
-const webpackConfig = require('./webpack.config.js');
+import Webpack from 'webpack';
+import WebpackDevServer from 'webpack-dev-server';
+import webpackConfig from './webpack.config.js';
 
 const compiler = Webpack(webpackConfig);
 const devServerOptions = { ...webpackConfig.devServer, open: true };
@@ -155,7 +155,7 @@ node server.js
 **server.js**
 
 ```js
-const WebpackDevServer = require('webpack-dev-server');
+import WebpackDevServer from 'webpack-dev-server';
 
 const logInternalIPs = async () => {
   const localIPv4 = await WebpackDevServer.internalIP('v4');
@@ -175,7 +175,7 @@ logInternalIPs();
 **server.js**
 
 ```js
-const WebpackDevServer = require('webpack-dev-server');
+import WebpackDevServer from 'webpack-dev-server';
 
 const localIPv4 = WebpackDevServer.internalIPSync('v4');
 const localIPv6 = WebpackDevServer.internalIPSync('v6');

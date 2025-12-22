@@ -21,7 +21,9 @@ compiler.hooks.normalModuleFactory.tap('MyPlugin', (factory) => {
   factory.hooks.parser
     .for('javascript/auto')
     .tap('MyPlugin', (parser, options) => {
-      parser.hooks.someHook.tap(/* ... */);
+      parser.hooks.someHook.tap('MyPlugin', (data) => {
+        // ...
+      });
     });
 });
 ```
@@ -373,7 +375,7 @@ export class ClassName {}
 - 콜백 파라미터: `expression`
 
 ```js
-var a = b;
+const a = b;
 
 parser.hooks.canRename.for('b').tap('MyPlugin', (expression) => {
   // true를 반환하면 이름을 변경할 수 있습니다.
@@ -391,12 +393,12 @@ parser.hooks.canRename.for('b').tap('MyPlugin', (expression) => {
 - 콜백 파라미터: `expression`
 
 ```js
-var a = b;
+const a = b;
 
 parser.hooks.rename.for('b').tap('MyPlugin', (expression) => {});
 ```
 
-### assigned
+### assign (before parsing assigned expression)
 
 `SyncBailHook`
 
@@ -408,12 +410,12 @@ parser.hooks.rename.for('b').tap('MyPlugin', (expression) => {});
 ```js
 a += b;
 
-parser.hooks.assigned.for('a').tap('MyPlugin', (expression) => {
+parser.hooks.assign.for('a').tap('MyPlugin', (expression) => {
   // 이것은 b를 파싱하기 전에 호출됩니다.
 });
 ```
 
-### assign
+### assign (before parsing target)
 
 `SyncBailHook`
 
@@ -425,7 +427,7 @@ parser.hooks.assigned.for('a').tap('MyPlugin', (expression) => {
 ```js
 a += b;
 
-parser.hooks.assigned.for('a').tap('MyPlugin', (expression) => {
+parser.hooks.assign.for('a').tap('MyPlugin', (expression) => {
   // 이것은 a를 파싱하기 전에 호출됩니다.
 });
 ```

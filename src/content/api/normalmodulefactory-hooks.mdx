@@ -14,13 +14,20 @@ translators:
 `NormalModuleFactory` 클래스는 `Tapable`을 확장하고 다음과 같은 라이프사이클 훅을 제공합니다. 컴파일러 훅도 같은 방식으로 탭 할 수 있습니다.
 
 ```js
-NormalModuleFactory.hooks.someHook.tap(/* ... */);
+const nmf = NormalModuleFactory.hooks;
+nmf.someHook.tap('MyPlugin', (resolveData) => {
+  // ...
+});
 ```
 
-NormaleModuleFactory는 HooksMaps에서 액세스 할 수 있는 `파서`와 `제너레이터` 인스턴스를 연결합니다.
+NormalModuleFactory는 HookMaps에서 접근할 수 있는 `Parser` 및 `Generator` 인스턴스를 생성합니다. 이러한 인스턴스를 사용하려면 식별자를 전달해야 합니다.
 
 ```js
-NormalModuleFactory.hooks.someHook.for('identifier').tap(/* ... */);
+NormalModuleFactory.hooks.parser
+  .for('javascript/esm')
+  .tap('MyPlugin', (parser, parserOptions) => {
+    // ...
+  });
 ```
 
 `컴파일러`와 마찬가지로 `tapAsync` 및 `tapPromise`도 훅의 유형에 따라 사용할 수 있습니다.

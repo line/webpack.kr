@@ -67,7 +67,7 @@ import {
 
 ```javascript
 // 이름이 지정된 내보내기
-export var Count = 5;
+export const Count = 5;
 export function Multiply(a, b) {
   return a * b;
 }
@@ -250,8 +250,8 @@ require(dependency: String);
 다른 모듈의 내보내기를 동기적으로 검색합니다. 컴파일러는 출력 번들에서 의존성을 사용할 수 있는지 확인합니다.
 
 ```javascript
-var $ = require('jquery');
-var myModule = require('my-module');
+import $ from 'jquery';
+import myModule from 'my-module';
 ```
 
 `require`에 대한 특별한 주석도 활성화할 수 있습니다. 자세한 내용은 [`module.parser.javascript.commonjsMagicComments`](/configuration/module/#moduleparserjavascriptcommonjsmagiccomments)를 참고하세요.
@@ -277,20 +277,20 @@ W> 모듈 ID의 유형은 [`optimization.moduleIds`](/configuration/optimization
 W> 이것은 드문 경우에만 호환성을 위해 필요합니다!
 
 ```javascript
-var d1 = require('dependency');
-require('dependency') === d1;
-delete require.cache[require.resolve('dependency')];
-require('dependency') !== d1;
+import d1 from 'dependency';
+// In ESM, module caching is handled automatically.
+// Manual cache deletion like in CommonJS is not supported.
+if (import.meta.webpackHot) {
+  import.meta.webpackHot.accept('dependency', (newModule) => {
+    // Handle module update here
+  });
+}
 ```
 
 ```javascript
 // file.js에서
-require.cache[module.id] === module;
-require('./file.js') === module.exports;
-delete require.cache[module.id];
-require.cache[module.id] === undefined;
-require('./file.js') !== module.exports; // 이론상 실제로 이것은 스택 오버플로를 일으킵니다.
-require.cache[module.id] !== module;
+// ESM에서는 수동 캐시 조작이 지원되지 않습니다.
+// Webpack은 모듈 캐싱을 내부적으로 처리합니다.
 ```
 
 ### require.ensure
@@ -311,13 +311,13 @@ require.ensure(
 W> 이 기능은 내부적으로 [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)에 의존합니다. 이전 브라우저에서 `require.ensure`를 사용하는 경우 [es6-promise](https://github.com/stefanpenner/es6-promise) 또는 [promise-polyfill](https://github.com/taylorhakes/promise-polyfill)과 같은 폴리필을 사용하여 `Promise`를 대체해야 합니다.
 
 ```javascript
-var a = require('normal-dep');
+const a = require('normal-dep');
 
 if (module.hot) {
-  require.ensure(['b'], function (require) {
-    var c = require('c');
-
-    // 특별한 작업을 수행...
+  import('b').then(() => {
+    import('c').then((c) => {
+      // 특별한 작업을 수행...
+    });
   });
 }
 ```
@@ -333,7 +333,9 @@ W> `require`의 구현이 `callback` 함수에 인수로 전달되어도 `requir
 
 ## AMD
 
-AMD(Asynchronous Module Definition)는 모듈을 작성하고 로드하기 위한 인터페이스를 정의하는 JavaScript 사양입니다. Webpack에서 지원하는 AMD 방식은 다음과 같습니다.
+W> 이러한 구문은 구식입니다. 최신 애플리케이션에는 ES6 모듈 사용을 적극 권장합니다.
+
+비동기 모듈 정의(AMD)는 모듈을 작성하고 로드하기 위한 인터페이스를 정의하는 JavaScript 사양입니다. 웹팩은 다음과 같은 AMD 메서드를 지원합니다.
 
 ### define (with factory)
 
@@ -385,8 +387,10 @@ require(dependencies: String[], [callback: function(...)])
 W> 이 기능은 내부적으로 [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)에 의존합니다. Internet Explorer 11과 같은 이전 브라우저에서 AMD를 사용하는 경우 [es6-promise](https://github.com/stefanpenner/es6-promise) 또는 [promise-polyfill](https://github.com/taylorhakes/promise-polyfill)과 같은 폴리필을 사용하여 `Promise`를 대체해야 합니다.
 
 ```javascript
-require(['b'], function (b) {
-  var c = require('c');
+import('b').then((b) => {
+  import('c').then((c) => {
+    // b और c का इस्तेमाल करें
+  });
 });
 ```
 
@@ -394,14 +398,16 @@ W> 청크 이름을 제공하는 옵션이 없습니다.
 
 ## Labeled Modules
 
-내부 `LabeledModulesPlugin`을 통해 모듈 내에서 다음과 같은 내보내기 및 요청을 위한 메서드 사용이 가능합니다.
+W> 이러한 구문은 구식입니다. 최신 애플리케이션에는 ES6 모듈 사용을 적극 권장합니다.
+
+내부 `LabeledModulesPlugin`을 사용하면 모듈 내에서 내보내기 및 불러오기에 다음과 같은 메서드를 사용할 수 있습니다.
 
 ### export label
 
 제공된 `value`를 내보냅니다. label은 함수 선언이나 변수 선언 앞에 올 수 있습니다. 함수 이름 또는 변수 이름은 값을 내보내는 데 사용되는 식별자입니다.
 
 ```ts
-export: var answer = 42;
+export: const answer = 42;
 export: function method(value) {
   // 작업을 수행하세요...
 };
@@ -416,7 +422,7 @@ W> 비동기 함수에서 사용하면 기대한 효과가 없을 수 있습니�
 **some-dependency.js**
 
 ```ts
-export: var answer = 42;
+export: const answer = 42;
 export: function method(value) {
   // 작업을 수행하세요...
 };
@@ -446,14 +452,21 @@ require.context(
 `directory`에 대한 경로, `includeSubdirs` 옵션, 포함된 모듈을 좀 더 세밀하게 제어하기 위한 `filter`, 로드 작동 방식을 정의하는 `mode`를 사용하여 전체 의존성 그룹을 지정합니다. 그러면 기본 모듈은 나중에 해석할 수 있습니다.
 
 ```javascript
-var context = require.context('components', true, /\.html$/);
-var componentA = context.resolve('componentA');
+const context = import.meta.webpackContext('components', {
+  recursive: true,
+  regExp: /\.html$/,
+});
+const componentA = context.resolve('componentA');
 ```
 
 `mode`가 `'lazy'`로 설정되면 기본 모듈이 비동기식으로 로드됩니다.
 
 ```javascript
-var context = require.context('locales', true, /\.json$/, 'lazy');
+const context = import.meta.webpackContext('locales', {
+  recursive: true,
+  regExp: /\.json$/,
+  mode: 'lazy',
+});
 context('localeA').then((locale) => {
   // locale로 작업을 수행
 });
@@ -470,12 +483,10 @@ require.include((dependency: String));
 실행하지 않고 `dependency`를 포함합니다. 출력 청크에서 모듈의 위치를 최적화하는 데 사용할 수 있습니다.
 
 ```javascript
-require.include('a');
-require.ensure(['a', 'b'], function (require) {
-  /* ... */
-});
-require.ensure(['a', 'c'], function (require) {
-  /* ... */
+import('a');
+import('b');
+import('c').then((moduleC) => {
+  // Use moduleC here
 });
 ```
 

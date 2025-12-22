@@ -51,9 +51,9 @@ function webpackLoader(content, map, meta) {
 **sync-loader.js**
 
 ```javascript
-module.exports = function (content, map, meta) {
+export default function (content, map, meta) {
   return someSyncOperation(content);
-};
+}
 ```
 
 `this.callback` 메소드는 `content`만 사용하는 것이 아니라 여러 인수를 전달할 수 있으므로 더 유연합니다.
@@ -61,10 +61,10 @@ module.exports = function (content, map, meta) {
 **sync-loader-with-multiple-results.js**
 
 ```javascript
-module.exports = function (content, map, meta) {
+export default function (content, map, meta) {
   this.callback(null, someSyncOperation(content), map, meta);
   return; // callback() 함수를 호출하면 항상 undefined를 반환합니다.
-};
+}
 ```
 
 ### Asynchronous Loaders
@@ -74,10 +74,10 @@ module.exports = function (content, map, meta) {
 **async-loader.js**
 
 ```javascript
-module.exports = async function (content, map, meta) {
+export default async function (content, map, meta) {
   var result = await someAsyncOperation(content);
   return result;
-};
+}
 ```
 
 또는 [`this.async`](#thisasync)를 사용하여 `callback` 함수를 검색할 수 있습니다.
@@ -85,25 +85,25 @@ module.exports = async function (content, map, meta) {
 **async-loader-with-callback.js**
 
 ```javascript
-module.exports = function (content, map, meta) {
+export default function (content, map, meta) {
   var callback = this.async();
   someAsyncOperation(content, function (err, result) {
     if (err) return callback(err);
     callback(null, result, map, meta);
   });
-};
+}
 ```
 
 **async-loader-with-multiple-results.js**
 
 ```javascript
-module.exports = function (content, map, meta) {
+export default function (content, map, meta) {
   var callback = this.async();
   someAsyncOperation(content, function (err, result, sourceMaps, meta) {
     if (err) return callback(err);
     callback(null, result, sourceMaps, meta);
   });
-};
+}
 ```
 
 T> 로더는 원래 Node.js([enhanced-require](https://github.com/webpack/enhanced-require) 사용)와 같은 동기 로더 파이프라인 _및_ webpack과 같은 비동기 파이프라인에서 작동하도록 설계되었습니다. 그러나 Node.js와 같은 단일 스레드 환경에서는 값비싼 동기식 계산이 좋지 않으므로 가능한 한 로더를 비동기로 만드는 것이 좋습니다. 계산량이 적을 경우 동기 로더를 사용해도 괜찮습니다.
@@ -115,13 +115,13 @@ T> 로더는 원래 Node.js([enhanced-require](https://github.com/webpack/enhanc
 **raw-loader.js**
 
 ```javascript
-module.exports = function (content) {
+export default function (content) {
   assert(content instanceof Buffer);
   return someSyncOperation(content);
   // 반환 값도 `Buffer`가 될 수 있습니다.
   // 로더가 "raw"가 아닌 경우에도 허용됩니다.
-};
-module.exports.raw = true;
+}
+export const raw = true;
 ```
 
 ### Pitching Loader
@@ -133,7 +133,7 @@ T> 로더는 요청에 인라인으로 추가되고 인라인 접두사를 통�
 다음과 같은 [`use`](/configuration/module/#ruleuse) 설정을 살펴보겠습니다.
 
 ```javascript
-module.exports = {
+export default {
   //...
   module: {
     rules: [
@@ -163,11 +163,11 @@ module.exports = {
 첫째, `pitch` 메소드에 전달된 `data`는 실행 단계에서도 `this.data` 아래에 노출되며 실행 주기의 초기부터 정보를 캡처하고 공유하는 데 유용할 수 있습니다.
 
 ```javascript
-module.exports = function (content) {
+export default function (content) {
   return someSyncOperation(content, this.data.value);
-};
+}
 
-module.exports.pitch = function (remainingRequest, precedingRequest, data) {
+export const pitch = function (remainingRequest, precedingRequest, data) {
   data.value = 42;
 };
 ```
@@ -175,16 +175,16 @@ module.exports.pitch = function (remainingRequest, precedingRequest, data) {
 둘째, 로더가 `pitch` 방식으로 결과를 전달하면 프로세스가 돌아가 나머지 로더를 건너뜁니다. 아래는 위의 예시에서 `b-loader`의 `pitch` 메소드가 무언가를 반환했을 때의 경우를 살펴봅니다.
 
 ```javascript
-module.exports = function (content) {
+export default function (content) {
   return someSyncOperation(content);
-};
+}
 
-module.exports.pitch = function (remainingRequest, precedingRequest, data) {
+export const pitch = function (remainingRequest, precedingRequest, data) {
   if (someCondition()) {
     return (
-      'module.exports = require(' +
+      'import _from_loader from ' +
       JSON.stringify('-!' + remainingRequest) +
-      ');'
+      '; export default _from_loader;'
     );
   }
 };
@@ -209,7 +209,7 @@ module.exports.pitch = function (remainingRequest, precedingRequest, data) {
 `/abc/file.js`의 경우
 
 ```javascript
-require('./loader1?xyz!loader2!./resource?rrr');
+import './loader1?xyz!loader2!./resource?rrr';
 ```
 
 ### this.addContextDependency
@@ -400,10 +400,10 @@ Webpack [`resolve` 옵션](/configuration/resolve/#resolve) 아래의 모든 옵
 로더용 HMR에 대한 정보입니다.
 
 ```javascript
-module.exports = function (source) {
+export default function (source) {
   console.log(this.hot); // --hot 플래그 또는 webpack 설정을 통해 HMR이 활성화된 경우 true입니다.
   return source;
-};
+}
 ```
 
 ### this.hashDigest
@@ -455,7 +455,7 @@ Node.JS의 [`hash.update`](https://nodejs.org/api/crypto.html#crypto_hash_update
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   module: {
     rules: [
       {
@@ -627,7 +627,7 @@ Webpack 4부터 기존의 `this.options.context`는 `this.rootContext`로 제공
 **my-sync-loader.js**
 
 ```js
-module.exports = function (content) {
+export default function (content) {
   this.utils.contextify(
     this.context,
     this.utils.absolutify(this.context, './index.js')
@@ -640,7 +640,7 @@ module.exports = function (content) {
   mainHash.digest('hex');
   // …
   return content;
-};
+}
 ```
 
 ### this.version
@@ -706,7 +706,7 @@ Boolean 플래그입니다. 디버그 모드일 때 설정됩니다.
 **./src/index.js**
 
 ```javascript
-require('./loader!./lib');
+import './loader!./lib';
 ```
 
 로더에서 오류가 발생하는 경우입니다.
@@ -714,9 +714,9 @@ require('./loader!./lib');
 **./src/loader.js**
 
 ```javascript
-module.exports = function (source) {
+export default function (source) {
   throw new Error('This is a Fatal Error!');
-};
+}
 ```
 
 또는 비동기 모드에서 콜백에 오류를 전달하는 경우입니다.
@@ -724,11 +724,11 @@ module.exports = function (source) {
 **./src/loader.js**
 
 ```javascript
-module.exports = function (source) {
+export default function (source) {
   const callback = this.async();
   //...
   callback(new Error('This is a Fatal Error!'), source);
-};
+}
 ```
 
 모듈은 다음과 같이 번들로 제공됩니다.
@@ -804,9 +804,9 @@ console.log('yep');
 **extract-style-loader/index.js**
 
 ```javascript
-const getStylesLoader = require.resolve('./getStyles');
+import getStylesLoader from './getStyles';
 
-module.exports = function (source) {
+export default function (source) {
   if (STYLES_REGEXP.test(source)) {
     source = source.replace(STYLES_REGEXP, '');
     return `import ${JSON.stringify(
@@ -817,16 +817,16 @@ module.exports = function (source) {
     )};${source}`;
   }
   return source;
-};
+}
 ```
 
 **extract-style-loader/getStyles.js**
 
 ```javascript
-module.exports = function (source) {
+export default function (source) {
   const match = source.match(STYLES_REGEXP);
   return match[0];
-};
+}
 ```
 
 ## Logging

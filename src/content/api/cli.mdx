@@ -506,7 +506,7 @@ npx webpack --config example.config.js
 아래와 같은 `webpack.config.js`를 생각해 봅시다.
 
 ```js
-module.exports = [
+export default [
   {
     output: {
       filename: './dist-first.js',
@@ -620,7 +620,7 @@ T> 사용법에 대한 자세한 내용은 [환경 변수](/guides/environment-v
 번들 코드 내에서는 이러한 내장 환경 변수에 접근할 수 없는 점을 알아두세요.
 
 ```javascript
-module.exports = (env, argv) => {
+export default (env, argv) => {
   return {
     mode: env.WEBPACK_SERVE ? 'development' : 'production',
   };
@@ -652,7 +652,7 @@ npx webpack --config-node-env production   # process.env.NODE_ENV = 'production'
 설정이 함수를 내보내는 경우, 함수가 반환된 후 `--config-node-env` 값이 mode에 할당됩니다. 즉, `mode`는 함수 인수(`env` 및 `argv`)에서 사용할 수 없습니다. 그러나 `--config-node-env`의 값은 함수 내에서 `argv.nodeEnv`로 접근 가능하며 그에 따라 사용할 수 있습니다.
 
 ```javascript
-module.exports = (env, argv) => {
+export default (env, argv) => {
   console.log(argv.defineProcessEnvNodeEnv); // 'production' --config-node-env production이 사용되는 경우
   return {
     // 당신의 설정

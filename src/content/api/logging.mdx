@@ -50,12 +50,12 @@ export class MyWebpackPlugin {
 **my-webpack-loader.js**
 
 ```js
-module.exports = function (source) {
-  // webpack 로더에서 `this.getLogger`로 로거를 얻을 수 있습니다.
+export default function (source) {
+  // webpack 로더에서 `this.getLogger`를 사용하여 로거를 가져올 수 있습니다.
   const logger = this.getLogger('my-webpack-loader');
   logger.info('hello Logger');
   return source;
-};
+}
 ```
 
 위의 `my-webpack-plugin.js` 예제에서 볼 수 있듯이, 두 가지 유형의 로깅 방법이 있습니다.
@@ -84,12 +84,12 @@ module.exports = function (source) {
 
 런타임 로거 API는 개발 도구로만 사용할 수 있고 [프로덕션 모드](/configuration/mode/#mode-production)에 포함할 수 없습니다.
 
-- `const logging = require('webpack/lib/logging/runtime')`: 런타임에서 로거를 사용하려면 webpack에서 직접 require 해야 합니다.
+- `import logging from 'webpack/lib/logging/runtime'`: 런타임에서 로거를 사용하려면 webpack에서 직접 require 해야 합니다.
 - `logging.getLogger('name')`: 이름으로 개별 로거를 가져오기 위해 사용합니다.
 - `logging.configureDefaultLogger(...)`: 기본 로거를 재정의합니다.
 
 ```javascript
-const logging = require('webpack/lib/logging/runtime');
+import logging from 'webpack/lib/logging/runtime';
 logging.configureDefaultLogger({
   level: 'log',
   debug: /something/,
