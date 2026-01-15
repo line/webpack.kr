@@ -226,6 +226,18 @@ TypeScript 코드에서 [`import.meta.webpack`](/api/module-variables/#importmet
 console.log(import.meta.webpack); // 위에서 선언된 참조가 없으면 TypeScript에서 에러가 발생합니다.
 ```
 
+프로젝트 전체에 타입 지정을 활성화하려면 `tsconfig.json` 파일의 `compilerOptions.types`에 `webpack/module`을 추가하세요.
+
+```diff
+  {
+    "compilerOptions": {
+      "types": [
++       "webpack/module"
+      ]
+    }
+  }
+```
+
 ## Using Third Party Libraries
 
 npm으로부터 타사 라이브러리를 설치할 때는 해당 라이브러리에 대한 타입 정의를 설치해야 한다는 사실을 기억해야 합니다.
