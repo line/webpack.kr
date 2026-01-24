@@ -15,7 +15,7 @@ translators:
 
 ```js
 new webpack.ProvidePlugin({
-  identifier: 'module1',
+  identifier: "module1",
   // ...
 });
 ```
@@ -24,7 +24,7 @@ new webpack.ProvidePlugin({
 
 ```js
 new webpack.ProvidePlugin({
-  identifier: ['module1', 'property1'],
+  identifier: ["module1", "property1"],
   // ...
 });
 ```
@@ -34,10 +34,10 @@ new webpack.ProvidePlugin({
 또한 전체 경로도 지정할 수 있습니다.
 
 ```js
-const path = require('path');
+const path = require("node:path");
 
 new webpack.ProvidePlugin({
-  identifier: path.resolve(path.join(__dirname, 'src/module1')),
+  identifier: path.resolve(path.join(__dirname, "src/module1")),
   // ...
 });
 ```
@@ -52,8 +52,8 @@ ES2015 모듈의 기본 export를 가져오려면 모듈의 기본 프로퍼티�
 
 ```javascript
 new webpack.ProvidePlugin({
-  $: 'jquery',
-  jQuery: 'jquery',
+  $: "jquery",
+  jQuery: "jquery",
 });
 ```
 
@@ -61,8 +61,8 @@ new webpack.ProvidePlugin({
 
 ```javascript
 // 모듈에서
-$('#item'); // <= 동작합니다.
-jQuery('#item'); // <= 이 또한 동작합니다.
+$("#item"); // <= 동작합니다.
+jQuery("#item"); // <= 이 또한 동작합니다.
 // $는 모듈 "jquery" exports로 자동 설정되었습니다.
 ```
 
@@ -72,7 +72,7 @@ Angular는 jQuery가 존재하는지 찾기 위해 `window.jQuery`를 찾습니�
 
 ```javascript
 new webpack.ProvidePlugin({
-  'window.jQuery': 'jquery',
+  "window.jQuery": "jquery",
 });
 ```
 
@@ -80,7 +80,7 @@ new webpack.ProvidePlugin({
 
 ```javascript
 new webpack.ProvidePlugin({
-  _map: ['lodash', 'map'],
+  _map: ["lodash", "map"],
 });
 ```
 
@@ -88,6 +88,6 @@ new webpack.ProvidePlugin({
 
 ```javascript
 new webpack.ProvidePlugin({
-  Vue: ['vue/dist/vue.esm.js', 'default'],
+  Vue: ["vue/dist/vue.esm.js", "default"],
 });
 ```

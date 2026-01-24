@@ -74,10 +74,10 @@ npm install webpack webpack-cli --save-dev
 
 ```javascript
 function component() {
-  const element = document.createElement('div');
+  const element = document.createElement("div");
 
   // 이 라인이 동작하려면 현재 스크립트를 통해 포함된 Lodash가 필요합니다.
-  element.innerHTML = _.join(['Hello', 'webpack'], ' ');
+  element.innerHTML = _.join(["Hello", "webpack"], " ");
 
   return element;
 }
@@ -252,17 +252,17 @@ webpack은 `import`와 `export` 문 이외는 코드를 변경하지 않습니�
 **webpack.config.js**
 
 ```javascript
-import path from 'path';
-import { fileURLToPath } from 'url';
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export default {
-  entry: './src/index.js',
+  entry: "./src/index.js",
   output: {
-    filename: 'main.js',
-    path: path.resolve(__dirname, 'dist'),
+    filename: "main.js",
+    path: path.resolve(__dirname, "dist"),
   },
 };
 ```

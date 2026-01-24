@@ -24,14 +24,14 @@ npm install --save-dev html-webpack-plugin
 적용은 아래와 같이 webpack에 플러그인을 추가하기만 하면 됩니다.
 
 ```javascript
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const path = require('path');
+const path = require("node:path");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
-  entry: 'index.js',
+  entry: "index.js",
   output: {
-    path: path.resolve(__dirname, './dist'),
-    filename: 'index_bundle.js',
+    path: path.resolve(__dirname, "./dist"),
+    filename: "index_bundle.js",
   },
   plugins: [new HtmlWebpackPlugin()],
 };

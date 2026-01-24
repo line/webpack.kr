@@ -2,12 +2,22 @@
 @use "sass:color";
 /* webpack kr patch */
 
-@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@700&display=swap');
-@import 'functions';
+@import url("https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@700&display=swap");
+@import "functions";
 
 body {
-  font-family: 'Source Sans Pro', system-ui, -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Helvetica, Arial, 'Malgun gothic', '맑은 고딕', 'Dotum', '돋움',
+  font-family:
+    "Source Sans Pro",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Helvetica,
+    Arial,
+    "Malgun gothic",
+    "맑은 고딕",
+    "Dotum",
+    "돋움",
     sans-serif;
   font-size: 15px;
 }
@@ -21,8 +31,15 @@ body {
 .markdown h4,
 .markdown h5,
 .markdown h6 {
-  font-family: 'Source Serif Pro', 'Noto Serif KR', ui-serif, Georgia, Cambria,
-    Times New Roman, Times, serif;
+  font-family:
+    "Source Serif Pro",
+    "Noto Serif KR",
+    ui-serif,
+    Georgia,
+    Cambria,
+    Times New Roman,
+    Times,
+    serif;
 }
 
 // Text rotater
@@ -55,8 +72,15 @@ body {
 // Main page's sub title style
 
 .index-sub-title {
-  font-family: 'Source Serif Pro', 'Noto Serif KR', ui-serif, Georgia, Cambria,
-    Times New Roman, Times, serif;
+  font-family:
+    "Source Serif Pro",
+    "Noto Serif KR",
+    ui-serif,
+    Georgia,
+    Cambria,
+    Times New Roman,
+    Times,
+    serif;
 
   justify-content: center;
 

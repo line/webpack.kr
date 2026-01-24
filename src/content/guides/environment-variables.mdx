@@ -30,18 +30,18 @@ webpack 설정을 변경해야 할 사항이 있습니다. 일반적으로, `mod
 **webpack.config.js**
 
 ```js
-const path = require('path');
+const path = require("node:path");
 
 module.exports = (env) => {
   // 여기에서 env.<변수> 를 사용하세요.
-  console.log('Goal: ', env.goal); // 'local'
-  console.log('Production: ', env.production); // true
+  console.log("Goal:", env.goal); // 'local'
+  console.log("Production:", env.production); // true
 
   return {
-    entry: './src/index.js',
+    entry: "./src/index.js",
     output: {
-      filename: 'bundle.js',
-      path: path.resolve(__dirname, 'dist'),
+      filename: "bundle.js",
+      path: path.resolve(__dirname, "dist"),
     },
   };
 };

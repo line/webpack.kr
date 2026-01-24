@@ -53,7 +53,7 @@ new webpack.IgnorePlugin({
 `moment`는 아래의 코드로 가져오기 때문입니다.
 
 ```js
-require('./locale/' + name);
+require(`./locale/${name}`);
 ```
 
 첫 번째 정규 표현식은 `'./locale/'` 문자열과 일치해야 합니다. 그다음 두 번째 `contextRegExp` 파라미터를 사용하여 가져오기가 수행된 특정 디렉터리를 선택합니다. 다음은 로케일 파일이 무시되는 경우입니다.

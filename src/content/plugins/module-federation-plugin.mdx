@@ -17,7 +17,7 @@ related:
 `ModuleFederationPlugin`을 사용하면 런타임에 다른 독립 빌드와 함께 모듈을 제공하거나 사용할 수 있습니다.
 
 ```ts
-const { ModuleFederationPlugin } = require('webpack').container;
+const { ModuleFederationPlugin } = require("webpack").container;
 module.exports = {
   plugins: [
     new ModuleFederationPlugin({
@@ -42,11 +42,12 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-const { ModuleFederationPlugin } = require('webpack').container;
+const { ModuleFederationPlugin } = require("webpack").container;
+
 module.exports = {
   plugins: [
     new ModuleFederationPlugin({
-      runtime: 'my-runtime-name',
+      runtime: "my-runtime-name",
     }),
   ],
 };
@@ -57,12 +58,13 @@ module.exports = {
 설정의 'shared' 키를 사용하면 모듈 연합 사이에 공유되는 라이브러리를 정의할 수 있습니다. 패키지 이름은 package.json의 'dependencies' 섹션에 있는 이름과 동일합니다. 그러나 기본적으로 webpack은 라이브러리의 루트 레벨만 공유합니다.
 
 ```js
-const { ModuleFederationPlugin } = require('webpack').container;
+const { ModuleFederationPlugin } = require("webpack").container;
+
 module.exports = {
   plugins: [
     new ModuleFederationPlugin({
       // date-fns를 공유 모듈로 추가합니다.
-      shared: ['date-fns'],
+      shared: ["date-fns"],
     }),
   ],
 };
@@ -71,22 +73,23 @@ module.exports = {
 따라서 응용 프로그램에서 다음과 같은 작업을 수행할 수 있습니다.
 
 ```js
-import { format } from 'date-fns';
+import { format } from "date-fns";
 
-format(new Date(2014, 1, 11), 'MM/dd/yyyy');
+format(new Date(2014, 1, 11), "MM/dd/yyyy");
 ```
 
 그리고 webpack은 `date-fns`를 공유 라이브러리로 정의하는 모든 모듈 연합 사이에 `date-fns`를 자동으로 공유합니다.
 그러나 패키지의 루트 레벨에 없는 항목(예: `date-fns/locale/en-GB/index.js`)에 액세스하려면 '공유' 설정에서 패키지 이름에 `/`를 추가해야 합니다.
 
 ```js
-const { ModuleFederationPlugin } = require('webpack').container;
+const { ModuleFederationPlugin } = require("webpack").container;
+
 module.exports = {
   plugins: [
     new ModuleFederationPlugin({
       // date-fns를 공유 모듈로 추가합니다.
       // 패키지의 모든 파일이 공유됩니다
-      shared: ['date-fns/'],
+      shared: ["date-fns/"],
     }),
   ],
 };
@@ -103,7 +106,8 @@ The `/` 구문을 사용하면 패키지의 모든 파일에 액세스할 수 �
 이 구문을 사용하면 패키지 이름만 있는 라이브러리를 공유할 수 있습니다. 이 접근 방식은 프로토타이핑에 적합하지만 `react` 및 `react-dom`과 같은 라이브러리에 추가 요구 사항이 필요하기 때문에 대규모 프로덕션 환경으로 확장할 수 없습니다.
 
 ```js
-const { ModuleFederationPlugin } = require('webpack').container;
+const { ModuleFederationPlugin } = require("webpack").container;
+
 module.exports = {
   plugins: [
     new ModuleFederationPlugin({
@@ -111,7 +115,7 @@ module.exports = {
       // package.json으로부터 버전을 추론합니다.
       // 필수 버전을 확인하지 않습니다.
       // 그래서 항상 발견된 더 높은 버전을 사용합니다.
-      shared: ['lodash'],
+      shared: ["lodash"],
     }),
   ],
 };
@@ -129,7 +133,7 @@ module.exports = {
         // lodash를 공유 모듈로 추가합니다.
         // package.json 으로부터 버전을 추론합니다.
         // 4.17 이상 5 미만의 버전 중 최상위 버전을 사용하게 됩니다.
-        lodash: '^4.17.0',
+        lodash: "^4.17.0",
       },
     }),
   ],
@@ -141,7 +145,7 @@ module.exports = {
 이 구문을 사용하면 각 공유 패키지에 힌트를 추가로 제공할 수 있습니다. 패키지의 이름을 키로, 공유 동작을 수정하기 위한 힌트를 포함한 객체를 값으로 정의하여 제공할 수 있습니다.
 
 ```js
-const deps = require('./package.json').dependencies;
+const deps = require("./package.json").dependencies;
 
 module.exports = {
   plugins: [
@@ -229,7 +233,7 @@ module.exports = {
       // 항상 공유 버전을 사용하지만 공유된 vue가 2.6.5 미만 또는 3 이상 버전인 경우 경고를 출력합니다.
       shared: {
         vue: {
-          requiredVersion: '^2.6.5',
+          requiredVersion: "^2.6.5",
           singleton: true,
         },
       },
@@ -248,7 +252,7 @@ module.exports = {
       shared: {
         vue: {
           import: false,
-          requiredVersion: '^2.6.5',
+          requiredVersion: "^2.6.5",
         },
       },
     }),
@@ -266,7 +270,7 @@ module.exports = {
       shared: {
         vue: {
           import: false,
-          requiredVersion: '^2.6.5',
+          requiredVersion: "^2.6.5",
           strictVersion: true,
         },
       },
@@ -280,15 +284,15 @@ module.exports = {
   plugins: [
     new ModuleFederationPlugin({
       shared: {
-        'my-vue': {
-          // 'my-vue' 가져오기로 참조할 수 있습니다.
-          import: 'vue', // 'vue' 패키지는 제공된 대체 모듈로 사용됩니다.
-          shareKey: 'shared-vue', // 'shared-vue'이름으로 공유된 모듈은 공유 유효범위에 배치됩니다.
-          shareScope: 'default', // 'default'로 공유 유효범위가 적용됩니다.
+        "my-vue": {
+          // "my-vue" 가져오기로 참조할 수 있습니다.
+          import: "vue", // "vue" 패키지는 제공된 대체 모듈로 사용됩니다.
+          shareKey: "shared-vue", // "shared-vue"이름으로 공유된 모듈은 공유 유효범위에 배치됩니다.
+          shareScope: "default", // "default"로 공유 유효범위가 적용됩니다.
           singleton: true, // 공유 모듈의 단일 버전만 허용됩니다.
           strictVersion: true, // 버전이 유효하지 않을 때 공유 버전을 사용하지 말아야 합니다. fallback이 없는 Singleton 또는 모듈은 넘겨집니다. 그렇지 않으면 fallback이 사용됩니다.
-          version: '1.2.3', // 공유 모듈의 버전입니다.
-          requiredVersion: '^1.0.0', // 공유 모듈의 최소 버전 입니다.
+          version: "1.2.3", // 공유 모듈의 버전입니다.
+          requiredVersion: "^1.0.0", // 공유 모듈의 최소 버전 입니다.
         },
       },
     }),

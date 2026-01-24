@@ -1,19 +1,20 @@
 // Import External Dependencies
-import { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
-import { useLocation } from 'react-router-dom';
+import PropTypes from "prop-types";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 // Import Components
-import PageLinks from '../PageLinks/PageLinks';
-import Markdown from '../Markdown/Markdown';
-import Contributors from '../Contributors/Contributors';
-import Translators from '../Translators/Translators';
-import { PlaceholderString } from '../Placeholder/Placeholder';
-import AdjacentPages from './AdjacentPages';
+import Contributors from "../Contributors/Contributors.jsx";
+import Link from "../Link/Link.jsx";
+import Markdown from "../Markdown/Markdown.jsx";
+import PageLinks from "../PageLinks/PageLinks.jsx";
+import { placeholderString } from "../Placeholder/Placeholder.jsx";
+import Translators from "../Translators/Translators.jsx";
+import AdjacentPages from "./AdjacentPages.jsx";
 
 // Load Styling
-import './Page.scss';
-import Link from '../Link/Link';
+import "./Page.scss";
+
 export default function Page(props) {
   const {
     title,
@@ -28,12 +29,10 @@ export default function Page(props) {
   const isDynamicContent = props.content instanceof Promise;
   const [content, setContent] = useState(
     isDynamicContent
-      ? PlaceholderString()
-      : () => props.content.default || props.content
+      ? placeholderString()
+      : () => props.content.default || props.content,
   );
-  const [contentLoaded, setContentLoaded] = useState(
-    isDynamicContent ? false : true
-  );
+  const [contentLoaded, setContentLoaded] = useState(!isDynamicContent);
 
   useEffect(() => {
     if (props.content instanceof Promise) {
@@ -42,7 +41,7 @@ export default function Page(props) {
           setContent(() => mod.default || mod);
           setContentLoaded(true);
         })
-        .catch(() => setContent('Error loading content.'));
+        .catch(() => setContent("Error loading content."));
     }
   }, [props.content]);
 
@@ -52,7 +51,7 @@ export default function Page(props) {
     let observer;
     if (contentLoaded) {
       if (hash) {
-        const target = document.querySelector('#md-content');
+        const target = document.querySelector("#md-content");
         // two cases here
         // 1. server side rendered page, so hash target is already there
         if (document.querySelector(hash)) {
@@ -92,7 +91,7 @@ export default function Page(props) {
 
   let contentRender;
 
-  if (typeof content === 'function') {
+  if (typeof content === "function") {
     contentRender = content({}).props.children;
   } else {
     contentRender = (
@@ -141,8 +140,8 @@ export default function Page(props) {
         {loadContributors && (
           <div data-testid="contributors" className="print:hidden">
             <h2 className="!font-sans !font-normal">
-              {numberOfContributors}{' '}
-              {numberOfContributors === 1 ? 'Contributor' : 'Contributors'}
+              {numberOfContributors}{" "}
+              {numberOfContributors === 1 ? "Contributor" : "Contributors"}
             </h2>
             <Contributors contributors={contributors} />
           </div>
@@ -159,6 +158,7 @@ export default function Page(props) {
     </section>
   );
 }
+
 Page.propTypes = {
   title: PropTypes.string,
   contributors: PropTypes.array,
@@ -168,6 +168,7 @@ Page.propTypes = {
   next: PropTypes.object,
   content: PropTypes.oneOfType([
     PropTypes.shape({
+      // eslint-disable-next-line unicorn/no-thenable
       then: PropTypes.func.isRequired,
       default: PropTypes.string,
     }),

@@ -16,7 +16,7 @@ related:
 생성된 각 청크의 상단에 배너를 추가합니다.
 
 ```javascript
-const webpack = require('webpack');
+const webpack = require("webpack");
 
 new webpack.BannerPlugin(banner);
 // 또는
@@ -41,24 +41,22 @@ new webpack.BannerPlugin(options);
 ## Usage
 
 ```javascript
-import webpack from 'webpack';
+import webpack from "webpack";
 
 // 문자열
 new webpack.BannerPlugin({
-  banner: 'hello world',
+  banner: "hello world",
 });
 
 // 함수
 new webpack.BannerPlugin({
-  banner: (yourVariable) => {
-    return `yourVariable: ${yourVariable}`;
-  },
+  banner: (yourVariable) => `yourVariable: ${yourVariable}`,
 });
 
 // 최소화 및 애셋 조작 후 배너 메시지를 추가합니다.
 new webpack.BannerPlugin({
   raw: true,
-  banner: '/* 배너는 문자열입니다 */',
+  banner: "/* 배너는 문자열입니다 */",
   stage: webpack.Compilation.PROCESS_ASSETS_STAGE_REPORT,
 });
 ```
@@ -68,10 +66,10 @@ new webpack.BannerPlugin({
 webpack 2.5.0 부터, placeholder는 `배너` 문자열로 평가됩니다.
 
 ```javascript
-import webpack from 'webpack';
+import webpack from "webpack";
 
 new webpack.BannerPlugin({
   banner:
-    'fullhash:[fullhash], chunkhash:[chunkhash], name:[name], filebase:[filebase], query:[query], file:[file]',
+    "fullhash:[fullhash], chunkhash:[chunkhash], name:[name], filebase:[filebase], query:[query], file:[file]",
 });
 ```

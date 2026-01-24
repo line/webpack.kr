@@ -17,11 +17,11 @@ contributors:
 `parser`는 [NormalModuleFactory](/api/compiler-hooks/#normalmodulefactory)에서 볼 수 있습니다.
 
 ```js
-compiler.hooks.normalModuleFactory.tap('MyPlugin', (factory) => {
+compiler.hooks.normalModuleFactory.tap("MyPlugin", (factory) => {
   factory.hooks.parser
-    .for('javascript/auto')
-    .tap('MyPlugin', (parser, options) => {
-      parser.hooks.someHook.tap('MyPlugin', (data) => {
+    .for("javascript/auto")
+    .tap("MyPlugin", (parser, options) => {
+      parser.hooks.someHook.tap("MyPlugin", (data) => {
         // ...
       });
     });
@@ -46,12 +46,12 @@ W> Webpack 5부터 훅은 더 이상 확장할 수 없습니다. 사용자 정�
 - 콜백 파라미터: `expression`
 
 ```js
-parser.hooks.evaluateTypeof
-  .for('myIdentifier')
-  .tap('MyPlugin', (expression) => {
+parser.hooks.evaluateTypeof.for("myIdentifier").tap(
+  "MyPlugin",
+  (expression) =>
     /* ... */
-    return expressionResult;
-  });
+    expressionResult,
+);
 ```
 
 이것은 `evaluateTypeof` 훅을 트리거 합니다.
@@ -81,16 +81,18 @@ const b = typeof myIdentifier;
 **index.js**
 
 ```js
-const a = new String();
+const a = new MyClass();
 ```
 
 **MyPlugin.js**
 
 ```js
-parser.hooks.evaluate.for('NewExpression').tap('MyPlugin', (expression) => {
-  /* ... */
-  return expressionResult;
-});
+parser.hooks.evaluate.for("NewExpression").tap(
+  "MyPlugin",
+  (expression) =>
+    /* ... */
+    expressionResult,
+);
 ```
 
 표현식 타입은 다음과 같습니다.
@@ -154,12 +156,12 @@ const a = expression.myFunc();
 **MyPlugin.js**
 
 ```js
-parser.hooks.evaluateCallExpressionMember
-  .for('myFunc')
-  .tap('MyPlugin', (expression, param) => {
+parser.hooks.evaluateCallExpressionMember.for("myFunc").tap(
+  "MyPlugin",
+  (expression, param) =>
     /* ... */
-    return expressionResult;
-  });
+    expressionResult,
+);
 ```
 
 ### statement
@@ -171,7 +173,7 @@ parser.hooks.evaluateCallExpressionMember
 - 콜백 파라미터: `statement`
 
 ```js
-parser.hooks.statement.tap('MyPlugin', (statement) => {
+parser.hooks.statement.tap("MyPlugin", (statement) => {
   /* ... */
 });
 ```
@@ -230,13 +232,13 @@ if 구문을 파싱할 때 호출됩니다. `statement` 훅과 동일하지만, 
 **index.js**
 
 ```js
-import _ from 'lodash';
+import _ from "lodash";
 ```
 
 **MyPlugin.js**
 
 ```js
-parser.hooks.import.tap('MyPlugin', (statement, source) => {
+parser.hooks.import.tap("MyPlugin", (statement, source) => {
   // source == 'lodash'
 });
 ```
@@ -254,14 +256,14 @@ parser.hooks.import.tap('MyPlugin', (statement, source) => {
 **index.js**
 
 ```js
-import _, { has } from 'lodash';
+import _, { has } from "lodash";
 ```
 
 **MyPlugin.js**
 
 ```js
 parser.hooks.importSpecifier.tap(
-  'MyPlugin',
+  "MyPlugin",
   (statement, source, exportName, identifierName) => {
     /* First call
     source == 'lodash'
@@ -273,7 +275,7 @@ parser.hooks.importSpecifier.tap(
     exportName == 'has'
     identifierName == 'has'
   */
-  }
+  },
 );
 ```
 
@@ -304,7 +306,7 @@ parser.hooks.importSpecifier.tap(
 이러한 내보내기는 다음의 훅을 트리거 합니다.
 
 ```js
-export const myVar = 'hello'; // 또한 var, let
+export const myVar = "hello"; // 또한 var, let
 export function FunctionName() {}
 export class ClassName {}
 ```
@@ -377,10 +379,12 @@ export class ClassName {}
 ```js
 const a = b;
 
-parser.hooks.canRename.for('b').tap('MyPlugin', (expression) => {
-  // true를 반환하면 이름을 변경할 수 있습니다.
-  return true;
-});
+parser.hooks.canRename.for("b").tap(
+  "MyPlugin",
+  (expression) =>
+    // true를 반환하면 이름을 변경할 수 있습니다.
+    true,
+);
 ```
 
 ### rename
@@ -395,7 +399,7 @@ parser.hooks.canRename.for('b').tap('MyPlugin', (expression) => {
 ```js
 const a = b;
 
-parser.hooks.rename.for('b').tap('MyPlugin', (expression) => {});
+parser.hooks.rename.for("b").tap("MyPlugin", (expression) => {});
 ```
 
 ### assign (before parsing assigned expression)
@@ -410,7 +414,7 @@ parser.hooks.rename.for('b').tap('MyPlugin', (expression) => {});
 ```js
 a += b;
 
-parser.hooks.assign.for('a').tap('MyPlugin', (expression) => {
+parser.hooks.assign.for("a").tap("MyPlugin", (expression) => {
   // 이것은 b를 파싱하기 전에 호출됩니다.
 });
 ```
@@ -427,7 +431,7 @@ parser.hooks.assign.for('a').tap('MyPlugin', (expression) => {
 ```js
 a += b;
 
-parser.hooks.assign.for('a').tap('MyPlugin', (expression) => {
+parser.hooks.assign.for("a").tap("MyPlugin", (expression) => {
   // 이것은 a를 파싱하기 전에 호출됩니다.
 });
 ```
@@ -450,10 +454,12 @@ parser.hooks.assign.for('a').tap('MyPlugin', (expression) => {
 - 훅 파라미터: `identifier`
 - 콜백 파라미터: `expression`
 
+{/* eslint-disable no-eval */}
+
 ```js
 eval(/* something */);
 
-parser.hooks.call.for('eval').tap('MyPlugin', (expression) => {});
+parser.hooks.call.for("eval").tap("MyPlugin", (expression) => {});
 ```
 
 ### callMemberChain
@@ -469,8 +475,8 @@ parser.hooks.call.for('eval').tap('MyPlugin', (expression) => {});
 myObj.anyFunc();
 
 parser.hooks.callMemberChain
-  .for('myObj')
-  .tap('MyPlugin', (expression, properties) => {});
+  .for("myObj")
+  .tap("MyPlugin", (expression, properties) => {});
 ```
 
 ### new
@@ -485,7 +491,7 @@ parser.hooks.callMemberChain
 ```js
 new MyClass();
 
-parser.hooks.new.for('MyClass').tap('MyPlugin', (expression) => {});
+parser.hooks.new.for("MyClass").tap("MyPlugin", (expression) => {});
 ```
 
 ### expression
@@ -500,7 +506,7 @@ parser.hooks.new.for('MyClass').tap('MyPlugin', (expression) => {});
 ```js
 const a = this;
 
-parser.hooks.expression.for('this').tap('MyPlugin', (expression) => {});
+parser.hooks.expression.for("this").tap("MyPlugin", (expression) => {});
 ```
 
 ### expressionConditionalOperator

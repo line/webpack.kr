@@ -15,7 +15,7 @@ translators:
 
 ```js
 const nmf = NormalModuleFactory.hooks;
-nmf.someHook.tap('MyPlugin', (resolveData) => {
+nmf.someHook.tap("MyPlugin", (resolveData) => {
   // ...
 });
 ```
@@ -24,15 +24,15 @@ NormalModuleFactory는 HookMaps에서 접근할 수 있는 `Parser` 및 `Generat
 
 ```js
 NormalModuleFactory.hooks.parser
-  .for('javascript/esm')
-  .tap('MyPlugin', (parser, parserOptions) => {
+  .for("javascript/esm")
+  .tap("MyPlugin", (parser, parserOptions) => {
     // ...
   });
 ```
 
 `컴파일러`와 마찬가지로 `tapAsync` 및 `tapPromise`도 훅의 유형에 따라 사용할 수 있습니다.
 
-### beforeResolve
+## beforeResolve
 
 `AsyncSeriesBailHook`
 
@@ -40,7 +40,7 @@ NormalModuleFactory.hooks.parser
 
 - 콜백 파라미터: `resolveData`
 
-### factorize
+## factorize
 
 `AsyncSeriesBailHook`
 
@@ -48,7 +48,7 @@ NormalModuleFactory.hooks.parser
 
 - 콜백 파라미터: `resolveData`
 
-### resolve
+## resolve
 
 `AsyncSeriesBailHook`
 
@@ -56,7 +56,7 @@ NormalModuleFactory.hooks.parser
 
 - 콜백 파라미터: `resolveData`
 
-### resolveForScheme
+## resolveForScheme
 
 `AsyncSeriesBailHook`
 
@@ -64,7 +64,7 @@ NormalModuleFactory.hooks.parser
 
 - 콜백 파라미터: `resolveData`
 
-### afterResolve
+## afterResolve
 
 `AsyncSeriesBailHook`
 
@@ -72,7 +72,7 @@ NormalModuleFactory.hooks.parser
 
 - 콜백 파라미터: `resolveData`
 
-### createModule
+## createModule
 
 `AsyncSeriesBailHook`
 
@@ -80,7 +80,7 @@ NormalModuleFactory.hooks.parser
 
 - 콜백 파라미터: `createData` `resolveData`
 
-### createModuleClass
+## createModuleClass
 
 `HookMap<SyncBailHook>`
 
@@ -92,7 +92,7 @@ NormalModuleFactory.hooks.parser
 
 - 콜백 파라미터: `createData` `resolveData`
 
-### module
+## module
 
 `SyncWaterfallHook`
 
@@ -100,7 +100,7 @@ NormalModuleFactory.hooks.parser
 
 - 콜백 파라미터: `module` `createData` `resolveData`
 
-### createParser
+## createParser
 
 `HookMap<SyncBailHook>`
 
@@ -110,7 +110,7 @@ NormalModuleFactory.hooks.parser
 
 - 콜백 파라미터: `parserOptions`
 
-### parser
+## parser
 
 `HookMap<SyncHook>`
 
@@ -130,7 +130,7 @@ NormalModuleFactory.hooks.parser
 6. `webassembly/async`
 7. `asset`
 
-### createGenerator
+## createGenerator
 
 `HookMap<SyncBailHook>`
 
@@ -140,7 +140,7 @@ NormalModuleFactory.hooks.parser
 
 - 콜백 파라미터: `generatorOptions`
 
-### generator
+## generator
 
 `HookMap<SyncHook>`
 

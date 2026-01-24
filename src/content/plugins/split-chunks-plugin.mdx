@@ -24,7 +24,7 @@ translators:
 related:
   - title: webpack's automatic deduplication algorithm example
     url: https://github.com/webpack/webpack/blob/main/examples/many-pages/README.md
-  - title: 'webpack 4: Code Splitting, chunk graph and the splitChunks optimization'
+  - title: "webpack 4: Code Splitting, chunk graph and the splitChunks optimization"
     url: https://medium.com/webpack/webpack-4-code-splitting-chunk-graph-and-the-splitchunks-optimization-be739a861366
 ---
 
@@ -61,10 +61,10 @@ W> 웹 성능 모범 사례에 맞게 기본 설정이 선택되어 있지만, �
 
 ```js
 module.exports = {
-  //...
+  // ...
   optimization: {
     splitChunks: {
-      chunks: 'async',
+      chunks: "async",
       minSize: 20000,
       minRemainingSize: 0,
       minChunks: 1,
@@ -110,11 +110,11 @@ W> webpack 5부터 `{cacheGroup}.test`에 엔트리 이름을 전달하고 `{cac
 
 ```js
 module.exports = {
-  //...
+  // ...
   optimization: {
     splitChunks: {
       // 모든 유형의 청크를 포함합니다.
-      chunks: 'all',
+      chunks: "all",
     },
   },
 };
@@ -124,12 +124,12 @@ module.exports = {
 
 ```js
 module.exports = {
-  //...
+  // ...
   optimization: {
     splitChunks: {
       chunks(chunk) {
         // `my-excluded-chunk`를 제외합니다.
-        return chunk.name !== 'my-excluded-chunk';
+        return chunk.name !== "my-excluded-chunk";
       },
     },
   },
@@ -140,7 +140,7 @@ Webpack 버전 5.86.0 이상을 사용하는 경우 정규식을 전달할 수�
 
 ```js
 module.exports = {
-  //...
+  // ...
   optimization: {
     splitChunks: {
       chunks: /foo/,
@@ -271,16 +271,16 @@ T> `splitChunks.cacheGroups.{cacheGroup}.name`은 소스청크의 부모인 청�
 **main.js**
 
 ```js
-import _ from 'lodash';
+import _ from "lodash";
 
-console.log(_.join(['Hello', 'webpack'], ' '));
+console.log(_.join(["Hello", "webpack"], " "));
 ```
 
 **webpack.config.js**
 
 ```js
 module.exports = {
-  //...
+  // ...
   optimization: {
     splitChunks: {
       cacheGroups: {
@@ -290,12 +290,12 @@ module.exports = {
           name(module, chunks, cacheGroupKey) {
             const moduleFileName = module
               .identifier()
-              .split('/')
+              .split("/")
               .reduceRight((item) => item);
-            const allChunksNames = chunks.map((item) => item.name).join('~');
+            const allChunksNames = chunks.map((item) => item.name).join("~");
             return `${cacheGroupKey}-${allChunksNames}-${moduleFileName}`;
           },
-          chunks: 'all',
+          chunks: "all",
         },
       },
     },
@@ -324,7 +324,7 @@ W> 다른 분할 청크에 동일한 이름을 할당할 때 모든 vendor 모�
 
 ```js
 module.exports = {
-  //...
+  // ...
   optimization: {
     splitChunks: {
       cacheGroups: {
@@ -351,7 +351,7 @@ module.exports = {
 
 ```js
 module.exports = {
-  //...
+  // ...
   optimization: {
     splitChunks: {
       cacheGroups: {
@@ -374,12 +374,12 @@ module.exports = {
 
 ```js
 module.exports = {
-  //...
+  // ...
   optimization: {
     splitChunks: {
       cacheGroups: {
         json: {
-          type: 'json',
+          type: "json",
         },
       },
     },
@@ -401,7 +401,7 @@ module.exports = {
 
 ```js
 module.exports = {
-  //...
+  // ...
   optimization: {
     splitChunks: {
       cacheGroups: {
@@ -409,17 +409,18 @@ module.exports = {
           test(module) {
             // `module.resource`는 디스크에 있는 파일의 절대 경로를 포함합니다.
             // 플랫폼 간 호환성을 위해 / 또는 \ 대신 `path.sep`을 사용합니다.
-            const path = require('path');
+            const path = require("node:path");
+
             return (
               module.resource &&
-              module.resource.endsWith('.svg') &&
+              module.resource.endsWith(".svg") &&
               module.resource.includes(`${path.sep}cacheable_svgs${path.sep}`)
             );
           },
         },
         byModuleTypeGroup: {
           test(module) {
-            return module.type === 'javascript/auto';
+            return module.type === "javascript/auto";
           },
         },
       },
@@ -436,7 +437,7 @@ module.exports = {
 
 ```js
 module.exports = {
-  //...
+  // ...
   optimization: {
     splitChunks: {
       cacheGroups: {
@@ -463,12 +464,12 @@ W> 이 옵션은 `splitChunks.filename`에서 전역적으로 설정할 수도 �
 
 ```js
 module.exports = {
-  //...
+  // ...
   optimization: {
     splitChunks: {
       cacheGroups: {
         defaultVendors: {
-          filename: '[name].bundle.js',
+          filename: "[name].bundle.js",
         },
       },
     },
@@ -482,15 +483,14 @@ module.exports = {
 
 ```js
 module.exports = {
-  //...
+  // ...
   optimization: {
     splitChunks: {
       cacheGroups: {
         defaultVendors: {
-          filename: (pathData) => {
+          filename: (pathData) =>
             // 요구 사항에 따라 파일 이름 문자열을 생성하기 위해 pathData 객체를 사용하세요.
-            return `${pathData.chunk.name}-bundle.js`;
-          },
+            `${pathData.chunk.name}-bundle.js`,
         },
       },
     },
@@ -504,12 +504,12 @@ module.exports = {
 
 ```js
 module.exports = {
-  //...
+  // ...
   optimization: {
     splitChunks: {
       cacheGroups: {
         defaultVendors: {
-          filename: 'js/[name]/bundle.js',
+          filename: "js/[name]/bundle.js",
         },
       },
     },
@@ -527,7 +527,7 @@ Webpack에 [`splitChunks.minSize`](#splitchunksminsize), [`splitChunks.minChunks
 
 ```js
 module.exports = {
-  //...
+  // ...
   optimization: {
     splitChunks: {
       cacheGroups: {
@@ -550,12 +550,12 @@ module.exports = {
 
 ```js
 module.exports = {
-  //...
+  // ...
   optimization: {
     splitChunks: {
       cacheGroups: {
         defaultVendors: {
-          idHint: 'vendors',
+          idHint: "vendors",
         },
       },
     },
@@ -570,14 +570,14 @@ module.exports = {
 ```js
 // index.js
 
-import('./a'); // 동적 import
+import("./a"); // 동적 import
 ```
 
 ```js
 // a.js
-import 'react';
+import "react";
 
-//...
+// ...
 ```
 
 **결과:** `react`를 포함하는 별도의 청크가 생성됩니다. import 호출에서 이 청크는 `./a`를 포함하는 원래 청크와 병렬로 로드됩니다.
@@ -597,23 +597,23 @@ import 'react';
 // entry.js
 
 // 동적 imports
-import('./a');
-import('./b');
+import("./a");
+import("./b");
 ```
 
 ```js
 // a.js
-import './helpers'; // helpers의 크기는 40kb입니다
+import "./helpers"; // helpers의 크기는 40kb입니다
 
-//...
+// ...
 ```
 
 ```js
 // b.js
-import './helpers';
-import './more-helpers'; // more-helpers 또한 40kb의 크기를 가집니다
+import "./helpers";
+import "./more-helpers"; // more-helpers 또한 40kb의 크기를 가집니다
 
-//...
+// ...
 ```
 
 **결과:** `./helpers`와 이에 대한 모든 의존성을 포함하는 별도의 청크가 생성됩니다. import 호출에서 이 청크는 원래 청크와 병렬로 로드됩니다.
@@ -635,13 +635,13 @@ import './more-helpers'; // more-helpers 또한 40kb의 크기를 가집니다
 
 ```js
 module.exports = {
-  //...
+  // ...
   optimization: {
     splitChunks: {
       cacheGroups: {
         commons: {
-          name: 'commons',
-          chunks: 'initial',
+          name: "commons",
+          chunks: "initial",
           minChunks: 2,
         },
       },
@@ -660,14 +660,14 @@ W> 이 구성은 초기 번들을 확장할 수 있으므로 모듈이 즉시 �
 
 ```js
 module.exports = {
-  //...
+  // ...
   optimization: {
     splitChunks: {
       cacheGroups: {
         commons: {
           test: /[\\/]node_modules[\\/]/,
-          name: 'vendors',
-          chunks: 'all',
+          name: "vendors",
+          chunks: "all",
         },
       },
     },
@@ -685,14 +685,14 @@ W> 이로 인해 모든 외부 패키지가 포함된 큰 청크가 생성될 �
 
 ```js
 module.exports = {
-  //...
+  // ...
   optimization: {
     splitChunks: {
       cacheGroups: {
         vendor: {
           test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
-          name: 'vendor',
-          chunks: 'all',
+          name: "vendor",
+          chunks: "all",
         },
       },
     },

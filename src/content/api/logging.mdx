@@ -31,17 +31,18 @@ W> **로그에서 노이즈 방지!** 여러 플러그인과 로더가 함께 �
 **my-webpack-plugin.js**
 
 ```js
-const PLUGIN_NAME = 'my-webpack-plugin';
+const PLUGIN_NAME = "my-webpack-plugin";
+
 export class MyWebpackPlugin {
   apply(compiler) {
     // 컴파일러에서 로거에 액세스 할 수 있습니다.
     const logger = compiler.getInfrastructureLogger(PLUGIN_NAME);
-    logger.log('log from compiler');
+    logger.log("log from compiler");
 
     compiler.hooks.compilation.tap(PLUGIN_NAME, (compilation) => {
       // 컴파일에서도 로거에 액세스 할 수 있습니다.
       const logger = compilation.getLogger(PLUGIN_NAME);
-      logger.info('log from compilation');
+      logger.info("log from compilation");
     });
   }
 }
@@ -52,8 +53,8 @@ export class MyWebpackPlugin {
 ```js
 export default function (source) {
   // webpack 로더에서 `this.getLogger`를 사용하여 로거를 가져올 수 있습니다.
-  const logger = this.getLogger('my-webpack-loader');
-  logger.info('hello Logger');
+  const logger = this.getLogger("my-webpack-loader");
+  logger.info("hello Logger");
   return source;
 }
 ```
@@ -89,9 +90,10 @@ export default function (source) {
 - `logging.configureDefaultLogger(...)`: 기본 로거를 재정의합니다.
 
 ```javascript
-import logging from 'webpack/lib/logging/runtime';
+import logging from "webpack/lib/logging/runtime";
+
 logging.configureDefaultLogger({
-  level: 'log',
+  level: "log",
   debug: /something/,
 });
 ```

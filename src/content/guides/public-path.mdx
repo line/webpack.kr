@@ -22,10 +22,10 @@ translators:
 이 문제를 해결하기 위해 오랫동안 사용 중인 환경 변수를 사용해봅시다. `ASSET_PATH` 변수가 있다고 가정해 보겠습니다.
 
 ```js
-import webpack from 'webpack';
+import webpack from "webpack";
 
 // 환경 변수를 사용하고 존재하지 않는다면 루트를 사용하세요.
-const ASSET_PATH = process.env.ASSET_PATH || '/';
+const ASSET_PATH = process.env.ASSET_PATH || "/";
 
 export default {
   output: {
@@ -35,7 +35,7 @@ export default {
   plugins: [
     // 코드에서 환경 변수를 안전하게 사용할 수 있습니다.
     new webpack.DefinePlugin({
-      'process.env.ASSET_PATH': JSON.stringify(ASSET_PATH),
+      "process.env.ASSET_PATH": JSON.stringify(ASSET_PATH),
     }),
   ],
 };
@@ -55,8 +55,22 @@ W> 엔트리 파일에서 ES6 모듈 가져오기를 사용하는 경우 가져�
 
 ```js
 // entry.js
-import './public-path';
-import './app';
+import "./public-path";
+import "./app";
 ```
 
-T> `web` 또는 `web-worker`를 대상으로 사용하는 경우, `publicPath`는 `'auto'`로 기본 설정되어 `import.meta.url`, `document.currentScript`, `<script />`, `self.location` 중 하나를 공개 경로로 자동으로 결정합니다.
+### Automatic publicPath
+
+publicPath가 무엇인지 미리 알 수 없는 경우가 있는데, Webpack은 `import.meta.url`, `document.currentScript`, `script.src` 또는 `self.location`과 같은 변수를 통해 publicPath를 자동으로 파악하여 처리해 줍니다. 이때 필요한 것은 `output.publicPath`를 `auto`로 설정하는 것입니다.
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  output: {
+    publicPath: "auto",
+  },
+};
+```
+
+`document.currentScript`가 지원되지 않는 경우(예: IE 브라우저)에는 [`currentScript Polyfill`](https://github.com/amiller-gh/currentScript-polyfill)과 같은 폴리필을 포함해야 합니다.

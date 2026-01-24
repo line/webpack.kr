@@ -34,12 +34,12 @@ translators:
 
 ```js
 module.exports = {
-  //...
+  // ...
   module: {
     rules: [
       {
         test: /\.js$/,
-        loader: 'babel-loader',
+        loader: "babel-loader",
       },
     ],
   },
@@ -49,16 +49,16 @@ module.exports = {
 위와 같은 방식보다는 아래처럼 `include` 필드를 사용하여 실제로 변환해야 하는 모듈에만 로더를 적용합니다.
 
 ```js
-const path = require('path');
+const path = require("node:path");
 
 module.exports = {
-  //...
+  // ...
   module: {
     rules: [
       {
         test: /\.js$/,
-        include: path.resolve(__dirname, 'src'),
-        loader: 'babel-loader',
+        include: path.resolve(__dirname, "src"),
+        loader: "babel-loader",
       },
     ],
   },
@@ -214,7 +214,7 @@ module.exports = {
   test: /\.tsx?$/,
   use: [
     {
-      loader: 'ts-loader',
+      loader: "ts-loader",
       options: {
         transpileOnly: true,
       },

@@ -51,7 +51,7 @@ function webpackLoader(content, map, meta) {
 **sync-loader.js**
 
 ```javascript
-export default function (content, map, meta) {
+export default function syncLoader(content, map, meta) {
   return someSyncOperation(content);
 }
 ```
@@ -60,8 +60,10 @@ export default function (content, map, meta) {
 
 **sync-loader-with-multiple-results.js**
 
+{/* eslint-disable no-useless-return */}
+
 ```javascript
-export default function (content, map, meta) {
+export default function syncLoaderWithMultipleResults(content, map, meta) {
   this.callback(null, someSyncOperation(content), map, meta);
   return; // callback() 함수를 호출하면 항상 undefined를 반환합니다.
 }
@@ -74,8 +76,8 @@ export default function (content, map, meta) {
 **async-loader.js**
 
 ```javascript
-export default async function (content, map, meta) {
-  var result = await someAsyncOperation(content);
+export default async function asyncLoader(content, map, meta) {
+  const result = await someAsyncOperation(content);
   return result;
 }
 ```
@@ -85,9 +87,9 @@ export default async function (content, map, meta) {
 **async-loader-with-callback.js**
 
 ```javascript
-export default function (content, map, meta) {
-  var callback = this.async();
-  someAsyncOperation(content, function (err, result) {
+export default function asyncLoaderWithCallback(content, map, meta) {
+  const callback = this.async();
+  someAsyncOperation(content, (err, result) => {
     if (err) return callback(err);
     callback(null, result, map, meta);
   });
@@ -97,9 +99,9 @@ export default function (content, map, meta) {
 **async-loader-with-multiple-results.js**
 
 ```javascript
-export default function (content, map, meta) {
-  var callback = this.async();
-  someAsyncOperation(content, function (err, result, sourceMaps, meta) {
+export default function asyncLoaderWithMultipleResults(content, map, meta) {
+  const callback = this.async();
+  someAsyncOperation(content, (err, result, sourceMaps, meta) => {
     if (err) return callback(err);
     callback(null, result, sourceMaps, meta);
   });
@@ -115,7 +117,7 @@ T> 로더는 원래 Node.js([enhanced-require](https://github.com/webpack/enhanc
 **raw-loader.js**
 
 ```javascript
-export default function (content) {
+export default function rawLoader(content) {
   assert(content instanceof Buffer);
   return someSyncOperation(content);
   // 반환 값도 `Buffer`가 될 수 있습니다.
@@ -134,12 +136,12 @@ T> 로더는 요청에 인라인으로 추가되고 인라인 접두사를 통�
 
 ```javascript
 export default {
-  //...
+  // ...
   module: {
     rules: [
       {
-        //...
-        use: ['a-loader', 'b-loader', 'c-loader'],
+        // ...
+        use: ["a-loader", "b-loader", "c-loader"],
       },
     ],
   },
@@ -163,31 +165,27 @@ export default {
 첫째, `pitch` 메소드에 전달된 `data`는 실행 단계에서도 `this.data` 아래에 노출되며 실행 주기의 초기부터 정보를 캡처하고 공유하는 데 유용할 수 있습니다.
 
 ```javascript
-export default function (content) {
+export default function myLoaderName(content) {
   return someSyncOperation(content, this.data.value);
 }
 
-export const pitch = function (remainingRequest, precedingRequest, data) {
+export function pitch(remainingRequest, precedingRequest, data) {
   data.value = 42;
-};
+}
 ```
 
 둘째, 로더가 `pitch` 방식으로 결과를 전달하면 프로세스가 돌아가 나머지 로더를 건너뜁니다. 아래는 위의 예시에서 `b-loader`의 `pitch` 메소드가 무언가를 반환했을 때의 경우를 살펴봅니다.
 
 ```javascript
-export default function (content) {
+export default function myLoaderName(content) {
   return someSyncOperation(content);
 }
 
-export const pitch = function (remainingRequest, precedingRequest, data) {
+export function pitch(remainingRequest, precedingRequest, data) {
   if (someCondition()) {
-    return (
-      'import _from_loader from ' +
-      JSON.stringify('-!' + remainingRequest) +
-      '; export default _from_loader;'
-    );
+    return `import _from_loader from "${JSON.stringify(`-!${remainingRequest}`)}"; export default _from_loader;`;
   }
-};
+}
 ```
 
 위의 단계는 다음과 같이 단축됩니다.
@@ -209,7 +207,7 @@ export const pitch = function (remainingRequest, precedingRequest, data) {
 `/abc/file.js`의 경우
 
 ```javascript
-import './loader1?xyz!loader2!./resource?rrr';
+import "./loader1?xyz!loader2!./resource?rrr";
 ```
 
 ### this.addContextDependency
@@ -460,8 +458,8 @@ export default {
     rules: [
       {
         test: /stylesheet\.js$/i,
-        use: ['./a-pitching-loader.js'],
-        type: 'asset/source', // 로더가 문자열을 리턴하므로 타입을 'asset/source'로 설정합니다
+        use: ["./a-pitching-loader.js"],
+        type: "asset/source", // 로더가 문자열을 리턴하므로 타입을 'asset/source'로 설정합니다
       },
     ],
   },
@@ -471,9 +469,9 @@ export default {
 **a-pitching-loader.js**
 
 ```js
-exports.pitch = async function (remaining) {
+module.exports.pitch = async function pitch(remaining) {
   const result = await this.importModule(
-    this.resourcePath + '.webpack[javascript/auto]' + '!=!' + remaining
+    `${this.resourcePath}.webpack[javascript/auto]!=!${remaining}`,
   );
   return result.default || result;
 };
@@ -482,21 +480,22 @@ exports.pitch = async function (remaining) {
 **src/stylesheet.js**
 
 ```js
-import { green, red } from './colors.js';
+import { green, red } from "./colors.js";
+
 export default `body { background: ${red}; color: ${green}; }`;
 ```
 
 **src/colors.js**
 
 ```js
-export const red = '#f00';
-export const green = '#0f0';
+export const red = "#f00";
+export const green = "#0f0";
 ```
 
 **src/index.js**
 
 ```js
-import stylesheet from './stylesheet.js';
+import stylesheet from "./stylesheet.js";
 // 스타일 시트는 빌드시 문자열 `body { background: #f00; color: #0f0; }`가 됩니다
 ```
 
@@ -537,15 +536,15 @@ loaders = [{request: string, path: string, query: string, module: function}]
 ```javascript
 [
   {
-    request: '/abc/loader1.js?xyz',
-    path: '/abc/loader1.js',
-    query: '?xyz',
+    request: "/abc/loader1.js?xyz",
+    path: "/abc/loader1.js",
+    query: "?xyz",
     module: [Function],
   },
   {
-    request: '/abc/node_modules/loader2/index.js',
-    path: '/abc/node_modules/loader2/index.js',
-    query: '',
+    request: "/abc/node_modules/loader2/index.js",
+    path: "/abc/node_modules/loader2/index.js",
+    query: "",
     module: [Function],
   },
 ];
@@ -630,14 +629,14 @@ Webpack 4부터 기존의 `this.options.context`는 `this.rootContext`로 제공
 export default function (content) {
   this.utils.contextify(
     this.context,
-    this.utils.absolutify(this.context, './index.js')
+    this.utils.absolutify(this.context, "./index.js"),
   );
   this.utils.absolutify(this.context, this.resourcePath);
   const mainHash = this.utils.createHash(
-    this._compilation.outputOptions.hashFunction
+    this._compilation.outputOptions.hashFunction,
   );
   mainHash.update(content);
-  mainHash.digest('hex');
+  mainHash.digest("hex");
   // …
   return content;
 }
@@ -706,7 +705,7 @@ Boolean 플래그입니다. 디버그 모드일 때 설정됩니다.
 **./src/index.js**
 
 ```javascript
-import './loader!./lib';
+import "./loader!./lib";
 ```
 
 로더에서 오류가 발생하는 경우입니다.
@@ -715,7 +714,7 @@ import './loader!./lib';
 
 ```javascript
 export default function (source) {
-  throw new Error('This is a Fatal Error!');
+  throw new Error("This is a Fatal Error!");
 }
 ```
 
@@ -726,8 +725,8 @@ export default function (source) {
 ```javascript
 export default function (source) {
   const callback = this.async();
-  //...
-  callback(new Error('This is a Fatal Error!'), source);
+  // ...
+  callback(new Error("This is a Fatal Error!"), source);
 }
 ```
 
@@ -785,7 +784,7 @@ T> 상대 `matchResource`는 포함하는 모듈의 현재 컨텍스트를 기�
 
 ```javascript
 /* STYLE: body { background: red; } */
-console.log('yep');
+console.log("yep");
 ```
 
 로더는 파일을 다음 파일로 변환하고 `matchResource`를 사용하여 사용자 지정 CSS 처리 규칙을 적용할 수 있습니다.
@@ -793,8 +792,9 @@ console.log('yep');
 **file.js** (로더에 의해 변환되었습니다)
 
 ```javascript
-import './file.js.css!=!extract-style-loader/getStyles!./file.js';
-console.log('yep');
+import "./file.js.css!=!extract-style-loader/getStyles!./file.js";
+
+console.log("yep");
 ```
 
 이는 `extract-style-loader/getStyles!./file.js`에 종속성을 추가하고 결과를 `file.js.css`로 처리합니다. [`module.rules`](/configuration/module/#modulerules)에는 `/\.css$/`와 일치하는 규칙이 있고 이 종속성에 적용되기 때문입니다.
@@ -804,16 +804,16 @@ console.log('yep');
 **extract-style-loader/index.js**
 
 ```javascript
-import getStylesLoader from './getStyles';
+import getStylesLoader from "./getStyles";
 
 export default function (source) {
   if (STYLES_REGEXP.test(source)) {
-    source = source.replace(STYLES_REGEXP, '');
+    source = source.replace(STYLES_REGEXP, "");
     return `import ${JSON.stringify(
       this.utils.contextify(
         this.context || this.rootContext,
-        `${this.resource}.css!=!${getStylesLoader}!${this.remainingRequest}`
-      )
+        `${this.resource}.css!=!${getStylesLoader}!${this.remainingRequest}`,
+      ),
     )};${source}`;
   }
   return source;

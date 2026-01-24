@@ -34,17 +34,17 @@ new webpack.DefinePlugin({
 ```javascript
 new webpack.DefinePlugin({
   PRODUCTION: JSON.stringify(true),
-  VERSION: JSON.stringify('5fa3b9'),
+  VERSION: JSON.stringify("5fa3b9"),
   BROWSER_SUPPORTS_HTML5: true,
-  TWO: '1+1',
-  'typeof window': JSON.stringify('object'),
-  'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+  TWO: "1+1",
+  "typeof window": JSON.stringify("object"),
+  "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV),
 });
 ```
 
 ```javascript
-console.log('Running App version ' + VERSION);
-if (!BROWSER_SUPPORTS_HTML5) require('html5shiv');
+console.log(`Running App version ${VERSION}`);
+if (!BROWSER_SUPPORTS_HTML5) require("html5shiv");
 ```
 
 W> `process`의 값을 정의할 때 `process: { env: { NODE_ENV: JSON.stringify('production') } }` 보다 `'process.env.NODE_ENV': JSON.stringify('production')`를 선호합니다. 만약 전자의 방식을 사용하면 process 객체를 덮어쓰게 되므로 `process` 객체에 다른 값이 정의될 것으로 예상되는 일부 모듈과의 호환성이 깨질 수 있습니다.
@@ -53,29 +53,31 @@ T> 플러그인은 텍스트에 직접 수정 작업을 진행하기 때문에 �
 
 ```javascript
 if (!PRODUCTION) {
-  console.log('Debug info');
+  console.log("Debug info");
 }
 
 if (PRODUCTION) {
-  console.log('Production log');
+  console.log("Production log");
 }
 ```
 
 최소화 단계 없이 webpack을 통과하면 다음과 같은 결과가 나타납니다.
 
+{/* eslint-disable no-constant-condition */}
+
 ```javascript
 if (!true) {
-  console.log('Debug info');
+  console.log("Debug info");
 }
 if (true) {
-  console.log('Production log');
+  console.log("Production log");
 }
 ```
 
 그 후 최소화 단계를 거친 결과는 다음과 같습니다.
 
 ```javascript
-console.log('Production log');
+console.log("Production log");
 ```
 
 ## Feature Flags
@@ -95,7 +97,7 @@ new webpack.DefinePlugin({
 
 ```javascript
 new webpack.DefinePlugin({
-  SERVICE_URL: JSON.stringify('https://dev.example.com'),
+  SERVICE_URL: JSON.stringify("https://dev.example.com"),
 });
 ```
 
@@ -109,7 +111,6 @@ new webpack.DefinePlugin({
 
 - 첫 번째 인자는 정의에 할당할 값을 반환 해야 하는 `function(module, key, version)`입니다.
 - 두 번째 인자는 감시할 파일 경로의 배열이거나 모듈을 캐시 할 수 없음으로 표시하는 `true` 플래그일 수 있습니다. 5.26.0 버전부터는 아래의 속성을 가진 객체 인자를 사용할 수 있습니다.
-
   - `fileDependencies?: string[]` 함수가 의존하는 파일 목록입니다.
   - `contextDependencies?: string[]` 함수가 의존하는 디렉터리 목록입니다.
   - `missingDependencies?: string[]` 함수가 의존하는 존재하지 않는 파일 목록입니다.
@@ -117,7 +118,7 @@ new webpack.DefinePlugin({
   - `version?: string | () => string` 함수의 버전입니다.
 
 ```javascript
-const fileDep = path.resolve(__dirname, 'sample.txt');
+const fileDep = path.resolve(__dirname, "sample.txt");
 
 new webpack.DefinePlugin({
   BUILT_AT: webpack.DefinePlugin.runtimeValue(Date.now, {

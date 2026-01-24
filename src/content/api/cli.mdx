@@ -509,28 +509,28 @@ npx webpack --config example.config.js
 export default [
   {
     output: {
-      filename: './dist-first.js',
+      filename: "./dist-first.js",
     },
-    name: 'first',
-    entry: './src/first.js',
-    mode: 'development',
+    name: "first",
+    entry: "./src/first.js",
+    mode: "development",
   },
   {
     output: {
-      filename: './dist-second.js',
+      filename: "./dist-second.js",
     },
-    name: 'second',
-    entry: './src/second.js',
-    mode: 'development',
+    name: "second",
+    entry: "./src/second.js",
+    mode: "development",
   },
   {
     output: {
-      filename: './dist-third.js',
+      filename: "./dist-third.js",
     },
-    name: 'third',
-    entry: './src/third.js',
-    mode: 'none',
-    stats: 'verbose',
+    name: "third",
+    entry: "./src/third.js",
+    mode: "none",
+    stats: "verbose",
   },
 ];
 ```
@@ -620,11 +620,9 @@ T> 사용법에 대한 자세한 내용은 [환경 변수](/guides/environment-v
 번들 코드 내에서는 이러한 내장 환경 변수에 접근할 수 없는 점을 알아두세요.
 
 ```javascript
-export default (env, argv) => {
-  return {
-    mode: env.WEBPACK_SERVE ? 'development' : 'production',
-  };
-};
+export default (env, argv) => ({
+  mode: env.WEBPACK_SERVE ? "development" : "production",
+});
 ```
 
 ### node-env

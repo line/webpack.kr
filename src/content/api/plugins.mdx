@@ -54,8 +54,8 @@ webpack의 많은 객체가 `Tapable` 클래스를 확장합니다.
 동기식 `tap` 메소드만 사용할 수 있습니다.
 
 ```js
-compiler.hooks.compile.tap('MyPlugin', (params) => {
-  console.log('Synchronously tapping the compile hook.');
+compiler.hooks.compile.tap("MyPlugin", (params) => {
+  console.log("Synchronously tapping the compile hook.");
 });
 ```
 
@@ -64,25 +64,29 @@ compiler.hooks.compile.tap('MyPlugin', (params) => {
 
 ```js
 compiler.hooks.run.tapAsync(
-  'MyPlugin',
+  "MyPlugin",
   (source, target, routesList, callback) => {
-    console.log('Asynchronously tapping the run hook.');
+    console.log("Asynchronously tapping the run hook.");
     callback();
-  }
+  },
 );
 
-compiler.hooks.run.tapPromise('MyPlugin', (source, target, routesList) => {
-  return new Promise((resolve) => setTimeout(resolve, 1000)).then(() => {
-    console.log('Asynchronously tapping the run hook with a delay.');
-  });
-});
+compiler.hooks.run.tapPromise("MyPlugin", (source, target, routesList) =>
+  new Promise((resolve) => {
+    setTimeout(resolve, 1000);
+  }).then(() => {
+    console.log("Asynchronously tapping the run hook with a delay.");
+  }),
+);
 
 compiler.hooks.run.tapPromise(
-  'MyPlugin',
+  "MyPlugin",
   async (source, target, routesList) => {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log('Asynchronously tapping the run hook with a delay.');
-  }
+    await new Promise((resolve) => {
+      setTimeout(resolve, 1000);
+    });
+    console.log("Asynchronously tapping the run hook with a delay.");
+  },
 );
 ```
 
@@ -123,17 +127,17 @@ compiler.hooks.run.tapPromise(
    ```ts
    const hooks = MyPlugin.getCompilationHooks(compilation);
 
-   hooks.custom.call(1, 'hello');
+   hooks.custom.call(1, "hello");
    ```
 
 4. 다른 플러그인도 사용자 정의 훅에 접근할 수 있습니다.
 
    ```ts
-   import MyPlugin from 'my-plugin';
+   import MyPlugin from "my-plugin";
 
    const hooks = MyPlugin.getCompilationHooks(compilation);
 
-   hooks.custom.tap('OtherPlugin', (n, s) => {
+   hooks.custom.tap("OtherPlugin", (n, s) => {
      // magic
    });
    ```
@@ -152,17 +156,17 @@ compiler.hooks.run.tapPromise(
 ```js
 compiler.hooks.emit.tapAsync(
   {
-    name: 'MyPlugin',
+    name: "MyPlugin",
     context: true,
   },
   (context, compiler, callback) => {
     const reportProgress = context && context.reportProgress;
-    if (reportProgress) reportProgress(0.95, 'Starting work');
+    if (reportProgress) reportProgress(0.95, "Starting work");
     setTimeout(() => {
-      if (reportProgress) reportProgress(0.95, 'Done work');
+      if (reportProgress) reportProgress(0.95, "Done work");
       callback();
     }, 1000);
-  }
+  },
 );
 ```
 

@@ -24,9 +24,11 @@ webpack 플러그인의 배열입니다. 예를 들어 [`DefinePlugin`](/plugins
 
 **webpack.config.js**
 
+{/* eslint-disable no-constant-binary-expression */}
+
 ```js
 module.exports = {
-  //...
+  // ...
   plugins: [
     new webpack.DefinePlugin({
       // Definitions...
@@ -41,18 +43,18 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-var webpack = require('webpack');
+const webpack = require("webpack");
 // webpack에 기본적으로 제공되지 않는 플러그인을 import
-var DashboardPlugin = require('webpack-dashboard/plugin');
+const DashboardPlugin = require("webpack-dashboard/plugin");
 
 // 설정에 플러그인 추가
 module.exports = {
-  //...
+  // ...
   plugins: [
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     // 컴파일 타임 플러그인
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': '"production"',
+      "process.env.NODE_ENV": '"production"',
     }),
     // webpack-dev-server 향상 플러그인
     new DashboardPlugin(),

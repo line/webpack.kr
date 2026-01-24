@@ -38,7 +38,7 @@ W> 이 페이지는 아직 작업 중입니다. 설명이나 예제가 불완전
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   amd: {
     jQuery: true,
   },
@@ -62,7 +62,7 @@ jQuery 1.7.0 ~ 1.9.1 같이 AMD로 작성된 특정 인기 모듈은 로더가 �
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   bail: true,
 };
 ```
@@ -89,14 +89,14 @@ W> [`watch`](/configuration/watch) 모드에서 `bail` 옵션을 사용하지 �
 ```js
 module.exports = [
   {
-    name: 'client',
-    target: 'web',
+    name: "client",
+    target: "web",
     // …
   },
   {
-    name: 'server',
-    target: 'node',
-    dependencies: ['client'],
+    name: "server",
+    target: "node",
+    dependencies: ["client"],
   },
 ];
 ```
@@ -115,7 +115,7 @@ module.exports = [
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   ignoreWarnings: [
     {
       module: /module2\.js\?[34]/, // A RegExp
@@ -173,8 +173,8 @@ T> webpack은 `loader`에 정의된 모든 속성을 로더 컨텍스트에 복�
 
 ```javascript
 module.exports = {
-  //...
-  name: 'admin-app',
+  // ...
+  name: "admin-app",
 };
 ```
 
@@ -207,12 +207,12 @@ T> 정확한 타이밍을 얻으려면 `profile: true`를 `parallelism: 1`과 �
 **webpack.config.js**
 
 ```javascript
-const path = require('path');
+const path = require("node:path");
 
 module.exports = {
-  //...
-  recordsInputPath: path.join(__dirname, 'records.json'),
-  recordsOutputPath: path.join(__dirname, 'newRecords.json'),
+  // ...
+  recordsInputPath: path.join(__dirname, "records.json"),
+  recordsOutputPath: path.join(__dirname, "newRecords.json"),
 };
 ```
 
@@ -225,11 +225,11 @@ module.exports = {
 **webpack.config.js**
 
 ```javascript
-const path = require('path');
+const path = require("node:path");
 
 module.exports = {
-  //...
-  recordsPath: path.join(__dirname, 'records.json'),
+  // ...
+  recordsPath: path.join(__dirname, "records.json"),
 };
 ```
 
@@ -248,11 +248,12 @@ W> `recordsPath`를 설정하면 기본적으로 `recordsInputPath`와 `recordsO
 **webpack.config.js**
 
 ```javascript
-const path = require('path');
+const path = require("node:path");
+
 module.exports = {
   // ...
   snapshot: {
-    managedPaths: [path.resolve(__dirname, '../node_modules')],
+    managedPaths: [path.resolve(__dirname, "../node_modules")],
     immutablePaths: [],
     unmanagedPaths: [],
     buildDependencies: {

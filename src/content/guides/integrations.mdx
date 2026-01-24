@@ -36,20 +36,20 @@ npm install --save-dev grunt-webpack webpack
 **Gruntfile.js**
 
 ```js
-const webpackConfig = require('./webpack.config.js');
+const webpackConfig = require("./webpack.config.js");
 
 module.exports = function (grunt) {
   grunt.initConfig({
     webpack: {
       options: {
-        stats: !process.env.NODE_ENV || process.env.NODE_ENV === 'development',
+        stats: !process.env.NODE_ENV || process.env.NODE_ENV === "development",
       },
       prod: webpackConfig,
-      dev: Object.assign({ watch: true }, webpackConfig),
+      dev: { watch: true, ...webpackConfig },
     },
   });
 
-  grunt.loadNpmTasks('grunt-webpack');
+  grunt.loadNpmTasks("grunt-webpack");
 };
 ```
 
@@ -68,18 +68,19 @@ npm install --save-dev webpack-stream
 **gulpfile.js**
 
 ```js
-const gulp = require('gulp');
-const webpack = require('webpack-stream');
-gulp.task('default', function () {
-  return gulp
-    .src('src/entry.js')
+const gulp = require("gulp");
+const webpack = require("webpack-stream");
+
+gulp.task("default", () =>
+  gulp
+    .src("src/entry.js")
     .pipe(
       webpack({
         // 모든 설정 옵션...
-      })
+      }),
     )
-    .pipe(gulp.dest('dist/'));
-});
+    .pipe(gulp.dest("dist/")),
+);
 ```
 
 자세한 내용은 [webpack-stem 저장소](https://github.com/shama/webpack-stream)를 참고하세요.
@@ -108,19 +109,19 @@ npm install --save-dev webpack karma karma-webpack
 ```js
 module.exports = function (config) {
   config.set({
-    frameworks: ['webpack'],
+    frameworks: ["webpack"],
     files: [
-      { pattern: 'test/*_test.js', watched: false },
-      { pattern: 'test/**/*_test.js', watched: false },
+      { pattern: "test/*_test.js", watched: false },
+      { pattern: "test/**/*_test.js", watched: false },
     ],
     preprocessors: {
-      'test/*_test.js': ['webpack'],
-      'test/**/*_test.js': ['webpack'],
+      "test/*_test.js": ["webpack"],
+      "test/**/*_test.js": ["webpack"],
     },
     webpack: {
       // 모든 커스텀 webpack 설정...
     },
-    plugins: ['karma-webpack'],
+    plugins: ["karma-webpack"],
   });
 };
 ```

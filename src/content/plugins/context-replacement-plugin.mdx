@@ -57,7 +57,7 @@ new webpack.ContextReplacementPlugin(/^\.\/locale$/, (context) => {
 
   Object.assign(context, {
     regExp: /^\.\/\w+/,
-    request: '../../locale', // 상대적으로 해결
+    request: "../../locale", // 상대적으로 해결
   });
 });
 ```
@@ -77,8 +77,8 @@ new webpack.ContextReplacementPlugin(
 이 두 파라미터를 함께 사용하여 보다 대상화된 방식으로 요청을 리다이렉션할 수 있습니다. `newContentCreateContextMap`을 사용하면 런타임 요청을 매핑하여 객체 형태로 요청을 컴파일 할 수 있습니다.
 
 ```javascript
-new ContextReplacementPlugin(/selector/, './folder', {
-  './request': './request',
-  './other-request': './new-request',
+new ContextReplacementPlugin(/selector/, "./folder", {
+  "./request": "./request",
+  "./other-request": "./new-request",
 });
 ```

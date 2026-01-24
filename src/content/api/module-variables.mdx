@@ -62,9 +62,9 @@ export const someValue = 42;
 export const anObject = {
   x: 123,
 };
-export const aFunction = function doSomething() {
+export function doSomething() {
   // Do something
-};
+}
 ```
 
 ## global (NodeJS)
@@ -140,8 +140,8 @@ Webpack 특유의 속성입니다. [`module.hot`](#modulehot-webpack-specific)�
       prefetch?: boolean | number;
       chunkName?: string;
       exports?: string | string[][];
-      mode?: 'sync' | 'eager' | 'weak' | 'lazy' | 'lazy-once';
-    }
+      mode?: "sync" | "eager" | "weak" | "lazy" | "lazy-once";
+    },
   ) => webpack.Context;
   ```
 
@@ -149,10 +149,10 @@ Webpack 특유의 속성입니다. [`module.hot`](#modulehot-webpack-specific)�
 - Example:
 
   ```js
-  const contextRequire = import.meta.webpackContext('.', {
+  const contextRequire = import.meta.webpackContext(".", {
     recursive: false,
     regExp: /two/,
-    mode: 'weak',
+    mode: "weak",
     exclude: /three/,
   });
   ```
@@ -172,13 +172,13 @@ Webpack 특유의 속성입니다. [`module.hot`](#modulehot-webpack-specific)�
 현재 모듈의 리소스 쿼리입니다. 만약 다음과 같은 `import` 호출이 이루어졌다면, 쿼리 문자열은 `file.js` 파일에서 확인할 수 있습니다.
 
 ```javascript
-import 'file.js?test';
+import "file.js?test";
 ```
 
 **file.js**
 
 ```javascript
-__resourceQuery === '?test';
+__resourceQuery === "?test";
 ```
 
 ## \_\_webpack_public_path\_\_ (webpack-specific)
@@ -199,20 +199,20 @@ __resourceQuery === '?test';
 
 ```js
 const originalLoad = __webpack_chunk_load__;
-const publicPaths = ['a', 'b', 'c'];
+const publicPaths = ["a", "b", "c"];
 __webpack_chunk_load__ = async (id) => {
   let error;
   for (const path of publicPaths) {
     __webpack_public_path__ = path;
     try {
       return await originalLoad(id);
-    } catch (e) {
-      error = e;
+    } catch (err) {
+      error = err;
     }
   }
   throw error;
 };
-import('./module-a').then((moduleA) => {
+import("./module-a").then((moduleA) => {
   // 이제 webpack은 사용자 정의 __webpack_chunk_load__ 를 사용하여 청크를 로드합니다.
 });
 ```
@@ -250,7 +250,7 @@ const oldFn = __webpack_get_script_filename__;
 
 __webpack_get_script_filename__ = (chunkId) => {
   const filename = oldFn(chunkId);
-  return filename + '.changed';
+  return `${filename}.changed`;
 };
 ```
 
@@ -291,7 +291,7 @@ webpack에 의해 파싱되지 않는 `require` 함수를 생성합니다. 가�
 주어진 모듈이 webpack에 의해 번들 되어 있는지 테스트합니다.
 
 ```js
-if (__webpack_is_included__('./module-a.js')) {
+if (__webpack_is_included__("./module-a.js")) {
   // do something
 }
 ```
@@ -305,7 +305,7 @@ if (__webpack_is_included__('./module-a.js')) {
 - Example:
 
   ```js
-  __webpack_base_uri__ = 'https://example.com';
+  __webpack_base_uri__ = "https://example.com";
   ```
 
 ## \_\_webpack_runtime_id\_\_
@@ -317,7 +317,7 @@ if (__webpack_is_included__('./module-a.js')) {
 **src/index.js**
 
 ```js
-console.log(__webpack_runtime_id__ === 'main');
+console.log(__webpack_runtime_id__ === "main");
 ```
 
 ## DEBUG (webpack-specific)

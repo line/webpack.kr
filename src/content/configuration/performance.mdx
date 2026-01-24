@@ -36,10 +36,10 @@ function assetFilter(assetFilename) {
 
 ```js
 module.exports = {
-  //...
+  // ...
   performance: {
-    assetFilter: function (assetFilename) {
-      return assetFilename.endsWith('.js');
+    assetFilter(assetFilename) {
+      return assetFilename.endsWith(".js");
     },
   },
 };
@@ -57,7 +57,7 @@ module.exports = {
 
 ```js
 module.exports = {
-  //...
+  // ...
   performance: {
     hints: false,
   },
@@ -68,9 +68,9 @@ module.exports = {
 
 ```js
 module.exports = {
-  //...
+  // ...
   performance: {
-    hints: 'warning',
+    hints: "warning",
   },
 };
 ```
@@ -79,9 +79,9 @@ module.exports = {
 
 ```js
 module.exports = {
-  //...
+  // ...
   performance: {
-    hints: 'error',
+    hints: "error",
   },
 };
 ```
@@ -96,7 +96,7 @@ module.exports = {
 
 ```js
 module.exports = {
-  //...
+  // ...
   performance: {
     maxAssetSize: 100000,
   },
@@ -111,7 +111,7 @@ module.exports = {
 
 ```js
 module.exports = {
-  //...
+  // ...
   performance: {
     maxEntrypointSize: 400000,
   },

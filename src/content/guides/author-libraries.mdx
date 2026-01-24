@@ -77,26 +77,22 @@ npm install --save-dev webpack webpack-cli lodash
 **src/index.js**
 
 ```js
-import _ from 'lodash';
-import numRef from './ref.json';
+import _ from "lodash";
+import numRef from "./ref.json";
 
 export function numToWord(num) {
   return _.reduce(
     numRef,
-    (accum, ref) => {
-      return ref.num === num ? ref.word : accum;
-    },
-    ''
+    (accum, ref) => (ref.num === num ? ref.word : accum),
+    "",
   );
 }
 
 export function wordToNum(word) {
   return _.reduce(
     numRef,
-    (accum, ref) => {
-      return ref.word === word && word.toLowerCase() ? ref.num : accum;
-    },
-    -1
+    (accum, ref) => (ref.word === word && word.toLowerCase() ? ref.num : accum),
+    -1,
   );
 }
 ```
@@ -108,13 +104,13 @@ export function wordToNum(word) {
 **webpack.config.js**
 
 ```js
-const path = require('path');
+const path = require("node:path");
 
 module.exports = {
-  entry: './src/index.js',
+  entry: "./src/index.js",
   output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'webpack-numbers.js',
+    path: path.resolve(__dirname, "dist"),
+    filename: "webpack-numbers.js",
   },
 };
 ```
@@ -145,7 +141,7 @@ webpack으로 애플리케이션을 번들해보았다면 익숙할 것입니다
 ```html
 <script src="https://example.org/webpack-numbers.js"></script>
 <script>
-  window.webpackNumbers.wordToNum('Five');
+  window.webpackNumbers.wordToNum("Five");
 </script>
 ```
 
@@ -156,17 +152,18 @@ webpack으로 애플리케이션을 번들해보았다면 익숙할 것입니다
 - **CommonJS module require**:
 
   ```js
-  const webpackNumbers = require('webpack-numbers');
+  const webpackNumbers = require("webpack-numbers");
+
   // ...
-  webpackNumbers.wordToNum('Two');
+  webpackNumbers.wordToNum("Two");
   ```
 
 - **AMD module require**:
 
   ```js
-  require(['webpackNumbers'], function (webpackNumbers) {
+  require(["webpackNumbers"], (webpackNumbers) => {
     // ...
-    webpackNumbers.wordToNum('Two');
+    webpackNumbers.wordToNum("Two");
   });
   ```
 
@@ -180,9 +177,9 @@ webpack으로 애플리케이션을 번들해보았다면 익숙할 것입니다
     <script>
       // ...
       // 전역 변수
-      webpackNumbers.wordToNum('Five');
+      webpackNumbers.wordToNum("Five");
       // window 객체의 프로퍼티
-      window.webpackNumbers.wordToNum('Five');
+      window.webpackNumbers.wordToNum("Five");
       // ...
     </script>
   </html>
@@ -251,8 +248,8 @@ T> `library` 설정은 `entry` 설정과 연관되어 있습니다. 대부분의
 종속성에서 여러 파일을 사용하는 라이브러리의 경우:
 
 ```js
-import A from 'library/one';
-import B from 'library/two';
+import A from "library/one";
+import B from "library/two";
 
 // ...
 ```
@@ -261,10 +258,10 @@ externals에서 `library`를 지정하여 번들에서 제외할 수 없습니�
 
 ```js
 module.exports = {
-  //...
+  // ...
   externals: [
-    'library/one',
-    'library/two',
+    "library/one",
+    "library/two",
     // "library/"로 시작하는 모든 것
     /^library\/.+$/,
   ],

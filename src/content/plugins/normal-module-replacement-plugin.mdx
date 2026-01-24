@@ -19,9 +19,9 @@ translators:
 new webpack.NormalModuleReplacementPlugin(resourceRegExp, newResource);
 ```
 
-`resourceRegExp`는 확인된 리소스가 아니라 코드에 작성한 요청에 대해 테스트 됩니다. 예를 들어, `import sum from './sum'` 코드가 있을 때 `'./sum.js'` 대신 `'./sum'`이 테스트에 사용됩니다.
+`resourceRegExp`는 해결된 리소스가 아닌 코드에 작성한 요청을 기준으로 테스트된다는 점에 유의하세요. 예를 들어, `import sum from './sum'` 코드가 있는 경우 `./sum.js'` 대신 `./sum'`이 테스트에 사용됩니다.
 
-또한 Windows를 사용할 때는 다른 폴더 구분 기호를 사용해야 합니다. 예를 들어 `/src\/environments\/environment\.ts/`는 Windows에서 작동하지 않기 때문에, `/src[\\/]environments[\\/]environment\.ts/,`를 대신 사용해야 합니다.
+또한 Windows를 사용하는 경우 폴더 구분 기호가 다르다는 점에 유의하십시오. 예를 들어 `/src\/environments\/environment\.ts/`는 Windows에서 작동하지 않으며, 대신 `/src[\\/]environments[\\/]environment\.ts/`를 사용해야 합니다.
 
 ## Basic Example
 
@@ -34,7 +34,7 @@ new webpack.NormalModuleReplacementPlugin(resourceRegExp, newResource);
 ```javascript
 new webpack.NormalModuleReplacementPlugin(
   /some\/path\/config\.development\.js/,
-  './config.production.js'
+  "./config.production.js",
 );
 ```
 
@@ -46,15 +46,13 @@ new webpack.NormalModuleReplacementPlugin(
 
 ```javascript
 module.exports = function (env) {
-  var appTarget = env.APP_TARGET || 'VERSION_A';
+  const appTarget = env.APP_TARGET || "VERSION_A";
   return {
     plugins: [
-      new webpack.NormalModuleReplacementPlugin(/-APP_TARGET$/, function (
-        resource
-      ) {
+      new webpack.NormalModuleReplacementPlugin(/-APP_TARGET$/, (resource) => {
         resource.request = resource.request.replace(
           /-APP_TARGET/,
-          `-${appTarget}`
+          `-${appTarget}`,
         );
 
         if (resource.createData) {
@@ -72,7 +70,7 @@ module.exports = function (env) {
 
 ```javascript
 export default {
-  title: 'I am version A',
+  title: "I am version A",
 };
 ```
 
@@ -80,14 +78,15 @@ export default {
 
 ```javascript
 export default {
-  title: 'I am version B',
+  title: "I am version B",
 };
 ```
 
 그다음 정규 표현식에서 찾고 있는 키워드를 사용하여 해당 설정을 가져옵니다.
 
 ```javascript
-import config from 'app/config-APP_TARGET';
+import config from "app/config-APP_TARGET";
+
 console.log(config.title);
 ```
 

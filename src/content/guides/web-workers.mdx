@@ -12,14 +12,14 @@ webpack 5부터는, [`worker-loader`](https://github.com/webpack-contrib/worker-
 ## Syntax
 
 ```js
-new Worker(new URL('./worker.js', import.meta.url));
+new Worker(new URL("./worker.js", import.meta.url));
 ```
 
 ```js
 // 또는 매직 코멘트로 청크 이름을 사용자 정의하세요.
 // https://webpack.js.org/api/module-methods/#magic-comments 내용을 참고하세요.
 new Worker(
-  /* webpackChunkName: "foo-worker" */ new URL('./worker.js', import.meta.url)
+  /* webpackChunkName: "foo-worker" */ new URL("./worker.js", import.meta.url),
 );
 ```
 
@@ -34,10 +34,10 @@ W> `Worker` 생성자에서 변수를 사용하는 것은 webpack에서 지원�
 **src/index.js**
 
 ```js
-const worker = new Worker(new URL('./deep-thought.js', import.meta.url));
+const worker = new Worker(new URL("./deep-thought.js", import.meta.url));
 worker.postMessage({
   question:
-    'The Answer to the Ultimate Question of Life, The Universe, and Everything.',
+    "The Answer to the Ultimate Question of Life, The Universe, and Everything.",
 });
 worker.onmessage = ({ data: { answer } }) => {
   console.log(answer);
@@ -47,7 +47,7 @@ worker.onmessage = ({ data: { answer } }) => {
 **src/deep-thought.js**
 
 ```js
-self.onmessage = ({ data: { question } }) => {
+globalThis.onmessage = ({ data: { question } }) => {
   self.postMessage({
     answer: 42,
   });
@@ -63,7 +63,7 @@ self.onmessage = ({ data: { question } }) => {
 **worker.js**
 
 ```js
-self.onmessage = ({ data: { publicPath, ...otherData } }) => {
+globalThis.onmessage = ({ data: { publicPath, ...otherData } }) => {
   if (publicPath) {
     __webpack_public_path__ = publicPath;
   }
@@ -75,8 +75,9 @@ self.onmessage = ({ data: { publicPath, ...otherData } }) => {
 **app.js**
 
 ```js
-const worker = new Worker(new URL('./worker.js', import.meta.url));
-worker.postMessage({ publicPath: window.__MY_GLOBAL_PUBLIC_PATH_VAR__ });
+const worker = new Worker(new URL("./worker.js", import.meta.url));
+
+worker.postMessage({ publicPath: globalThis.__MY_GLOBAL_PUBLIC_PATH_VAR__ });
 ```
 
 ## Node.js
@@ -84,9 +85,9 @@ worker.postMessage({ publicPath: window.__MY_GLOBAL_PUBLIC_PATH_VAR__ });
 비슷한 구문이 12.17.0 이상의 Node.js에서 지원됩니다.
 
 ```js
-import { Worker } from 'worker_threads';
+import { Worker } from "node:worker_threads";
 
-new Worker(new URL('./worker.js', import.meta.url));
+new Worker(new URL("./worker.js", import.meta.url));
 ```
 
 이 구문은 ESM에서만 사용할 수 있습니다. CommonJS 구문의 `Worker`는 webpack 이나 Node.js 모두 지원되지 않습니다.

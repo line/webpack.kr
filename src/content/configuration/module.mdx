@@ -40,13 +40,15 @@ translators:
 module.exports = {
   module: {
     defaultRules: [
-      '...', // "..."를 사용하여 기본적으로 webpack에 의해 적용되는 규칙을 참조할 수 있습니다.
+      "...", // "..."를 사용하여 기본적으로 webpack에 의해 적용되는 규칙을 참조할 수 있습니다.
     ],
   },
 };
 ```
 
 Webpack 5.87.0부터 `0`, `""`, `false`, `null` 및 `undefined`를 포함한 falsy 값을 `module.defaultRules`로 전달하여 특정 규칙을 조건부로 비활성화할 수 있습니다.
+
+{/* eslint-disable */}
 
 ```js
 module.exports = {
@@ -83,10 +85,10 @@ module.exports = {
         dataUrl: {
           // 애셋 인코딩(기본값은 "base64")
           // type: 'base64' | false
-          encoding: 'base64',
+          encoding: "base64",
           // 애셋 Mimetype (기본적으로 파일 확장자에서 가져옵니다).
           // type: string
-          mimetype: 'image/png',
+          mimetype: "image/png",
         },
 
         // 이 애셋 모듈에서 출력 애셋을 내보냅니다. 예를 들어 SSR의 경우 내보내기를 생략하려면 'false'로 설정할 수 있습니다.
@@ -95,17 +97,17 @@ module.exports = {
 
         // 이 애셋 모듈의 파일 이름을 사용자 정의합니다.
         // type: string | ((pathData: PathData, assetInfo?: AssetInfo) => string)
-        filename: 'static/[path][name][ext]',
+        filename: "static/[path][name][ext]",
 
         // asset 모듈을 위한 publicPath 사용자 정의. webpack 5.28.0 이후로 사용 가능.
         // type: string | ((pathData: PathData, assetInfo?: AssetInfo) => string)
-        publicPath: 'https://cdn/assets/',
+        publicPath: "https://cdn/assets/",
 
         // Webpack 5.67.0부터 사용 가능한 'output.path'를 기준으로 지정된 폴더의 애셋을 내보냅니다.
         // type: string | ((pathData: PathData, assetInfo?: AssetInfo) => string)
-        outputPath: 'cdn-assets/',
+        outputPath: "cdn-assets/",
       },
-      'asset/inline': {
+      "asset/inline": {
         // asset/inline 모듈 제너레이터 옵션
 
         // 이 애셋을 바이너리로 처리해야 하는지 여부를 나타냅니다. 대신 텍스트로 처리하려면 'false'로 설정합니다. webpack 5.93.0부터 사용 가능합니다.
@@ -115,13 +117,13 @@ module.exports = {
         dataUrl: {
           // 애셋 인코딩(기본값은 "base64")
           // type: 'base64' | false
-          encoding: 'base64',
+          encoding: "base64",
           // 애셋 Mimetype (기본적으로 파일 확장자에서 가져옵니다).
           // type: string
-          mimetype: 'image/png',
+          mimetype: "image/png",
         },
       },
-      'asset/resource': {
+      "asset/resource": {
         // asset/resource 모듈 제너레이터 옵션
 
         // 이 애셋을 바이너리로 처리해야 하는지 여부를 나타냅니다. 대신 텍스트로 처리하려면 'false'로 설정합니다. webpack 5.93.0부터 사용 가능합니다.
@@ -133,29 +135,29 @@ module.exports = {
 
         // 이 애셋 모듈의 파일 이름을 사용자 정의합니다.
         // type: string | ((pathData: PathData, assetInfo?: AssetInfo) => string)
-        filename: 'static/[path][name][ext]',
+        filename: "static/[path][name][ext]",
 
         // asset/resource 모듈을 위한 publicPath 사용자 정의. webpack 5.28.0 이후로 사용 가능.
         // type: string | ((pathData: PathData, assetInfo?: AssetInfo) => string)
-        publicPath: 'https://cdn/assets/',
+        publicPath: "https://cdn/assets/",
 
         // Webpack 5.67.0부터 사용 가능한 'output.path'를 기준으로 지정된 폴더의 애셋을 내보냅니다.
         // type: string | ((pathData: PathData, assetInfo?: AssetInfo) => string)
-        outputPath: 'cdn-assets/',
+        outputPath: "cdn-assets/",
       },
-      'asset/bytes': {
+      "asset/bytes": {
         // 아직 이 모듈 유형에 대해 지원되는 제너레이터 옵션이 없습니다.
-      }
+      },
       javascript: {
         // 이 모듈 유형에는 아직 제너레이터 옵션이 지원되지 않습니다.
       },
-      'javascript/auto': {
+      "javascript/auto": {
         // 위와 동일
       },
-      'javascript/dynamic': {
+      "javascript/dynamic": {
         // 위와 동일
       },
-      'javascript/esm': {
+      "javascript/esm": {
         // 위와 동일
       },
       css: {
@@ -168,9 +170,9 @@ module.exports = {
         // CSS 내보내기 이름을 그대로 유지하거나 카멜 케이스로 변환하는 등 javascript 모듈로 내보내는 방법을 사용자 정의합니다.
         // type: 'as-is' | 'camel-case' | 'camel-case-only' | 'dashes' | 'dashes-only' | ((name: string) => string)
         // webpack 5.90.4부터 사용 가능합니다.
-        exportsConvention: 'camel-case-only',
+        exportsConvention: "camel-case-only",
       },
-      'css/auto': {
+      "css/auto": {
         // CSS/자동 모듈 생성용 옵션
 
         // 스타일시트를 생성하고 로드하는 것을 피하고 출력 자바스크립트 파일에 css의 내보내기만 포함합니다.
@@ -180,23 +182,23 @@ module.exports = {
         // CSS 내보내기 이름을 그대로 유지하거나 카멜 케이스로 변환하는 등 javascript 모듈로 내보내는 방법을 사용자 정의합니다.
         // type: 'as-is' | 'camel-case' | 'camel-case-only' | 'dashes' | 'dashes-only' | ((name: string) => string)
         // webpack 5.90.4부터 사용 가능합니다.
-        exportsConvention: 'camel-case-only',
+        exportsConvention: "camel-case-only",
 
         // CSS 모듈에 대해 생성된 로컬 클래스 이름의 형식을 사용자 정의합니다.
         // type: string, https://webpack.js.org/configuration/output/#template-strings의 파일 수준 및 모듈 수준 대체 외에도 [uniqueName] 및 [local]도 포함됩니다.
         // webpack 5.90.4부터 사용 가능합니다.
-        localIdentName: '[uniqueName]-[id]-[local]',
+        localIdentName: "[uniqueName]-[id]-[local]",
       },
-      'css/global': {
+      "css/global": {
         // 위와 동일
       },
-      'css/module': {
+      "css/module": {
         // 위와 동일
       },
       json: {
         // JSON 모듈에 대한 생성기 옵션
         // JSON 문자열이 20자를 넘는 경우 `JSON.parse`를 사용합니다.
-        JSONParse: true,
+        parse: JSONParse,
       },
       // 그외 다른 옵션들…
     },
@@ -223,10 +225,10 @@ module.exports = {
         dataUrl: {
           // 애셋 인코딩(기본값은 "base64")
           // type: 'base64' | false
-          encoding: 'base64',
+          encoding: "base64",
           // 애셋 Mimetype (기본적으로 파일 확장자에서 가져옵니다).
           // type: string
-          mimetype: 'image/png',
+          mimetype: "image/png",
         },
 
         // 이 애셋 모듈에서 출력 애셋을 내보냅니다. 예를 들어 SSR의 경우 내보내기를 생략하려면 'false'로 설정할 수 있습니다.
@@ -235,26 +237,26 @@ module.exports = {
 
         // 이 애셋 모듈의 파일 이름을 사용자 정의합니다.
         // type: string | ((pathData: PathData, assetInfo?: AssetInfo) => string)
-        filename: 'static/[path][name][ext]',
+        filename: "static/[path][name][ext]",
 
         // asset 모듈을 위한 publicPath 사용자 정의. webpack 5.28.0 이후로 사용 가능.
         // type: string | ((pathData: PathData, assetInfo?: AssetInfo) => string)
-        publicPath: 'https://cdn/assets/',
+        publicPath: "https://cdn/assets/",
 
         // Webpack 5.67.0부터 사용 가능한 'output.path'를 기준으로 지정된 폴더의 애셋을 내보냅니다.
         // type: string | ((pathData: PathData, assetInfo?: AssetInfo) => string)
-        outputPath: 'cdn-assets/',
+        outputPath: "cdn-assets/",
       },
-      'asset/inline': {
+      "asset/inline": {
         // 이 모듈 유형에는 아직 파서 옵션이 지원되지 않습니다.
       },
-      'asset/resource': {
+      "asset/resource": {
         // 위와 동일
       },
-      'asset/source': {
+      "asset/source": {
         // 위와 동일
       },
-      'asset/bytes': {
+      "asset/bytes": {
         // 위와 동일
       },
       javascript: {
@@ -262,15 +264,15 @@ module.exports = {
         // 예. require.ensure 구문 파싱 활성화
         requireEnsure: true,
         // 모듈을 '엄격' 또는 '비엄격' 모드로 설정합니다. 엄격 모드와 비엄격 모드 간에 일부 동작이 다르기 때문에 이는 모듈의 동작에 영향을 미칠 수 있습니다.
-        overrideStrict: 'non-strict',
+        overrideStrict: "non-strict",
       },
-      'javascript/auto': {
+      "javascript/auto": {
         // 위와 동일
       },
-      'javascript/dynamic': {
+      "javascript/dynamic": {
         // 위와 동일
       },
-      'javascript/esm': {
+      "javascript/esm": {
         // 위와 동일
       },
       css: {
@@ -287,15 +289,15 @@ module.exports = {
         namedExports: true,
         // CSS 콘텐츠가 내보내지는 방식을 설정합니다.
         // type: string
-        exportType: 'link',
+        exportType: "link",
       },
-      'css/auto': {
+      "css/auto": {
         // 위와 동일
       },
-      'css/global': {
+      "css/global": {
         // 위와 동일
       },
-      'css/module': {
+      "css/module": {
         // 위와 동일
       },
       // 그외 다른 옵션들…
@@ -351,7 +353,7 @@ module.exports = {
 
   ```css
   /* styles.css */
-  @import './reset-styles.css';
+  @import "./reset-styles.css";
 
   body {
     background-color: red;
@@ -383,11 +385,11 @@ T> 특정 가져오기를 필터링하려면 Webpack의 기본 제공 [IgnorePlu
   ```css
   /* styles.css */
   .background {
-    background-image: url('./images/bg.jpg');
+    background-image: url("./images/bg.jpg");
   }
 
   .icon {
-    content: image('./icons/star.svg');
+    content: image("./icons/star.svg");
   }
   ```
 
@@ -417,9 +419,9 @@ CSS 모듈에 대해 `namedExports`가 `false`인 경우 다양한 가져오기 
 이름이 지정된은 내보내기는 개발자 환경(DX)을 개선하기 위해 리디렉션되어 기본 내보내기에서 이름이 지정된 내보내기로 원활하게 전환할 수 있습니다.
 
 ```js
-import * as styles from './styles.module.css';
-import styles1 from './styles.module.css';
-import { foo } from './styles.module.css';
+import * as styles from "./styles.module.css";
+import styles1 from "./styles.module.css";
+import { foo } from "./styles.module.css";
 
 console.log(styles.default.foo); // styles.default를 통해 접근
 console.log(styles.foo); // styles에서 직접 접근
@@ -441,7 +443,7 @@ console.log(foo); // 바로 명명된 이름으로 가져오기
 ```
 
 ```js
-import { header, footer } from './styles.module.css';
+import { footer, header } from "./styles.module.css";
 ```
 
 `namedExports`를 활성화하면 JavaScript 프로젝트에서 CSS를 관리하는 데 더 모듈화되고 유지 관리 가능한 접근 방식을 채택하고 ES 모듈 구문을 활용하여 더 명확하고 명시적인 가져오기를 수행할 수 있습니다.
@@ -460,7 +462,7 @@ CSS 콘텐츠를 내보내는 방법을 설정합니다.
       parser: {
         css: {
           // ...
-          exportType: 'text',
+          exportType: "text",
         },
       },
     },
@@ -515,7 +517,7 @@ CommonJS를 위해 [magic comments](/api/module-methods/#magic-comments) 지원�
 `webpackIgnore` 주석만 지원됩니다.
 
 ```js
-const x = require(/* webpackIgnore: true */ 'x');
+const x = require(/* webpackIgnore: true */ "x");
 ```
 
 #### module.parser.javascript.dynamicImportFetchPriority
@@ -531,7 +533,7 @@ const x = require(/* webpackIgnore: true */ 'x');
     module: {
       parser: {
         javascript: {
-          dynamicImportFetchPriority: 'high',
+          dynamicImportFetchPriority: "high",
         },
       },
     },
@@ -551,7 +553,7 @@ const x = require(/* webpackIgnore: true */ 'x');
     module: {
       parser: {
         javascript: {
-          dynamicImportMode: 'lazy',
+          dynamicImportMode: "lazy",
         },
       },
     },
@@ -611,7 +613,7 @@ const x = require(/* webpackIgnore: true */ 'x');
     module: {
       parser: {
         javascript: {
-          exportsPresence: 'error',
+          exportsPresence: "error",
         },
       },
     },
@@ -631,7 +633,7 @@ const x = require(/* webpackIgnore: true */ 'x');
     module: {
       parser: {
         javascript: {
-          importExportsPresence: 'error',
+          importExportsPresence: "error",
         },
       },
     },
@@ -691,7 +693,7 @@ const x = require(/* webpackIgnore: true */ 'x');
     module: {
       parser: {
         javascript: {
-          overrideStrict: 'non-strict',
+          overrideStrict: "non-strict",
         },
       },
     },
@@ -711,7 +713,7 @@ const x = require(/* webpackIgnore: true */ 'x');
     module: {
       parser: {
         javascript: {
-          reexportExportsPresence: 'error',
+          reexportExportsPresence: "error",
         },
       },
     },
@@ -777,7 +779,7 @@ Webpack의 AST 분석이 올바르게 작동하도록 `ast`, `comments`, `semico
 
             const parseOptions = {
               ...options,
-              module: options.sourceType === 'module',
+              module: options.sourceType === "module",
               loc: options.locations,
               onComment: options.comments ? comments : undefined,
               onInsertedSemicolon: options.semicolons
@@ -872,7 +874,7 @@ module.exports = {
 - Example:
 
 ```js
-const json5 = require('json5');
+const json5 = require("json5");
 
 module.exports = {
   module: {
@@ -900,7 +902,7 @@ T> Windows에서는 `\`, Mac/Linux에서는 `/`와 일치시키려면 정규식�
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   module: {
     noParse: /jquery|lodash|src[\\/]vendor[\\/]somelib/,
   },
@@ -909,7 +911,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   module: {
     noParse: (content) =>
       /jquery|lodash|src[\\/]vendor[\\/]somelib/.test(content),
@@ -930,7 +932,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   module: {
     unsafeCache: false,
   },
@@ -1009,8 +1011,8 @@ module.exports = {
     rules: [
       {
         // "assert { type: 'json' }" 어설션을 사용하여 가져오기를 처리합니다.
-        assert: { type: 'json' },
-        loader: require.resolve('./loader-assert.js'),
+        assert: { type: "json" },
+        loader: require.resolve("./loader-assert.js"),
       },
     ],
   },
@@ -1019,8 +1021,10 @@ module.exports = {
 
 **index.js**
 
+{/* eslint-skip */}
+
 ```javascript
-import one from './pkg-1.json' assert { type: 'json' };
+import one from "./pkg-1.json" assert { type: "json" };
 ```
 
 이 예에서는 `Rule.assert`를 사용하여 `assert { type: "json" }`이라는 어설션과 함께 가져온 모든 모듈에 `loader-assert.js`를 적용하여 JSON 파일이 올바르게 처리되는지 확인합니다.
@@ -1034,18 +1038,18 @@ import one from './pkg-1.json' assert { type: 'json' };
 ```javascript
 module.exports = {
   // ...
-  name: 'compiler',
+  name: "compiler",
   module: {
     rules: [
       {
         test: /a\.js$/,
-        compiler: 'compiler', //"컴파일러" 이름과 일치하면 로더가 적용됩니다.
-        use: './loader',
+        compiler: "compiler", // "컴파일러" 이름과 일치하면 로더가 적용됩니다.
+        use: "./loader",
       },
       {
         test: /b\.js$/,
-        compiler: 'other-compiler', // "컴파일러" 이름과 일치하지 않으므로 로더가 적용되지 않습니다.
-        use: './loader',
+        compiler: "other-compiler", // "컴파일러" 이름과 일치하지 않으므로 로더가 적용되지 않습니다.
+        use: "./loader",
       },
     ],
   },
@@ -1075,13 +1079,17 @@ module.exports = {
 
 ```javascript
 // 일반 로더 비활성화
-import { a } from '!./file1.js';
+import { a } from "!./file1.js";
+```
 
+```javascript
 // 사전, 일반 로더 비활성화
-import { b } from '-!./file2.js';
+import { b } from "-!./file2.js";
+```
 
+```javascript
 // 모든 로더 비활성화
-import { c } from '!!./file3.js';
+import { c } from "!!./file3.js";
 ```
 
 인라인 로더와 `!` 접두사는 비표준이므로 사용해서는 안됩니다. 이것들은 로더가 생성한 코드에서 사용할 수 있습니다.
@@ -1101,7 +1109,7 @@ import { c } from '!!./file3.js';
 **index.js**
 
 ```javascript
-import A from './a.js';
+import A from "./a.js";
 ```
 
 이 옵션은 특정 모듈 또는 모듈 세트의 디펜던시에 로더를 적용하는 데 사용할 수 있습니다.
@@ -1118,7 +1126,7 @@ module.exports = {
   module: {
     rules: [
       {
-        issuerLayer: 'other-layer',
+        issuerLayer: "other-layer",
       },
     ],
   },
@@ -1140,7 +1148,7 @@ module.exports = {
     rules: [
       {
         test: /module-layer-change/,
-        layer: 'layer',
+        layer: "layer",
       },
     ],
   },
@@ -1191,8 +1199,8 @@ module.exports = {
   module: {
     rules: [
       {
-        mimetype: 'application/json',
-        type: 'json',
+        mimetype: "application/json",
+        type: "json",
       },
     ],
   },
@@ -1209,7 +1217,7 @@ Rule이 일치할 때 첫 번째 일치하는 Rule만 사용되는 [`Rules`](#ru
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   module: {
     rules: [
       {
@@ -1217,11 +1225,11 @@ module.exports = {
         oneOf: [
           {
             resourceQuery: /inline/, // foo.css?inline
-            type: 'asset/inline',
+            type: "asset/inline",
           },
           {
             resourceQuery: /external/, // foo.css?external
-            type: 'asset/resource',
+            type: "asset/resource",
           },
         ],
       },
@@ -1253,11 +1261,11 @@ W> `Rule.query`는 `Rule.options`과 `UseEntry.options`으로 대체되었습니
 
 ```js
 module.exports = {
-  //...
+  // ...
   module: {
     rules: [
       {
-        //...
+        // ...
         parser: {
           amd: false, // AMD 비활성화
           commonjs: false, // CommonJS 비활성화
@@ -1268,10 +1276,11 @@ module.exports = {
           requireContext: false, // require.context 비활성화
           browserify: false, // Browserify 번들의 특수 처리 비활성화
           requireJs: false, // requirejs.* 비활성화
-          node: false, // __dirname, __filename, module, require.extensions, require.main, 등 비활성화
           commonjsMagicComments: false, // CommonJS를 위한 magic comments 지원 비활성화
           node: {}, // 모듈 수준에서 [node](/configuration/node) 계층 재구성
-          worker: ['default from web-worker', '...'], // javascript 파일에 대한 WebWorker 처리를 커스터마이즈합니다. "..."는 기본값을 나타냅니다.
+          // 또는
+          // node: false, // __dirname, __filename 등을 비활성화합니다.
+          worker: ["default from web-worker", "..."], // javascript 파일에 대한 WebWorker 처리를 커스터마이즈합니다. "..."는 기본값을 나타냅니다.
         },
       },
     ],
@@ -1295,11 +1304,11 @@ module.exports = {
 
 ```js
 module.exports = {
-  //...
+  // ...
   module: {
     rules: [
       {
-        //...
+        // ...
         parser: {
           dataUrlCondition: {
             maxSize: 4 * 1024,
@@ -1317,15 +1326,15 @@ module.exports = {
 
 ```js
 module.exports = {
-  //...
+  // ...
   module: {
     rules: [
       {
-        //...
+        // ...
         parser: {
           dataUrlCondition: (source, { filename, module }) => {
             const content = source.toString();
-            return content.includes('some marker');
+            return content.includes("some marker");
           },
         },
       },
@@ -1349,15 +1358,15 @@ module.exports = {
 
 ```js
 module.exports = {
-  //...
+  // ...
   module: {
     rules: [
       {
-        //...
+        // ...
         generator: {
           dataUrl: {
-            encoding: 'base64',
-            mimetype: 'mimetype/png',
+            encoding: "base64",
+            mimetype: "mimetype/png",
           },
         },
       },
@@ -1370,15 +1379,16 @@ module.exports = {
 
 ```js
 module.exports = {
-  //...
+  // ...
   module: {
     rules: [
       {
-        //...
+        // ...
         generator: {
           dataUrl: (content) => {
-            const svgToMiniDataURI = require('mini-svg-data-uri');
-            if (typeof content !== 'string') {
+            const svgToMiniDataURI = require("mini-svg-data-uri");
+
+            if (typeof content !== "string") {
               content = content.toString();
             }
             return svgToMiniDataURI(content);
@@ -1405,7 +1415,7 @@ module.exports = {
       rules: [
         {
           test: /\.png$/i,
-          type: 'asset/resource',
+          type: "asset/resource",
           generator: {
             emit: false,
           },
@@ -1423,21 +1433,21 @@ module.exports = {
 
 ```js
 module.exports = {
-  //...
+  // ...
   output: {
-    assetModuleFilename: 'images/[hash][ext][query]',
+    assetModuleFilename: "images/[hash][ext][query]",
   },
   module: {
     rules: [
       {
         test: /\.png$/,
-        type: 'asset/resource',
+        type: "asset/resource",
       },
       {
         test: /\.html$/,
-        type: 'asset/resource',
+        type: "asset/resource",
         generator: {
-          filename: 'static/[hash][ext]',
+          filename: "static/[hash][ext]",
         },
       },
     ],
@@ -1454,17 +1464,17 @@ module.exports = {
 
 ```js
 module.exports = {
-  //...
+  // ...
   output: {
-    publicPath: 'static/',
+    publicPath: "static/",
   },
   module: {
     rules: [
       {
         test: /\.png$/i,
-        type: 'asset/resource',
+        type: "asset/resource",
         generator: {
-          publicPath: 'assets/',
+          publicPath: "assets/",
         },
       },
     ],
@@ -1481,18 +1491,18 @@ module.exports = {
 
 ```js
 module.exports = {
-  //...
+  // ...
   output: {
-    publicPath: 'static/',
+    publicPath: "static/",
   },
   module: {
     rules: [
       {
         test: /\.png$/i,
-        type: 'asset/resource',
+        type: "asset/resource",
         generator: {
-          publicPath: 'https://cdn/assets/',
-          outputPath: 'cdn-assets/',
+          publicPath: "https://cdn/assets/",
+          outputPath: "cdn-assets/",
         },
       },
     ],
@@ -1512,13 +1522,13 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   module: {
     rules: [
       {
         test: /\.css$/,
         resourceQuery: /inline/,
-        type: 'asset/inline',
+        type: "asset/inline",
       },
     ],
   },
@@ -1534,15 +1544,15 @@ module.exports = {
 **webpack.config.js**
 
 ```javascript
-const toml = require('toml');
+const toml = require("toml");
 
 module.exports = {
-  //...
+  // ...
   module: {
     rules: [
       {
         test: /\.toml/,
-        type: 'json',
+        type: "json",
         parser: {
           parse: toml.parse,
         },
@@ -1557,6 +1567,28 @@ module.exports = {
 Rule이 일치 할 때도 사용되는 [`Rules`](#rule)의 배열입니다.
 
 T> 자세한 정보는 [`중첩된 rules`](#nested-rules)를 참고하세요.
+
+## Rule.scheme
+
+사용된 스키마(예: `data`, `http`)와 일치시키세요.
+
+- Type: `string | RegExp | ((value: string) => boolean) | RuleSetLogicalConditions | RuleSetCondition[]`
+- Available: <Badge text='5.38.0+' />
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  module: {
+    rules: [
+      {
+        scheme: "data",
+        type: "asset/resource",
+      },
+    ],
+  },
+};
+```
 
 ## Rule.sideEffects
 
@@ -1580,14 +1612,14 @@ T> 자세한 정보는 [`중첩된 rules`](#nested-rules)를 참고하세요.
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   module: {
     rules: [
-      //...
+      // ...
       {
         test: /\.json$/,
-        type: 'javascript/auto',
-        loader: 'custom-json-loader',
+        type: "javascript/auto",
+        loader: "custom-json-loader",
       },
     ],
   },
@@ -1604,8 +1636,8 @@ module.exports = {
 
 ```js
 module.exports = {
-  target: 'web',
-  mode: 'development',
+  target: "web",
+  mode: "development",
   experiments: {
     css: true,
   },
@@ -1613,8 +1645,8 @@ module.exports = {
     rules: [
       {
         test: /\.less$/,
-        use: 'less-loader',
-        type: 'css/auto',
+        use: "less-loader",
+        type: "css/auto",
       },
     ],
   },
@@ -1639,21 +1671,21 @@ Webpack 5.87.0부터 `undefined` `null`과 같은 falsy 값을 사용하여 조�
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   module: {
     rules: [
       {
-        //...
+        // ...
         use: [
-          'style-loader',
+          "style-loader",
           {
-            loader: 'css-loader',
+            loader: "css-loader",
             options: {
               importLoaders: 1,
             },
           },
           {
-            loader: 'less-loader',
+            loader: "less-loader",
             options: {
               noIeCompat: true,
             },
@@ -1682,16 +1714,16 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   module: {
     rules: [
       {
         use: (info) => [
           {
-            loader: 'custom-svg-loader',
+            loader: "custom-svg-loader",
           },
           {
-            loader: 'svgo-loader',
+            loader: "svgo-loader",
             options: {
               plugins: [
                 {
@@ -1723,20 +1755,21 @@ W> `Rule.resolve`는 webpack 4.36.1 이후로 사용 가능합니다.
 **./src/index.js**
 
 ```javascript
-import footer from 'footer';
+import footer from "footer";
+
 console.log(footer);
 ```
 
 **./src/footer/default.js**
 
 ```javascript
-export default 'default footer';
+export default "default footer";
 ```
 
 **./src/footer/overridden.js**
 
 ```javascript
-export default 'overridden footer';
+export default "overridden footer";
 ```
 
 **webpack.js.org**
@@ -1745,7 +1778,7 @@ export default 'overridden footer';
 module.exports = {
   resolve: {
     alias: {
-      footer: './footer/default.js',
+      footer: "./footer/default.js",
     },
   },
 };
@@ -1759,7 +1792,7 @@ module.exports = {
 module.exports = {
   resolve: {
     alias: {
-      footer: './footer/default.js',
+      footer: "./footer/default.js",
     },
   },
   module: {
@@ -1767,7 +1800,7 @@ module.exports = {
       {
         resolve: {
           alias: {
-            footer: './footer/overridden.js',
+            footer: "./footer/overridden.js",
           },
         },
       },
@@ -1819,8 +1852,8 @@ module.exports = {
     rules: [
       {
         // "with { type: 'json' }" 조건으로 가져오기를 처리합니다.
-        with: { type: 'json' },
-        loader: require.resolve('./loader-assert.js'),
+        with: { type: "json" },
+        loader: require.resolve("./loader-assert.js"),
       },
     ],
   },
@@ -1830,7 +1863,7 @@ module.exports = {
 **index.js**
 
 ```javascript
-import one from './pkg-1.json' with { type: 'json' };
+import one from "./pkg-1.json" with { type: "json" };
 ```
 
 이 예에서 `Rule.with`는 `with { type: "json" }` 조건으로 가져온 모든 모듈에 `loader-assert.js`를 적용하는 데 사용됩니다.
@@ -1854,10 +1887,10 @@ Condition은 아래 항목중의 하나가 됩니다.
 **Example:**
 
 ```javascript
-const path = require('path');
+const path = require("node:path");
 
 module.exports = {
-  //...
+  // ...
   module: {
     rules: [
       {
@@ -1865,9 +1898,9 @@ module.exports = {
         include: [
           // `app/styles`로 시작하는 현재 디렉터리와 관련된 모든 경로를 포함합니다.
           // 예. `app/styles.css`, `app/styles/styles.css`, `app/stylesheet.css`
-          path.resolve(__dirname, 'app/styles'),
+          path.resolve(__dirname, "app/styles"),
           // `vendor/styles/` 디렉터리의 내용만 포함하도록 슬래시를 추가합니다.
-          path.join(__dirname, 'vendor/styles/'),
+          path.join(__dirname, "vendor/styles/"),
         ],
       },
     ],
@@ -1895,11 +1928,11 @@ webpack은 옵션을 포함한 모든 로더와 리소스에서 고유한 모듈
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   module: {
     rules: [
       {
-        loader: 'css-loader',
+        loader: "css-loader",
         options: {
           modules: true,
         },
@@ -1924,14 +1957,14 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   module: {
     rules: [
       {
         test: /\.svg$/,
-        type: 'asset',
+        type: "asset",
         use: (info) => ({
-          loader: 'svgo-loader',
+          loader: "svgo-loader",
           options: {
             plugins: [
               {
@@ -1962,16 +1995,16 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   module: {
     exprContextCritical: true,
     exprContextRecursive: true,
     exprContextRegExp: false,
-    exprContextRequest: '.',
+    exprContextRequest: ".",
     unknownContextCritical: true,
     unknownContextRecursive: true,
     unknownContextRegExp: false,
-    unknownContextRequest: '.',
+    unknownContextRequest: ".",
     wrappedContextCritical: false,
     wrappedContextRecursive: true,
     wrappedContextRegExp: /.*/,

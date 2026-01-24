@@ -24,7 +24,7 @@ W> webpack의 `target` 프로퍼티를 `output.libraryTarget` 프로퍼티와 �
 
 ```javascript
 module.exports = {
-  target: 'node',
+  target: "node",
 };
 ```
 
@@ -41,23 +41,24 @@ webpack에서는 한 개 이상의 문자열을 `target` 프로퍼티에 전달�
 **webpack.config.js**
 
 ```javascript
-const path = require('path');
+const path = require("node:path");
+
 const serverConfig = {
-  target: 'node',
+  target: "node",
   output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'lib.node.js',
+    path: path.resolve(__dirname, "dist"),
+    filename: "lib.node.js",
   },
-  //…
+  // …
 };
 
 const clientConfig = {
-  target: 'web', // <=== 기본값은 'web'이므로 생략 가능
+  target: "web", // <=== 기본값은 'web'이므로 생략 가능
   output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'lib.js',
+    path: path.resolve(__dirname, "dist"),
+    filename: "lib.js",
   },
-  //…
+  // …
 };
 
 module.exports = [serverConfig, clientConfig];

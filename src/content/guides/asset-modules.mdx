@@ -91,21 +91,21 @@ module.exports = {
 코드에서 `__webpack_public_path__`를 설정한 경우 `asset` 로딩 로직을 깨지지 않도록 설정하려면 함수를 사용하지 않고 앱의 첫 번째 코드로 실행해야 합니다. 예시로는 내용이 포함된 `publicPath.js`라는 파일을 갖는 경우입니다.
 
 ```javascript
-__webpack_public_path__ = 'https://cdn.url.com';
+__webpack_public_path__ = "https://cdn.url.com";
 ```
 
 그런 다음 `webpack.config.js`에서 `entry` 필드를 다음과 같이 업데이트합니다.
 
 ```javascript
 module.exports = {
-  entry: ['./publicPath.js', './App.js'],
+  entry: ["./publicPath.js", "./App.js"],
 };
 ```
 
 또는 webpack 설정을 수정하지 않고 `App.js`에서 다음을 수행할 수 있습니다. 유일한 단점은 여기에서 순서를 강제해야 하고, 일부 린팅 도구와 충돌할 수 있다는 것입니다.
 
 ```javascript
-import './publicPath.js';
+import "./publicPath.js";
 ```
 
 ## Resource type
@@ -135,7 +135,7 @@ module.exports = {
 **src/index.js**
 
 ```js
-import mainImage from './images/main.png';
+import mainImage from "./images/main.png";
 
 img.src = mainImage; // '/dist/151cfcfa1bd74779aadb.png'
 ```
@@ -205,7 +205,7 @@ module.exports = {
 
 **webpack.config.js**
 
-```js
+```diff
 const path = require('path');
 
 module.exports = {
@@ -228,7 +228,7 @@ module.exports = {
 **src/index.js**
 
 ```js
-import metroMap from './images/metro.svg';
+import metroMap from "./images/metro.svg";
 
 block.style.background = `url(${metroMap})`; // url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDo...vc3ZnPgo=)
 ```
@@ -307,7 +307,7 @@ Hello world
 **src/index.js**
 
 ```js
-import exampleText from './example.txt';
+import exampleText from "./example.txt";
 
 block.textContent = exampleText; // 'Hello world';
 ```
@@ -317,7 +317,7 @@ Alternative usage:
 **src/index.js**
 
 ```js
-import exampleText from './example.txt' with { type: 'text' };
+import exampleText from "./example.txt" with { type: "text" };
 
 block.textContent = exampleText; // 'Hello world';
 ```
@@ -333,7 +333,7 @@ T> `const file = new URL('./file.ext', import.meta.url);` 구문을 사용하면
 **src/index.js**
 
 ```js
-const logo = new URL('./logo.svg', import.meta.url);
+const logo = new URL("./logo.svg", import.meta.url);
 ```
 
 설정의 [`target`](/configuration/target/)에 따라 webpack은 위 코드를 다른 결과로 컴파일합니다.
@@ -341,17 +341,17 @@ const logo = new URL('./logo.svg', import.meta.url);
 ```js
 // target: web
 new URL(
-  __webpack_public_path__ + 'logo.svg',
-  document.baseURI || self.location.href
+  `${__webpack_public_path__}logo.svg`,
+  document.baseURI || self.location.href,
 );
 
 // target: webworker
-new URL(__webpack_public_path__ + 'logo.svg', self.location);
+new URL(`${__webpack_public_path__}logo.svg`, self.location);
 
 // target: node, node-webkit, nwjs, electron-main, electron-renderer, electron-preload, async-node
 new URL(
-  __webpack_public_path__ + 'logo.svg',
-  require('url').pathToFileUrl(__filename)
+  `${__webpack_public_path__}logo.svg`,
+  require("node:url").pathToFileUrl(__filename),
 );
 ```
 
@@ -360,10 +360,10 @@ webpack 5.38.0부터 `new URL()`에서도 [데이터 URL](https://developer.mozi
 **src/index.js**
 
 ```js
-const url = new URL('data:,', import.meta.url);
-console.log(url.href === 'data:,');
-console.log(url.protocol === 'data:');
-console.log(url.pathname === ',');
+const url = new URL("data:,", import.meta.url);
+console.log(url.href === "data:,");
+console.log(url.protocol === "data:");
+console.log(url.pathname === ",");
 ```
 
 ## Asset type
@@ -458,9 +458,9 @@ Hello world
 **src/index.js**
 
 ```js
-import exampleText from './example.txt';
+import exampleText from "./example.txt";
 
-const decoder = new TextDecoder('utf-8');
+const decoder = new TextDecoder("utf-8");
 const textString = decoder.decode(exampleText); // 'Uint8Array'
 
 block.textContent = exampleText; // 'Hello world';
@@ -471,9 +471,9 @@ block.textContent = exampleText; // 'Hello world';
 **src/index.js**
 
 ```js
-import exampleText from './example.txt' with { type: 'bytes' };
+import exampleText from "./example.txt" with { type: "bytes" };
 
-const decoder = new TextDecoder('utf-8');
+const decoder = new TextDecoder("utf-8");
 const textString = decoder.decode(exampleText); // 'Uint8Array'
 
 block.textContent = exampleText; // 'Hello world';
@@ -558,7 +558,7 @@ module.exports = {
     rules: [
       {
         test: /\.png$/i,
-        type: 'asset/resource',
+        type: "asset/resource",
         generator: {
           emit: false,
         },

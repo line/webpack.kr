@@ -1,12 +1,14 @@
-const fs = require('fs');
-const glossary = require('./glossary.json');
+"use strict";
 
-const CONTENT_PATH_PREFIX = './src/content';
+const fs = require("node:fs");
+const glossary = require("./glossary.json");
+
+const CONTENT_PATH_PREFIX = "./src/content";
 const LOG_KEY = {
-  ERROR: 'ERROR',
-  GLOSSARY: 'GLOSSARY',
+  ERROR: "ERROR",
+  GLOSSARY: "GLOSSARY",
 };
-const docExtensions = ['md', 'mdx'];
+const docExtensions = ["md", "mdx"];
 
 const log = (cmd, msg) => {
   const color = ((cmd) => {
@@ -19,50 +21,51 @@ const log = (cmd, msg) => {
         return 33;
     }
   })(cmd);
-  const data = `\x1b[${color}m[${cmd}]\x1b[0m ${msg}`;
+  const data = `\u001B[${color}m[${cmd}]\u001B[0m ${msg}`;
   console.info(data);
 };
 
-const getTargetPaths = (cmd) => {
-  return docExtensions.map((extension) => {
-    return `${CONTENT_PATH_PREFIX}/${cmd}.${extension}`;
-  });
-};
+const getTargetPaths = (cmd) =>
+  docExtensions.map(
+    (extension) => `${CONTENT_PATH_PREFIX}/${cmd}.${extension}`,
+  );
 
 const getSplitLineData = (targetPath) => {
-  const fileData = fs.readFileSync(targetPath, 'utf-8');
-  const splitLines = fileData.toString().split('\n');
+  const fileData = fs.readFileSync(targetPath, "utf8");
+  const splitLines = fileData.toString().split("\n");
   return splitLines;
 };
 
 const checkLine = (line, index) => {
   try {
-    const tokens = line.split(' ').filter((text) => text);
-    tokens.forEach((token) => {
-      if (!glossary[token] || token === glossary[token]) return;
+    const tokens = line.split(" ").filter(Boolean);
+    for (const token of tokens) {
+      if (!glossary[token] || token === glossary[token]) continue;
       log(LOG_KEY.GLOSSARY, `${index + 1}: ${token} -> ${glossary[token]}`);
-    });
-  } catch (e) {
-    log(LOG_KEY.ERROR, e.toString());
+    }
+  } catch (err) {
+    log(LOG_KEY.ERROR, err.toString());
   }
 };
 
-process.argv.forEach((cmd, index) => {
-  if (index < 2) return;
-  log('CMD', cmd);
+for (const [index, cmd] of process.argv.entries()) {
+  if (index < 2) continue;
+  log("CMD", cmd);
 
   const targetPaths = getTargetPaths(cmd);
 
   // Parallel start
-  targetPaths.forEach((targetPath) => {
-    log('READ START', targetPath);
+  for (const targetPath of targetPaths) {
+    log("READ START", targetPath);
 
     try {
       const splitLines = getSplitLineData(targetPath);
-      splitLines.forEach(checkLine);
-    } catch (e) {
-      log(LOG_KEY.ERROR, 'File not exist');
-      throw e;
+      for (const [index, line] of splitLines.entries()) {
+        checkLine(line, index);
+      }
+    } catch (err) {
+      log(LOG_KEY.ERROR, "File not exist");
+      throw err;
     }
-  });
-});
+  }
+}

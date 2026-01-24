@@ -4,4 +4,5 @@ about: Create Contribution Issue.
 ---
 
 ## Summary
-- [ ] Translate ```파일경로/파일이름.md```
+
+- [ ] Translate `파일경로/파일이름.md`

@@ -15,9 +15,11 @@ translators:
 모듈은 다음과 같이 다른 모듈의 의존성으로서 필요할 수 있습니다.
 
 ```js
-import foo from 'path/to/module';
+import foo from "path/to/module";
+
 // 또는
-require('path/to/module');
+
+require("path/to/module");
 ```
 
 의존성 모듈은 애플리케이션 코드 또는 써드 파티 라이브러리에서 가져올 수 있습니다.
@@ -30,10 +32,12 @@ webpack은 모듈을 번들링하는 동안 파일 경로를 확인하기 위해
 
 ### Absolute paths
 
-```js
-import '/home/me/file';
+{/* eslint-skip */}
 
-import 'C:\\Users\\me\\file';
+```js
+import "/home/me/file";
+
+import "C:\\Users\\me\\file";
 ```
 
 이미 파일에 대한 절대 경로가 있으므로 추가 분석이 필요하지 않습니다.
@@ -41,8 +45,8 @@ import 'C:\\Users\\me\\file';
 ### Relative paths
 
 ```js
-import '../src/file1';
-import './file2';
+import "../src/file1";
+import "./file2";
 ```
 
 이 경우 `import` 또는 `require`가 발생하는 소스 파일의 디렉터리를 컨텍스트 디렉터리로 간주합니다. `import/require`에 지정된 상대 경로는 이 컨텍스트 경로에 결합되어 모듈에 대한 절대 경로를 생성합니다.
@@ -50,8 +54,8 @@ import './file2';
 ### Module paths
 
 ```js
-import 'module';
-import 'module/lib/file';
+import "my-module";
+import "my-module/lib/file";
 ```
 
 모듈은 [`resolve.modules`](/configuration/resolve/#resolvemodules)에 지정된 모든 디렉터리 내에서 검색됩니다.

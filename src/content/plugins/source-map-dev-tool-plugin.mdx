@@ -80,8 +80,8 @@ module.exports = {
 
 ```js
 new webpack.SourceMapDevToolPlugin({
-  filename: '[file].map[query]',
-  exclude: ['vendor.js'],
+  filename: "[file].map[query]",
+  exclude: ["vendor.js"],
 });
 ```
 
@@ -91,8 +91,8 @@ new webpack.SourceMapDevToolPlugin({
 
 ```js
 new webpack.SourceMapDevToolPlugin({
-  append: '\n//# sourceMappingURL=https://example.com/sourcemap/[url]',
-  filename: '[file].map[query]',
+  append: "\n//# sourceMappingURL=https://example.com/sourcemap/[url]",
+  filename: "[file].map[query]",
 });
 ```
 
@@ -111,9 +111,9 @@ project
 
 ```js
 new webpack.SourceMapDevToolPlugin({
-  filename: 'sourcemaps/[file].map',
-  publicPath: 'https://example.com/project/',
-  fileContext: 'public',
+  filename: "sourcemaps/[file].map",
+  publicPath: "https://example.com/project/",
+  fileContext: "public",
 });
 ```
 

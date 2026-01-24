@@ -1,13 +1,14 @@
-import { Component } from 'react';
-import VisibilitySensor from 'react-visibility-sensor';
-import SmallIcon from '../../assets/icon-square-small-slack.png';
-import './Translators.scss';
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
+import { Component } from "react";
+import VisibilitySensor from "react-visibility-sensor";
+import SmallIcon from "../../assets/icon-square-small-slack.png";
+import "./Translators.scss";
 
 export default class Translators extends Component {
   static propTypes = {
     translators: PropTypes.array,
   };
+
   state = {
     inView: false,
   };

@@ -517,10 +517,12 @@ W> JSON 모듈의 기본 내보내기만 경고 없이 사용할 수 있습니�
 
 ```javascript
 // 경고 없음
-import data from './data.json';
+import data from "./data.json";
+```
 
+```javascript
 // 스펙에서 허용하지 않으므로 경고가 노출됨
-import { foo } from './data.json';
+import { foo } from "./data.json";
 ```
 
 ### Customize parser of JSON modules
@@ -559,13 +561,13 @@ owner:
 ```json5
 {
   // comment
-  title: 'JSON5 Example',
+  title: "JSON5 Example",
   owner: {
-    name: 'Tom Preston-Werner',
-    organization: 'GitHub',
-    bio: 'GitHub Cofounder & CEO\n\
-Likes tater tots and beer.',
-    dob: '1979-05-27T07:32:00.000Z',
+    name: "Tom Preston-Werner",
+    organization: "GitHub",
+    bio: "GitHub Cofounder & CEO\n\
+Likes tater tots and beer.",
+    dob: "1979-05-27T07:32:00.000Z",
   },
 }
 ```

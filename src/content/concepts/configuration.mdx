@@ -37,14 +37,14 @@ T> 이 문서에서 가장 중요한 부분은 webpack 설정을 형식화하고
 **webpack.config.js**
 
 ```javascript
-const path = require('path');
+const path = require("node:path");
 
 module.exports = {
-  mode: 'development',
-  entry: './foo.js',
+  mode: "development",
+  entry: "./foo.js",
   output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'foo.bundle.js',
+    path: path.resolve(__dirname, "dist"),
+    filename: "foo.bundle.js",
   },
 };
 ```

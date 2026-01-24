@@ -77,9 +77,9 @@ webpack-demo
 **another-module.js**
 
 ```js
-import _ from 'lodash';
+import _ from "lodash";
 
-console.log(_.join(['Another', 'module', 'loaded!'], ' '));
+console.log(_.join(["Another", "module", "loaded!"], " "));
 ```
 
 **webpack.config.js**
@@ -398,8 +398,8 @@ Webpack 4.6.0+에서 프리페치 및 프리로드에 대한 지원이 추가되
 **LoginButton.js**
 
 ```js
-//...
-import(/* webpackPrefetch: true */ './path/to/LoginModal.js');
+// ...
+import(/* webpackPrefetch: true */ "./path/to/LoginModal.js");
 ```
 
 이는 페이지 head에 `<link rel="prefetch" href="login-modal-chunk.js">`를 추가하고 브라우저에 `login-modal-chunk.js`를 유휴 시간에 미리 가져오도록 지시합니다.
@@ -420,8 +420,8 @@ T> webpack은 부모 청크가 로드된 후 프리페치 힌트를 추가합니
 **ChartComponent.js**
 
 ```js
-//...
-import(/* webpackPreload: true */ 'ChartingLibrary');
+// ...
+import(/* webpackPreload: true */ "ChartingLibrary");
 ```
 
 `ChartComponent`를 사용하는 페이지를 요청할 때 `<link rel="preload">`를 통해 charting-library-chunk도 요청됩니다. page-chunk가 더 작고 더 빨리 완료된다고 가정하면 이미 요청된 `charting-library-chunk`가 완료될 때까지 페이지에는 `LoadingIndicator`가 표시됩니다. 두 번이 아닌 한 번의 라운드 트립이 필요하므로 대기 시간이 긴 환경에서 로드 시간이 증가할 수 있습니다.
@@ -432,7 +432,7 @@ T> `webpackPreload`를 잘못 사용하면 실제로 성능이 저하 될 수 �
 
 ```js
 const lazyComp = () =>
-  import('DynamicComponent').catch((error) => {
+  import("DynamicComponent").catch((error) => {
     // 에러가 있는 작업을 수행합니다.
     // 예를 들어, 모든 네트워크 에러가 발생할 경우 요청을 재시도할 수 있습니다.
   });

@@ -19,16 +19,16 @@ contributors:
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   infrastructureLogging: {
     appendOnly: true,
-    level: 'verbose',
+    level: "verbose",
   },
   plugins: [
     (compiler) => {
-      const logger = compiler.getInfrastructureLogger('MyPlugin');
-      logger.status('first output'); // `appendOnly`가 활성화된 상태에서는 재정의되지 않습니다.
-      logger.status('second output');
+      const logger = compiler.getInfrastructureLogger("MyPlugin");
+      logger.status("first output"); // `appendOnly`가 활성화된 상태에서는 재정의되지 않습니다.
+      logger.status("second output");
     },
   ],
 };
@@ -46,15 +46,15 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   infrastructureLogging: {
     colors: true,
-    level: 'verbose',
+    level: "verbose",
   },
   plugins: [
     (compiler) => {
-      const logger = compiler.getInfrastructureLogger('MyPlugin');
-      logger.log('this output will be colorful');
+      const logger = compiler.getInfrastructureLogger("MyPlugin");
+      logger.log("this output will be colorful");
     },
   ],
 };
@@ -72,7 +72,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   infrastructureLogging: {
     console: yourCustomConsole(),
   },
@@ -89,10 +89,10 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   infrastructureLogging: {
-    level: 'info',
-    debug: ['MyPlugin', /MyPlugin/, (name) => name.contains('MyPlugin')],
+    level: "info",
+    debug: ["MyPlugin", /MyPlugin/, (name) => name.contains("MyPlugin")],
   },
 };
 ```
@@ -116,9 +116,9 @@ Possible values:
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   infrastructureLogging: {
-    level: 'info',
+    level: "info",
   },
 };
 ```
@@ -135,7 +135,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   infrastructureLogging: {
     stream: process.stderr,
   },

@@ -57,7 +57,7 @@ webpack 버전 4.0.0 이후로는 프로젝트를 번들링하기 위한 **설�
 
 ```js
 module.exports = {
-  entry: './path/to/my/entry/file.js',
+  entry: "./path/to/my/entry/file.js",
 };
 ```
 
@@ -72,13 +72,13 @@ T> [엔트리 포인트](/concepts/entry-points)에서 자세히 알아보세요
 **webpack.config.js**
 
 ```javascript
-const path = require('path');
+const path = require("node:path");
 
 module.exports = {
-  entry: './path/to/my/entry/file.js',
+  entry: "./path/to/my/entry/file.js",
   output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'my-first-webpack.bundle.js',
+    path: path.resolve(__dirname, "dist"),
+    filename: "my-first-webpack.bundle.js",
   },
 };
 ```
@@ -101,14 +101,14 @@ W> webpack의 특정 기능 중 하나인 모든 유형의 모듈(예: `.css`)�
 **webpack.config.js**
 
 ```javascript
-const path = require('path');
+const path = require("node:path");
 
 module.exports = {
   output: {
-    filename: 'my-first-webpack.bundle.js',
+    filename: "my-first-webpack.bundle.js",
   },
   module: {
-    rules: [{ test: /\.txt$/, use: 'raw-loader' }],
+    rules: [{ test: /\.txt$/, use: "raw-loader" }],
   },
 };
 ```
@@ -134,14 +134,14 @@ T> [플러그인 인터페이스](/api/plugins)를 사용하여 webpack의 기�
 **webpack.config.js**
 
 ```javascript
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const webpack = require('webpack'); // 내장 plugin에 접근하는 데 사용
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const webpack = require("webpack"); // 내장 plugin에 접근하는 데 사용
 
 module.exports = {
   module: {
-    rules: [{ test: /\.txt$/, use: 'raw-loader' }],
+    rules: [{ test: /\.txt$/, use: "raw-loader" }],
   },
-  plugins: [new HtmlWebpackPlugin({ template: './src/index.html' })],
+  plugins: [new HtmlWebpackPlugin({ template: "./src/index.html" })],
 };
 ```
 
@@ -157,7 +157,7 @@ webpack 설정에서 플러그인을 사용하는 것은 간단하지만, 추가
 
 ```javascript
 module.exports = {
-  mode: 'production',
+  mode: "production",
 };
 ```
 

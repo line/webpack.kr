@@ -49,16 +49,15 @@ Webpack은 설정 파일에서 export 한 함수를 실행하고 Promise가 반�
 T> 여러 개의 promise를 `Promise.all([/* Your promises */])`로 묶어서 export 할 수 있습니다.
 
 ```js
-module.exports = () => {
-  return new Promise((resolve, reject) => {
+module.exports = () =>
+  new Promise((resolve, reject) => {
     setTimeout(() => {
       resolve({
-        entry: './app.js',
+        entry: "./app.js",
         /* ... */
       });
     }, 5000);
   });
-};
 ```
 
 W> `Promise` 반환은 CLI를 통해 webpack을 사용할 때만 동작합니다. [`webpack()`](/api/node/#webpack)은 객체가 필요합니다.
@@ -71,21 +70,21 @@ W> `Promise` 반환은 CLI를 통해 webpack을 사용할 때만 동작합니다
 module.exports = [
   {
     output: {
-      filename: './dist-amd.js',
-      libraryTarget: 'amd',
+      filename: "./dist-amd.js",
+      libraryTarget: "amd",
     },
-    name: 'amd',
-    entry: './app.js',
-    mode: 'production',
+    name: "amd",
+    entry: "./app.js",
+    mode: "production",
   },
   {
     output: {
-      filename: './dist-commonjs.js',
-      libraryTarget: 'commonjs',
+      filename: "./dist-commonjs.js",
+      libraryTarget: "commonjs",
     },
-    name: 'commonjs',
-    entry: './app.js',
-    mode: 'production',
+    name: "commonjs",
+    entry: "./app.js",
+    mode: "production",
   },
 ];
 ```
@@ -101,14 +100,14 @@ T> 이름을 [`--config-name`](/api/cli/#config-name) 플래그에 전달하면 
 ```js
 module.exports = [
   {
-    name: 'client',
-    target: 'web',
+    name: "client",
+    target: "web",
     // …
   },
   {
-    name: 'server',
-    target: 'node',
-    dependencies: ['client'],
+    name: "server",
+    target: "node",
+    dependencies: ["client"],
   },
 ];
 ```
@@ -125,10 +124,10 @@ module.exports = [
 ```javascript
 module.exports = [
   {
-    //config-1
+    // config-1
   },
   {
-    //config-2
+    // config-2
   },
 ];
 module.exports.parallelism = 1;

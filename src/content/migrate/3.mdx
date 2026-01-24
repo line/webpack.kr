@@ -321,7 +321,8 @@ CLI를 남용하여 다음과 같이 설정에 사용자 지정 인수를 전달
 
 ```js
 // webpack.config.js
-var customStuff = process.argv.indexOf('--custom-stuff') >= 0;
+const customStuff = process.argv.includes("--custom-stuff");
+
 /* ... */
 module.exports = config;
 ```
@@ -334,7 +335,7 @@ module.exports = config;
 
 ```js
 module.exports = function (env) {
-  var customStuff = env.customStuff;
+  const { customStuff } = env;
   /* ... */
   return config;
 };
@@ -354,12 +355,12 @@ module.exports = function (env) {
 
 ```js
 module.exports = {
-  //...
+  // ...
   module: {
     rules: [
       {
         test: /\.tsx?$/,
-        loader: 'ts-loader',
+        loader: "ts-loader",
       },
     ],
   },
@@ -374,12 +375,12 @@ module.exports = {
 
 ```js
 module.exports = {
-  //...
+  // ...
   module: {
     rules: [
       {
         test: /\.tsx?$/,
-        loader: 'ts-loader?' + JSON.stringify({ transpileOnly: false }),
+        loader: `ts-loader?${JSON.stringify({ transpileOnly: false })}`,
       },
     ],
   },
@@ -390,12 +391,12 @@ module.exports = {
 
 ```js
 module.exports = {
-  //...
+  // ...
   module: {
     rules: [
       {
         test: /\.tsx?$/,
-        loader: 'ts-loader',
+        loader: "ts-loader",
         options: { transpileOnly: false },
       },
     ],
@@ -441,8 +442,8 @@ module.exports = {
 webpack 1에서는 [`require.ensure()`](/api/module-methods/#requireensure) 를 응용 프로그램의 청크를 지연 로드하는 방법으로 사용할 수 있습니다.
 
 ```javascript
-require.ensure([], function (require) {
-  var foo = require('./module');
+require.ensure([], (require) => {
+  const foo = require("./module");
 });
 ```
 
@@ -450,12 +451,10 @@ ES2015 로더 사양은 [`import()`](/api/module-methods/#import-1)를 런타임
 
 ```js
 function onClick() {
-  import('./module')
-    .then((module) => {
-      return module.default;
-    })
+  import("./module")
+    .then((module) => module.default)
     .catch((err) => {
-      console.log('Chunk loading failed');
+      console.log("Chunk loading failed");
     });
 }
 ```
@@ -471,7 +470,7 @@ function onClick() {
 ```js
 function route(path, query) {
   return import(`./routes/${path}/route`).then(
-    (route) => new route.Route(query)
+    (route) => new route.Route(query),
   );
 }
 // This creates a separate chunk for each possible route
@@ -483,20 +482,25 @@ AMD 및 CommonJS의 경우 세 가지 모듈 유형을 모두 자유롭게 혼�
 
 ```javascript
 // CommonJS consuming ES2015 Module
-var book = require('./book');
+const book = require("./book");
 
 book.currentPage;
 book.readPage();
-book.default === 'This is a book';
+book.default === "This is a book";
 ```
 
 ```javascript
 // ES2015 Module consuming CommonJS
-import fs from 'fs'; // module.exports map to default
-import { readFileSync } from 'fs'; // named exports are read from returned object+
+import fs from "node:fs"; // module.exports map to default
 
-typeof fs.readFileSync === 'function';
-typeof readFileSync === 'function';
+typeof fs.readFileSync === "function";
+```
+
+```javascript
+// ES2015 Module consuming CommonJS
+import { readFileSync } from "node:fs"; // named exports are read from returned object+
+
+typeof readFileSync === "function";
 ```
 
 Webpack이 사용할 수 있도록 이러한 모듈 기호를 구문 분석하지 않도록 Babel에 지시하는 것이 중요합니다.
@@ -532,7 +536,7 @@ Webpack은 이제 설정 파일에서 `Promise` 반환을 지원합니다. 이�
 ```js
 module.exports = function () {
   return fetchLangs().then((lang) => ({
-    entry: '...',
+    entry: "...",
     // ...
     plugins: [new DefinePlugin({ LANGUAGE: lang })],
   }));
@@ -545,7 +549,7 @@ Webpack은 이제 로더에 대해 일치시킬 더 많은 항목을 지원합�
 
 ```js
 module.exports = {
-  //...
+  // ...
   module: {
     rules: [
       {

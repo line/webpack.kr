@@ -48,9 +48,9 @@ translators:
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   externals: {
-    jquery: 'jQuery',
+    jquery: "jQuery",
   },
 };
 ```
@@ -58,9 +58,9 @@ module.exports = {
 이렇게 하면 종속 모듈이 변경되지 않습니다. 즉, 아래 표시된 코드가 계속 작동합니다.
 
 ```javascript
-import $ from 'jquery';
+import $ from "jquery";
 
-$('.my-element').animate(/* ... */);
+$(".my-element").animate(/* ... */);
 ```
 
 위의 `webpack.config.js`에서 `externals`에 지정된 속성 이름 `jquery`는 `import $ from 'jquery'`의 모듈인 `jquery`가 번들링에서 제외되어야 함을 나타냅니다. 기본 외부 라이브러리 유형이 `var`이므로 이 모듈을 대체하기 위해 `jQuery`값이 전역 `jQuery`변수를 검색하는 데 사용됩니다. [externalsType](#externalstype)를 참고하세요.
@@ -75,8 +75,8 @@ $('.my-element').animate(/* ... */);
 
 ```javascript
 module.exports = {
-  //...
-  externals: 'jquery',
+  // ...
+  externals: "jquery",
 };
 ```
 
@@ -84,9 +84,9 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   externals: {
-    jquery: 'jquery',
+    jquery: "jquery",
   },
 };
 ```
@@ -97,9 +97,9 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   externals: {
-    jquery: 'commonjs jquery',
+    jquery: "commonjs jquery",
   },
 };
 ```
@@ -108,14 +108,27 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   externals: {
-    subtract: ['./math', 'subtract'],
+    subtract: ["./math", "subtract"],
   },
 };
 ```
 
-`subtract: ['./math', 'subtract']`을 사용하면 모듈의 일부를 선택할 수 있으며, 여기서 `./math`는 모듈이고 번들에는 `subtract` 변수 아래의 하위 집합만 필요합니다. 이 예제는 `require('./math').subtract;`로 번역됩니다.
+`subtract: ['./math', 'subtract']`를 사용하면 모듈의 일부를 선택할 수 있습니다. 여기서 `./math`는 모듈이고, 번들은 `subtract` 변수에 지정된 부분만 필요로 합니다.
+
+`externalsType`이 `commonjs`인 경우 이 예제는 `require('./math').subtract;`로 번역되고, `externalsType`이 `window`인 경우 이 예제는 `window["./math"]["subtract"];`로 번역됩니다.
+
+문자열 구문(#string)과 유사하게, 배열의 첫 번째 항목에 `${externalsType} ${libraryName}` 구문을 사용하여 외부 라이브러리 유형을 지정할 수 있습니다. 예를 들면 다음과 같습니다.
+
+```javascript
+module.exports = {
+  // ...
+  externals: {
+    subtract: ["commonjs ./math", "subtract"],
+  },
+};
+```
 
 ### object
 
@@ -123,26 +136,35 @@ W> `{ root, amd, commonjs, ... }`가 있는 객체는 [`libraryTarget: 'umd'`](/
 
 ```javascript
 module.exports = {
-  //...
-  externals: {
-    react: 'react',
-  },
-
+  // ...
   // 또는
+  externals: {
+    react: "react",
+  },
+};
+```
 
+```js
+module.exports = {
+  // ...
+  // or
   externals: {
     lodash: {
-      commonjs: 'lodash',
-      amd: 'lodash',
-      root: '_', // 전역 변수를 나타냅니다.
+      commonjs: "lodash",
+      amd: "lodash",
+      root: "_", // 전역 변수를 나타냅니다.
     },
   },
+};
+```
 
+```js
+module.exports = {
+  // ...
   // 또는
-
   externals: {
     subtract: {
-      root: ['math', 'subtract'],
+      root: ["math", "subtract"],
     },
   },
 };
@@ -178,12 +200,12 @@ webpack에서 외부화하려는 동작을 제어하기 위해 자체 함수를 
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   externals: [
     function ({ context, request }, callback) {
       if (/^yourregex$/.test(request)) {
         // 요청 경로를 사용하여 commonjs 모듈로 외부화
-        return callback(null, 'commonjs ' + request);
+        return callback(null, `commonjs ${request}`);
       }
 
       // import를 외부화하지 않고 계속
@@ -202,7 +224,7 @@ module.exports = {
   externals: [
     function (ctx, callback) {
       // external은 `@scope/library`에 있는 `commonjs2` 모듈입니다.
-      callback(null, '@scope/library', 'commonjs2');
+      callback(null, "@scope/library", "commonjs2");
     },
   ],
 };
@@ -215,7 +237,7 @@ module.exports = {
   externals: [
     function (ctx, callback) {
       // external은 `nameOfGlobal`이라는 전역 변수입니다.
-      callback(null, 'nameOfGlobal');
+      callback(null, "nameOfGlobal");
     },
   ],
 };
@@ -228,7 +250,7 @@ module.exports = {
   externals: [
     function (ctx, callback) {
       // external은 `@scope/library` 모듈에서 명명된 export입니다.
-      callback(null, ['@scope/library', 'namedexport'], 'commonjs');
+      callback(null, ["@scope/library", "namedexport"], "commonjs");
     },
   ],
 };
@@ -242,10 +264,10 @@ module.exports = {
     function (ctx, callback) {
       // external은 UMD 모듈입니다.
       callback(null, {
-        root: 'componentsGlobal',
-        commonjs: '@scope/components',
-        commonjs2: '@scope/components',
-        amd: 'components',
+        root: "componentsGlobal",
+        commonjs: "@scope/components",
+        commonjs2: "@scope/components",
+        amd: "components",
       });
     },
   ],
@@ -260,7 +282,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   externals: /^(jquery|\$)$/i,
 };
 ```
@@ -275,24 +297,24 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   externals: [
     {
       // String
-      react: 'react',
+      react: "react",
       // Object
       lodash: {
-        commonjs: 'lodash',
-        amd: 'lodash',
-        root: '_', // 전역 변수를 나타냅니다.
+        commonjs: "lodash",
+        amd: "lodash",
+        root: "_", // 전역 변수를 나타냅니다.
       },
       // [string]
-      subtract: ['./math', 'subtract'],
+      subtract: ["./math", "subtract"],
     },
     // Function
     function ({ context, request }, callback) {
       if (/^yourregex$/.test(request)) {
-        return callback(null, 'commonjs ' + request);
+        return callback(null, `commonjs ${request}`);
       }
       callback();
     },
@@ -319,7 +341,7 @@ module.exports = {
   externals: {
     byLayer: {
       layer: {
-        external1: 'var 43',
+        external1: "var 43",
       },
     },
   },
@@ -360,8 +382,8 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
-  externalsType: 'promise',
+  // ...
+  externalsType: "promise",
 };
 ```
 
@@ -372,7 +394,7 @@ module.exports = {
 #### Example
 
 ```javascript
-import fs from 'fs-extra';
+import fs from "fs-extra";
 ```
 
 **webpack.config.js**
@@ -380,9 +402,9 @@ import fs from 'fs-extra';
 ```javascript
 module.exports = {
   // ...
-  externalsType: 'commonjs',
+  externalsType: "commonjs",
   externals: {
-    'fs-extra': 'fs-extra',
+    "fs-extra": "fs-extra",
   },
 };
 ```
@@ -390,7 +412,7 @@ module.exports = {
 이는 다음과 같이 생성됩니다.
 
 ```javascript
-const fs = require('fs-extra');
+const fs = require("fs-extra");
 ```
 
 출력 번들에 `require()`가 있다는 점을 유의하세요.
@@ -402,8 +424,9 @@ const fs = require('fs-extra');
 #### Example
 
 ```javascript
-import jq from 'jquery';
-jq('.my-element').animate(/* ... */);
+import jq from "jquery";
+
+jq(".my-element").animate(/* ... */);
 ```
 
 **webpack.config.js**
@@ -411,12 +434,12 @@ jq('.my-element').animate(/* ... */);
 ```javascript
 module.exports = {
   // ...
-  externalsType: 'global',
+  externalsType: "global",
   externals: {
-    jquery: '$',
+    jquery: "$",
   },
   output: {
-    globalObject: 'global',
+    globalObject: "global",
   },
 };
 ```
@@ -424,8 +447,9 @@ module.exports = {
 이는 다음과 같이 생성됩니다.
 
 ```javascript
-const jq = global['$'];
-jq('.my-element').animate(/* ... */);
+const jq = globalThis.$;
+
+jq(".my-element").animate(/* ... */);
 ```
 
 ### externalsType.module
@@ -437,8 +461,9 @@ jq('.my-element').animate(/* ... */);
 #### Example
 
 ```javascript
-import jq from 'jquery';
-jq('.my-element').animate(/* ... */);
+import jq from "jquery";
+
+jq(".my-element").animate(/* ... */);
 ```
 
 **webpack.config.js**
@@ -448,9 +473,9 @@ module.exports = {
   experiments: {
     outputModule: true,
   },
-  externalsType: 'module',
+  externalsType: "module",
   externals: {
-    jquery: 'jquery',
+    jquery: "jquery",
   },
 };
 ```
@@ -458,10 +483,10 @@ module.exports = {
 이는 다음과 같이 생성됩니다.
 
 ```javascript
-import * as __WEBPACK_EXTERNAL_MODULE_jquery__ from 'jquery';
+import * as __WEBPACK_EXTERNAL_MODULE_jquery__ from "jquery";
 
-const jq = __WEBPACK_EXTERNAL_MODULE_jquery__['default'];
-jq('.my-element').animate(/* ... */);
+const jq = __WEBPACK_EXTERNAL_MODULE_jquery__.default;
+jq(".my-element").animate(/* ... */);
 ```
 
 출력 번들에 `import` 구문이 있다는 점을 유의하세요.
@@ -476,8 +501,8 @@ jq('.my-element').animate(/* ... */);
 
 ```javascript
 async function foo() {
-  const jq = await import('jQuery');
-  jq('.my-element').animate(/* ... */);
+  const jq = await import("jQuery");
+  jq(".my-element").animate(/* ... */);
 }
 ```
 
@@ -485,9 +510,9 @@ async function foo() {
 
 ```js
 module.exports = {
-  externalsType: 'import',
+  externalsType: "import",
   externals: {
-    jquery: 'jquery',
+    jquery: "jquery",
   },
 };
 ```
@@ -495,9 +520,9 @@ module.exports = {
 아래와 같이 생성합니다.
 
 ```javascript
-var __webpack_modules__ = {
+const __webpack_modules__ = {
   jQuery: (module) => {
-    module.exports = import('jQuery');
+    module.exports = import("jQuery");
   },
 };
 
@@ -505,9 +530,9 @@ var __webpack_modules__ = {
 
 async function foo() {
   const jq = await Promise.resolve(/* import() */).then(
-    __webpack_require__.bind(__webpack_require__, 'jQuery')
+    __webpack_require__.bind(__webpack_require__, "jQuery"),
   );
-  jq('.my-element').animate(/* ... */);
+  jq(".my-element").animate(/* ... */);
 }
 ```
 
@@ -524,11 +549,11 @@ async function foo() {
 #### Example
 
 ```javascript
-import { attempt } from 'lodash';
+import { attempt } from "lodash";
 
 async function foo() {
-  const jq = await import('jQuery');
-  attempt(() => jq('.my-element').animate(/* ... */));
+  const jq = await import("jQuery");
+  attempt(() => jq(".my-element").animate(/* ... */));
 }
 ```
 
@@ -536,10 +561,10 @@ async function foo() {
 
 ```js
 module.exports = {
-  externalsType: 'module-import',
+  externalsType: "module-import",
   externals: {
-    jquery: 'jquery',
-    lodash: 'lodash',
+    jquery: "jquery",
+    lodash: "lodash",
   },
 };
 ```
@@ -547,12 +572,13 @@ module.exports = {
 아래와 같이 생성됩니다.
 
 ```javascript
-import * as __WEBPACK_EXTERNAL_MODULE_lodash__ from 'lodash';
+import * as __WEBPACK_EXTERNAL_MODULE_lodash__ from "lodash";
+
 const lodash = __WEBPACK_EXTERNAL_MODULE_jquery__;
 
-var __webpack_modules__ = {
+const __webpack_modules__ = {
   jQuery: (module) => {
-    module.exports = import('jQuery');
+    module.exports = import("jQuery");
   },
 };
 
@@ -560,9 +586,9 @@ var __webpack_modules__ = {
 
 async function foo() {
   const jq = await Promise.resolve(/* import() */).then(
-    __webpack_require__.bind(__webpack_require__, 'jQuery')
+    __webpack_require__.bind(__webpack_require__, "jQuery"),
   );
-  (0, lodash.attempt)(() => jq('.my-element').animate(/* ... */));
+  (0, lodash.attempt)(() => jq(".my-element").animate(/* ... */));
 }
 ```
 
@@ -574,16 +600,14 @@ async function foo() {
 module.exports = {
   externalsType: "module-import",
   externals: [
-    function (
-      { request, dependencyType },
-      callback
-    ) {
+    function ({ request, dependencyType }, callback) {
       if (dependencyType === "commonjs") {
         return callback(null, `node-commonjs ${request}`);
       }
       callback();
     },
-  ]
+  ],
+};
 ```
 
 ### externalsType.node-commonjs
@@ -592,9 +616,10 @@ module.exports = {
 
 #### Example
 
-```javascript
-import jq from 'jquery';
-jq('.my-element').animate(/* ... */);
+```js
+import jq from "jquery";
+
+jq(".my-element").animate(/* ... */);
 ```
 
 **webpack.config.js**
@@ -604,9 +629,9 @@ module.export = {
   experiments: {
     outputModule: true,
   },
-  externalsType: 'node-commonjs',
+  externalsType: "node-commonjs",
   externals: {
-    jquery: 'jquery',
+    jquery: "jquery",
   },
 };
 ```
@@ -614,10 +639,10 @@ module.export = {
 이는 다음과 같이 생성됩니다.
 
 ```javascript
-import { createRequire } from 'module';
+import { createRequire } from "node:module";
 
-const jq = createRequire(import.meta.url)('jquery');
-jq('.my-element').animate(/* ... */);
+const jq = createRequire(import.meta.url)("jquery");
+jq(".my-element").animate(/* ... */);
 ```
 
 출력 번들에 `import` 구문이 있다는 점을 유의하세요.
@@ -636,14 +661,14 @@ util.inherits(ChunkStream, Stream);
 `node-commonjs`를 사용하면 프로토타입 체인이 보존되는지 확인할 수 있습니다.
 
 ```js
-const { builtinModules } = require('module');
+const { builtinModules } = require("node:module");
 
 module.exports = {
   experiments: { outputModule: true },
-  externalsType: 'node-commonjs',
+  externalsType: "node-commonjs",
   externals: ({ request }, callback) => {
-    if (/^node:/.test(request) || builtinModules.includes(request)) {
-      return callback(null, 'node-commonjs ' + request);
+    if (request.startsWith("node:") || builtinModules.includes(request)) {
+      return callback(null, `node-commonjs ${request}`);
     }
     callback();
   },
@@ -652,15 +677,22 @@ module.exports = {
 
 이렇게 하면 다음과 같은 결과가 생성됩니다.
 
+{/* eslint-disable */}
+
 ```js
 import { createRequire as __WEBPACK_EXTERNAL_createRequire } from "node:module";
-// ...
-/***/ 2613:
-/***/ ((module) => {
 
-module.exports = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("stream");
+const __webpack_modules__ = {
+  // ...
+  /***/ 2613: /***/ (module) => {
+    module.exports = __WEBPACK_EXTERNAL_createRequire(import.meta.url)(
+      "stream",
+    );
 
-/***/ }),
+    /***/
+  },
+  // ...
+};
 ```
 
 이러한 설정은 프로토타입 구조를 그대로 유지하여 Node.js에 내장된 기능의 문제를 해결합니다.
@@ -672,8 +704,9 @@ module.exports = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("stream");
 #### Example
 
 ```javascript
-import jq from 'jquery';
-jq('.my-element').animate(/* ... */);
+import jq from "jquery";
+
+jq(".my-element").animate(/* ... */);
 ```
 
 **webpack.config.js**
@@ -681,9 +714,9 @@ jq('.my-element').animate(/* ... */);
 ```javascript
 module.exports = {
   // ...
-  externalsType: 'promise',
+  externalsType: "promise",
   externals: {
-    jquery: '$',
+    jquery: "$",
   },
 };
 ```
@@ -692,7 +725,8 @@ module.exports = {
 
 ```javascript
 const jq = await $;
-jq('.my-element').animate(/* ... */);
+
+jq(".my-element").animate(/* ... */);
 ```
 
 ### externalsType.self
@@ -702,8 +736,9 @@ jq('.my-element').animate(/* ... */);
 #### Example
 
 ```javascript
-import jq from 'jquery';
-jq('.my-element').animate(/* ... */);
+import jq from "jquery";
+
+jq(".my-element").animate(/* ... */);
 ```
 
 **webpack.config.js**
@@ -711,9 +746,9 @@ jq('.my-element').animate(/* ... */);
 ```javascript
 module.exports = {
   // ...
-  externalsType: 'self',
+  externalsType: "self",
   externals: {
-    jquery: '$',
+    jquery: "$",
   },
 };
 ```
@@ -721,8 +756,9 @@ module.exports = {
 이는 다음과 같이 생성됩니다.
 
 ```javascript
-const jq = self['$'];
-jq('.my-element').animate(/* ... */);
+const jq = globalThis.$;
+
+jq(".my-element").animate(/* ... */);
 ```
 
 ### externalsType.script
@@ -733,13 +769,13 @@ jq('.my-element').animate(/* ... */);
 
 ```javascript
 module.exports = {
-  externalsType: 'script',
+  externalsType: "script",
   externals: {
     packageName: [
-      'http://example.com/script.js',
-      'global',
-      'property',
-      'property',
+      "http://example.com/script.js",
+      "global",
+      "property",
+      "property",
     ], // 프로퍼티는 선택 사항입니다.
   },
 };
@@ -749,9 +785,9 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  externalsType: 'script',
+  externalsType: "script",
   externals: {
-    packageName: 'global@http://example.com/script.js', // 여기엔 프로퍼티가 없습니다
+    packageName: "global@http://example.com/script.js", // 여기엔 프로퍼티가 없습니다
   },
 };
 ```
@@ -767,9 +803,9 @@ CDN에서 `lodash`를 로드해 보겠습니다.
 ```js
 module.exports = {
   // ...
-  externalsType: 'script',
+  externalsType: "script",
   externals: {
-    lodash: ['https://cdn.jsdelivr.net/npm/lodash@4.17.19/lodash.min.js', '_'],
+    lodash: ["https://cdn.jsdelivr.net/npm/lodash@4.17.19/lodash.min.js", "_"],
   },
 };
 ```
@@ -777,7 +813,8 @@ module.exports = {
 그런 다음 코드에서 사용합니다.
 
 ```js
-import _ from 'lodash';
+import _ from "lodash";
+
 console.log(_.head([1, 2, 3]));
 ```
 
@@ -786,12 +823,12 @@ console.log(_.head([1, 2, 3]));
 ```js
 module.exports = {
   // ...
-  externalsType: 'script',
+  externalsType: "script",
   externals: {
     lodash: [
-      'https://cdn.jsdelivr.net/npm/lodash@4.17.19/lodash.min.js',
-      '_',
-      'head',
+      "https://cdn.jsdelivr.net/npm/lodash@4.17.19/lodash.min.js",
+      "_",
+      "head",
     ],
   },
 };
@@ -800,9 +837,10 @@ module.exports = {
 로컬 변수 `head`와 전역 `window._`는 `import` `lodash`를 사용할 때 노출됩니다.
 
 ```js
-import head from 'lodash';
+import head from "lodash";
+
 console.log(head([1, 2, 3])); // 여기 로그는 1 입니다
-console.log(window._.head(['a', 'b'])); // 여기 로그는 a 입니다
+console.log(globalThis._.head(["a", "b"])); // 여기 로그는 a 입니다
 ```
 
 T> HTML `<script>` 태그를 사용하여 코드를 로드할 때, webpack 런타임은 `src` 속성과 일치하거나 특정 `data-webpack` 속성이 있는 기존 `<script>` 태그를 찾으려고 시도합니다. 청크 로딩의 경우 `data-webpack` 속성은 `'[output.uniqueName]:chunk-[chunkId]'` 값을 가지며 외부 스크립트의 값은 `'[output.uniqueName]:[global]'` 입니다.
@@ -816,8 +854,9 @@ T> `output.chunkLoadTimeout`, `output.crossOriginLoading` 및 `output.scriptType
 #### Example
 
 ```javascript
-import jq from 'jquery';
-jq('.my-element').animate(/* ... */);
+import jq from "jquery";
+
+jq(".my-element").animate(/* ... */);
 ```
 
 **webpack.config.js**
@@ -825,9 +864,9 @@ jq('.my-element').animate(/* ... */);
 ```javascript
 module.exports = {
   // ...
-  externalsType: 'this',
+  externalsType: "this",
   externals: {
-    jquery: '$',
+    jquery: "$",
   },
 };
 ```
@@ -835,8 +874,9 @@ module.exports = {
 이는 다음과 같이 생성됩니다.
 
 ```javascript
-const jq = this['$'];
-jq('.my-element').animate(/* ... */);
+const jq = this.$;
+
+jq(".my-element").animate(/* ... */);
 ```
 
 ### externalsType.var
@@ -846,8 +886,9 @@ jq('.my-element').animate(/* ... */);
 #### Example
 
 ```javascript
-import jq from 'jquery';
-jq('.my-element').animate(/* ... */);
+import jq from "jquery";
+
+jq(".my-element").animate(/* ... */);
 ```
 
 **webpack.config.js**
@@ -855,9 +896,9 @@ jq('.my-element').animate(/* ... */);
 ```javascript
 module.exports = {
   // ...
-  externalsType: 'var',
+  externalsType: "var",
   externals: {
-    jquery: '$',
+    jquery: "$",
   },
 };
 ```
@@ -866,7 +907,8 @@ module.exports = {
 
 ```javascript
 const jq = $;
-jq('.my-element').animate(/* ... */);
+
+jq(".my-element").animate(/* ... */);
 ```
 
 ### externalsType.window
@@ -876,8 +918,9 @@ jq('.my-element').animate(/* ... */);
 #### Example
 
 ```javascript
-import jq from 'jquery';
-jq('.my-element').animate(/* ... */);
+import jq from "jquery";
+
+jq(".my-element").animate(/* ... */);
 ```
 
 **webpack.config.js**
@@ -885,9 +928,9 @@ jq('.my-element').animate(/* ... */);
 ```javascript
 module.exports = {
   // ...
-  externalsType: 'window',
+  externalsType: "window",
   externals: {
-    jquery: '$',
+    jquery: "$",
   },
 };
 ```
@@ -895,8 +938,9 @@ module.exports = {
 이는 다음과 같이 생성됩니다.
 
 ```javascript
-const jq = window['$'];
-jq('.my-element').animate(/* ... */);
+const jq = globalThis.$;
+
+jq(".my-element").animate(/* ... */);
 ```
 
 ## externalsPresets

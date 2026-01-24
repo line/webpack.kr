@@ -27,7 +27,6 @@ Webpack 5는 Node.js 10.13.0 (LTS) 이상의 버전이 필요합니다. 따라�
 ## Upgrade webpack 4 and its plugins/loaders
 
 1. `webpack` 4의 사용 가능한 최신 버전으로 업그레이드하세요.
-
    - webpack >= 4를 사용하는 경우 최신 webpack 4 버전으로 업그레이드할 때 추가 지침이 필요하지 않습니다.
 
    - webpack 버전 4 미만을 사용하는 경우 [webpack 4 마이그레이션 가이드](/migrate/4/)를 참고하세요.
@@ -35,9 +34,6 @@ Webpack 5는 Node.js 10.13.0 (LTS) 이상의 버전이 필요합니다. 따라�
 2. `webpack-cli` 을 사용한다면 사용 가능한 최신 버전으로 업그레이드하세요.
 
 3. 사용한 모든 플러그인과 로더를 사용 가능한 최신 버전으로 업그레이드하세요.
-
-   일부 플러그인 또는 로더에는 webpack 5와 호환되기 위해 사용해야 하는 베타 버전이 있을 수 있습니다.
-   최신 버전이 webpack 5만 지원할 수 있고, 이때 v4에서는 실패할 수 있으므로 업그레이드할 때는 개별 플러그인과 로더의 릴리스 정보를 읽어보세요. 이 경우 webpack 4를 지원하는 최신 버전으로 업데이트 하는 것을 권장합니다.
 
 ## Codemods
 
@@ -210,7 +206,6 @@ import를 통해 WebAssembly를 사용하는 경우 다음 두 단계 프로세�
 - 프로젝트에 대해 [browserslist](https://github.com/browserslist/browserslist)를 활성화한 경우 webpack 5는 `browserslist` 설정을 재사용하여 런타임 코드에 대해 내보낼 코드 스타일을 결정합니다.
 
   확실히 할 것들.
-
   1. [`target`](/configuration/target/#root)을 `browserslist`으로 설정하거나 webpack이 자동으로 `browserslist`을 설정하도록 `target`을 제거합니다.
   2. `IE 11`을 browserslist 설정에 추가합니다.
 
@@ -233,14 +228,16 @@ import를 통해 WebAssembly를 사용하는 경우 다음 두 단계 프로세�
 이것은 새 사양에서 지원되지 않으며 경고가 표시됩니다.
 
 ```js
-import { version } from './package.json';
+import { version } from "./package.json";
+
 console.log(version);
 ```
 
 위 코드 대신 아래 코드를 사용하세요.
 
 ```js
-import pkg from './package.json';
+import pkg from "./package.json";
+
 console.log(pkg.version);
 ```
 
@@ -250,7 +247,7 @@ console.log(pkg.version);
 > npx codemod webpack/v5/json-imports-to-default-imports
 > ```
 >
-> ([여기](https://codemod.com/registry/webpack-v5-json-imports-to-default-imports)에서 registry를 확인하세요.)
+> (자세한 내용은 [레지스트리 링크](https://codemod.com/registry/webpack-v5-json-imports-to-default-imports)를 참고하세요.)
 
 #### Cleanup the build code
 
@@ -283,7 +280,6 @@ console.log(pkg.version);
 - Level 5: **Runtime Errors**.
 
   이것은 까다롭습니다. 문제를 찾으려면 디버그해야 할 것입니다. 일반적인 조언은 여기에서 어렵습니다. 그러나 런타임 오류와 관련하여 아래에 몇 가지 일반적인 조언을 나열합니다.
-
   - `process`는 정의되지 않았습니다.
     - webpack 5는 더 이 Node.js 변수에 대한 폴리필을 포함하지 않습니다. 프론트엔드 코드에서 사용하지 마세요.
     - 브라우저 사용을 지원하고 싶으신가요? 환경에 따라 다른 코드를 사용하려면 `export` 또는 `imports` package.json 필드를 사용하세요.
@@ -302,7 +298,6 @@ console.log(pkg.version);
 - Level 6: **Deprecation Warnings**.
 
   사용 중단 경고가 많을 수 있습니다. 이것은 직접적인 문제가 아닙니다. 플러그인은 핵심 변경 사항을 따라잡을 시간이 필요합니다. 이러한 지원 중단을 플러그인에 보고하세요. 이러한 지원 중단은 경고일 뿐이며 빌드는 여전히 약간의 단점(예: 성능 저하)으로만 작동합니다.
-
   - `--no-deprecation` 플래그와 함께 node를 실행하여 사용 중단 경고를 숨길 수 있습니다(예: `node --no-deprecation node_modules/webpack/bin/webpack.js)`. 이것은 일시적인 해결 방법일 뿐입니다.
   - 플러그인 및 로더 기여자는 사용 중단 메시지의 조언을 따라 코드를 개선할 수 있습니다.
 
@@ -311,7 +306,6 @@ console.log(pkg.version);
   일반적으로 webpack 5에서는 성능이 향상되지만, 성능이 나빠지는 경우도 있습니다.
 
   그리고 상황을 개선하기 위해 다음과 같이 할 수 있습니다.
-
   - 시간이 어디에서 소요되었는지 설명합니다.
     - `--profile --progress`는 이제 간단한 성능 프로필을 표시합니다.
     - `node --inspect-brk node_modules/webpack/bin/webpack.js` + [`chrome://inspect`](chrome://inspect) / [`edge://inspect`](edge://inspect) (프로파일러 탭 참고).

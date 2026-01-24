@@ -20,8 +20,8 @@ npm install --save-dev webpack webpack-dev-server
 그런 다음 Node.js 스크립트에 모듈이 필요합니다.
 
 ```js
-import Webpack from 'webpack';
-import WebpackDevServer from 'webpack-dev-server';
+import webpack from "webpack";
+import WebpackDevServer from "webpack-dev-server";
 ```
 
 ## start
@@ -31,16 +31,16 @@ import WebpackDevServer from 'webpack-dev-server';
 **server.js**
 
 ```js
-import Webpack from 'webpack';
-import WebpackDevServer from 'webpack-dev-server';
-import webpackConfig from './webpack.config.js';
+import webpack from "webpack";
+import WebpackDevServer from "webpack-dev-server";
+import webpackConfig from "./webpack.config.js";
 
-const compiler = Webpack(webpackConfig);
+const compiler = webpack(webpackConfig);
 const devServerOptions = { ...webpackConfig.devServer, open: true };
 const server = new WebpackDevServer(devServerOptions, compiler);
 
 const runServer = async () => {
-  console.log('Starting server...');
+  console.log("Starting server...");
   await server.start();
 };
 
@@ -60,16 +60,16 @@ node server.js
 **server.js**
 
 ```js
-import Webpack from 'webpack';
-import WebpackDevServer from 'webpack-dev-server';
-import webpackConfig from './webpack.config.js';
+import webpack from "webpack";
+import WebpackDevServer from "webpack-dev-server";
+import webpackConfig from "./webpack.config.js";
 
-const compiler = Webpack(webpackConfig);
+const compiler = webpack(webpackConfig);
 const devServerOptions = { ...webpackConfig.devServer, open: true };
 const server = new WebpackDevServer(devServerOptions, compiler);
 
 server.startCallback(() => {
-  console.log('Successfully started server on http://localhost:8080');
+  console.log("Successfully started server on http://localhost:8080");
 });
 ```
 
@@ -86,21 +86,21 @@ node server.js
 **server.js**
 
 ```js
-import Webpack from 'webpack';
-import WebpackDevServer from 'webpack-dev-server';
-import webpackConfig from './webpack.config.js';
+import webpack from "webpack";
+import WebpackDevServer from "webpack-dev-server";
+import webpackConfig from "./webpack.config.js";
 
-const compiler = Webpack(webpackConfig);
+const compiler = webpack(webpackConfig);
 const devServerOptions = { ...webpackConfig.devServer, open: true };
 const server = new WebpackDevServer(devServerOptions, compiler);
 
 const runServer = async () => {
-  console.log('Starting server...');
+  console.log("Starting server...");
   await server.start();
 };
 
 const stopServer = async () => {
-  console.log('Stopping server...');
+  console.log("Stopping server...");
   await server.stop();
 };
 
@@ -122,21 +122,21 @@ node server.js
 **server.js**
 
 ```js
-import Webpack from 'webpack';
-import WebpackDevServer from 'webpack-dev-server';
-import webpackConfig from './webpack.config.js';
+import webpack from "webpack";
+import WebpackDevServer from "webpack-dev-server";
+import webpackConfig from "./webpack.config.js";
 
-const compiler = Webpack(webpackConfig);
+const compiler = webpack(webpackConfig);
 const devServerOptions = { ...webpackConfig.devServer, open: true };
 const server = new WebpackDevServer(devServerOptions, compiler);
 
 server.startCallback(() => {
-  console.log('Successfully started server on http://localhost:8080');
+  console.log("Successfully started server on http://localhost:8080");
 });
 
 const stopServer = () =>
   server.stopCallback(() => {
-    console.log('Server stopped.');
+    console.log("Server stopped.");
   });
 
 setTimeout(stopServer, 5000);
@@ -155,14 +155,14 @@ node server.js
 **server.js**
 
 ```js
-import WebpackDevServer from 'webpack-dev-server';
+import WebpackDevServer from "webpack-dev-server";
 
 const logInternalIPs = async () => {
-  const localIPv4 = await WebpackDevServer.internalIP('v4');
-  const localIPv6 = await WebpackDevServer.internalIP('v6');
+  const localIPv4 = await WebpackDevServer.internalIP("v4");
+  const localIPv6 = await WebpackDevServer.internalIP("v6");
 
-  console.log('Local IPv4 address:', localIPv4);
-  console.log('Local IPv6 address:', localIPv6);
+  console.log("Local IPv4 address:", localIPv4);
+  console.log("Local IPv6 address:", localIPv6);
 };
 
 logInternalIPs();
@@ -175,11 +175,11 @@ logInternalIPs();
 **server.js**
 
 ```js
-import WebpackDevServer from 'webpack-dev-server';
+import WebpackDevServer from "webpack-dev-server";
 
-const localIPv4 = WebpackDevServer.internalIPSync('v4');
-const localIPv6 = WebpackDevServer.internalIPSync('v6');
+const localIPv4 = WebpackDevServer.internalIPSync("v4");
+const localIPv6 = WebpackDevServer.internalIPSync("v6");
 
-console.log('Local IPv4 address:', localIPv4);
-console.log('Local IPv6 address:', localIPv6);
+console.log("Local IPv4 address:", localIPv4);
+console.log("Local IPv6 address:", localIPv6);
 ```

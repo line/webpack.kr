@@ -36,17 +36,17 @@ npm install --save-dev @types/webpack-dev-server
 **webpack.config.ts**
 
 ```typescript
-import path from 'path';
-import webpack from 'webpack';
+import path from "path";
+import webpack from "webpack";
 // `devServer`를 설정할 때 typescript 오류가 발생하는 경우를 대비하여
-import 'webpack-dev-server';
+import "webpack-dev-server";
 
 const config: webpack.Configuration = {
-  mode: 'production',
-  entry: './foo.js',
+  mode: "production",
+  entry: "./foo.js",
   output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'foo.bundle.js',
+    path: path.resolve(__dirname, "dist"),
+    filename: "foo.bundle.js",
   },
 };
 
@@ -75,8 +75,6 @@ export default config;
 - `tsconfig-paths`를 설치합니다.
 
 **첫 번째 방법은** `tsconfig.json` 파일을 열고 `compilerOptions`를 찾는것입니다. `target`을 `"ES5"`로 하고 `module`을 `"CommonJS"`로 설정합니다.(또는 `module` 옵션을 완전히 제거합니다)
-
-**두 번째 방법은** ts-node에 대한 설정을 추가하는 것입니다.
 
 `tsc`에 대해 `"module": "ESNext"`를 유지할 수 있으며, webpack 또는 다른 빌드 도구를 사용하는 경우 ts-node에 대한 오버라이드를 설정합니다. [ts-node 설정](https://typestrong.org/ts-node/docs/imports/)
 
@@ -185,13 +183,15 @@ npm install --save-dev babel-register jsxobj babel-preset-es2015
 
 **webpack.config.babel.js**
 
-```js
-import jsxobj from 'jsxobj';
+{/* eslint-skip */}
+
+```jsx
+import jsxobj from "jsxobj";
 
 // import된 plugin의 예시
 const CustomPlugin = (config) => ({
   ...config,
-  name: 'custom-plugin',
+  name: "custom-plugin",
 });
 
 export default (
@@ -200,8 +200,8 @@ export default (
     <resolve>
       <alias
         {...{
-          react: 'preact-compat',
-          'react-dom': 'preact-compat',
+          react: "preact-compat",
+          "react-dom": "preact-compat",
         }}
       />
     </resolve>

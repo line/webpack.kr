@@ -16,7 +16,7 @@ JavaScript의 스타일에 `import`를 사용하지 않는 애플리케이션(�
 **home.js**
 
 ```javascript
-console.log('home page type');
+console.log("home page type");
 ```
 
 **home.scss**
@@ -28,7 +28,7 @@ console.log('home page type');
 **account.js**
 
 ```javascript
-console.log('account page type');
+console.log("account page type");
 ```
 
 **account.scss**
@@ -42,16 +42,16 @@ CSS를 위한 `프로덕션` 모드에서 [`MiniCssExtractPlugin`](/plugins/mini
 **webpack.config.js**
 
 ```js
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
   mode: process.env.NODE_ENV,
   entry: {
-    home: ['./home.js', './home.scss'],
-    account: ['./account.js', './account.scss'],
+    home: ["./home.js", "./home.scss"],
+    account: ["./account.js", "./account.scss"],
   },
   output: {
-    filename: '[name].js',
+    filename: "[name].js",
   },
   module: {
     rules: [
@@ -59,18 +59,18 @@ module.exports = {
         test: /\.scss$/,
         use: [
           // 개발환경에서는 style-loader로 대체 합니다
-          process.env.NODE_ENV !== 'production'
-            ? 'style-loader'
+          process.env.NODE_ENV !== "production"
+            ? "style-loader"
             : MiniCssExtractPlugin.loader,
-          'css-loader',
-          'sass-loader',
+          "css-loader",
+          "sass-loader",
         ],
       },
     ],
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: '[name].css',
+      filename: "[name].css",
     }),
   ],
 };

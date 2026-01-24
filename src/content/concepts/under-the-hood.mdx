@@ -23,13 +23,13 @@ translators:
 **./index.js**
 
 ```js
-import app from './app.js';
+import app from "./app.js";
 ```
 
 **./app.js**
 
 ```js
-export default 'the app';
+export default "the app";
 ```
 
 모듈은 서로를 사용하여 그래프(`ModuleGraph`)를 형성합니다.
@@ -42,7 +42,7 @@ export default 'the app';
 
 ```js
 module.exports = {
-  entry: './index.js',
+  entry: "./index.js",
 };
 ```
 
@@ -56,8 +56,8 @@ module.exports = {
 ```js
 module.exports = {
   entry: {
-    home: './home.js',
-    about: './about.js',
+    home: "./home.js",
+    about: "./about.js",
   },
 };
 ```
@@ -80,17 +80,17 @@ module.exports = {
 
 ```js
 module.exports = {
-  entry: './src/index.jsx',
+  entry: "./src/index.jsx",
 };
 ```
 
 **./src/index.jsx**
 
-```js
-import React from 'react';
-import ReactDOM from 'react-dom';
+```jsx
+import React from "react";
+import ReactDOM from "react-dom";
 
-import('./app.jsx').then((App) => {
+import("./app.jsx").then((App) => {
   ReactDOM.render(<App />, root);
 });
 ```
@@ -113,10 +113,10 @@ import('./app.jsx').then((App) => {
 기본적으로 `비초기` 청크에는 이름이 없으므로 이름 대신 고유한 ID가 사용됩니다.
 동적으로 가져올 때 ["특별한" 주석](/api/module-methods/#magic-comments)을 사용하여 청크 이름을 구체적으로 지정할 수 있습니다.
 
-```js
+```jsx
 import(
   /* webpackChunkName: "app" */
-  './app.jsx'
+  "./app.jsx"
 ).then((App) => {
   ReactDOM.render(<App />, root);
 });

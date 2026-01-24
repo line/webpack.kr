@@ -18,11 +18,11 @@ translators:
   - dkstyle
   - RexSkz
 related:
-  - title: 'Webpack 5 Module Federation: A game-changer in JavaScript architecture'
+  - title: "Webpack 5 Module Federation: A game-changer in JavaScript architecture"
     url: https://medium.com/swlh/webpack-5-module-federation-a-game-changer-to-javascript-architecture-bcdd30e02669
-  - title: 'Explanations and Examples'
+  - title: "Explanations and Examples"
     url: https://github.com/module-federation/module-federation-examples
-  - title: 'Module Federation YouTube Playlist'
+  - title: "Module Federation YouTube Playlist"
     url: https://www.youtube.com/playlist?list=PLWSiF9YHHK-DqsFHGYbeAMwbd9xcZbEWJ
 ---
 
@@ -118,11 +118,11 @@ related:
 ```js
 (async () => {
   // 공유 범위를 초기화 합니다. 이 빌드와 모든 원격에서 제공된 모듈로 채웁니다
-  await __webpack_init_sharing__('default');
-  const container = window.someContainer; // 또는 다른 곳에서 컨테이너를 얻으십시오
+  await __webpack_init_sharing__("default");
+  const container = globalThis.someContainer; // 또는 다른 곳에서 컨테이너를 얻으십시오
   // 컨테이너 초기화, 공유 모듈 제공 가능합니다
   await container.init(__webpack_share_scopes__.default);
-  const module = await container.get('./module');
+  const module = await container.get("./module");
 })();
 ```
 
@@ -140,7 +140,7 @@ T> 원격 컨테이너를 동적으로 연결하기 전에 컨테이너를 로�
 function loadComponent(scope, module) {
   return async () => {
     // 공유 범위를 초기화 합니다. 이 빌드와 모든 원격에서 제공된 모듈로 채웁니다
-    await __webpack_init_sharing__('default');
+    await __webpack_init_sharing__("default");
     const container = window[scope]; // 또는 다른 곳에서 컨테이너를 얻으십시오
     // 컨테이너 초기화, 공유 모듈 제공 가능합니다
     await container.init(__webpack_share_scopes__.default);
@@ -150,7 +150,7 @@ function loadComponent(scope, module) {
   };
 }
 
-loadComponent('abtests', 'test123');
+loadComponent("abtests", "test123");
 ```
 
 [전체 구현 보기](https://github.com/module-federation/module-federation-examples/tree/master/advanced-api/dynamic-remotes)
@@ -163,9 +163,9 @@ loadComponent('abtests', 'test123');
 module.exports = {
   plugins: [
     new ModuleFederationPlugin({
-      name: 'host',
+      name: "host",
       remotes: {
-        app1: 'app1@http://localhost:3001/remoteEntry.js',
+        app1: "app1@http://localhost:3001/remoteEntry.js",
       },
     }),
   ],
@@ -178,7 +178,7 @@ module.exports = {
 module.exports = {
   plugins: [
     new ModuleFederationPlugin({
-      name: 'host',
+      name: "host",
       remotes: {
         app1: `promise new Promise(resolve => {
       const urlParams = new URLSearchParams(window.location.search)
@@ -235,12 +235,12 @@ module.exports = {
 ```js
 module.exports = {
   entry: {
-    remote: './public-path',
+    remote: "./public-path",
   },
   plugins: [
     new ModuleFederationPlugin({
-      name: 'remote', // 이 이름은 엔트리 이름과 일치해야 합니다.
-      exposes: ['./public-path'],
+      name: "remote", // 이 이름은 엔트리 이름과 일치해야 합니다.
+      exposes: ["./public-path"],
       // ...
     }),
   ],
@@ -258,8 +258,8 @@ export function set(value) {
 **src/index.js (host)**
 
 ```ts
-const publicPath = await import('remote/public-path');
-publicPath.set('/your-public-path');
+const publicPath = await import("remote/public-path");
+publicPath.set("/your-public-path");
 
 //bootstrap app  e.g. import('./bootstrap.js')
 ```
@@ -275,11 +275,11 @@ publicPath.set('/your-public-path');
 ```js
 module.exports = {
   entry: {
-    remote: './setup-public-path',
+    remote: "./setup-public-path",
   },
   plugins: [
     new ModuleFederationPlugin({
-      name: 'remote', // 이 이름은 엔트리 이름과 일치해야 합니다.
+      name: "remote", // 이 이름은 엔트리 이름과 일치해야 합니다.
       // ...
     }),
   ],
@@ -290,7 +290,7 @@ module.exports = {
 
 ```js
 // 자체 로직으로 publicPath를 파생하고 __webpack_public_path__ API로 설정하세요.
-__webpack_public_path__ = document.currentScript.src + '/../';
+__webpack_public_path__ = `${document.currentScript.src}/../`;
 ```
 
 T> 또한 자동으로 publicPath를 결정하는 [`output.publicPath`](/configuration/output/#outputpublicpath)에 사용할 수 있는 `'auto'` 값이 있습니다.
@@ -309,11 +309,12 @@ T> 또한 자동으로 publicPath를 결정하는 [`output.publicPath`](/configu
 
 **index.js**
 
-```js
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
-ReactDOM.render(<App />, document.getElementById('root'));
+```jsx
+import React from "react";
+import ReactDOM from "react-dom";
+import App from "./App";
+
+ReactDOM.render(<App />, document.getElementById("root"));
 ```
 
 `bootstrap.js` 파일을 만들고 엔트리의 콘텐츠을 이 파일로 이동한 다음, 부트스트랩을 엔트리로 가져오겠습니다.

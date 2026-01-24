@@ -34,7 +34,7 @@ compilation.hooks.someHook.tap(/* ... */);
 
 W> Webpack 5부터 훅은 더 이상 확장할 수 없습니다. 사용자 정의 훅을 추가하려면 `WeakMap`을 사용하세요.
 
-### buildModule
+## buildModule
 
 `SyncHook`
 
@@ -44,14 +44,14 @@ W> Webpack 5부터 훅은 더 이상 확장할 수 없습니다. 사용자 정�
 
 ```js
 compilation.hooks.buildModule.tap(
-  'SourceMapDevToolModuleOptionsPlugin',
+  "SourceMapDevToolModuleOptionsPlugin",
   (module) => {
     module.useSourceMap = true;
-  }
+  },
 );
 ```
 
-### rebuildModule
+## rebuildModule
 
 `SyncHook`
 
@@ -59,7 +59,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `module`
 
-### failedModule
+## failedModule
 
 `SyncHook`
 
@@ -67,7 +67,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `module` `error`
 
-### succeedModule
+## succeedModule
 
 `SyncHook`
 
@@ -75,7 +75,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `module`
 
-### finishModules
+## finishModules
 
 `AsyncSeriesHook`
 
@@ -83,7 +83,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `modules`
 
-### finishRebuildingModule
+## finishRebuildingModule
 
 `SyncHook`
 
@@ -91,19 +91,19 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `module`
 
-### seal
+## seal
 
 `SyncHook`
 
 컴파일이 새로운 모듈을 받는 것이 중지되면 시작됩니다.
 
-### unseal
+## unseal
 
 `SyncHook`
 
 컴파일이 새로운 모듈을 받기 시작할 때 시작됩니다.
 
-### optimizeDependencies
+## optimizeDependencies
 
 `SyncBailHook`
 
@@ -111,7 +111,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `modules`
 
-### afterOptimizeDependencies
+## afterOptimizeDependencies
 
 `SyncHook`
 
@@ -119,7 +119,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `modules`
 
-### afterChunks
+## afterChunks
 
 `SyncHook`
 
@@ -132,13 +132,13 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `chunks`
 
-### optimize
+## optimize
 
 `SyncHook`
 
 최적화 단계가 시작될 때 트리거됩니다.
 
-### optimizeModules
+## optimizeModules
 
 `SyncBailHook`
 
@@ -146,7 +146,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `modules`
 
-### afterOptimizeModules
+## afterOptimizeModules
 
 `SyncHook`
 
@@ -154,7 +154,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `modules`
 
-### optimizeChunks
+## optimizeChunks
 
 `SyncBailHook`
 
@@ -162,7 +162,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `chunks`
 
-### afterOptimizeChunks
+## afterOptimizeChunks
 
 `SyncHook`
 
@@ -170,7 +170,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `chunks`
 
-### optimizeTree
+## optimizeTree
 
 `AsyncSeriesHook`
 
@@ -178,7 +178,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `chunks` `modules`
 
-### afterOptimizeTree
+## afterOptimizeTree
 
 `SyncHook`
 
@@ -186,7 +186,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `chunks` `modules`
 
-### optimizeChunkModules
+## optimizeChunkModules
 
 `SyncBailHook`
 
@@ -194,7 +194,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `chunks` `modules`
 
-### afterOptimizeChunkModules
+## afterOptimizeChunkModules
 
 `SyncHook`
 
@@ -202,13 +202,13 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `chunks` `modules`
 
-### shouldRecord
+## shouldRecord
 
 `SyncBailHook`
 
 레코드 저장 여부를 결정하기 위해 호출됩니다. `!== false`를 반환하면 다른 모든 "record" 훅이 실행되지 않습니다([`record`](#record), [`recordModules`](#recordmodules), [`recordChunks`](#recordchunks) 그리고 [`recordHash`](#recordhash)).
 
-### reviveModules
+## reviveModules
 
 `SyncHook`
 
@@ -216,7 +216,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `modules` `records`
 
-### beforeModuleIds
+## beforeModuleIds
 
 `SyncHook`
 
@@ -224,7 +224,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `modules`
 
-### moduleIds
+## moduleIds
 
 `SyncHook`
 
@@ -232,7 +232,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `modules`
 
-### optimizeModuleIds
+## optimizeModuleIds
 
 `SyncHook`
 
@@ -240,7 +240,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `modules`
 
-### afterOptimizeModuleIds
+## afterOptimizeModuleIds
 
 `SyncHook`
 
@@ -248,7 +248,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `modules`
 
-### reviveChunks
+## reviveChunks
 
 `SyncHook`
 
@@ -256,7 +256,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `chunks` `records`
 
-### beforeChunkIds
+## beforeChunkIds
 
 `SyncHook`
 
@@ -264,7 +264,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `chunks`
 
-### chunkIds
+## chunkIds
 
 `SyncHook`
 
@@ -272,7 +272,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `chunks`
 
-### optimizeChunkIds
+## optimizeChunkIds
 
 `SyncHook`
 
@@ -280,7 +280,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `chunks`
 
-### afterOptimizeChunkIds
+## afterOptimizeChunkIds
 
 `SyncHook`
 
@@ -288,7 +288,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `chunks`
 
-### recordModules
+## recordModules
 
 `SyncHook`
 
@@ -296,7 +296,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `modules` `records`
 
-### recordChunks
+## recordChunks
 
 `SyncHook`
 
@@ -304,31 +304,31 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `chunks` `records`
 
-### beforeModuleHash
+## beforeModuleHash
 
 `SyncHook`
 
 모듈이 해시되기 전에 호출됩니다.
 
-### afterModuleHash
+## afterModuleHash
 
 `syncHook`
 
 모듈이 해시 된 후에 호출됩니다.
 
-### beforeHash
+## beforeHash
 
 `SyncHook`
 
 컴파일이 해시되기 전에 호출됩니다.
 
-### afterHash
+## afterHash
 
 `SyncHook`
 
 컴파일이 해시되기 전에 호출됩니다.
 
-### recordHash
+## recordHash
 
 `SyncHook`
 
@@ -336,7 +336,7 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `records`
 
-### record
+## record
 
 `SyncHook`
 
@@ -344,13 +344,13 @@ compilation.hooks.buildModule.tap(
 
 - 콜백 파라미터: `compilation` `records`
 
-### beforeModuleAssets
+## beforeModuleAssets
 
 `SyncHook`
 
 모듈 애셋이 생성되기 전에 실행됩니다.
 
-### additionalChunkAssets
+## additionalChunkAssets
 
 `SyncHook`
 
@@ -360,19 +360,19 @@ W> `additionalChunkAssets`은 더이상 지원하지 않습니다. 대신 [Compi
 
 - 콜백 파라미터: `chunks`
 
-### shouldGenerateChunkAssets
+## shouldGenerateChunkAssets
 
 `SyncBailHook`
 
 청크 애셋을 만들지 결정하기 위해 호출됩니다. `!== false`를 반환하면 청크 애셋을 생성합니다.
 
-### beforeChunkAssets
+## beforeChunkAssets
 
 `SyncHook`
 
 청크 애셋을 만들기 전에 실행됩니다.
 
-### additionalAssets
+## additionalAssets
 
 `AsyncSeriesHook`
 
@@ -382,21 +382,21 @@ W> `additionalAssets`는 더 이상 사용되지 않습니다. 대신 [Compilati
 이 훅은 이미지를 다운로드하는 데 사용할 수 있습니다. 예를 들면 다음과 같습니다.
 
 ```js
-compilation.hooks.additionalAssets.tapAsync('MyPlugin', (callback) => {
-  download('https://img.shields.io/npm/v/webpack.svg', function (resp) {
+compilation.hooks.additionalAssets.tapAsync("MyPlugin", (callback) => {
+  download("https://img.shields.io/npm/v/webpack.svg", (resp) => {
     if (resp.status === 200) {
-      compilation.assets['webpack-version.svg'] = toAsset(resp);
+      compilation.assets["webpack-version.svg"] = toAsset(resp);
       callback();
     } else {
       callback(
-        new Error('[webpack-example-plugin] Unable to download the image')
+        new Error("[webpack-example-plugin] Unable to download the image"),
       );
     }
   });
 });
 ```
 
-### optimizeChunkAssets
+## optimizeChunkAssets
 
 `AsyncSeriesHook`
 
@@ -412,24 +412,24 @@ W> `optimizeChunkAssets`은 더이상 지원하지 않습니다. 대신 [Compila
 
 ```js
 compilation.hooks.optimizeChunkAssets.tapAsync(
-  'MyPlugin',
+  "MyPlugin",
   (chunks, callback) => {
-    chunks.forEach((chunk) => {
-      chunk.files.forEach((file) => {
+    for (const chunk of chunks) {
+      for (const file of chunk.files) {
         compilation.assets[file] = new ConcatSource(
-          '/**Sweet Banner**/',
-          '\n',
-          compilation.assets[file]
+          "/**Sweet Banner**/",
+          "\n",
+          compilation.assets[file],
         );
-      });
-    });
+      }
+    }
 
     callback();
-  }
+  },
 );
 ```
 
-### afterOptimizeChunkAssets
+## afterOptimizeChunkAssets
 
 `SyncHook`
 
@@ -442,18 +442,18 @@ W> `afterOptimizeChunkAssets`은 더이상 지원하지 않습니다. 대신 [Co
 다음은 각 청크에 들어간 내용을 정확히 출력하는 [@boopathi](https://github.com/boopathi)의 플러그인 예시입니다.
 
 ```js
-compilation.hooks.afterOptimizeChunkAssets.tap('MyPlugin', (chunks) => {
-  chunks.forEach((chunk) => {
+compilation.hooks.afterOptimizeChunkAssets.tap("MyPlugin", (chunks) => {
+  for (const chunk of chunks) {
     console.log({
       id: chunk.id,
       name: chunk.name,
       includes: chunk.getModules().map((module) => module.request),
     });
-  });
+  }
 });
 ```
 
-### optimizeAssets
+## optimizeAssets
 
 `AsyncSeriesHook`
 
@@ -463,7 +463,7 @@ W> `optimizeAssets`는 더 이상 사용되지 않습니다. 대신 [Compilation
 
 - 콜백 파라미터: `assets`
 
-### afterOptimizeAssets
+## afterOptimizeAssets
 
 `SyncHook`
 
@@ -473,7 +473,7 @@ W> `afterOptimizeAssets`는 더 이상 사용되지 않습니다. 대신 [Compil
 
 - 콜백 파라미터: `assets`
 
-### processAssets
+## processAssets
 
 `AsyncSeriesHook`
 
@@ -494,19 +494,19 @@ W> `afterOptimizeAssets`는 더 이상 사용되지 않습니다. 대신 [Compil
 ```js
 compilation.hooks.processAssets.tap(
   {
-    name: 'MyPlugin',
+    name: "MyPlugin",
     stage: Compilation.PROCESS_ASSETS_STAGE_ADDITIONS, // 더 많은 단계는 아래를 참고하세요.
   },
   (assets) => {
-    console.log('List of assets and their sizes:');
-    Object.entries(assets).forEach(([pathname, source]) => {
+    console.log("List of assets and their sizes:");
+    for (const [pathname, source] of Object.entries(assets)) {
       console.log(`— ${pathname}: ${source.size()} bytes`);
-    });
-  }
+    }
+  },
 );
 ```
 
-#### Additional assets
+### Additional assets
 
 `name` 및 `stage` 외에도 `true` 값을 허용하는 `additionalAssets` <Badge text='5.8.0+' /> 옵션 또는 `assets`을 첫 번째 인수로 받는 콜백 함수를 전달할 수 있습니다.
 
@@ -517,13 +517,13 @@ compilation.hooks.processAssets.tap(
    ```js
    compilation.hooks.processAssets.tap(
      {
-       name: 'MyPlugin',
+       name: "MyPlugin",
        stage: Compilation.PROCESS_ASSETS_STAGE_DEV_TOOLING,
        additionalAssets: true,
      },
      (assets) => {
        // 이 함수는 각각의 에셋에 대해 여러 번 호출됩니다.
-     }
+     },
    );
    ```
 
@@ -532,7 +532,7 @@ compilation.hooks.processAssets.tap(
    ```js
    compilation.hooks.processAssets.tap(
      {
-       name: 'MyPlugin',
+       name: "MyPlugin",
        stage: Compilation.PROCESS_ASSETS_STAGE_DEV_TOOLING,
        additionalAssets: (assets) => {
          // 이 함수는 이후 단계에서 추가된 애셋에 대해 여러번 호출될 가능성이 있습니다.
@@ -540,11 +540,11 @@ compilation.hooks.processAssets.tap(
      },
      (assets) => {
        // 이 함수는 이전 단계에서 플러그인에 의해 추가된 애셋에 대해 한 번 호출됩니다.
-     }
+     },
    );
    ```
 
-#### List of asset processing stages
+### List of asset processing stages
 
 다음은 지원되는 단계를 처리 순서대로 나열한 목록입니다.
 
@@ -564,7 +564,7 @@ compilation.hooks.processAssets.tap(
 - `PROCESS_ASSETS_STAGE_ANALYSE` — 기존 애셋을 분석합니다.
 - `PROCESS_ASSETS_STAGE_REPORT` — 리포팅 목적으로 애셋을 생성합니다.
 
-#### Assets info
+### Assets info
 
 훅에 "asset info" 메타 데이터가 자동으로 제공되지 않습니다. 필요한 경우 컴파일 인스턴스와 제공된 애셋 경로 이름을 사용하여 이 메타 데이터를 수동으로 해결해야 합니다. 이것은 webpack의 차기 버전에서 개선될 것입니다.
 
@@ -576,33 +576,33 @@ compilation.hooks.processAssets.tap(
     /** … */
   },
   (assets) => {
-    Object.entries(assets).forEach(([pathname, source]) => {
+    for (const [pathname, source] of Object.entries(assets)) {
       const assetInfo = compilation.assetsInfo.get(pathname);
       // @todo: "pathname", "source" 및 "assetInfo"를 사용하여 작업해줍니다.
-    });
-  }
+    }
+  },
 );
 ```
 
-### afterProcessAssets
+## afterProcessAssets
 
 `SyncHook`
 
 [`processAssets`](#processassets) 훅이 에러없이 완료된 후에 호출됩니다.
 
-### needAdditionalSeal
+## needAdditionalSeal
 
 `SyncBailHook`
 
 다른 파일을 포함하기 위해 컴파일을 봉인 해제해야 하는지 확인하기 위해 호출됩니다.
 
-### afterSeal
+## afterSeal
 
 `AsyncSeriesHook`
 
 `needAdditionalSeal` 바로 뒤에 실행됩니다.
 
-### chunkHash
+## chunkHash
 
 `SyncHook`
 
@@ -610,7 +610,7 @@ compilation.hooks.processAssets.tap(
 
 - 콜백 파라미터: `chunk` `chunkHash`
 
-### moduleAsset
+## moduleAsset
 
 `SyncHook`
 
@@ -618,7 +618,7 @@ compilation.hooks.processAssets.tap(
 
 - 콜백 파라미터: `module` `filename`
 
-### chunkAsset
+## chunkAsset
 
 `SyncHook`
 
@@ -626,7 +626,7 @@ compilation.hooks.processAssets.tap(
 
 - 콜백 파라미터: `chunk` `filename`
 
-### assetPath
+## assetPath
 
 `SyncWaterfallHook`
 
@@ -634,13 +634,13 @@ compilation.hooks.processAssets.tap(
 
 - 콜백 파라미터: `path` `options`
 
-### needAdditionalPass
+## needAdditionalPass
 
 `SyncBailHook`
 
 애셋이 방출된 후 추가로 처리되어야 하는지 여부를 판별하기 위해 호출됩니다.
 
-### childCompiler
+## childCompiler
 
 `SyncHook`
 
@@ -648,11 +648,11 @@ compilation.hooks.processAssets.tap(
 
 - 콜백 파라미터: `childCompiler` `compilerName` `compilerIndex`
 
-### normalModuleLoader
+## normalModuleLoader
 
 webpack v5부터 `normalModuleLoader` 훅이 제거되었기 때문에, 이제 로더에 액세스하려면 `NormalModule.getCompilationHooks(compilation).loader`를 사용하세요.
 
-### statsPreset
+## statsPreset
 
 `HookMap`
 
@@ -663,14 +663,14 @@ webpack v5부터 `normalModuleLoader` 훅이 제거되었기 때문에, 이제 �
 플러그인 예시는 다음과 같습니다.
 
 ```js
-compilation.hooks.statsPreset.for('my-preset').tap('MyPlugin', (options) => {
+compilation.hooks.statsPreset.for("my-preset").tap("MyPlugin", (options) => {
   if (options.all === undefined) options.all = true;
 });
 ```
 
 이 플러그인은 사전 설정 `'my-preset'`에 대해 `all` 옵션이 정의되지 않은 경우 기본값이 true로 설정되도록 합니다.
 
-### statsNormalize
+## statsNormalize
 
 `SyncHook`
 
@@ -681,7 +681,7 @@ compilation.hooks.statsPreset.for('my-preset').tap('MyPlugin', (options) => {
 플러그인 예시는 다음과 같습니다.
 
 ```js
-compilation.hooks.statsNormalize.tap('MyPlugin', (options) => {
+compilation.hooks.statsNormalize.tap("MyPlugin", (options) => {
   if (options.myOption === undefined) options.myOption = [];
 
   if (!Array.isArray(options.myOption)) options.myOptions = [options.myOptions];
@@ -690,13 +690,13 @@ compilation.hooks.statsNormalize.tap('MyPlugin', (options) => {
 
 이 플러그인에서는 `myOption`이 없으면 빈 배열로 설정합니다. 또한 `myOption`이 원래 단일 값으로 정의된 경우에도 항상 배열임을 보장합니다.
 
-### statsFactory
+## statsFactory
 
 이 훅은 특정 옵션에서 [`StatsFactory` 클래스](https://github.com/webpack/webpack/blob/main/lib/stats/StatsFactory.js)에 대한 액세스를 제공합니다.
 
 - 콜백 파라미터: `statsFactory` `options`
 
-#### StatsFactory.hooks.extract
+### StatsFactory.hooks.extract
 
 `HookMap`
 
@@ -707,16 +707,16 @@ compilation.hooks.statsNormalize.tap('MyPlugin', (options) => {
 Example:
 
 ```js
-compilation.hooks.statsFactory.tap('MyPlugin', (statsFactory, options) => {
+compilation.hooks.statsFactory.tap("MyPlugin", (statsFactory, options) => {
   statsFactory.hooks.extract
-    .for('compilation')
-    .tap('MyPlugin', (object, compilation) => {
+    .for("compilation")
+    .tap("MyPlugin", (object, compilation) => {
       object.customProperty = MyPlugin.getCustomValue(compilation);
     });
 });
 ```
 
-#### StatsFactory.hooks.result
+### StatsFactory.hooks.result
 
 `HookMap`
 
@@ -724,13 +724,13 @@ compilation.hooks.statsFactory.tap('MyPlugin', (statsFactory, options) => {
 
 - 콜백 파라미터: `result` `context`
 
-### statsPrinter
+## statsPrinter
 
 이 훅은 특정 옵션에서 [`StatsPrinter` 클래스](https://github.com/webpack/webpack/blob/main/lib/stats/StatsPrinter.js)에 대한 액세스를 제공합니다.
 
 - 콜백 파라미터: `statsPrinter` `options`
 
-#### StatsPrinter.hooks.print
+### StatsPrinter.hooks.print
 
 `HookMap`
 
@@ -738,7 +738,7 @@ compilation.hooks.statsFactory.tap('MyPlugin', (statsFactory, options) => {
 
 - 콜백 파라미터: `object` `context`
 
-#### StatsPrinter.hooks.result
+### StatsPrinter.hooks.result
 
 `HookMap`
 
