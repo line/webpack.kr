@@ -18,6 +18,12 @@ translators:
 
 [시작하기](/guides/getting-started/#using-a-configuration)에서 언급한 바와 같이, webpack 설정에서 `entry` 속성을 정의하는 방법은 여러 가지가 있습니다. `entry` 속성을 설정 **할 수 있는** 방법과 유용한 이유를 설명하겠습니다.
 
+간단히 말해, 진입점은 webpack에게 내부 의존성 그래프를 구축하기 시작할 위치를 알려줍니다.
+이 파일부터 시작하여 webpack은 가져온 모든 모듈과 자산을 재귀적으로 따라가 최종 번들에 포함되어야 할 항목을 결정합니다.
+
+이 과정의 결과는 나중에 `output` 구성에 따라 디스크에 기록됩니다.
+`output` 구성은 번들로 묶인 파일이 어디에 어떻게 저장되는지를 제어합니다.
+
 ## Single Entry (Shorthand) Syntax
 
 Usage: `entry: string | [string]`

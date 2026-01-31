@@ -19,6 +19,7 @@ contributors:
   - jamesgeorge007
   - snitin315
   - sapenlei
+  - Mazen050
 translators:
   - limong
 ---
@@ -647,9 +648,16 @@ module.exports = {
 
 ### resolve.plugins
 
-[`[Plugin]`](/plugins/)
+[`[Plugin | Function]`](/plugins/)
 
-추가로 해석할 플러그인 리스트를 적용해야 합니다. [`DirectoryNamedWebpackPlugin`](https://www.npmjs.com/package/directory-named-webpack-plugin)과 같은 플러그인을 허용합니다.
+추가로 적용해야 할 해석 플러그인 목록입니다.
+
+각 항목은 다음 중 하나일 수 있습니다.
+
+- `apply(resolver)` 메서드를 가진 플러그인 객체
+- 또는 함수 플러그인일 수도 있는데, 이 경우 리졸버가 `this`와 첫 번째 인자로 모두 전달되어 호출됩니다.
+
+이 기능은 [`DirectoryNamedWebpackPlugin`](https://www.npmjs.com/package/directory-named-webpack-plugin)과 같은 플러그인을 허용합니다.
 
 **webpack.config.js**
 
@@ -657,7 +665,19 @@ module.exports = {
 module.exports = {
   // ...
   resolve: {
-    plugins: [new DirectoryNamedWebpackPlugin()],
+    plugins: [
+      // 객체 스타일 플러그인
+      {
+        apply(resolver) {
+          // custom logic
+        },
+      },
+
+      // Function-style plugin
+      function (resolver) {
+        // `this`도 리졸버입니다.
+      },
+    ],
   },
 };
 ```
