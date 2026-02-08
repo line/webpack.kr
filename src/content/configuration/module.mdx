@@ -448,6 +448,144 @@ import { footer, header } from "./styles.module.css";
 
 `namedExports`를 활성화하면 JavaScript 프로젝트에서 CSS를 관리하는 데 더 모듈화되고 유지 관리 가능한 접근 방식을 채택하고 ES 모듈 구문을 활용하여 더 명확하고 명시적인 가져오기를 수행할 수 있습니다.
 
+#### module.parser.css.animation
+
+<Badge text="5.104.0+" />
+
+CSS 모듈에서 `@keyframes` 애니메이션 이름 변경 기능을 활성화 또는 비활성화합니다.
+
+- Type: `boolean`
+- Default: `true`
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  module: {
+    parser: {
+      css: {
+        animation: true, // @keyframes 이름 변경을 활성화합니다.
+      },
+    },
+  },
+};
+```
+
+#### module.parser.css.container
+
+<Badge text="5.104.0+" />
+
+CSS 모듈에서 `@container` 이름 변경을 활성화 또는 비활성화합니다.
+
+- Type: `boolean`
+- Default: `true`
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  module: {
+    parser: {
+      css: {
+        container: true, // @container 이름 변경을 활성화합니다.
+      },
+    },
+  },
+};
+```
+
+#### module.parser.css.customIdents
+
+<Badge text="5.104.0+" />
+
+CSS 모듈에서 사용자 지정 식별자의 이름 변경을 활성화 또는 비활성화합니다.
+
+- Type: `boolean`
+- Default: `true`
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  module: {
+    parser: {
+      css: {
+        customIdents: true, // 사용자 지정 식별자 이름 변경 활성화
+      },
+    },
+  },
+};
+```
+
+#### module.parser.css.dashedIdents
+
+<Badge text="5.104.0+" />
+
+CSS 사용자 지정 속성(예: `--my-variable`)과 같은 하이픈으로 구분된 식별자의 이름 변경을 활성화 또는 비활성화합니다.
+
+- Type: `boolean`
+- Default: `true`
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  module: {
+    parser: {
+      css: {
+        dashedIdents: true, // 대시로 구분된 식별자 이름 변경을 활성화합니다.
+      },
+    },
+  },
+};
+```
+
+#### module.parser.css.function
+
+<Badge text="5.104.0+" />
+
+CSS 모듈에서 `@function` 이름 변경을 활성화 또는 비활성화합니다.
+
+- Type: `boolean`
+- Default: `true`
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  module: {
+    parser: {
+      css: {
+        function: true, // @function 이름 변경을 활성화합니다
+      },
+    },
+  },
+};
+```
+
+#### module.parser.css.grid
+
+<Badge text="5.104.0+" />
+
+CSS 모듈에서 그리드 식별자 이름 변경 기능을 활성화 또는 비활성화합니다.
+
+- Type: `boolean`
+- Default: `true`
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  module: {
+    parser: {
+      css: {
+        grid: true, // 그리드 식별자 이름 변경 활성화
+      },
+    },
+  },
+};
+```
+
 ### module.parser.css.exportType
 
 CSS 콘텐츠를 내보내는 방법을 설정합니다.

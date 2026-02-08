@@ -35,6 +35,7 @@ contributors:
   - atesgoral
   - snitin315
   - artem-malko
+  - Brennvo
 translators:
   - keipark
 related:
@@ -85,9 +86,13 @@ console.log(_.join(["Another", "module", "loaded!"], " "));
 **webpack.config.js**
 
 ```diff
- const path = require('path');
+ import path from 'node:path';
+ import { fileURLToPath } from 'node:url';
 
- module.exports = {
+ const __filename = fileURLToPath(import.meta.url);
+ const __dirname = path.dirname(__filename);
+
+ export default {
 -  entry: './src/index.js',
 +  mode: 'development',
 +  entry: {
@@ -133,9 +138,13 @@ webpack 5.4.0 compiled successfully in 245 ms
 **webpack.config.js**
 
 ```diff
- const path = require('path');
+ import path from 'node:path';
+ import { fileURLToPath } from 'node:url';
 
- module.exports = {
+ const __filename = fileURLToPath(import.meta.url);
+ const __dirname = path.dirname(__filename);
+
+ export default {
    mode: 'development',
    entry: {
 -    index: './src/index.js',
@@ -162,9 +171,13 @@ webpack 5.4.0 compiled successfully in 245 ms
 **webpack.config.js**
 
 ```diff
- const path = require('path');
+ import path from 'node:path';
+ import { fileURLToPath } from 'node:url';
 
- module.exports = {
+ const __filename = fileURLToPath(import.meta.url);
+ const __dirname = path.dirname(__filename);
+
+ export default {
    mode: 'development',
    entry: {
      index: {
@@ -218,9 +231,13 @@ webpack은 하나의 페이지에 여러 엔트리 포인트를 허용하지만,
 **webpack.config.js**
 
 ```diff
-  const path = require('path');
+  import path from 'node:path';
+  import { fileURLToPath } from 'node:url';
 
-  module.exports = {
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+
+  export default {
     mode: 'development',
     entry: {
       index: './src/index.js',
@@ -271,9 +288,13 @@ W> `import()` 호출은 내부적으로 [promises](https://developer.mozilla.org
 **webpack.config.js**
 
 ```diff
- const path = require('path');
+ import path from 'node:path';
+ import { fileURLToPath } from 'node:url';
 
- module.exports = {
+ const __filename = fileURLToPath(import.meta.url);
+ const __dirname = path.dirname(__filename);
+
+ export default {
    mode: 'development',
    entry: {
      index: './src/index.js',

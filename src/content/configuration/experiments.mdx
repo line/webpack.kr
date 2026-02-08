@@ -192,9 +192,41 @@ module.exports = {
 실험적 기능:
 
 - CSS 모듈 지원: webpack은 각 CSS 클래스에 대해 고유한 이름을 생성합니다. CSS 모듈에는 `.module.css` 확장자를 사용하세요.
-- <Badge text="5.87.0+" /> `package.json` 파일의 스타일별 필드 해석 webpack은
-  `package.json` 파일에서 `style` 필드를 찾고 CSS 파일 내부에 import를 위해
-  존재하는 경우 이 파일을 사용합니다.
+
+  <Badge text="5.103.0+" />
+
+  Webpack은 CSS Modules의 `composes` 속성을 기본적으로 지원하므로 동일한 파일, 다른 CSS 모듈 또는 전역 클래스의 클래스를 조합할 수 있습니다.
+
+  ```css
+  /* styles.module.css */
+  .base {
+    color: blue;
+  }
+
+  .button {
+    composes: base;
+    padding: 10px;
+  }
+
+  .primary {
+    composes: button;
+    background: blue;
+  }
+
+  /* Compose from another CSS module */
+  .composed {
+    composes: className from "./other.module.css";
+  }
+
+  /* Compose from global classes */
+  .globalComposed {
+    composes: global-class from global;
+  }
+  ```
+
+- <Badge text="5.87.0+" /> Style-specific fields resolution in `package.json`
+  files: webpack은 `package.json` 파일에서 `style` 필드를 찾고, 해당 필드가
+  존재하면 CSS 파일 내의 import 문에 사용합니다.
 
   예를 들어 CSS 파일에 `@import 'bootstrap';`을 추가하면 webpack은 `node_modules`에서 `bootstrap`을 찾고 거기에서 `package.json`의 `style` 필드를 사용합니다. `style` 필드가 없으면 webpack은 이전 버전과의 호환성을 유지하기 위해 `main` 필드를 대신 사용합니다.
 
@@ -258,9 +290,9 @@ TypeScript, Babel, SWC 및 Flow.js는 매직 주석을 보존하도록 구성할
 
 Esbuild는 이 기능과 호환되지 않습니다([evanw/esbuild#1439](https://github.com/evanw/esbuild/issues/1439) 및 [evanw/esbuild#309](https://github.com/evanw/esbuild/issues/309) 참조). 하지만 향후 지원될 수 있습니다.
 
-#### Not implemented
+<Badge text="5.105.0+" />
 
-ContextModule에서는 import.defer()가 아직 지원되지 않습니다(가져오기 경로는 동적 표현식입니다).
+`import.defer()`가 이제 ContextModule에서 지원됩니다(가져오기 경로는 동적 표현식입니다). 예제는 [지연 로딩 가이드](/guides/lazy-loading/#defer-import-example)를 참조하세요.
 
 ### experiments.futureDefaults
 

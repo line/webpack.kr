@@ -25,9 +25,33 @@ devtool 옵션은 소스맵 생성 여부와 방법을 제어합니다.
 
 ## devtool
 
-`string = 'eval'` `false`
+`string = 'eval'` `Array<{ type: "all" | "javascript" | "css", use: string }>` `false`
 
 디버깅 과정 향상을 위해 [source mapping](http://blog.teamtreehouse.com/introduction-source-maps) 스타일을 선택합니다. 이 값은 빌드 및 리빌드 속도에 큰 영향을 미칠 수 있습니다.
+
+<Badge text="5.105.0+" />
+
+또한 다양한 자산 유형에 대해 서로 다른 소스 맵 스타일을 구성하기 위해 객체 배열을 제공할 수도 있습니다.
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  // ...
+  devtool: [
+    { type: "javascript", use: "source-map" },
+    { type: "css", use: "inline-source-map" },
+  ],
+};
+```
+
+`type` 필드는 어떤 자산 유형이 devtool 값을 받아야 하는지 지정합니다.
+
+- `"all"` - 모든 자산 유형(JavaScript 및 CSS)에 적용
+- `"javascript"` - JavaScript 파일에만 적용
+- `"css"` - CSS 파일에만 적용
+
+배열을 사용하는 경우 각 항목은 순서대로 처리됩니다. 문자열 값을 제공하면 `{ type: "all", use: "your-string-value" }`로 처리됩니다.
 
 T> webpack 저장소에는 [모든 `devtool` 변형 효과를 보여주는 예제](https://github.com/webpack/webpack/tree/master/examples/source-map)가 포함되어 있습니다. 이 예제는 차이점을 이해하는 데 도움이 될 것입니다.
 

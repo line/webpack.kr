@@ -157,6 +157,94 @@ Webpack 특유의 속성입니다. [`module.hot`](#modulehot-webpack-specific)�
   });
   ```
 
+### import.meta.main
+
+<Badge text="5.103.0+" />
+
+현재 모듈이 엔트리 포인트인지 여부를 나타내는 부울 값을 반환합니다.
+
+**src/index.js** (엔트리 포인트)
+
+```javascript
+console.log(import.meta.main); // true
+```
+
+**src/utils.js** (엔트리 포인트가 아닙니다)
+
+```javascript
+console.log(import.meta.main); // false
+```
+
+이는 Node.js의 `require.main === module` 검사와 유사하게, 진입 모듈에서만 실행되어야 하는 조건부 로직에 유용합니다.
+
+### import.meta.env
+
+<Badge text="5.103.0+" />
+
+다양한 소스에서 환경 변수에 접근할 수 있습니다. `import.meta.env`는 `process.env`와 유사하게 동작하는 객체로, 다양한 webpack 플러그인 및 구성 옵션을 통해 정의된 환경 변수에 접근할 수 있도록 해줍니다.
+
+**webpack.config.js**
+
+```js
+const webpack = require("webpack");
+
+module.exports = {
+  mode: "production", // NODE_ENV는 자동으로 "production"으로 설정됩니다.
+  dotenv: {
+    prefix: "WEBPACK_", // WEBPACK_ 접두사가 붙은 변수만 노출합니다.
+  },
+  plugins: [
+    // EnvironmentPlugin은 process.env의 변수를 노출합니다.
+    new webpack.EnvironmentPlugin({
+      API_URL: "https://api.example.com",
+    }),
+    // DefinePlugin은 사용자 정의 정의를 허용합니다.
+    new webpack.DefinePlugin({
+      "import.meta.env.CUSTOM_VAR": JSON.stringify("custom_value"),
+    }),
+  ],
+};
+```
+
+**src/index.js**
+
+```js
+// 환경 변수에 접근
+console.log(import.meta.env.NODE_ENV); // "production" (모드에서 가져옴)
+console.log(import.meta.env.API_URL); // EnvironmentPlugin 또는 process.env의 값
+console.log(import.meta.env.CUSTOM_VAR); // "custom_value"(DefinePlugin에서 가져옴)
+
+// 타입 검사
+console.log(typeof import.meta.env); // "object"
+
+// 참 같은 값 검사
+if (import.meta.env) {
+  // import.meta.env는 참 같은 값입니다.
+}
+
+// 존재하지 않는 속성에 접근하면 undefined가 반환됩니다.
+if (!import.meta.env.NOT_EXIST) {
+  // NOT_EXIST는 정의되지 않았거나 거짓입니다.
+}
+
+// 구조 분해 할당
+const { NODE_ENV, API_URL } = import.meta.env;
+```
+
+**환경 변수의 출처:**
+
+1. **`mode` 옵션**: webpack 모드(`development`, `production` 또는 `none`)에 따라 `import.meta.env.NODE_ENV`를 자동으로 설정합니다.
+
+2. **[`EnvironmentPlugin`](/plugins/environment-plugin)**: `process.env`의 변수를 노출하거나 기본값을 제공합니다.
+
+3. **[`DotenvPlugin`](/configuration/dotenv)**: `.env` 파일에서 변수를 로드합니다. 지정된 접두사(기본값: `WEBPACK_`)가 있는 변수만 노출됩니다.
+
+4. **[`DefinePlugin`](/plugins/define-plugin)**: `"import.meta.env.*"` 패턴을 사용하여 사용자 정의를 허용합니다.
+
+T> 서로 다른 소스의 변수가 병합됩니다. 동일한 변수가 여러 소스에서 정의된 경우 우선순위는 플러그인 실행 순서에 따라 결정됩니다.
+
+`import.meta.env`는 `process.env`와 유사하게 동작합니다. 객체이며 `typeof` 검사를 지원하고, 존재하지 않는 속성에 접근하면 `undefined`를 반환합니다.
+
 ## \_\_filename (NodeJS)
 
 `node.__filename`의 설정 옵션은 다음과 같습니다.
@@ -188,6 +276,8 @@ __resourceQuery === "?test";
 ## \_\_webpack_require\_\_ (webpack-specific)
 
 원시 요청 함수입니다. 이 표현식은 파서에 의해 의존성이 파싱되지 않습니다.
+
+W> webpack 번들이 다시 번들링될 때(예: 이전에 번들링된 출력물을 입력으로 사용할 때), [`CompatibilityPlugin`](/plugins/internal-plugins/#compatibilityplugin)은 충돌을 방지하기 위해 이전 번들의 `__webpack_require__` 함수 이름을 변경합니다(예: `__nested_webpack_require_*`). 이러한 경우에는 [`__webpack_global__`](#__webpack_global__-webpack-specific)을 사용하면 현재 컴파일의 `__webpack_require__` 함수에 항상 접근할 수 있습니다.
 
 ## \_\_webpack_chunk_load\_\_ (webpack-specific)
 
@@ -257,6 +347,18 @@ __webpack_get_script_filename__ = (chunkId) => {
 ## \_\_non_webpack_require\_\_ (webpack-specific)
 
 webpack에 의해 파싱되지 않는 `require` 함수를 생성합니다. 가능한 경우 전역 요청 함수로 멋진 작업을 수행하는데 사용할 수 있습니다.
+
+## \_\_webpack_global\_\_ (webpack-specific)
+
+<Badge text="5.104.0+" />
+
+`__webpack_require__`의 별칭입니다. webpack 번들이 다시 번들링될 때(예: 이전에 번들링된 출력이 입력으로 사용될 때), `CompatibilityPlugin`은 충돌을 방지하기 위해 이전 번들의 `__webpack_require__` 함수 이름을 변경합니다. `__webpack_global__`을 사용하면 현재 컴파일의 `__webpack_require__` 함수에 항상 접근할 수 있습니다.
+
+**src/module.js**
+
+```js
+__webpack_global__.myProperty = "value";
+```
 
 ## \_\_webpack_exports_info\_\_ (webpack-specific)
 

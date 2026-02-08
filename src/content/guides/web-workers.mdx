@@ -27,6 +27,33 @@ new Worker(
 
 [`Worker` API](https://developer.mozilla.org/en-US/docs/Web/API/Worker/Worker)에서는 `Worker` 생성자가 스크립트의 URL을 나타내는 문자열을 허용한다고 설명하지만, webpack 5에서는 `URL`만 사용할 수 있다는 점에 유의하세요.
 
+<Badge text="5.105.0+" />
+
+`new Worker()`를 사용할 때, 웹팩은 패키지의 `exports` 필드에 정의된 내보내기 조건 이름을 통해 워커 모듈을 찾을 수 있습니다. 이를 통해 패키지는 워커별 버전의 모듈을 자동으로 제공할 수 있습니다.
+
+**package.json** (종속성 패키지에서):
+
+```json
+{
+  "name": "my-package",
+  "exports": {
+    ".": {
+      "worker": "./index.worker.js",
+      "default": "./index.js"
+    }
+  }
+}
+```
+
+워커 컨텍스트 내에서 이 패키지를 임포트할 때:
+
+```js
+// Inside a worker file
+import { someFunction } from "my-package";
+```
+
+Webpack은 모듈을 워커 컨텍스트에서 사용할 경우 별도의 설정 없이 자동으로 `index.worker.js`로 해석합니다.
+
 W> `Worker` 생성자에서 변수를 사용하는 것은 webpack에서 지원되지 않습니다. 예를들어 다음과 같은 코드는 동작하지 않습니다. `const url = new URL('./path/to/worker.ts', import.meta.url); const worker = new Worker(url);`. Webpack은 구문을 정적으로 분석할 수 없기 때문입니다. Webpack에서 `Worker` 구문을 사용할 때는 이러한 제한이 있다는 것을 알고 있어야 합니다.
 
 ## Example

@@ -96,9 +96,13 @@ webpack이 엔트리를 분할할 수 있도록 `dist/index.html` 파일도 업�
 **webpack.config.js**
 
 ```diff
- const path = require('path');
+ import path from 'node:path';
+ import { fileURLToPath } from 'node:url';
 
- module.exports = {
+ const __filename = fileURLToPath(import.meta.url);
+ const __dirname = path.dirname(__filename);
+
+ export default {
 -  entry: './src/index.js',
 +  entry: {
 +    index: './src/index.js',
@@ -142,10 +146,14 @@ npm install --save-dev html-webpack-plugin
 **webpack.config.js**
 
 ```diff
- const path = require('path');
-+const HtmlWebpackPlugin = require('html-webpack-plugin');
+ import path from 'node:path';
+ import { fileURLToPath } from 'node:url';
++import HtmlWebpackPlugin from 'html-webpack-plugin';
 
- module.exports = {
+ const __filename = fileURLToPath(import.meta.url);
+ const __dirname = path.dirname(__filename);
+
+ export default {
    entry: {
      index: './src/index.js',
      print: './src/print.js',
@@ -191,10 +199,14 @@ webpack 5.4.0 compiled successfully in 2189 ms
 **webpack.config.js**
 
 ```diff
- const path = require('path');
- const HtmlWebpackPlugin = require('html-webpack-plugin');
+ import path from 'node:path';
+ import { fileURLToPath } from 'node:url';
+ import HtmlWebpackPlugin from 'html-webpack-plugin';
 
- module.exports = {
+ const __filename = fileURLToPath(import.meta.url);
+ const __dirname = path.dirname(__filename);
+
+ export default {
    entry: {
      index: './src/index.js',
      print: './src/print.js',

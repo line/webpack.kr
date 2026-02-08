@@ -746,6 +746,31 @@ module.exports = {
 
 해시를 생성할 때 사용하는 인코딩입니다. Node.JS의 모든 인코딩 [`hash.digest`](https://nodejs.org/api/buffer.html#buffers-and-character-encodings)가 지원됩니다. 파일 이름에`'base64'`를 사용하면 알파벳에 `/` 문자가 있으므로 문제가 될 수 있습니다. 마찬가지로`'latin1'`은 모든 문자를 포함 할 수 있습니다.
 
+<Badge text="5.104.0+" />
+
+표준 Node.js 인코딩 외에도 webpack은 더 짧거나 URL에 안전한 해시 값을 생성하기 위한 다음과 같은 사용자 지정 다이제스트 알고리즘을 지원합니다.
+
+- `base64url` - URL 안전 Base64 인코딩(RFC 4648), 파일 이름에 권장
+- `base62` - Base62 인코딩(0-9, A-Z, a-z)
+- `base58` - Base58 인코딩(비트코인 알파벳)
+- `base52` - Base52 인코딩(A-Z, a-z)
+- `base49` - Base49 인코딩
+- `base36` - Base36 인코딩(0-9, A-Z)
+- `base32` - Base32 인코딩(RFC 4648)
+- `base25` - Base25 인코딩
+
+이러한 사용자 지정 인코딩은 URL 안전성을 유지하면서 파일 이름의 해시 값을 더 짧게 생성하는 데 특히 유용합니다.
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  output: {
+    hashDigest: "base64url", // 파일 이름에 대한 URL 안전한 인코딩
+  },
+};
+```
+
 ## output.hashDigestLength
 
 `number = 20`

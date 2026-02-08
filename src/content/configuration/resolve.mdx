@@ -856,6 +856,86 @@ module.exports = {
 };
 ```
 
+### resolve.tsconfig
+
+<Badge text="5.105.0+" />
+
+`boolean` `string` `object`
+
+TypeScript 경로 매핑 설정입니다. 이 옵션을 사용하면 `tsconfig-paths-webpack-plugin`이 더 이상 필요하지 않습니다. `tsconfig.json` 파일에서 `compilerOptions.baseUrl`과 `compilerOptions.paths`를 읽어와서 가져오기를 해결할 때 해당 별칭을 적용합니다.
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  // ...
+  resolve: {
+    tsconfig: true, // 기본 tsconfig.json 사용
+  },
+};
+```
+
+**Options:**
+
+- `false` - TypeScript 경로 매핑 비활성화
+- `true` - 기본 `tsconfig.json` 파일 사용(자동으로 검색)
+- `string` - `tsconfig.json` 파일 경로(상대 경로 또는 절대 경로)
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  // ...
+  resolve: {
+    tsconfig: "./tsconfig.app.json", // 사용자 지정 경로
+  },
+};
+```
+
+- `object` - `configFile` 및 `references` 옵션을 포함하는 객체
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  // ...
+  resolve: {
+    tsconfig: {
+      configFile: "./tsconfig.json",
+      references: "auto", // 또는 경로 배열
+    },
+  },
+};
+```
+
+**Object options:**
+
+- `configFile` (`string`): tsconfig 파일의 경로(상대 경로 또는 절대 경로)
+- `references` (`"auto"` | `string[]`): 다른 tsconfig 파일에 대한 참조. `"auto"`는 TypeScript config를 상속하거나 상대/절대 경로 배열을 사용합니다.
+
+**Example tsconfig.json:**
+
+```json
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "components/*": ["src/components/*"]
+    }
+  }
+}
+```
+
+그런 다음 코드에서 다음과 같이 작성합니다.
+
+```ts
+import Button from "@/components/Button";
+import Header from "components/Header";
+```
+
+T> 이 옵션은 `resolveLoader`에서도 동일한 구성 옵션으로 사용할 수 있습니다.
+
 ## resolveLoader
 
 `object { modules [string] = ['node_modules'], extensions [string] = ['.js', '.json'], mainFields [string] = ['loader', 'main']}`
