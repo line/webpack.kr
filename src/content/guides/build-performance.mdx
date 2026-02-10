@@ -8,6 +8,7 @@ contributors:
   - madhavarshney
   - wizardofhogwarts
   - anikethsaha
+  - Brennvo
 translators:
   - YukJiSoo
 ---
@@ -33,7 +34,7 @@ translators:
 최소한으로 필요한 모듈에만 로더를 적용하세요.
 
 ```js
-module.exports = {
+export default {
   // ...
   module: {
     rules: [
@@ -49,9 +50,13 @@ module.exports = {
 위와 같은 방식보다는 아래처럼 `include` 필드를 사용하여 실제로 변환해야 하는 모듈에만 로더를 적용합니다.
 
 ```js
-const path = require("node:path");
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
   // ...
   module: {
     rules: [
@@ -162,7 +167,7 @@ Webpack은 파일 시스템에 업데이트된 청크만 내보냅니다. 일부
 엔트리 청크를 작게 유지하여 내보내는 비용이 저렴한지 확인하세요. 아래의 설정은 런타임 코드에 대한 추가 청크를 생성하므로 생성 비용이 저렴합니다.
 
 ```js
-module.exports = {
+export default {
   // ...
   optimization: {
     runtimeChunk: true,
@@ -175,7 +180,7 @@ module.exports = {
 Webpack은 크기 및 부하 성능에 대한 출력을 최적화하기 위해 추가 알고리즘 작업을 수행합니다. 이러한 최적화는 작은 코드 베이스에서는 성능이 좋지만 큰 코드에서는 비용이 많이들 수 있습니다.
 
 ```js
-module.exports = {
+export default {
   // ...
   optimization: {
     removeAvailableModules: false,
@@ -190,7 +195,7 @@ module.exports = {
 Webpack은 출력 번들에 경로 정보를 생성하는 기능이 있습니다. 그러나 이것은 수천 개의 모듈을 번들로 묶는 프로젝트에서 가비지 컬렉션에 과부화를 줍니다. `options.output.pathinfo` 설정에서 이 기능을 끄세요.
 
 ```js
-module.exports = {
+export default {
   // ...
   output: {
     pathinfo: false,
@@ -209,7 +214,7 @@ Node.js 버전 8.9.10 - 9.11.1의 ES2015 `Map` 및 `Set` 구현에서 [성능 �
 `ts-loader`를 사용할 때 빌드 시간을 개선하려면 `transpileOnly` 로더 옵션을 사용하세요. 이 옵션은 자체적으로 타입 검사를 해제합니다. 타입 검사를 다시 받으려면 [`ForkTsCheckerWebpackPlugin`](https://www.npmjs.com/package/fork-ts-checker-webpack-plugin)을 사용하세요. 이렇게 각각 별도의 프로세스로 이동시키면 TypeScript 유형 검사 및 ESLint linting 속도가 빨라집니다.
 
 ```js
-module.exports = {
+export default {
   // ...
   test: /\.tsx?$/,
   use: [

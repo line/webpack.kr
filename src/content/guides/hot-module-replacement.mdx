@@ -21,6 +21,7 @@ contributors:
   - wizardofhogwarts
   - aholzner
   - snitin315
+  - Brennvo
 translators:
   - YukJiSoo
 related:
@@ -47,10 +48,14 @@ T> `webpack-dev-server` 대신 `webpack-dev-middleware`를 사용한다면 [`web
 **webpack.config.js**
 
 ```diff
-  const path = require('path');
-  const HtmlWebpackPlugin = require('html-webpack-plugin');
+  import path from 'node:path';
+  import { fileURLToPath } from 'node:url';
+  import HtmlWebpackPlugin from 'html-webpack-plugin';
 
-  module.exports = {
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+
+  export default {
     entry: {
        app: './src/index.js',
 -      print: './src/print.js',
@@ -78,11 +83,15 @@ HMR에 대한 수동 엔트리포인트를 제공할 수도 있습니다.
 **webpack.config.js**
 
 ```diff
-  const path = require('path');
-  const HtmlWebpackPlugin = require('html-webpack-plugin');
-+ const webpack = require("webpack");
+  import path from 'node:path';
+  import { fileURLToPath } from 'node:url';
+  import HtmlWebpackPlugin from 'html-webpack-plugin';
++ import webpack from 'webpack';
 
-  module.exports = {
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+
+  export default {
     entry: {
        app: './src/index.js',
 -      print: './src/print.js',
@@ -183,10 +192,14 @@ HMR을 활성화하려면 HMR 엔트리 포인트를 포함하도록 webpack 설
 **dev-server.js**
 
 ```javascript
-const path = require("node:path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const webpack = require("webpack");
-const WebpackDevServer = require("webpack-dev-server");
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import HtmlWebpackPlugin from "html-webpack-plugin";
+import webpack from "webpack";
+import WebpackDevServer from "webpack-dev-server";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const config = {
   mode: "development",
@@ -289,10 +302,14 @@ npm install --save-dev style-loader css-loader
 **webpack.config.js**
 
 ```diff
-  const path = require('path');
-  const HtmlWebpackPlugin = require('html-webpack-plugin');
+  import path from 'node:path';
+  import { fileURLToPath } from 'node:url';
+  import HtmlWebpackPlugin from 'html-webpack-plugin';
 
-  module.exports = {
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+
+  export default {
     entry: {
       app: './src/index.js',
     },
