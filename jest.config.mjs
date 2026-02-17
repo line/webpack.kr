@@ -10,7 +10,6 @@ export default {
     "tsx",
     "json",
     "node",
-    "mjs",
   ],
   testMatch: [
     "**/__tests__/**/*.[jt]s?(x)",
