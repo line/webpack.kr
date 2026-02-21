@@ -9,6 +9,7 @@ contributors:
   - spence-s
   - dkdk225
   - alexander-akait
+  - GreenUpOu
 translators:
   - keipark
 related:
@@ -113,7 +114,7 @@ import "./publicPath.js";
 **webpack.config.js**
 
 ```diff
-const path = require('path');
+const path = require("node:path");
 
 module.exports = {
   entry: './src/index.js',
@@ -151,7 +152,7 @@ webpack 설정에서 [`output.assetModuleFilename`](/configuration/output/#outpu
 **webpack.config.js**
 
 ```diff
-const path = require('path');
+const path = require("node:path");
 
 module.exports = {
   entry: './src/index.js',
@@ -174,7 +175,7 @@ module.exports = {
 특정 디렉터리에 애셋을 내보낼때 출력 파일명을 사용자 정의하는 경우도 있습니다.
 
 ```diff
-const path = require('path');
+const path = require("node:path");
 
 module.exports = {
   entry: './src/index.js',
@@ -206,7 +207,7 @@ module.exports = {
 **webpack.config.js**
 
 ```diff
-const path = require('path');
+const path = require("node:path");
 
 module.exports = {
   entry: './src/index.js',
@@ -244,7 +245,7 @@ block.style.background = `url(${metroMap})`; // url(data:image/svg+xml;base64,PH
 **webpack.config.js**
 
 ```diff
-const path = require('path');
+const path = require("node:path");
 + const svgToMiniDataURI = require('mini-svg-data-uri');
 
 module.exports = {
@@ -277,7 +278,7 @@ module.exports = {
 **webpack.config.js**
 
 ```diff
-const path = require('path');
+const path = require("node:path");
 
 module.exports = {
   entry: './src/index.js',
@@ -322,7 +323,7 @@ import exampleText from "./example.txt" with { type: "text" };
 block.textContent = exampleText; // 'Hello world';
 ```
 
-모든 `.txt` 파일은 있는 그대로 번들에 삽입됩니다.
+모든 `.txt` 파일은 UTF-8 문자열로 번들에 포함됩니다.
 
 ## URL assets
 
@@ -371,7 +372,7 @@ console.log(url.pathname === ",");
 **webpack.config.js**
 
 ```diff
-const path = require('path');
+const path = require("node:path");
 
 module.exports = {
   entry: './src/index.js',
@@ -397,7 +398,7 @@ webpack 설정의 module rule 단계에서 [`Rule.parser.dataUrlCondition.maxSiz
 **webpack.config.js**
 
 ```diff
-const path = require('path');
+const path = require("node:path");
 
 module.exports = {
   entry: './src/index.js',
@@ -428,7 +429,7 @@ module.exports = {
 **webpack.config.js**
 
 ```diff
-const path = require('path');
+const path = require("node:path");
 
 module.exports = {
   entry: './src/index.js',
@@ -461,9 +462,9 @@ Hello world
 import exampleText from "./example.txt";
 
 const decoder = new TextDecoder("utf-8");
-const textString = decoder.decode(exampleText); // 'Uint8Array'
+const textString = decoder.decode(exampleText);
 
-block.textContent = exampleText; // 'Hello world';
+block.textContent = textString; // 'Hello world';
 ```
 
 다른 사용법:
@@ -474,12 +475,12 @@ block.textContent = exampleText; // 'Hello world';
 import exampleText from "./example.txt" with { type: "bytes" };
 
 const decoder = new TextDecoder("utf-8");
-const textString = decoder.decode(exampleText); // 'Uint8Array'
+const textString = decoder.decode(exampleText);
 
-block.textContent = exampleText; // 'Hello world';
+block.textContent = textString; // 'Hello world';
 ```
 
-모든 `.txt` 파일은 그대로 번들에 삽입됩니다.
+모든 `.txt` 파일은 텍스트 인코딩이나 변환 없이 원시 바이트(Uint8Array) 형태로 번들에 삽입됩니다.
 
 ## Replacing Inline Loader Syntax
 

@@ -26,7 +26,7 @@ Webpack은 여러 프로그래밍과 데이터 언어로 작성된 설정 파일
 [TypeScript](http://www.typescriptlang.org/)에서 webpack 설정을 하기 위해서는, 먼저 필요한 디펜던시, 예를들면 TypeScript와 [DefinitelyTyped](https://definitelytyped.org/)에서 관련있는 타입 정의를 설치해야 합니다.
 
 ```bash
-npm install --save-dev typescript ts-node @types/node @types/webpack
+npm install --save-dev typescript ts-node @types/node
 # webpack-dev-server < v4.7.0을 사용하는 경우
 npm install --save-dev @types/webpack-dev-server
 ```
@@ -142,7 +142,7 @@ npm install --save-dev coffeescript
 ```coffeescript
 HtmlWebpackPlugin = require('html-webpack-plugin')
 webpack = require('webpack')
-path = require('path')
+path = require("node:path")
 
 config =
   mode: 'production'

@@ -9,6 +9,7 @@ contributors:
   - EugeneHlushko
   - chenxsan
   - snitin315
+  - tusharthakur04
 translators:
   - dkstyle
 ---
@@ -68,12 +69,21 @@ webpack 설정에 대한 자세한 내용은 [설정 콘셉트를](/concepts/con
 
 이제 TypeScript를 처리하도록 webpack을 설정해 보겠습니다.
 
-**webpack.config.js**
+First, install the required dependencies:
 
-```js
-const path = require("node:path");
+```bash
+npm install --save-dev ts-node @types/node
+```
 
-module.exports = {
+**webpack.config.ts**
+
+```ts
+import path from "node:path";
+import webpack from "webpack";
+// in case you run into any TypeScript error when configuring `devServer`
+import "webpack-dev-server";
+
+const config: webpack.Configuration = {
   entry: "./src/index.ts",
   module: {
     rules: [
@@ -92,7 +102,11 @@ module.exports = {
     path: path.resolve(__dirname, "dist"),
   },
 };
+
+export default config;
 ```
+
+> TypeScript 파일에 설정을 작성하는 방법에 대한 자세한 내용은 다음 링크를 참조하세요. (https://webpack.js.org/configuration/configuration-languages/#typescript)
 
 이렇게하면 webpack이 `./index.ts` 를 통해 진입하고, `ts-loader`를 통해 모든 `.ts` 및 `.tsx` 파일을 로드합니다. 그리고 현재 디렉터리에 `bundle.js`파일을 출력합니다.
 
@@ -191,7 +205,7 @@ W> `ts-loader` 는 TypeScript 컴파일러인 `tsc`를 사용하고, `tsconfig.j
 **webpack.config.js**
 
 ```diff
-  const path = require('path');
+  const path = require("node:path");
 
   module.exports = {
     entry: './src/index.ts',

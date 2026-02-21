@@ -107,7 +107,17 @@ const worker = new Worker(new URL("./worker.js", import.meta.url));
 worker.postMessage({ publicPath: globalThis.__MY_GLOBAL_PUBLIC_PATH_VAR__ });
 ```
 
+**When to use this:**
+
+이 패턴은 워커가 추가 청크를 로드해야 하고 자산 기본 URL이 런타임에 결정되는 경우(예: CDN 또는 다중 도메인 배포 사용 시)에만 필요합니다.
+
+워커는 격리된 전역 범위에서 실행되므로 자동으로 감지된 공개 경로가 메인 스레드에서 사용하는 경로와 다를 수 있습니다. 이러한 경우 공개 경로(`__webpack_public_path__`)를 워커에 명시적으로 전달하고 워커 런타임 내에서 설정해야 합니다.
+
+> 참고: 이는 고급 사용 사례입니다. 워커가 추가 청크를 로드하지 않거나 자산이 정적 동일 출처 경로에서 제공되는 경우 일반적으로 `__webpack_public_path__`를 수동으로 설정할 필요가 없습니다.
+
 ## Node.js
+
+이 섹션에서는 `worker_threads` 모듈을 통해 Node.js 환경에서 웹 워커를 사용하는 방법을 설명합니다.
 
 비슷한 구문이 12.17.0 이상의 Node.js에서 지원됩니다.
 

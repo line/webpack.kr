@@ -31,7 +31,11 @@ export default function Sidebar({ className = "", pages, currentPage }) {
     <nav className={`sidebar ${className}`}>
       <div className="sidebar__inner">
         <div className="relative z-0 bg-white dark:bg-gray-100 ">
+          <label htmlFor="docs-version" className="sr-only">
+            Select webpack version
+          </label>
           <select
+            id="docs-version"
             className="text-gray-600 text-14 px-5 py-5 appearance-none box-border border border-gray-200 border-solid flex-col flex w-full rounded-none bg-transparent bg-none"
             value={version}
             onChange={(event) => {

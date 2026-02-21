@@ -255,6 +255,9 @@ webpack은 `import`와 `export` 문 이외는 코드를 변경하지 않습니�
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+// import.meta.dirname을 기본적으로 지원하지 않는 Node.js 버전에서는,
+// import.meta.url에서 __dirname을 파생합니다.
+// (Node 20.11 이상 버전에서는 import.meta.dirname과 import.meta.filename을 지원합니다.)
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
