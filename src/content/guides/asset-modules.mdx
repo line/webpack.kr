@@ -38,7 +38,7 @@ webpack 5의 애셋 모듈과 함께 이전 애셋 로더(예 :`file-loader`/`ur
 **webpack.config.js**
 
 ```diff
-module.exports = {
+export default {
   module: {
    rules: [
       {
@@ -63,7 +63,7 @@ module.exports = {
 **webpack.config.js**
 
 ```diff
-module.exports = {
+export default {
   module: {
     rules: [
       {
@@ -98,7 +98,7 @@ __webpack_public_path__ = "https://cdn.url.com";
 그런 다음 `webpack.config.js`에서 `entry` 필드를 다음과 같이 업데이트합니다.
 
 ```javascript
-module.exports = {
+export default {
   entry: ["./publicPath.js", "./App.js"],
 };
 ```
@@ -114,9 +114,13 @@ import "./publicPath.js";
 **webpack.config.js**
 
 ```diff
-const path = require("node:path");
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
   entry: './src/index.js',
   output: {
     filename: 'main.js',
@@ -152,9 +156,13 @@ webpack 설정에서 [`output.assetModuleFilename`](/configuration/output/#outpu
 **webpack.config.js**
 
 ```diff
-const path = require("node:path");
+import path from "node:path";
+import { fileURLToPath } from 'node:url';
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
   entry: './src/index.js',
   output: {
     filename: 'main.js',
@@ -175,9 +183,13 @@ module.exports = {
 특정 디렉터리에 애셋을 내보낼때 출력 파일명을 사용자 정의하는 경우도 있습니다.
 
 ```diff
-const path = require("node:path");
+import path from "node:path";
+import { fileURLToPath } from 'node:url';
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
   entry: './src/index.js',
   output: {
     filename: 'main.js',
@@ -207,9 +219,13 @@ module.exports = {
 **webpack.config.js**
 
 ```diff
-const path = require("node:path");
+import path from "node:path";
+import { fileURLToPath } from 'node:url';
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
   entry: './src/index.js',
   output: {
     filename: 'main.js',
@@ -245,10 +261,15 @@ block.style.background = `url(${metroMap})`; // url(data:image/svg+xml;base64,PH
 **webpack.config.js**
 
 ```diff
-const path = require("node:path");
-+ const svgToMiniDataURI = require('mini-svg-data-uri');
+import path from "node:path";
+import { fileURLToPath } from 'node:url';
++ import svgToMiniDataURI from "mini-svg-data-uri";
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+
+export default {
   entry: './src/index.js',
   output: {
     filename: 'main.js',
@@ -278,9 +299,13 @@ module.exports = {
 **webpack.config.js**
 
 ```diff
-const path = require("node:path");
+import path from "node:path";
+import { fileURLToPath } from 'node:url';
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
   entry: './src/index.js',
   output: {
     filename: 'main.js',
@@ -372,9 +397,13 @@ console.log(url.pathname === ",");
 **webpack.config.js**
 
 ```diff
-const path = require("node:path");
+import path from "node:path";
+import { fileURLToPath } from 'node:url';
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
   entry: './src/index.js',
   output: {
     filename: 'main.js',
@@ -398,9 +427,13 @@ webpack 설정의 module rule 단계에서 [`Rule.parser.dataUrlCondition.maxSiz
 **webpack.config.js**
 
 ```diff
-const path = require("node:path");
+import path from "node:path";
+import { fileURLToPath } from 'node:url';
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
   entry: './src/index.js',
   output: {
     filename: 'main.js',
@@ -429,9 +462,13 @@ module.exports = {
 **webpack.config.js**
 
 ```diff
-const path = require("node:path");
+import path from "node:path";
+import { fileURLToPath } from 'node:url';
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
   entry: './src/index.js',
   output: {
     filename: 'main.js',
@@ -553,7 +590,7 @@ module: {
 서버 사이드 랜더링과 같은 사용 사례의 경우 애셋 방출을 비활성화할 수 있습니다. 이는 `Rule.generator` 하위의 [`emit`](/configuration/module/#rulegeneratoremit) 옵션을 통해 설정 가능합니다.
 
 ```js
-module.exports = {
+export default {
   // …
   module: {
     rules: [

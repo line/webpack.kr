@@ -68,8 +68,8 @@ npm install --save-dev webpack-stream
 **gulpfile.js**
 
 ```js
-const gulp = require("gulp");
-const webpack = require("webpack-stream");
+import gulp from "gulp";
+import webpack from "webpack-stream";
 
 gulp.task("default", () =>
   gulp
@@ -107,7 +107,7 @@ npm install --save-dev webpack karma karma-webpack
 **karma.conf.js**
 
 ```js
-module.exports = function (config) {
+export default function (config) {
   config.set({
     frameworks: ["webpack"],
     files: [
@@ -123,7 +123,7 @@ module.exports = function (config) {
     },
     plugins: ["karma-webpack"],
   });
-};
+}
 ```
 
 자세한 내용은 [karma-webpack 저장소](https://github.com/webpack-contrib/karma-webpack)를 참고하세요.

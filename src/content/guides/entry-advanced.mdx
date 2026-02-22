@@ -42,9 +42,9 @@ CSS를 위한 `프로덕션` 모드에서 [`MiniCssExtractPlugin`](/plugins/mini
 **webpack.config.js**
 
 ```js
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+import MiniCssExtractPlugin from "mini-css-extract-plugin";
 
-module.exports = {
+export default {
   mode: process.env.NODE_ENV,
   entry: {
     home: ["./home.js", "./home.scss"],

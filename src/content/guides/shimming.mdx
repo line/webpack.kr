@@ -77,10 +77,16 @@ webpack-demo
 **webpack.config.js**
 
 ```diff
- const path = require("node:path");
-+const webpack = require('webpack');
+ import path from "node:path";
+ import { fileURLToPath } from 'url';
++import webpack from "webpack";
 
- module.exports = {
+
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+ export default {
    entry: './src/index.js',
    output: {
      filename: 'main.js',
@@ -134,10 +140,14 @@ webpack 5.4.0 compiled successfully in 2910 ms
 **webpack.config.js**
 
 ```diff
- const path = require("node:path");
- const webpack = require('webpack');
+ import path from "node:path";
+ import webpack from "webpack";
+import { fileURLToPath } from 'url';
 
- module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+ export default {
    entry: './src/index.js',
    output: {
      filename: 'main.js',
@@ -178,10 +188,14 @@ webpack 5.4.0 compiled successfully in 2910 ms
 **webpack.config.js**
 
 ```diff
- const path = require("node:path");
- const webpack = require('webpack');
+ import path from "node:path";
+ import webpack from "webpack";
+ import { fileURLToPath } from 'url';
 
- module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+ exports default {
    entry: './src/index.js',
    output: {
      filename: 'main.js',
@@ -240,10 +254,14 @@ const helpers = {
 **webpack.config.js**
 
 ```diff
- const path = require("node:path");
- const webpack = require('webpack');
+ import path from "node:path";
+ import webpack from "webpack";
+ import { fileURLToPath } from 'url';
 
- module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+ export default {
    entry: './src/index.js',
    output: {
      filename: 'main.js',
@@ -360,10 +378,14 @@ import "whatwg-fetch";
 **webpack.config.js**
 
 ```diff
- const path = require("node:path");
- const webpack = require('webpack');
+ import path from "node:path";
+ import webpack from "webpack";
+ import { fileURLToPath } from 'url';
 
- module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+ export default {
 -  entry: './src/index.js',
 +  entry: {
 +    polyfills: './src/polyfills',
