@@ -62,7 +62,7 @@ T> [개발 모드](/configuration/mode/#mode-development)에서 이 플러그인
 다음 코드를 사용하여 설정 옵션 `devtool: eval-source-map`을 동등한 커스텀 플러그인 설정으로 바꿀 수 있습니다.
 
 ```js
-module.exports = {
+export default {
   // ...
   devtool: false,
   plugins: [new webpack.EvalSourceMapDevToolPlugin({})],

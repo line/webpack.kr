@@ -48,17 +48,17 @@ describe("getPageDescription", () => {
 describe("getPageTitle", () => {
   it("should return default title for non-exist page", () => {
     const title = getPageTitle(content, "/xzy");
-    expect(title).toBe("웹팩");
+    expect(title).toBe("Webpack");
   });
 
   it("should return title for printable page", () => {
     const title = getPageTitle(content, "/printable/");
-    expect(title).toBe("인쇄 가능한 페이지 | 웹팩");
+    expect(title).toBe("인쇄 가능한 페이지 | Webpack");
   });
 
   it("should return title for get-started", () => {
     const title = getPageTitle(content, "/guides/getting-started/");
-    expect(title).toBe("Getting Started | 웹팩");
+    expect(title).toBe("Getting Started | Webpack");
   });
 });
 

@@ -45,7 +45,7 @@ new webpack.NormalModuleReplacementPlugin(
 다른 빌드 대상에 대한 특정 값이 포함된 설정을 원한다고 가정해 보겠습니다.
 
 ```javascript
-module.exports = function (env) {
+export default (env) => {
   const appTarget = env.APP_TARGET || "VERSION_A";
   return {
     plugins: [

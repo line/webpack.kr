@@ -77,14 +77,14 @@ export const getPageTitle = (tree, path) => {
   const page = findInContent(tree, (item) => item.url === path);
 
   // non page found
-  if (!page) return "웹팩";
+  if (!page) return "Webpack";
 
   if (page) {
     if (path.includes("/printable")) {
-      return "인쇄 가능한 페이지 | 웹팩";
+      return "인쇄 가능한 페이지 | Webpack";
     }
-    if (path === "/") return page.title || "웹팩";
-    return `${page.title} | 웹팩`;
+    if (path === "/") return page.title || "Webpack";
+    return `${page.title} | Webpack`;
   }
 };
 

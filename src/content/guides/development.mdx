@@ -358,14 +358,12 @@ npm install --save-dev express webpack-dev-middleware
 **server.js**
 
 ```javascript
-const express = require("express");
-const webpack = require("webpack");
-const webpackDevMiddleware = require("webpack-dev-middleware");
+import express from "express";
+import webpack from "webpack";
+import webpackDevMiddleware from "webpack-dev-middleware";
+import config from "./webpack.config.js";
 
 const app = express();
-
-const config = require("./webpack.config.js");
-
 const compiler = webpack(config);
 
 // express에서 webpack-dev-middleware와 webpack.config.js를 사용하도록 설정하세요.

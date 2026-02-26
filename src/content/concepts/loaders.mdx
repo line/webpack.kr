@@ -88,6 +88,8 @@ module.exports = {
 
 `import` 문이나 [그와 동등한 "importing" 메소드](/api/module-methods)에서 로더를 지정할 수 있습니다. 접두사 `!`로 리소스에서 로더를 분리하세요. 각 부분은 현재 디렉터리를 기준으로 해석됩니다.
 
+T> `loader1!loader2!./file` 구문은 예시일 뿐입니다. 대부분의 프로젝트에서는 `module.rules` 파일을 통해 로더를 구성하고, 로더의 부가적인 효과를 위해 스타일을 임포트하는 것이 좋습니다(예: `import "./styles.css"`).
+
 ```js
 import * as styles from "style-loader!css-loader?modules!./styles.css";
 ```

@@ -67,7 +67,7 @@ W> webpack `minimizer`의 기본값이 재정의된 경우 (`TerserPlugin` 옵�
 다음 코드를 사용하여 설정 옵션 `devtool: inline-source-map`을 커스텀 플러그인 설정으로 동등하게 바꿀 수 있습니다.
 
 ```js
-module.exports = {
+export default {
   // ...
   devtool: false,
   plugins: [new webpack.SourceMapDevToolPlugin({})],

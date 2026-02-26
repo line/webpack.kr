@@ -60,7 +60,7 @@ W> 웹 성능 모범 사례에 맞게 기본 설정이 선택되어 있지만, �
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   optimization: {
     splitChunks: {
@@ -109,7 +109,7 @@ W> webpack 5부터 `{cacheGroup}.test`에 엔트리 이름을 전달하고 `{cac
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   optimization: {
     splitChunks: {
@@ -123,7 +123,7 @@ module.exports = {
 또는 더 많은 제어를 위한 기능을 제공할 수 있습니다. 반환 값은 각 청크를 포함할지 여부를 나타냅니다.
 
 ```js
-module.exports = {
+export default {
   // ...
   optimization: {
     splitChunks: {
@@ -139,7 +139,7 @@ module.exports = {
 Webpack 버전 5.86.0 이상을 사용하는 경우 정규식을 전달할 수도 있습니다.
 
 ```js
-module.exports = {
+export default {
   // ...
   optimization: {
     splitChunks: {
@@ -279,7 +279,7 @@ console.log(_.join(["Hello", "webpack"], " "));
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   optimization: {
     splitChunks: {
@@ -323,7 +323,7 @@ W> 다른 분할 청크에 동일한 이름을 할당할 때 모든 vendor 모�
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   optimization: {
     splitChunks: {
@@ -350,7 +350,7 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   optimization: {
     splitChunks: {
@@ -373,7 +373,7 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   optimization: {
     splitChunks: {
@@ -400,7 +400,9 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-module.exports = {
+import path from "node:path";
+
+export default {
   // ...
   optimization: {
     splitChunks: {
@@ -409,7 +411,6 @@ module.exports = {
           test(module) {
             // `module.resource`는 디스크에 있는 파일의 절대 경로를 포함합니다.
             // 플랫폼 간 호환성을 위해 / 또는 \ 대신 `path.sep`을 사용합니다.
-            const path = require("node:path");
 
             return (
               module.resource &&
@@ -436,7 +437,7 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   optimization: {
     splitChunks: {
@@ -463,7 +464,7 @@ W> 이 옵션은 `splitChunks.filename`에서 전역적으로 설정할 수도 �
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   optimization: {
     splitChunks: {
@@ -482,7 +483,7 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   optimization: {
     splitChunks: {
@@ -503,7 +504,7 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   optimization: {
     splitChunks: {
@@ -526,7 +527,7 @@ Webpack에 [`splitChunks.minSize`](#splitchunksminsize), [`splitChunks.minChunks
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   optimization: {
     splitChunks: {
@@ -549,7 +550,7 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   optimization: {
     splitChunks: {
@@ -634,7 +635,7 @@ import "./more-helpers"; // more-helpers 또한 40kb의 크기를 가집니다
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   optimization: {
     splitChunks: {
@@ -659,7 +660,7 @@ W> 이 구성은 초기 번들을 확장할 수 있으므로 모듈이 즉시 �
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   optimization: {
     splitChunks: {
@@ -684,7 +685,7 @@ W> 이로 인해 모든 외부 패키지가 포함된 큰 청크가 생성될 �
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   optimization: {
     splitChunks: {

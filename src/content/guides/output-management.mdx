@@ -138,7 +138,7 @@ webpack이 `print.bundle.js` 과 `index.bundle.js` 파일을 생성하는 것을
 
 T> `print.bundle.js` 파일을 검사해 보면 `printMe` 함수가 없는 것을 알 수 있습니다. 대신, 눈에 띄는 부작용이 없는 즉시 실행 함수 표현식(IIFE)만 포함되어 있습니다.<br /><br />
 이는 현재 설정에서 webpack이 각 진입점을 번들이 로드될 때 실행되는 독립 실행형 프로그램으로 취급하기 때문입니다. `print.js`는 함수만 내보내고 `printMe()`를 호출하지 않으므로, 자체 진입점으로 실행하는 데 실행 가능한 런타임 코드가 필요하지 않습니다. 따라서 눈에 띄는 부작용이 없으므로 해당 코드를 최적화로 생략할 수 있습니다.<br /><br />
-반면, `index.js`는 `printMe`를 가져와 사용하므로 webpack은 `index.bundle.js`에 해당 함수를 직접 포함합니다. 웹팩은 모듈 번들러이므로 `index.bundle.js` 파일에는 해결되지 않은 import 문 대신 실행에 필요한 모든 코드가 포함되어 있다는 점을 기억하세요.<br /><br />
+반면, `index.js`는 `printMe`를 가져와 사용하므로 webpack은 `index.bundle.js`에 해당 함수를 직접 포함합니다. Webpack은 모듈 번들러이므로 `index.bundle.js` 파일에는 해결되지 않은 import 문 대신 실행에 필요한 모든 코드가 포함되어 있다는 점을 기억하세요.<br /><br />
 여기서는 출력 관리 및 `HtmlWebpackPlugin`을 시연하기 위해 여러 진입점을 사용했습니다. 실제 프로젝트에서는 일반적으로 이와 같은 유틸리티 모듈에 대해 별도의 진입점을 만들지 않습니다. 종속성을 공유하는 여러 진입점이 있는 경우 코드 분할 가이드의 [중복 방지](/guides/code-splitting/#prevent-duplication)를 참고하세요.
 
 ## Setting up HtmlWebpackPlugin

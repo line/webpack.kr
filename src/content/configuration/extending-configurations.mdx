@@ -3,6 +3,7 @@ title: Extends
 sort: 12
 contributors:
   - burhanuday
+  - tusharthakur04
 ---
 
 ## extends
@@ -132,6 +133,90 @@ module.exports = {
     path: path.resolve(__dirname, "build"),
     filename: "[name].bundle.js",
   },
+};
+```
+
+## Concatinating rules and plugins
+
+문자열과 같은 기본 값은 덮어쓰여지지만, 배열 필드는 교체되는 대신 연결됩니다. 이러한 동작은 Webpack이 extends를 처리할 때 내부적으로 사용하는 webpack-merge 때문입니다.
+
+**base.webpack.config.js**
+
+```javascript
+const webpack = require("webpack");
+
+module.exports = {
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        use: "babel-loader",
+      },
+    ],
+  },
+  plugins: [
+    new webpack.DefinePlugin({
+      __DEV__: false,
+    }),
+  ],
+};
+```
+
+**webpack.config.js**
+
+```javascript
+const path = require("node:path");
+const webpack = require("webpack");
+
+module.exports = {
+  extends: path.resolve(__dirname, "./base.webpack.config.js"),
+
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: ["style-loader", "css-loader"],
+      },
+    ],
+  },
+
+  plugins: [new webpack.HotModuleReplacementPlugin()],
+};
+```
+
+**병합 후 결과**
+
+모듈이 교체되는 대신 규칙과 플러그인 배열이 연결되었습니다.
+
+```javascript
+const webpack = require("webpack");
+
+module.exports = {
+  module: {
+    rules: [
+      // From base.webpack.config.js
+      {
+        test: /\.js$/,
+        use: "babel-loader",
+      },
+
+      // From webpack.config.js (appended)
+      {
+        test: /\.css$/,
+        use: ["style-loader", "css-loader"],
+      },
+    ],
+  },
+
+  plugins: [
+    // From base.webpack.config.js
+    new webpack.DefinePlugin({
+      __DEV__: false,
+    }),
+
+    // From webpack.config.js (appended)
+    new webpack.HotModuleReplacementPlugin(),
+  ],
 };
 ```
 

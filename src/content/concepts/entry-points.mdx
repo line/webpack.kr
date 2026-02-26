@@ -52,11 +52,24 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
+```js
 module.exports = {
   entry: ["./src/file_1.js", "./src/file_2.js"],
-  output: {
-    filename: "bundle.js",
+};
+```
+
+엔트리포인트에 배열이 제공되더라도 Webpack은 여전히 ​​**단일 엔트리포인트 청크**를 생성합니다.
+배열에 있는 모든 모듈은 지정된 순서대로 로드되어 동일한 의존성 그래프로 결합됩니다.
+
+이 패턴은 일반적으로 애플리케이션 소스 코드에 수동으로 가져오지 않고,
+폴리필이나 개발 전용 도구와 같은 추가 코드를 메인 애플리케이션 진입점 앞에 삽입하는 데 사용됩니다.
+
+**Example: Injecting a polyfill**
+
+```js
+module.exports = {
+  entry: {
+    main: ["@babel/polyfill", "./src/index.js"],
   },
 };
 ```

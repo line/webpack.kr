@@ -92,3 +92,26 @@
     margin-left: 1px;
   }
 }
+
+.footer__top {
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 40px 20px 30px 20px;
+}
+.footer__openjs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.footer__top p {
+  margin: 0 auto;
+  line-height: 1.6;
+  color: getColor(mine-shaft);
+  font-size: getFontSize(-1);
+}
+
+.footer__top p + p {
+  margin-top: 18px;
+}

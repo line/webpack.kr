@@ -29,6 +29,7 @@ import isClient from "../../utilities/is-client.js";
 import Container from "../Container/Container.jsx";
 import Footer from "../Footer/Footer.jsx";
 import Navigation from "../Navigation/Navigation.jsx";
+import OfflineBanner from "../OfflineBanner/OfflineBanner.jsx";
 import Page from "../Page/Page.jsx";
 import PageNotFound from "../PageNotFound/PageNotFound.jsx";
 import Sidebar from "../Sidebar/Sidebar.jsx";
@@ -141,7 +142,7 @@ function Site(props) {
 
   const description =
     getPageDescription(Content, location.pathname) ||
-    "웹팩은 모듈 번들러입니다. 주요 목적은 브라우저에서 사용할 수 있도록 JavaScript 파일을 번들로 묶는 것이지만, 리소스나 애셋을 변환하고 번들링 또는 패키징할 수도 있습니다.";
+    "Webpack은 모듈 번들러입니다. 주요 목적은 브라우저에서 사용할 수 있도록 JavaScript 파일을 번들로 묶는 것이지만, 리소스나 애셋을 변환하고 번들링 또는 패키징할 수도 있습니다.";
 
   function isPrintPage(url) {
     return url.includes("/printable");
@@ -174,7 +175,7 @@ function Site(props) {
         ) : null}
         <title>{title}</title>
         <meta name="description" content={description} />
-        <meta property="og:site_name" content="웹팩 한글문서" />
+        <meta property="og:site_name" content="Webpack 한글문서" />
         <meta property="og:type" content="website" />
         <meta property="og:title" content={title} />
         <meta
@@ -218,6 +219,7 @@ function Site(props) {
         <meta name="msapplication-TileColor" content="#465e69" />
       </Helmet>
       <div className="site__header">
+        <OfflineBanner />
         <Navigation
           pathname={location.pathname}
           hash={location.hash}

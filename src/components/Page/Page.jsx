@@ -103,7 +103,7 @@ export default function Page(props) {
     );
   }
   return (
-    <section className="page">
+    <main id="main-content" className="page">
       <Markdown>
         <h1>{title}</h1>
 
@@ -155,7 +155,7 @@ export default function Page(props) {
           </div>
         )}
       </Markdown>
-    </section>
+    </main>
   );
 }
 
