@@ -847,9 +847,9 @@ T> HTML `<script>` 태그를 사용하여 코드를 로드할 때, webpack 런�
 
 T> `output.chunkLoadTimeout`, `output.crossOriginLoading` 및 `output.scriptType`와 같은 옵션은 이러한 방식으로 로드된 외부 스크립트에도 영향을 줍니다.
 
-W> `externalsType: "script"` loads externals using a classic (non-module) `<script src="...">` tag. The external file must be compatible with classic scripts (i.e. no top-level `import` / `export`). If the loaded script contains ESM syntax (for example, `import * as b from "b.js"`), the browser will fail to evaluate it and webpack will report a script loading failure (often surfaced as `ScriptExternalLoadError: Loading script failed.`).
+W> `externalsType: "script"`는 일반적인 (모듈이 아닌) `<script src="...">` 태그를 사용하여 외부 파일을 로드합니다. 외부 파일은 일반 스크립트와 호환되어야 합니다(즉, 최상위 레벨의 `import`/`export` 구문이 없어야 합니다). 로드된 스크립트에 ESM 구문(예: `import * as b from "b.js"`)이 포함된 경우 브라우저에서 해당 구문을 평가하지 못하고 webpack은 스크립트 로드 실패(일반적으로 `ScriptExternalLoadError: Loading script failed.`로 표시됨)를 보고합니다.
 
-T> If you need module-to-module dependencies, prefer `externalsType: "import"` / `externalsType: "module"` / `externalsType: "module-import"` instead. If you must keep `externalsType: "script"`, load dependencies first and access them via globals (e.g. `globalThis.SomeLib`) rather than using `import`.
+T> 모듈 간 종속성이 필요한 경우 `externalsType: "import"` / `externalsType: "module"` / `externalsType: "module-import"`를 사용하는 것이 좋습니다. `externalsType: "script"`를 반드시 사용해야 하는 경우, `import`를 사용하는 대신 종속성을 먼저 로드하고 전역 변수(예: `globalThis.SomeLib`)를 통해 접근하십시오.
 
 ### externalsType.this
 
