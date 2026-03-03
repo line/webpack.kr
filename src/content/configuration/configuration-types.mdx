@@ -12,6 +12,7 @@ contributors:
   - dhurlburtusa
   - anshumanv
   - thorn0
+  - tusharthakur04
 translators:
   - YukJiSoo
 ---
@@ -26,8 +27,8 @@ translators:
 - 두 번째 파라미터인 `argv`는 옵션 map 입니다. [`output-path`](/api/cli/#flags), [`mode`](/api/cli/#flags)와 같은 키를 사용하여 webpack에 전달되는 옵션을 나타냅니다.
 
 ```diff
--module.exports = {
-+module.exports = function(env, argv) {
+-export default {
++export default function(env, argv) {
 +  return {
 +    mode: env.production ? 'production' : 'development',
 +    devtool: env.production ? 'source-map' : 'eval',
@@ -49,7 +50,7 @@ Webpack은 설정 파일에서 export 한 함수를 실행하고 Promise가 반�
 T> 여러 개의 promise를 `Promise.all([/* Your promises */])`로 묶어서 export 할 수 있습니다.
 
 ```js
-module.exports = () =>
+export default () =>
   new Promise((resolve, reject) => {
     setTimeout(() => {
       resolve({
@@ -67,7 +68,7 @@ W> `Promise` 반환은 CLI를 통해 webpack을 사용할 때만 동작합니다
 단일 설정 객체 또는 함수를 export 하는 대신, 여러 개의 설정을 export 할 수 있습니다(여러 개의 함수는 webpack 3.1.0부터 지원). webpack을 실행할 때, 모든 설정이 빌드됩니다. 예를 들어, AMD나 CommonJS 같은 여러 개의 [target](/configuration/output/#outputlibrarytarget)을 위한 [라이브러리 빌드](/guides/author-libraries) 시 유용합니다.
 
 ```js
-module.exports = [
+export default [
   {
     output: {
       filename: "./dist-amd.js",
@@ -98,7 +99,7 @@ T> 이름을 [`--config-name`](/api/cli/#config-name) 플래그에 전달하면 
 **webpack.config.js**
 
 ```js
-module.exports = [
+export default [
   {
     name: "client",
     target: "web",
@@ -122,7 +123,7 @@ module.exports = [
 **webpack.config.js**
 
 ```javascript
-module.exports = [
+const config = [
   {
     // config-1
   },
@@ -130,5 +131,8 @@ module.exports = [
     // config-2
   },
 ];
-module.exports.parallelism = 1;
+
+config.parallelism = 1;
+
+export default config;
 ```
