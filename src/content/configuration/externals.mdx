@@ -847,6 +847,10 @@ T> HTML `<script>` 태그를 사용하여 코드를 로드할 때, webpack 런�
 
 T> `output.chunkLoadTimeout`, `output.crossOriginLoading` 및 `output.scriptType`와 같은 옵션은 이러한 방식으로 로드된 외부 스크립트에도 영향을 줍니다.
 
+W> `externalsType: "script"` loads externals using a classic (non-module) `<script src="...">` tag. The external file must be compatible with classic scripts (i.e. no top-level `import` / `export`). If the loaded script contains ESM syntax (for example, `import * as b from "b.js"`), the browser will fail to evaluate it and webpack will report a script loading failure (often surfaced as `ScriptExternalLoadError: Loading script failed.`).
+
+T> If you need module-to-module dependencies, prefer `externalsType: "import"` / `externalsType: "module"` / `externalsType: "module-import"` instead. If you must keep `externalsType: "script"`, load dependencies first and access them via globals (e.g. `globalThis.SomeLib`) rather than using `import`.
+
 ### externalsType.this
 
 외부 속성의 기본 유형을 `'this'`로 지정합니다. Webpack은 외부 속성을 `this` 객체의 전역 변수로 읽습니다.
