@@ -70,6 +70,7 @@ jobs:
         uses: errata-ai/vale-action@d89dee975228ae261d22c15adcd03578634d429c # v2.1.1
         with:
           files: src/content
+          filter-mode: nofilter
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
