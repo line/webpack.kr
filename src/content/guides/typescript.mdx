@@ -9,6 +9,7 @@ contributors:
   - EugeneHlushko
   - chenxsan
   - snitin315
+  - tusharthakur04
 translators:
   - dkstyle
 ---
@@ -68,31 +69,49 @@ webpack 설정에 대한 자세한 내용은 [설정 콘셉트를](/concepts/con
 
 이제 TypeScript를 처리하도록 webpack을 설정해 보겠습니다.
 
-**webpack.config.js**
+First, install the required dependencies:
 
-```js
-const path = require('path');
+```bash
+npm install --save-dev ts-node @types/node
+```
 
-module.exports = {
-  entry: './src/index.ts',
+**webpack.config.ts**
+
+```ts
+import path from "node:path";
+import { fileURLToPath } from "url";
+import webpack from "webpack";
+
+// in case you run into any TypeScript error when configuring `devServer`
+import "webpack-dev-server";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const config: webpack.Configuration = {
+  entry: "./src/index.ts",
   module: {
     rules: [
       {
         test: /\.tsx?$/,
-        use: 'ts-loader',
+        use: "ts-loader",
         exclude: /node_modules/,
       },
     ],
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.js'],
+    extensions: [".tsx", ".ts", ".js"],
   },
   output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist'),
+    filename: "bundle.js",
+    path: path.resolve(__dirname, "dist"),
   },
 };
+
+export default config;
 ```
+
+> TypeScript 파일에 설정을 작성하는 방법에 대한 자세한 내용은 다음 링크를 참조하세요. (https://webpack.js.org/configuration/configuration-languages/#typescript)
 
 이렇게하면 webpack이 `./index.ts` 를 통해 진입하고, `ts-loader`를 통해 모든 `.ts` 및 `.tsx` 파일을 로드합니다. 그리고 현재 디렉터리에 `bundle.js`파일을 출력합니다.
 
@@ -191,9 +210,13 @@ W> `ts-loader` 는 TypeScript 컴파일러인 `tsc`를 사용하고, `tsconfig.j
 **webpack.config.js**
 
 ```diff
-  const path = require('path');
+ import path from "node:path";
+ import { fileURLToPath } from 'url';
 
-  module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+  export default {
     entry: './src/index.ts',
 +   devtool: 'inline-source-map',
     module: {
@@ -226,6 +249,18 @@ TypeScript 코드에서 [`import.meta.webpack`](/api/module-variables/#importmet
 console.log(import.meta.webpack); // 위에서 선언된 참조가 없으면 TypeScript에서 에러가 발생합니다.
 ```
 
+프로젝트 전체에 타입 지정을 활성화하려면 `tsconfig.json` 파일의 `compilerOptions.types`에 `webpack/module`을 추가하세요.
+
+```diff
+  {
+    "compilerOptions": {
+      "types": [
++       "webpack/module"
+      ]
+    }
+  }
+```
+
 ## Using Third Party Libraries
 
 npm으로부터 타사 라이브러리를 설치할 때는 해당 라이브러리에 대한 타입 정의를 설치해야 한다는 사실을 기억해야 합니다.
@@ -245,7 +280,7 @@ TypeScript와 함께 비코드 애셋을 사용하려면 이러한 import에 대
 **custom.d.ts**
 
 ```typescript
-declare module '*.svg' {
+declare module "*.svg" {
   const content: any;
   export default content;
 }

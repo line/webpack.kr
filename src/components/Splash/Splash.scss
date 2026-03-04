@@ -1,5 +1,5 @@
-@import 'functions';
-@import 'mixins';
+@import "functions";
+@import "mixins";
 
 .splash {
   position: relative;
@@ -50,13 +50,18 @@
 
     &:before,
     &:after {
-      content: ' ';
+      content: " ";
       display: table;
     }
 
     &:after {
       clear: both;
     }
+  }
+
+  &__install {
+    max-width: 400px;
+    margin: auto;
   }
 
   &__left,

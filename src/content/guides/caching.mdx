@@ -49,24 +49,28 @@ webpack-demo
 **webpack.config.js**
 
 ```diff
-  const path = require('path');
-  const HtmlWebpackPlugin = require('html-webpack-plugin');
+ import path from 'node:path';
+ import { fileURLToPath } from 'node:url';
+ import HtmlWebpackPlugin from 'html-webpack-plugin';
 
-  module.exports = {
-    entry: './src/index.js',
-    plugins: [
-      new HtmlWebpackPlugin({
--       title: 'Output Management',
-+       title: 'Caching',
-      }),
-    ],
-    output: {
--     filename: 'bundle.js',
-+     filename: '[name].[contenthash].js',
-      path: path.resolve(__dirname, 'dist'),
-      clean: true,
-    },
-  };
+ const __filename = fileURLToPath(import.meta.url);
+ const __dirname = path.dirname(__filename);
+
+ export default {
+   entry: './src/index.js',
+   plugins: [
+     new HtmlWebpackPlugin({
+-      title: 'Output Management',
++      title: 'Caching',
+     }),
+   ],
+   output: {
+-    filename: 'bundle.js',
++    filename: '[name].[contenthash].js',
+     path: path.resolve(__dirname, 'dist'),
+     clean: true,
+   },
+ };
 ```
 
 이 설정으로 빌드 스크립트 `npm run build`를 실행하면, 다음과 같은 출력이 생성됩니다.
@@ -100,25 +104,29 @@ W> 현재 webpack 버전에 따라 출력이 다를 수 있습니다. 최신 버
 **webpack.config.js**
 
 ```diff
-  const path = require('path');
-  const HtmlWebpackPlugin = require('html-webpack-plugin');
+ import path from 'node:path';
+ import { fileURLToPath } from 'node:url';
+ import HtmlWebpackPlugin from 'html-webpack-plugin';
 
-  module.exports = {
-    entry: './src/index.js',
-    plugins: [
-      new HtmlWebpackPlugin({
-      title: 'Caching',
-      }),
-    ],
-    output: {
-      filename: '[name].[contenthash].js',
-      path: path.resolve(__dirname, 'dist'),
-      clean: true,
-    },
-+   optimization: {
-+     runtimeChunk: 'single',
-+   },
-  };
+ const __filename = fileURLToPath(import.meta.url);
+ const __dirname = path.dirname(__filename);
+
+ export default {
+   entry: './src/index.js',
+   plugins: [
+     new HtmlWebpackPlugin({
+       title: 'Caching',
+     }),
+   ],
+   output: {
+     filename: '[name].[contenthash].js',
+     path: path.resolve(__dirname, 'dist'),
+     clean: true,
+   },
++  optimization: {
++    runtimeChunk: 'single',
++  },
+ };
 ```
 
 추출한 `런타임` 번들을 보기위해 다른 빌드를 실행해 보겠습니다.
@@ -143,34 +151,38 @@ runtime.cc17ae2a94ec771e9221.js   1.42 KiB       0  [emitted]  runtime
 **webpack.config.js**
 
 ```diff
-  const path = require('path');
-  const HtmlWebpackPlugin = require('html-webpack-plugin');
+ import path from 'node:path';
+ import { fileURLToPath } from 'node:url';
+ import HtmlWebpackPlugin from 'html-webpack-plugin';
 
-  module.exports = {
-    entry: './src/index.js',
-    plugins: [
-      new HtmlWebpackPlugin({
-      title: 'Caching',
-      }),
-    ],
-    output: {
-      filename: '[name].[contenthash].js',
-      path: path.resolve(__dirname, 'dist'),
-      clean: true,
-    },
-    optimization: {
-      runtimeChunk: 'single',
-+     splitChunks: {
-+       cacheGroups: {
-+         vendor: {
-+           test: /[\\/]node_modules[\\/]/,
-+           name: 'vendors',
-+           chunks: 'all',
-+         },
-+       },
-+     },
-    },
-  };
+ const __filename = fileURLToPath(import.meta.url);
+ const __dirname = path.dirname(__filename);
+
+ export default {
+   entry: './src/index.js',
+   plugins: [
+     new HtmlWebpackPlugin({
+       title: 'Caching',
+     }),
+   ],
+   output: {
+     filename: '[name].[contenthash].js',
+     path: path.resolve(__dirname, 'dist'),
+     clean: true,
+   },
+   optimization: {
+     runtimeChunk: 'single',
++    splitChunks: {
++      cacheGroups: {
++        vendor: {
++          test: /[\\/]node_modules[\\/]/,
++          name: 'vendors',
++          chunks: 'all',
++        },
++      },
++    },
+   },
+ };
 ```
 
 새로운 `vendor`번들을 확인하기 위해 다른 빌드를 실행해 보겠습니다.
@@ -255,35 +267,39 @@ webpack-demo
 **webpack.config.js**
 
 ```diff
-  const path = require('path');
-  const HtmlWebpackPlugin = require('html-webpack-plugin');
+ import path from 'node:path';
+ import { fileURLToPath } from 'node:url';
+ import HtmlWebpackPlugin from 'html-webpack-plugin';
 
-  module.exports = {
-    entry: './src/index.js',
-    plugins: [
-      new HtmlWebpackPlugin({
-        title: 'Caching',
-      }),
-    ],
-    output: {
-      filename: '[name].[contenthash].js',
-      path: path.resolve(__dirname, 'dist'),
-      clean: true,
-    },
-    optimization: {
-+     moduleIds: 'deterministic',
-      runtimeChunk: 'single',
-      splitChunks: {
-        cacheGroups: {
-          vendor: {
-            test: /[\\/]node_modules[\\/]/,
-            name: 'vendors',
-            chunks: 'all',
-          },
-        },
-      },
-    },
-  };
+ const __filename = fileURLToPath(import.meta.url);
+ const __dirname = path.dirname(__filename);
+
+ export default {
+   entry: './src/index.js',
+   plugins: [
+     new HtmlWebpackPlugin({
+       title: 'Caching',
+     }),
+   ],
+   output: {
+     filename: '[name].[contenthash].js',
+     path: path.resolve(__dirname, 'dist'),
+     clean: true,
+   },
+   optimization: {
++    moduleIds: 'deterministic',
+     runtimeChunk: 'single',
+     splitChunks: {
+       cacheGroups: {
+         vendor: {
+           test: /[\\/]node_modules[\\/]/,
+           name: 'vendors',
+           chunks: 'all',
+         },
+       },
+     },
+   },
+ };
 ```
 
 이제 새로운 로컬 의존성에도 불구하고 `vendor`해시는 빌드간에 일관성을 유지해야합니다.

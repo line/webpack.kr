@@ -39,8 +39,8 @@ npm install --save-dev css-loader ts-loader
 module.exports = {
   module: {
     rules: [
-      { test: /\.css$/, use: 'css-loader' },
-      { test: /\.ts$/, use: 'ts-loader' },
+      { test: /\.css$/, use: "css-loader" },
+      { test: /\.ts$/, use: "ts-loader" },
     ],
   },
 };
@@ -69,14 +69,14 @@ module.exports = {
       {
         test: /\.css$/,
         use: [
-          { loader: 'style-loader' },
+          { loader: "style-loader" },
           {
-            loader: 'css-loader',
+            loader: "css-loader",
             options: {
               modules: true,
             },
           },
-          { loader: 'sass-loader' },
+          { loader: "sass-loader" },
         ],
       },
     ],
@@ -88,8 +88,10 @@ module.exports = {
 
 `import` 문이나 [그와 동등한 "importing" 메소드](/api/module-methods)에서 로더를 지정할 수 있습니다. 접두사 `!`로 리소스에서 로더를 분리하세요. 각 부분은 현재 디렉터리를 기준으로 해석됩니다.
 
+T> `loader1!loader2!./file` 구문은 예시일 뿐입니다. 대부분의 프로젝트에서는 `module.rules` 파일을 통해 로더를 구성하고, 로더의 부가적인 효과를 위해 스타일을 임포트하는 것이 좋습니다(예: `import "./styles.css"`).
+
 ```js
-import Styles from 'style-loader!css-loader?modules!./styles.css';
+import * as styles from "style-loader!css-loader?modules!./styles.css";
 ```
 
 [configuration](/configuration)에서 인라인 `import` 문 앞에 접두사를 붙여 모든 로더, 프리 로더 및 포스트 로더를 재정의할 수 있습니다.
@@ -97,19 +99,19 @@ import Styles from 'style-loader!css-loader?modules!./styles.css';
 - 접두사 `!`는 구성된 모든 일반 로더를 비활성화합니다.
 
   ```js
-  import Styles from '!style-loader!css-loader?modules!./styles.css';
+  import * as styles from "!style-loader!css-loader?modules!./styles.css";
   ```
 
 - 접두사 `!!`는 구성된 모든 로더(프리 로더, 로더, 포스트 로더)를 비활성화합니다.
 
   ```js
-  import Styles from '!!style-loader!css-loader?modules!./styles.css';
+  import * as styles from "!!style-loader!css-loader?modules!./styles.css";
   ```
 
 - 접두사 `-!`는 포스트 로더를 제외한 구성된 모든 프리 로더와 로더를 비활성화합니다.
 
   ```js
-  import Styles from '-!style-loader!css-loader?modules!./styles.css';
+  import * as styles from "-!style-loader!css-loader?modules!./styles.css";
   ```
 
 옵션은 쿼리 파라미터(예: `?key=value&foo=bar`) 또는 JSON 객체(예: `? { "key": "value", "foo": "bar"}`)로 전달할 수 있습니다.

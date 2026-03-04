@@ -19,6 +19,8 @@ Webpack은 ECMAScript 모듈을 최적화하기 위한 처리를 지원합니다
 
 `export` 키워드를 사용하면 ESM 항목을 다른 모듈에 노출할 수 있습니다.
 
+{/* eslint-disable */}
+
 ```js
 export const CONSTANT = 42;
 
@@ -27,12 +29,12 @@ export let variable = 42;
 // 외부에서 변수를 수정할 수 없습니다.
 
 export function fun() {
-  console.log('fun');
+  console.log("fun");
 }
 
 export class C extends Super {
   method() {
-    console.log('method');
+    console.log("method");
   }
 }
 
@@ -47,18 +49,19 @@ export default 1 + 2 + 3 + more();
 `import` 키워드를 사용하면 다른 모듈에 대한 참조를 ESM으로 가져올 수 있습니다.
 
 ```js
-import { CONSTANT, variable } from './module.js';
 // 다른 모듈에 export하기 위해 "bindings"를 가져옵니다.
 // 바인딩은 활성상태입니다. 값은 복사되지 않습니다.
 // 대신 "변수"에 접근하면 현재 값을 얻습니다.
 // 가져온 모듈에서
+import { CONSTANT, variable } from "./module.js";
 
-import * as module from './module.js';
-module.fun();
-// 모든 export를 가지는 "네임스페이스 객체"를 가져옵니다.
-
-import theDefaultValue from './module.js';
 // "기본" export를 가져오는 단축입니다.
+import theDefaultValue from "./module.js";
+
+// 모든 export를 가지는 "네임스페이스 객체"를 가져옵니다.
+import * as module from "./module.js";
+
+module.fun();
 ```
 
 ## Flagging modules as ESM

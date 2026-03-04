@@ -28,9 +28,9 @@ new webpack.EvalSourceMapDevToolPlugin(options);
 
 다음과 같은 옵션이 지원됩니다.
 
-- `test` (`string|RegExp|array`): 모듈의 확장자를 기반으로 하는 소스맵을 포함합니다(기본값은 `.js` 및 `.css`).
-- `include` (`string|RegExp|array`): 주어진 값과 일치하는 모듈 경로에 대한 소스맵을 포함합니다.
-- `exclude` (`string|RegExp|array`): 소스맵 생성에서 주어진 값과 일치하는 모듈을 제외합니다.
+- `test` (`string` `RegExp` `function (asset) => boolean` `[string, RegExp, function (asset) => boolean]`): 모듈의 확장자를 기반으로 하는 소스맵을 포함합니다(기본값은 `.js` 및 `.css`).
+- `include` (`string` `RegExp` `function (asset) => boolean` `[string, RegExp, function (asset) => boolean]`): 주어진 값과 일치하는 모듈 경로에 대한 소스맵을 포함합니다.
+- `exclude` (`string` `RegExp` `function (asset) => boolean` `[string, RegExp, function (asset) => boolean]`): 소스맵 생성에서 주어진 값과 일치하는 모듈을 제외합니다.
 - `append` (`string|function`): 원래 애셋에 주어진 값을 추가합니다. 보통 `#sourceMappingURL` 을 주석으로 합니다. `[url]`은 소스맵 파일의 URL로 대체됩니다.
 
   버전 5.84.0부터 webpack은 경로와 애셋 정보 객체를 인수로 받아들이고 문자열을 반환하는 'append' 옵션을 허용합니다.
@@ -39,7 +39,7 @@ new webpack.EvalSourceMapDevToolPlugin(options);
   (pathData: PathData, assetInfo?: AssetInfo) => string;
   ```
 
-- `ignoreList` (`string|RegExp|array`): 소스 맵에서 지정된 값과 일치하는 소스 파일을 무시할지 여부를 결정합니다.
+- `ignoreList` (`string` `RegExp` `function (source) => boolean` `[string, RegExp, function (source) => boolean]`): 소스 맵에서 지정된 값과 일치하는 소스 파일을 무시할지 여부를 결정합니다.
 - `module` (`boolean`): 로더가 소스 맵을 생성해야 하는지 여부를 나타냅니다(기본값은 `true`).
 - `moduleFilenameTemplate` (`string`): [`output.devtoolModuleFilenameTemplate`](/configuration/output/#outputdevtoolmodulefilenametemplate)을 참고하세요.
 - `columns` (`boolean`): 열 매핑을 사용해야 하는지 여부를 나타냅니다(기본값은 `true`).
@@ -62,7 +62,7 @@ T> [개발 모드](/configuration/mode/#mode-development)에서 이 플러그인
 다음 코드를 사용하여 설정 옵션 `devtool: eval-source-map`을 동등한 커스텀 플러그인 설정으로 바꿀 수 있습니다.
 
 ```js
-module.exports = {
+export default {
   // ...
   devtool: false,
   plugins: [new webpack.EvalSourceMapDevToolPlugin({})],
@@ -75,6 +75,6 @@ module.exports = {
 
 ```js
 new webpack.EvalSourceMapDevToolPlugin({
-  exclude: ['vendor.js'],
+  exclude: ["vendor.js"],
 });
 ```

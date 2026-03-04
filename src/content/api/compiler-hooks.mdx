@@ -36,7 +36,7 @@ watch 모드는 [CLI](/api/cli/#watch-options)를 통해서도 시작 할 수 �
 아래와 같이 접근 할 수 있습니다.
 
 ```js
-compiler.hooks.someHook.tap('MyPlugin', (params) => {
+compiler.hooks.someHook.tap("MyPlugin", (params) => {
   /* ... */
 });
 ```
@@ -66,7 +66,7 @@ webpack 옵션의 [`entry` 설정](/configuration/entry-context/#entry)이 처�
 - 콜백 파라미터: [`context`](/configuration/entry-context/#context), [`entry`](/configuration/entry-context/#entry)
 
 ```js
-compiler.hooks.entryOption.tap('MyPlugin', (context, entry) => {
+compiler.hooks.entryOption.tap("MyPlugin", (context, entry) => {
   /* ... */
 });
 ```
@@ -153,8 +153,8 @@ compilationParams = {
 이 훅은 컴파일 파라미터를 추가 또는 수정하는 데 사용할 수 있습니다.
 
 ```js
-compiler.hooks.beforeCompile.tapAsync('MyPlugin', (params, callback) => {
-  params['MyPlugin - data'] = 'important stuff my plugin will use later';
+compiler.hooks.beforeCompile.tapAsync("MyPlugin", (params, callback) => {
+  params["MyPlugin - data"] = "important stuff my plugin will use later";
   callback();
 });
 ```
@@ -208,10 +208,12 @@ compiler.hooks.beforeCompile.tapAsync('MyPlugin', (params, callback) => {
 - 콜백 파라미터: `compilation`
 
 ```js
-compiler.hooks.shouldEmit.tap('MyPlugin', (compilation) => {
-  // 출력을 내보내려면 true를 반환하고, 그렇지 않으면 false를 반환합니다.
-  return true;
-});
+compiler.hooks.shouldEmit.tap(
+  "MyPlugin",
+  (compilation) =>
+    // 출력을 내보내려면 true를 반환하고, 그렇지 않으면 false를 반환합니다.
+    true,
+);
 ```
 
 ### emit
@@ -242,10 +244,10 @@ compiler.hooks.shouldEmit.tap('MyPlugin', (compilation) => {
 
 ```js
 compiler.hooks.assetEmitted.tap(
-  'MyPlugin',
+  "MyPlugin",
   (file, { content, source, outputPath, compilation, targetPath }) => {
     console.log(content); // <Buffer 66 6f 6f 62 61 72>
-  }
+  },
 );
 ```
 

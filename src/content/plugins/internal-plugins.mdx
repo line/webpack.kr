@@ -160,7 +160,7 @@ webpack_public_path, webpack_require, webpack_modules 과 webpack_chunk_load에 
 Webpack은 조건문을 평가하려고 할 것입니다. 만약 성공한다면 dead branch가 제거됩니다. Webpck은 컴파일러가 알지 못하는 한 상수 폴딩을 할 수 없습니다. 다음 예시를 봅시다.
 
 ```javascript
-import { calculateTax } from './tax';
+import { calculateTax } from "./tax";
 
 const FOO = 1;
 if (FOO === 0) {
@@ -300,12 +300,13 @@ CommonJs 스타일의 `require` 모듈을 제공합니다.
 `RealContentHashPlugin`은 해시 업데이트를 커스터마이징할 수 있는 훅인 `updateHash` <Badge text='5.8.0+' />를 제공합니다.
 
 ```js
-const webpack = require('webpack');
-const RealContentHashPlugin = webpack.optimize.RealContentHashPlugin;
+import webpack from "webpack";
+
+const { RealContentHashPlugin } = webpack.optimize;
 // ...
-compiler.hooks.compilation.tap('MyPlugin', (compilation) => {
+compiler.hooks.compilation.tap("MyPlugin", (compilation) => {
   const hooks = RealContentHashPlugin.getCompilationHooks(compilation);
-  hooks.updateHash.tap('MyPlugin', (content, oldHash) => {
+  hooks.updateHash.tap("MyPlugin", (content, oldHash) => {
     // 이곳에서 원하는데로 해시를 계산할 수 있습니다.
   });
 });

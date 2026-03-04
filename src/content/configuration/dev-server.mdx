@@ -42,13 +42,13 @@ W> `webpack-dev-server v5.0.0+`에는 `node >= v18.12.0`, `webpack >= v5.0.0` �
 **webpack.config.js**
 
 ```javascript
-const path = require('path');
+const path = require("node:path");
 
 module.exports = {
-  //...
+  // ...
   devServer: {
     static: {
-      directory: path.join(__dirname, 'public'),
+      directory: path.join(__dirname, "public"),
     },
     compress: true,
     port: 9000,
@@ -105,10 +105,10 @@ CLI를 통해 `webpack-dev-server`를 실행하는 것이 권장되지만, API�
 **webpack.config.js**
 
 ```javascript
-const connect = require('connect');
+const connect = require("connect");
 
 module.exports = {
-  //...
+  // ...
   devServer: {
     app: () => connect(),
   },
@@ -125,13 +125,13 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
     allowedHosts: [
-      'host.com',
-      'subdomain.host.com',
-      'subdomain2.host.com',
-      'host2.com',
+      "host.com",
+      "subdomain.host.com",
+      "subdomain2.host.com",
+      "host2.com",
     ],
   },
 };
@@ -143,12 +143,12 @@ Django의 `ALLOWED_HOSTS`를 모방하여, `.`로 시작하는 값을 하위 도
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
     // 이것은 새 하위 도메인이 개발 서버에 접근해야 하는 경우
     // 설정을 업데이트할 필요가 없다는 보너스와 함께
     // 첫 번째 예와 동일한 효과를 얻습니다
-    allowedHosts: ['.host.com', 'host2.com'],
+    allowedHosts: [".host.com", "host2.com"],
   },
 };
 ```
@@ -165,9 +165,9 @@ npx webpack serve --allowed-hosts .host.com --allowed-hosts host2.com
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
-    allowedHosts: 'all',
+    allowedHosts: "all",
   },
 };
 ```
@@ -184,9 +184,9 @@ npx webpack serve --allowed-hosts all
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
-    allowedHosts: 'auto',
+    allowedHosts: "auto",
   },
 };
 ```
@@ -207,7 +207,7 @@ npx webpack serve --allowed-hosts auto
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
     bonjour: true,
   },
@@ -232,11 +232,11 @@ npx webpack serve --no-bonjour
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
     bonjour: {
-      type: 'http',
-      protocol: 'udp',
+      type: "http",
+      protocol: "udp",
     },
   },
 };
@@ -254,10 +254,10 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
     client: {
-      logging: 'info',
+      logging: "info",
     },
   },
 };
@@ -279,7 +279,7 @@ npx webpack serve --client-logging info
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
     client: {
       overlay: true,
@@ -316,7 +316,7 @@ npx webpack serve --no-client-overlay
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
     client: {
       overlay: {
@@ -343,12 +343,12 @@ npx webpack serve --client-overlay-errors --no-client-overlay-warnings --client-
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
     client: {
       overlay: {
         runtimeErrors: (error) => {
-          if (error instanceof DOMException && error.name === 'AbortError') {
+          if (error instanceof DOMException && error.name === "AbortError") {
             return false;
           }
           return true;
@@ -371,7 +371,7 @@ W> 이 함수는 설정 파일 내의 외부 범위에서 선언된 변수에 �
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
     client: {
       progress: true,
@@ -404,7 +404,7 @@ npx webpack serve --no-client-progress
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
     client: {
       reconnect: true,
@@ -423,7 +423,7 @@ npx webpack serve --client-reconnect
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
     client: {
       reconnect: false,
@@ -442,7 +442,7 @@ npx webpack serve --no-client-reconnect
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
     client: {
       reconnect: 5,
@@ -469,12 +469,12 @@ T> `'ws'` 또는 `'sockjs'`를 [`webSocketServer`](#devserverwebsocketserver)에
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
     client: {
-      webSocketTransport: 'ws',
+      webSocketTransport: "ws",
     },
-    webSocketServer: 'ws',
+    webSocketServer: "ws",
   },
 };
 ```
@@ -495,12 +495,12 @@ T> 커스텀 클라이언트 및 서버 구현을 제공할 때 성공적으로 
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
     client: {
-      webSocketTransport: require.resolve('./CustomClient'),
+      webSocketTransport: require.resolve("./CustomClient"),
     },
-    webSocketServer: 'ws',
+    webSocketServer: "ws",
   },
 };
 ```
@@ -511,12 +511,12 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
     client: {
-      webSocketTransport: require.resolve('./CustomClient'),
+      webSocketTransport: require.resolve("./CustomClient"),
     },
-    webSocketServer: require.resolve('./CustomServer'),
+    webSocketServer: require.resolve("./CustomServer"),
   },
 };
 ```
@@ -531,10 +531,10 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
     client: {
-      webSocketURL: 'ws://0.0.0.0:8080/ws',
+      webSocketURL: "ws://0.0.0.0:8080/ws",
     },
   },
 };
@@ -559,16 +559,16 @@ npx webpack serve --client-web-socket-url ws://0.0.0.0:8080/ws
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
     client: {
       webSocketURL: {
-        hostname: '0.0.0.0',
-        pathname: '/ws',
-        password: 'dev-server',
+        hostname: "0.0.0.0",
+        pathname: "/ws",
+        password: "dev-server",
         port: 8080,
-        protocol: 'ws',
-        username: 'webpack',
+        protocol: "ws",
+        username: "webpack",
       },
     },
   },
@@ -587,7 +587,7 @@ T> 브라우저에서 `protocol`/`hostname`/`port`를 가져오려면 `webSocket
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
     compress: true,
   },
@@ -619,8 +619,8 @@ module.exports = {
   devServer: {
     devMiddleware: {
       index: true,
-      mimeTypes: { phtml: 'text/html' },
-      publicPath: '/publicPathForDevServe',
+      mimeTypes: { phtml: "text/html" },
+      publicPath: "/publicPathForDevServe",
       serverSideRender: true,
       writeToDisk: true,
     },
@@ -638,10 +638,10 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
     headers: {
-      'X-Custom-Foo': 'bar',
+      "X-Custom-Foo": "bar",
     },
   },
 };
@@ -653,16 +653,16 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
     headers: [
       {
-        key: 'X-Custom',
-        value: 'foo',
+        key: "X-Custom",
+        value: "foo",
       },
       {
-        key: 'Y-Custom',
-        value: 'bar',
+        key: "Y-Custom",
+        value: "bar",
       },
     ],
   },
@@ -673,11 +673,9 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
-    headers: () => {
-      return { 'X-Bar': ['key1=value1', 'key2=value2'] };
-    },
+    headers: () => ({ "X-Bar": ["key1=value1", "key2=value2"] }),
   },
 };
 ```
@@ -692,7 +690,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
     historyApiFallback: true,
   },
@@ -717,13 +715,13 @@ npx webpack serve --no-history-api-fallback
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
     historyApiFallback: {
       rewrites: [
-        { from: /^\/$/, to: '/views/landing.html' },
-        { from: /^\/subpage/, to: '/views/subpage.html' },
-        { from: /./, to: '/views/404.html' },
+        { from: /^\/$/, to: "/views/landing.html" },
+        { from: /^\/subpage/, to: "/views/subpage.html" },
+        { from: /./, to: "/views/404.html" },
       ],
     },
   },
@@ -736,7 +734,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
     historyApiFallback: {
       disableDotRule: true,
@@ -757,9 +755,9 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
-    host: '0.0.0.0',
+    host: "0.0.0.0",
   },
 };
 ```
@@ -810,7 +808,7 @@ Webpack의 [Hot Module Replacement](/concepts/hot-module-replacement/) 기능을
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
     hot: true,
   },
@@ -835,9 +833,9 @@ npx webpack serve --no-hot
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
-    hot: 'only',
+    hot: "only",
   },
 };
 ```
@@ -862,7 +860,7 @@ T> Webpack-dev-server v4부터 HMR이 기본적으로 활성화되어 있습니�
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
     ipc: true,
   },
@@ -880,12 +878,12 @@ npx webpack serve --ipc
 **webpack.config.js**
 
 ```javascript
-const path = require('path');
+const path = require("node:path");
 
 module.exports = {
-  //...
+  // ...
   devServer: {
-    ipc: path.join(__dirname, 'my-socket.sock'),
+    ipc: path.join(__dirname, "my-socket.sock"),
   },
 };
 ```
@@ -900,7 +898,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
     liveReload: false,
   },
@@ -931,15 +929,15 @@ Webpack-dev-server가 포트에서 연결 수신을 시작할 때 커스텀 함�
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
-    onListening: function (devServer) {
+    onListening(devServer) {
       if (!devServer) {
-        throw new Error('webpack-dev-server is not defined');
+        throw new Error("webpack-dev-server is not defined");
       }
 
-      const port = devServer.server.address().port;
-      console.log('Listening on port:', port);
+      const { port } = devServer.server.address();
+      console.log("Listening on port:", port);
     },
   },
 };
@@ -955,7 +953,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
     open: true,
   },
@@ -980,9 +978,9 @@ npx webpack serve --no-open
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
-    open: ['/my-page'],
+    open: ["/my-page"],
   },
 };
 ```
@@ -999,9 +997,9 @@ npx webpack serve --open /my-page
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
-    open: ['/my-page', '/another-page'],
+    open: ["/my-page", "/another-page"],
   },
 };
 ```
@@ -1018,11 +1016,11 @@ npx webpack serve --open /my-page --open /another-page
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
     open: {
       app: {
-        name: 'google-chrome',
+        name: "google-chrome",
       },
     },
   },
@@ -1041,13 +1039,13 @@ npx webpack serve --open-app-name 'google-chrome'
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
     open: {
-      target: ['first.html', 'http://localhost:8080/second.html'],
+      target: ["first.html", "http://localhost:8080/second.html"],
       app: {
-        name: 'google-chrome',
-        arguments: ['--incognito', '--new-window'],
+        name: "google-chrome",
+        arguments: ["--incognito", "--new-window"],
       },
     },
   },
@@ -1066,7 +1064,7 @@ T> 브라우저 애플리케이션 이름은 플랫폼에 따라 다릅니다. �
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
     port: 8080,
   },
@@ -1085,9 +1083,9 @@ npx webpack serve --port 8080
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
-    port: 'auto',
+    port: "auto",
   },
 };
 ```
@@ -1112,12 +1110,12 @@ dev-server는 강력한 [http-proxy-middleware](https://github.com/chimurai/http
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
     proxy: [
       {
-        context: ['/api'],
-        target: 'http://localhost:3000',
+        context: ["/api"],
+        target: "http://localhost:3000",
       },
     ],
   },
@@ -1132,13 +1130,13 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
     proxy: [
       {
-        context: ['/api'],
-        target: 'http://localhost:3000',
-        pathRewrite: { '^/api': '' },
+        context: ["/api"],
+        target: "http://localhost:3000",
+        pathRewrite: { "^/api": "" },
       },
     ],
   },
@@ -1151,12 +1149,12 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
     proxy: [
       {
-        context: ['/api'],
-        target: 'http://localhost:3000',
+        context: ["/api"],
+        target: "http://localhost:3000",
         secure: false,
       },
     ],
@@ -1178,16 +1176,16 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
     proxy: [
       {
-        context: ['/api'],
-        target: 'http://localhost:3000',
-        bypass: function (req, res, proxyOptions) {
-          if (req.headers.accept.indexOf('html') !== -1) {
-            console.log('Skipping proxy for browser request.');
-            return '/index.html';
+        context: ["/api"],
+        target: "http://localhost:3000",
+        bypass(req, res, proxyOptions) {
+          if (req.headers.accept.includes("html")) {
+            console.log("Skipping proxy for browser request.");
+            return "/index.html";
           }
         },
       },
@@ -1204,12 +1202,12 @@ W> `bypass` 옵션은 `router` 및 `context` 옵션을 위해 프록시에서 �
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
     proxy: [
       {
-        context: ['/auth', '/api'],
-        target: 'http://localhost:3000',
+        context: ["/auth", "/api"],
+        target: "http://localhost:3000",
       },
     ],
   },
@@ -1222,7 +1220,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
     devMiddleware: {
       index: false, // 루트 프록시를 사용하도록 지정
@@ -1230,7 +1228,7 @@ module.exports = {
     proxy: [
       {
         context: () => true,
-        target: 'http://localhost:1234',
+        target: "http://localhost:1234",
       },
     ],
   },
@@ -1243,12 +1241,12 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
     proxy: [
       {
-        context: ['/api'],
-        target: 'http://localhost:3000',
+        context: ["/api"],
+        target: "http://localhost:3000",
         changeOrigin: true,
       },
     ],
@@ -1268,9 +1266,9 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
-    server: 'http',
+    server: "http",
   },
 };
 ```
@@ -1287,9 +1285,9 @@ npx webpack serve --server-type http
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
-    server: 'https',
+    server: "https",
   },
 };
 ```
@@ -1306,9 +1304,9 @@ npx webpack serve --server-type https
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
-    server: 'spdy',
+    server: "spdy",
   },
 };
 ```
@@ -1327,16 +1325,16 @@ W> Node 15.0.0 이상에서는 [spdy에서 문제가 발생하기 때문에 이 
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
     server: {
-      type: 'https',
+      type: "https",
       options: {
-        ca: './path/to/server.pem',
-        pfx: './path/to/server.pfx',
-        key: './path/to/server.key',
-        cert: './path/to/server.crt',
-        passphrase: 'webpack-dev-server',
+        ca: "./path/to/server.pem",
+        pfx: "./path/to/server.pfx",
+        key: "./path/to/server.key",
+        cert: "./path/to/server.crt",
+        passphrase: "webpack-dev-server",
         requestCert: true,
       },
     },
@@ -1355,21 +1353,21 @@ npx webpack serve --server-type https --server-options-key ./path/to/server.key 
 **webpack.config.js**
 
 ```javascript
-const fs = require('fs');
-const path = require('path');
+const fs = require("node:fs");
+const path = require("node:path");
 
 module.exports = {
-  //...
+  // ...
   devServer: {
     server: {
-      type: 'https',
+      type: "https",
       options: {
-        minVersion: 'TLSv1.1',
-        key: fs.readFileSync(path.join(__dirname, './server.key')),
-        pfx: fs.readFileSync(path.join(__dirname, './server.pfx')),
-        cert: fs.readFileSync(path.join(__dirname, './server.crt')),
-        ca: fs.readFileSync(path.join(__dirname, './ca.pem')),
-        passphrase: 'webpack-dev-server',
+        minVersion: "TLSv1.1",
+        key: fs.readFileSync(path.join(__dirname, "./server.key")),
+        pfx: fs.readFileSync(path.join(__dirname, "./server.pfx")),
+        cert: fs.readFileSync(path.join(__dirname, "./server.crt")),
+        ca: fs.readFileSync(path.join(__dirname, "./ca.pem")),
+        passphrase: "webpack-dev-server",
         requestCert: true,
       },
     },
@@ -1387,7 +1385,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
     setupExitSignals: true,
   },
@@ -1410,37 +1408,37 @@ module.exports = {
   devServer: {
     setupMiddlewares: (middlewares, devServer) => {
       if (!devServer) {
-        throw new Error('webpack-dev-server is not defined');
+        throw new Error("webpack-dev-server is not defined");
       }
 
-      devServer.app.get('/setup-middleware/some/path', (_, response) => {
-        response.send('setup-middlewares option GET');
+      devServer.app.get("/setup-middleware/some/path", (_, response) => {
+        response.send("setup-middlewares option GET");
       });
 
       // 다른 모든 미들웨어보다 먼저 미들웨어를 실행하려면 `unshift` 메소드를 사용하세요
       // 또는 `onBeforeSetupMiddleware` 옵션에서 마이그레이션 할 때 사용하세요
       middlewares.unshift({
-        name: 'first-in-array',
+        name: "first-in-array",
         // `path`는 옵셔널입니다
-        path: '/foo/path',
+        path: "/foo/path",
         middleware: (req, res) => {
-          res.send('Foo!');
+          res.send("Foo!");
         },
       });
 
       // 다른 모든 미들웨어 이후에 미들웨어를 실행하려면 `push` 메소드를 사용하세요
       // 또는 `onBeforeSetupMiddleware` 옵션에서 마이그레이션 할 때 사용하세요
       middlewares.push({
-        name: 'hello-world-test-one',
+        name: "hello-world-test-one",
         // `path`는 옵셔널입니다
-        path: '/foo/bar',
+        path: "/foo/bar",
         middleware: (req, res) => {
-          res.send('Foo Bar!');
+          res.send("Foo Bar!");
         },
       });
 
       middlewares.push((req, res) => {
-        res.send('Hello World!');
+        res.send("Hello World!");
       });
 
       return middlewares;
@@ -1459,7 +1457,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
     static: false,
   },
@@ -1486,7 +1484,7 @@ npx webpack serve --no-static
 module.exports = {
   // ...
   devServer: {
-    static: ['assets'],
+    static: ["assets"],
   },
 };
 ```
@@ -1505,7 +1503,7 @@ npx webpack serve --static assets
 module.exports = {
   // ...
   devServer: {
-    static: ['assets', 'css'],
+    static: ["assets", "css"],
   },
 };
 ```
@@ -1525,13 +1523,13 @@ npx webpack serve --static assets --static css
 **webpack.config.js**
 
 ```javascript
-const path = require('path');
+const path = require("node:path");
 
 module.exports = {
-  //...
+  // ...
   devServer: {
     static: {
-      directory: path.join(__dirname, 'public'),
+      directory: path.join(__dirname, "public"),
     },
   },
 };
@@ -1542,17 +1540,17 @@ module.exports = {
 **webpack.config.js**
 
 ```javascript
-const path = require('path');
+const path = require("node:path");
 
 module.exports = {
-  //...
+  // ...
   devServer: {
     static: [
       {
-        directory: path.join(__dirname, 'assets'),
+        directory: path.join(__dirname, "assets"),
       },
       {
-        directory: path.join(__dirname, 'css'),
+        directory: path.join(__dirname, "css"),
       },
     ],
   },
@@ -1571,7 +1569,7 @@ T> 절대 경로를 사용하는 것이 좋습니다.
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
     static: {
       staticOptions: {
@@ -1591,14 +1589,14 @@ module.exports = {
 **webpack.config.js**
 
 ```javascript
-const path = require('path');
+const path = require("node:path");
 
 module.exports = {
-  //...
+  // ...
   devServer: {
     static: {
-      directory: path.join(__dirname, 'assets'),
-      publicPath: '/serve-public-path-url',
+      directory: path.join(__dirname, "assets"),
+      publicPath: "/serve-public-path-url",
     },
   },
 };
@@ -1609,19 +1607,19 @@ module.exports = {
 **webpack.config.js**
 
 ```javascript
-const path = require('path');
+const path = require("node:path");
 
 module.exports = {
-  //...
+  // ...
   devServer: {
     static: [
       {
-        directory: path.join(__dirname, 'assets'),
-        publicPath: '/serve-public-path-url',
+        directory: path.join(__dirname, "assets"),
+        publicPath: "/serve-public-path-url",
       },
       {
-        directory: path.join(__dirname, 'css'),
-        publicPath: '/other-serve-public-path-url',
+        directory: path.join(__dirname, "css"),
+        publicPath: "/other-serve-public-path-url",
       },
     ],
   },
@@ -1639,13 +1637,13 @@ dev-server가 활성화되면 [`serveIndex`](https://github.com/expressjs/serve-
 **webpack.config.js**
 
 ```javascript
-const path = require('path');
+const path = require("node:path");
 
 module.exports = {
-  //...
+  // ...
   devServer: {
     static: {
-      directory: path.join(__dirname, 'public'),
+      directory: path.join(__dirname, "public"),
       serveIndex: true,
     },
   },
@@ -1673,13 +1671,13 @@ dev-server에게 [`static.directory`](#directory) 옵션이 제공하는 파일�
 **webpack.config.js**
 
 ```javascript
-const path = require('path');
+const path = require("node:path");
 
 module.exports = {
-  //...
+  // ...
   devServer: {
     static: {
-      directory: path.join(__dirname, 'public'),
+      directory: path.join(__dirname, "public"),
       watch: false,
     },
   },
@@ -1703,15 +1701,15 @@ npx webpack serve --no-static-watch
 **webpack.config.js**
 
 ```javascript
-const path = require('path');
+const path = require("node:path");
 
 module.exports = {
-  //...
+  // ...
   devServer: {
     static: {
-      directory: path.join(__dirname, 'public'),
+      directory: path.join(__dirname, "public"),
       watch: {
-        ignored: '*.txt',
+        ignored: "*.txt",
         usePolling: false,
       },
     },
@@ -1729,9 +1727,9 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
-    watchFiles: ['src/**/*.php', 'public/**/*'],
+    watchFiles: ["src/**/*.php", "public/**/*"],
   },
 };
 ```
@@ -1742,10 +1740,10 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
     watchFiles: {
-      paths: ['src/**/*.php', 'public/**/*'],
+      paths: ["src/**/*.php", "public/**/*"],
       options: {
         usePolling: false,
       },
@@ -1766,9 +1764,9 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
-    webSocketServer: 'ws',
+    webSocketServer: "ws",
   },
 };
 ```
@@ -1781,12 +1779,12 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
     client: {
-      webSocketTransport: 'ws',
+      webSocketTransport: "ws",
     },
-    webSocketServer: require.resolve('./CustomServer'),
+    webSocketServer: require.resolve("./CustomServer"),
   },
 };
 ```
@@ -1797,12 +1795,12 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   devServer: {
     client: {
-      webSocketTransport: require.resolve('./CustomClient'),
+      webSocketTransport: require.resolve("./CustomClient"),
     },
-    webSocketServer: require.resolve('./CustomServer'),
+    webSocketServer: require.resolve("./CustomServer"),
   },
 };
 ```

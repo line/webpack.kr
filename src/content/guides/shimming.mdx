@@ -77,10 +77,16 @@ webpack-demo
 **webpack.config.js**
 
 ```diff
- const path = require('path');
-+const webpack = require('webpack');
+ import path from "node:path";
+ import { fileURLToPath } from 'url';
++import webpack from "webpack";
 
- module.exports = {
+
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+ export default {
    entry: './src/index.js',
    output: {
      filename: 'main.js',
@@ -134,10 +140,14 @@ webpack 5.4.0 compiled successfully in 2910 ms
 **webpack.config.js**
 
 ```diff
- const path = require('path');
- const webpack = require('webpack');
+ import path from "node:path";
+ import webpack from "webpack";
+import { fileURLToPath } from 'url';
 
- module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+ export default {
    entry: './src/index.js',
    output: {
      filename: 'main.js',
@@ -178,10 +188,14 @@ webpack 5.4.0 compiled successfully in 2910 ms
 **webpack.config.js**
 
 ```diff
- const path = require('path');
- const webpack = require('webpack');
+ import path from "node:path";
+ import webpack from "webpack";
+ import { fileURLToPath } from 'url';
 
- module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+ exports default {
    entry: './src/index.js',
    output: {
      filename: 'main.js',
@@ -224,13 +238,13 @@ webpack 5.4.0 compiled successfully in 2910 ms
 **src/globals.js**
 
 ```js
-const file = 'blah.txt';
+const file = "blah.txt";
 const helpers = {
-  test: function () {
-    console.log('test something');
+  test() {
+    console.log("test something");
   },
-  parse: function () {
-    console.log('parse something');
+  parse() {
+    console.log("parse something");
   },
 };
 ```
@@ -240,10 +254,14 @@ const helpers = {
 **webpack.config.js**
 
 ```diff
- const path = require('path');
- const webpack = require('webpack');
+ import path from "node:path";
+ import webpack from "webpack";
+ import { fileURLToPath } from 'url';
 
- module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+ export default {
    entry: './src/index.js',
    output: {
      filename: 'main.js',
@@ -353,17 +371,21 @@ npm install --save whatwg-fetch
 **src/polyfills.js**
 
 ```javascript
-import 'babel-polyfill';
-import 'whatwg-fetch';
+import "babel-polyfill";
+import "whatwg-fetch";
 ```
 
 **webpack.config.js**
 
 ```diff
- const path = require('path');
- const webpack = require('webpack');
+ import path from "node:path";
+ import webpack from "webpack";
+ import { fileURLToPath } from 'url';
 
- module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+ export default {
 -  entry: './src/index.js',
 +  entry: {
 +    polyfills: './src/polyfills',
@@ -461,12 +483,14 @@ import 'whatwg-fetch';
 
 `babel-preset-env` 패키지는 [browserslist](https://github.com/browserslist/browserslist)를 사용하여 브라우저 매트릭스에서 지원되지 않는 항목만 트랜스파일합니다. 이 사전 설정은 [`useBuiltIns`](https://babeljs.io/docs/en/babel-preset-env#usebuiltins) 옵션(기본값 `false`)과 함께 제공되며, 전역 `babel-polyfill`을 가져오는 것을 `import` 패턴을 통해 더 세분화 된 기능으로 변환할 수 있습니다.
 
+{/* eslint-skip */}
+
 ```js
-import 'core-js/modules/es7.string.pad-start';
-import 'core-js/modules/es7.string.pad-end';
-import 'core-js/modules/web.timers';
-import 'core-js/modules/web.immediate';
-import 'core-js/modules/web.dom.iterable';
+import "core-js/modules/es7.string.pad-start";
+import "core-js/modules/es7.string.pad-end";
+import "core-js/modules/web.timers";
+import "core-js/modules/web.immediate";
+import "core-js/modules/web.dom.iterable";
 ```
 
 자세한 내용은 [babel-preset-env 문서](https://babeljs.io/docs/en/babel-preset-env)를 참고하세요.

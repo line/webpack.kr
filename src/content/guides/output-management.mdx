@@ -10,6 +10,7 @@ contributors:
   - AnayaDesign
   - chenxsan
   - snitin315
+  - Brennvo
 translators:
   - keipark
 ---
@@ -42,7 +43,7 @@ T> 이 가이드는 [`Asset Management`](/guides/asset-management) 가이드에 
 
 ```js
 export default function printMe() {
-  console.log('I get called from print.js!');
+  console.log("I get called from print.js!");
 }
 ```
 
@@ -96,9 +97,13 @@ webpack이 엔트리를 분할할 수 있도록 `dist/index.html` 파일도 업�
 **webpack.config.js**
 
 ```diff
- const path = require('path');
+ import path from 'node:path';
+ import { fileURLToPath } from 'node:url';
 
- module.exports = {
+ const __filename = fileURLToPath(import.meta.url);
+ const __dirname = path.dirname(__filename);
+
+ export default {
 -  entry: './src/index.js',
 +  entry: {
 +    index: './src/index.js',
@@ -131,6 +136,11 @@ webpack이 `print.bundle.js` 과 `index.bundle.js` 파일을 생성하는 것을
 
 그러나 엔트리 포인트 중 하나의 이름을 변경하거나 새 엔트리 포인트를 추가하면 어떻게 될까요? 생성된 번들은 빌드에서 이름이 변경되지만 `index.html` 파일은 여전히 예전 이름을 참조합니다. [`HtmlWebpackPlugin`](/plugins/html-webpack-plugin)을 사용하여 이 문제를 해결해보겠습니다.
 
+T> `print.bundle.js` 파일을 검사해 보면 `printMe` 함수가 없는 것을 알 수 있습니다. 대신, 눈에 띄는 부작용이 없는 즉시 실행 함수 표현식(IIFE)만 포함되어 있습니다.<br /><br />
+이는 현재 설정에서 webpack이 각 진입점을 번들이 로드될 때 실행되는 독립 실행형 프로그램으로 취급하기 때문입니다. `print.js`는 함수만 내보내고 `printMe()`를 호출하지 않으므로, 자체 진입점으로 실행하는 데 실행 가능한 런타임 코드가 필요하지 않습니다. 따라서 눈에 띄는 부작용이 없으므로 해당 코드를 최적화로 생략할 수 있습니다.<br /><br />
+반면, `index.js`는 `printMe`를 가져와 사용하므로 webpack은 `index.bundle.js`에 해당 함수를 직접 포함합니다. Webpack은 모듈 번들러이므로 `index.bundle.js` 파일에는 해결되지 않은 import 문 대신 실행에 필요한 모든 코드가 포함되어 있다는 점을 기억하세요.<br /><br />
+여기서는 출력 관리 및 `HtmlWebpackPlugin`을 시연하기 위해 여러 진입점을 사용했습니다. 실제 프로젝트에서는 일반적으로 이와 같은 유틸리티 모듈에 대해 별도의 진입점을 만들지 않습니다. 종속성을 공유하는 여러 진입점이 있는 경우 코드 분할 가이드의 [중복 방지](/guides/code-splitting/#prevent-duplication)를 참고하세요.
+
 ## Setting up HtmlWebpackPlugin
 
 먼저 플러그인을 설치하고 `webpack.config.js` 파일을 수정합니다.
@@ -142,10 +152,14 @@ npm install --save-dev html-webpack-plugin
 **webpack.config.js**
 
 ```diff
- const path = require('path');
-+const HtmlWebpackPlugin = require('html-webpack-plugin');
+ import path from 'node:path';
+ import { fileURLToPath } from 'node:url';
++import HtmlWebpackPlugin from 'html-webpack-plugin';
 
- module.exports = {
+ const __filename = fileURLToPath(import.meta.url);
+ const __dirname = path.dirname(__filename);
+
+ export default {
    entry: {
      index: './src/index.js',
      print: './src/print.js',
@@ -191,10 +205,14 @@ webpack 5.4.0 compiled successfully in 2189 ms
 **webpack.config.js**
 
 ```diff
- const path = require('path');
- const HtmlWebpackPlugin = require('html-webpack-plugin');
+ import path from 'node:path';
+ import { fileURLToPath } from 'node:url';
+ import HtmlWebpackPlugin from 'html-webpack-plugin';
 
- module.exports = {
+ const __filename = fileURLToPath(import.meta.url);
+ const __dirname = path.dirname(__filename);
+
+ export default {
    entry: {
      index: './src/index.js',
      print: './src/print.js',
@@ -218,7 +236,7 @@ webpack 5.4.0 compiled successfully in 2189 ms
 
 webpack과 플러그인은 어떤 파일이 생성되는 것을 어떻게 "알고 있는지" 궁금할 것입니다. 답은 매니페스트에 있습니다. webpack은 모든 모듈이 출력 번들에 어떻게 매핑되는지 추적합니다. 만약 webpack의 [`output`](/configuration/output)을 다른 방식으로 관리하는데 관심이 있다면 매니페스트부터 시작하는 것이 좋습니다.
 
-매니페스트 데이터는 [`WebpackManifestPlugin`](https://github.com/shellscape/webpack-manifest-plugin)을 사용하여 쉽게 적용 가능한 json 파일로 추출할 수 있습니다.
+매니페스트 데이터는 [`ManifestPlugin`](/plugins/manifest-plugin/)을 사용하여 쉽게 적용 가능한 json 파일로 추출할 수 있습니다.
 
 프로젝트에서 이 플러그인을 사용하는 방법에 대한 모든 예제를 다루지는 않겠지만 [콘셉 페이지](/concepts/manifest) 및 [캐싱 가이드](/guides/caching)를 읽어 보면 이것이 장기 캐싱과 어떻게 연결되는지 확인할 수 있습니다.
 

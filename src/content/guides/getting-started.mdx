@@ -74,10 +74,10 @@ npm install webpack webpack-cli --save-dev
 
 ```javascript
 function component() {
-  const element = document.createElement('div');
+  const element = document.createElement("div");
 
   // 이 라인이 동작하려면 현재 스크립트를 통해 포함된 Lodash가 필요합니다.
-  element.innerHTML = _.join(['Hello', 'webpack'], ' ');
+  element.innerHTML = _.join(["Hello", "webpack"], " ");
 
   return element;
 }
@@ -101,7 +101,7 @@ document.body.appendChild(component());
 </html>
 ```
 
-또한 패키지를 `private`로 표기하고 `main` 항목을 제거하기 위해 `package.json` 파일을 조정해야 합니다. 이것은 실수로 코드가 출시되는 것을 방지하기 위한 것입니다.
+또한 `package.json` 파일에서 패키지를 `private`으로 표시하고 `main` 항목을 삭제해야 합니다. Node.js가 설정 파일을 ES 모듈로 처리하도록 `type: module`도 추가합니다. 이는 코드가 실수로 공개되는 것을 방지하고 스크립트에서 ES 모듈을 지원하도록 하기 위함입니다.
 
 T> `package.json`의 내부 동작을 더 알고 싶으면 [npm 문서](https://docs.npmjs.com/files/package.json)를 읽어 보시기 바랍니다.
 
@@ -114,6 +114,7 @@ T> `package.json`의 내부 동작을 더 알고 싶으면 [npm 문서](https://
    "description": "",
 -  "main": "index.js",
 +  "private": true,
++  "type": "module",
    "scripts": {
      "test": "echo \"Error: no test specified\" && exit 1"
    },
@@ -207,7 +208,7 @@ T> 몇 가지 다른 스크립트 로딩 전략이 있습니다. 지연 로딩�
 
 이 설정에서 `index.js`는 명시적으로 `lodash`가 있어야 하며, 이것을 `_`에 바인딩합니다.(전역 스코프의 오염 없음) 모듈에 필요한 의존성을 명시함으로써 webpack은 이 정보를 사용하여 디펜던시 그래프를 만들 수 있습니다. 그런 다음 그래프를 사용하여 스크립트가 올바른 순서로 실행되는 최적화된 번들을 생성합니다.
 
-그럼 `npx webpack`을 실행해 보겠습니다. 이 스크립트는 `src/index.js`를 [엔트리 포인트](/concepts/entry-points)로 사용하고 [output](/concepts/output)으로 `dist/main.js`을 생성합니다. `npx` 명령어는 Node 8.2/npm 5.2.0 이상 버전에서 제공되며, 처음에 설치했던 webpack 패키지의 webpack 바이너리(`./node_modules/.bin/webpack`)를 실행합니다.
+자, 그럼 프로젝트 루트 디렉토리에서 `npx webpack` 명령어를 실행해 보겠습니다. webpack이 로컬에 설치되어 있다면 `npx`는 `node_modules/.bin`에 있는 바이너리를 실행하고, 그렇지 않다면 다운로드하여 실행할 수 있습니다. 이 명령어는 `src/index.js`에 있는 스크립트를 [진입점](/concepts/entry-points)으로 사용하여 `dist/main.js`를 [출력](/concepts/output)으로 생성합니다.
 
 ```bash
 $ npx webpack
@@ -236,6 +237,8 @@ webpack은 `import`와 `export` 문 이외는 코드를 변경하지 않습니�
 
 버전 4부터 webpack은 어떠한 설정도 필요하지 않습니다. 하지만 대부분의 프로젝트는 좀 더 복잡한 설정이 필요하므로 webpack에서 [설정 파일](/concepts/configuration)을 제공합니다. 이것은 터미널에서 많은 명령어를 수동으로 입력하는 것보다 훨씬 효율적입니다. 다음과 같이 생성해 보겠습니다.
 
+Webpack configuration files can be written using either CommonJS or ECMAScript modules. The examples below use modern ESM syntax.
+
 **project**
 
 ```diff
@@ -252,13 +255,20 @@ webpack은 `import`와 `export` 문 이외는 코드를 변경하지 않습니�
 **webpack.config.js**
 
 ```javascript
-const path = require('path');
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-module.exports = {
-  entry: './src/index.js',
+// import.meta.dirname을 기본적으로 지원하지 않는 Node.js 버전에서는,
+// import.meta.url에서 __dirname을 파생합니다.
+// (Node 20.11 이상 버전에서는 import.meta.dirname과 import.meta.filename을 지원합니다.)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
+  entry: "./src/index.js",
   output: {
-    filename: 'main.js',
-    path: path.resolve(__dirname, 'dist'),
+    filename: "main.js",
+    path: path.resolve(__dirname, "dist"),
   },
 };
 ```

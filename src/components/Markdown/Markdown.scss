@@ -1,7 +1,7 @@
-@use 'sass:color';
-@import 'vars';
-@import 'functions';
-@import 'prism-theme';
+@use "sass:color";
+@import "vars";
+@import "functions";
+@import "prism-theme";
 
 $bannerHeight: 56px;
 $navigationHeight: 56px;
@@ -76,7 +76,7 @@ $topHeightMobileWithBanner: $bannerHeight + $topHeightMobile;
       color: inherit;
     }
 
-    a[aria-hidden='true'] {
+    a[aria-hidden="true"] {
       margin-left: 8px;
       font-size: 0.8em;
       height: 1em;
@@ -85,7 +85,7 @@ $topHeightMobileWithBanner: $bannerHeight + $topHeightMobile;
       transition: all 250ms;
     }
 
-    &:hover a[aria-hidden='true'] {
+    &:hover a[aria-hidden="true"] {
       opacity: 1;
       visibility: visible;
     }
@@ -221,7 +221,7 @@ $topHeightMobileWithBanner: $bannerHeight + $topHeightMobile;
       border-left-color: darken(#fbddcd, 40%);
 
       .tip-content::before {
-        content: '[TODO]: ';
+        content: "[TODO]: ";
         font-style: normal;
       }
     }
@@ -327,7 +327,7 @@ $topHeightMobileWithBanner: $bannerHeight + $topHeightMobile;
     }
   }
 
-  img:not([class*='support__']) {
+  img:not([class*="support__"]) {
     max-width: 100%;
     height: auto;
   }
@@ -359,13 +359,15 @@ $topHeightMobileWithBanner: $bannerHeight + $topHeightMobile;
   }
 
   pre {
-    background-color: rgba(238, 238, 238, 0.35);
-    background-color: getColor(elephant);
-    font-size: 13px;
-    line-height: 19px;
-    overflow: auto;
-    padding: 8px 16px;
+    background-color: #2d3748;
+    color: #e2e8f0;
+    padding: 1rem;
+    padding-right: 3.5rem;
     border-radius: 3px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-size: 0.875rem;
+    line-height: 1.5;
+    overflow: auto;
 
     code {
       margin: 0;
@@ -375,13 +377,14 @@ $topHeightMobileWithBanner: $bannerHeight + $topHeightMobile;
       background: transparent;
       text-shadow: 0 1px 0 transparentize(darken(getColor(elephant), 10%), 0.5);
       color: desaturate(getColor(malibu), 40%);
+      font-family: monospace;
 
       .code-details-summary-span {
         margin-left: -15px;
         cursor: pointer;
 
         &::after {
-          content: '›';
+          content: "›";
           float: left;
           position: relative;
           left: -2px;

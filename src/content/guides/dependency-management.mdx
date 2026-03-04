@@ -11,13 +11,7 @@ translators:
   - choilim
 ---
 
-> es6 modules
-
-> commonjs
-
-> amd
-
-## require with expression
+## Dynamic expressions in import() or require()
 
 요청에 표현식이 포함된 경우 컨텍스트가 생성되므로, 컴파일 시간에 **정확한** 모듈을 알 수 없습니다.
 
@@ -34,13 +28,14 @@ example_directory
 │       │   another.ejs
 ```
 
-다음의 `require()` 호출이 평가될 때
+`import()` 또는 `require()` 호출이 평가될 때:
 
 ```javascript
-require('./template/' + name + '.ejs');
+import(`./template/${name}.ejs`);
+require(`./template/${name}.ejs`);
 ```
 
-Webpack은 `require()` 호출을 구문 분석하고 일부 정보를 추출합니다.
+Webpack은 `import()` 또는 `require()` 호출을 분석하여 몇 가지 정보를 추출합니다.
 
 ```code
 Directory: ./template
@@ -63,7 +58,21 @@ Regular expression: /^.*\.ejs$/
 
 컨텍스트 모듈은 또한 맵에 접근하기 위한 런타임 로직도 포함합니다.
 
-이것은 동적으로 요청하는 기능이 지원되지만 모든 모듈이 번들에 포함되는 것을 의미합니다.
+이는 동적 호출이 지원되지만, 일치하는 모든 모듈이 번들에 포함된다는 것을 의미합니다.
+
+## import.meta.webpackContext
+
+The ESM equivalent of `require.context` is `import.meta.webpackContext`.
+
+```javascript
+import.meta.webpackContext(directory, {
+  recursive: true,
+  regExp: /^\.\/.*$/,
+  mode: "sync",
+});
+```
+
+W> `import.meta.webpackContext`에 전달되는 인수는 리터럴이어야 합니다!
 
 ## require.context
 
@@ -81,19 +90,19 @@ require.context(
   directory,
   (useSubdirectories = true),
   (regExp = /^\.\/.*$/),
-  (mode = 'sync')
+  (mode = "sync"),
 );
 ```
 
 예:
 
 ```javascript
-require.context('./test', false, /\.test\.js$/);
+require.context("./test", false, /\.test\.js$/);
 // test 디렉터리에서 요청이 `.test.js`로 끝나는 파일이 있는 컨텍스트입니다.
 ```
 
 ```javascript
-require.context('../', true, /\.stories\.js$/);
+require.context("../", true, /\.stories\.js$/);
 // 상위 폴더와 그 하위 폴더에서 `.stories.js`로 끝나는 파일이 있는 컨텍스트입니다.
 ```
 
@@ -110,23 +119,35 @@ export된 함수는 `resolve`, `keys`, `id` 3가지 속성을 가집니다.
 
 이것은 디렉터리의 모든 파일을 요청하거나 패턴과 일치시키려는 경우에 유용할 수 있습니다. 예제는 다음과 같습니다.
 
+{/* eslint-disable */}
+
 ```javascript
 function importAll(r) {
   r.keys().forEach(r);
 }
 
-importAll(require.context('../components/', true, /\.js$/));
+importAll(
+  import.meta.webpackContext("../components/", {
+    recursive: true,
+    regExp: /\.js$/,
+  }),
+);
 ```
 
 ```javascript
 const cache = {};
 
 function importAll(r) {
-  r.keys().forEach((key) => (cache[key] = r(key)));
+  for (const key of r.keys()) cache[key] = r(key);
 }
 
-importAll(require.context('../components/', true, /\.js$/));
-// 빌드 시 캐시는 모든 필수 모듈로 채워집니다.
+importAll(
+  import.meta.webpackContext("../components/", {
+    recursive: true,
+    regExp: /\.js$/,
+  }),
+);
+// 빌드 시 캐시에는 필요한 모든 모듈이 채워집니다.
 ```
 
-- `id`는 컨텍스트 모듈의 모듈 id입니다. 이것은 `module.hot.accept`에서 유용할 수 있습니다.
+- `id`는 컨텍스트 모듈의 모듈 ID입니다. 이는 `import.meta.webpackHot.accept` 또는 `module.hot.accept`에 유용할 수 있습니다.

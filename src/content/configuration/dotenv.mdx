@@ -11,8 +11,8 @@ related:
 ---
 
 <Badge text="5.103.0+" />
-`dotenv` 옵션은 `.env` 파일에서 webpack의 내장 환경 변수를 로드하는 기능을
-활성화합니다. ## `dotenv`
+`dotenv` 옵션은 `.env` 파일에서 WebPack의 내장 환경 변수를 로드할 수 있도록
+합니다.
 
 `boolean` `object`
 
@@ -22,7 +22,7 @@ related:
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   dotenv: true,
 };
 ```
@@ -31,11 +31,11 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   dotenv: {
-    prefix: 'WEBPACK_',
+    prefix: "WEBPACK_",
     dir: true,
-    template: ['.env', '.env.local', '.env.[mode]', '.env.[mode].local'],
+    template: [".env", ".env.local", ".env.[mode]", ".env.[mode].local"],
   },
 };
 ```
@@ -54,9 +54,9 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   dotenv: {
-    prefix: 'APP_', // APP_* 변수만 노출합니다.
+    prefix: "APP_", // APP_* 변수만 노출합니다.
   },
 };
 ```
@@ -65,9 +65,9 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   dotenv: {
-    prefix: ['APP_', 'CONFIG_'], // APP_* 및 CONFIG_* 변수를 모두 노출합니다.
+    prefix: ["APP_", "CONFIG_"], // APP_* 및 CONFIG_* 변수를 모두 노출합니다.
   },
 };
 ```
@@ -90,9 +90,9 @@ T> 보안상의 이유로 빈 문자열 `''`는 접두사로 허용되지 않습
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   dotenv: {
-    dir: './config', // ./config 디렉토리에서 로드
+    dir: "./config", // ./config 디렉토리에서 로드
   },
 };
 ```
@@ -101,7 +101,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   dotenv: {
     dir: false, // process.env 변수만 사용하세요
   },
@@ -122,10 +122,10 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
-  mode: 'production',
+  // ...
+  mode: "production",
   dotenv: {
-    template: ['.env', '.env.production'], // 이 두 파일만 로드하세요
+    template: [".env", ".env.production"], // 이 두 파일만 로드하세요
   },
 };
 ```
@@ -134,20 +134,20 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   dotenv: {
     template: [
-      '.env',
-      '.env.local',
-      '.env.[mode]',
-      '.env.[mode].local',
-      '.env.override', // Always loaded last
+      ".env",
+      ".env.local",
+      ".env.[mode]",
+      ".env.[mode].local",
+      ".env.override", // Always loaded last
     ],
   },
 };
 ```
 
-T> `[mode]` 플레이스홀더는 현재 웹팩 모드로 대체됩니다. 예를 들어, `production` 모드에서 `.env.[mode]`는 `.env.production`이 됩니다.
+T> `[mode]` 플레이스홀더는 현재 webpack 모드로 대체됩니다. 예를 들어, `production` 모드에서 `.env.[mode]`는 `.env.production`이 됩니다.
 
 ## File Priority
 
@@ -213,7 +213,7 @@ SECRET_KEY=should-not-be-exposed  # 노출되지 않음 (WEBPACK_ 접두사가 �
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   dotenv: true, // 기본 접두사 "WEBPACK_"를 사용합니다.
 };
 ```
@@ -271,9 +271,9 @@ PRIVATE_KEY=secret  # 노출되지 않음
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   dotenv: {
-    prefix: ['APP_', 'CONFIG_'],
+    prefix: ["APP_", "CONFIG_"],
   },
 };
 ```
@@ -286,10 +286,10 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   dotenv: {
-    dir: './environments',
-    template: ['.env.base', '.env.[mode]'],
+    dir: "./environments",
+    template: [".env.base", ".env.[mode]"],
   },
 };
 ```

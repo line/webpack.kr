@@ -11,7 +11,7 @@ translators:
   - limong
 ---
 
-import CodeBlockWithCopy from '../../components/CodeBlockWithCopy/CodeBlockWithCopy';
+import CodeBlockWithCopy from "../../components/CodeBlockWithCopy/CodeBlockWithCopy";
 
 `output` 옵션을 설정하여 컴파일된 파일을 디스크에 쓰는 방법을 webpack에 알려줍니다. 여러 `진입`점이 있을 수 있지만 하나의 `출력` 설정만 지정된다는 점에 주의하세요.
 
@@ -24,7 +24,7 @@ webpack 설정의 `output` 프로퍼티는 최소한 객체로 값을 설정해�
 ```javascript
 module.exports = {
   output: {
-    filename: 'bundle.js',
+    filename: "bundle.js",
   },
 };
 ```
@@ -36,14 +36,16 @@ module.exports = {
 설정에서 하나 이상의 "청크"를 생성하면(다중 엔트리 포인트나 CommonsChunkPlugin과 같은 플러그인을 사용하는 경우) [substitution](/configuration/output/#outputfilename)을 사용하여 파일이 고유한 이름을 갖도록 해야 합니다.
 
 ```javascript
+const path = require("node:path");
+
 module.exports = {
   entry: {
-    app: './src/app.js',
-    search: './src/search.js',
+    app: "./src/app.js",
+    search: "./src/search.js",
   },
   output: {
-    filename: '[name].js',
-    path: __dirname + '/dist',
+    filename: "[name].js",
+    path: path.resolve(__dirname, "./dist"),
   },
 };
 
@@ -58,10 +60,10 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   output: {
-    path: '/home/proj/cdn/assets/[fullhash]',
-    publicPath: 'https://cdn.example.com/assets/[fullhash]/',
+    path: "/home/proj/cdn/assets/[fullhash]",
+    publicPath: "https://cdn.example.com/assets/[fullhash]/",
   },
 };
 ```

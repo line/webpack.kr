@@ -1,0 +1,106 @@
+---
+title: ManifestPlugin
+group: webpack
+contributors:
+  - hai-x
+  - alexander-akait
+---
+
+<Badge text="5.103.0+" />
+
+내장된 `ManifestPlugin`은 빌드에 대한 하나의 에셋 매니페스트를 생성합니다. [`WebpackManifestPlugin`](https://github.com/shellscape/webpack-manifest-plugin)에서 포팅되었습니다.
+
+**webpack.config.js**
+
+```javascript
+new webpack.ManifestPlugin({
+  // options...
+});
+```
+
+## Options
+
+### `entrypoints`
+
+`boolean = true`
+
+매니페스트에서 `entrypoints` 섹션 생성을 활성화합니다.
+
+`entrypoints`가 활성화되어 있고 한 항목이 `dependOn`을 사용하는 경우
+
+**webpack.config.js**
+
+```javascript
+export default {
+  entry: {
+    entry1: {
+      import: "./src/file_1.js",
+      dependOn: "entry2",
+    },
+    entry2: "./src/file_2.js",
+  },
+  plugins: [
+    new webpack.ManifestPlugin({
+      filename: "manifest.json",
+    }),
+  ],
+};
+```
+
+결과 매니페스트에는 부모/자식 관계 맵이 포함됩니다.
+
+**manifest.json**
+
+```json
+{
+  "entrypoints": {
+    "entry1": {
+      "imports": ["entry1.js"],
+      "parents": ["entry2"]
+    },
+    "entry2": {
+      "imports": ["entry2.js"]
+    }
+  }
+}
+```
+
+### `filename`
+
+`string = manifest.json`
+
+디스크에 저장된 출력 파일의 파일 이름을 지정합니다. 기본적으로 플러그인은 `output.path` 디렉터리에 `manifest.json` 파일을 생성합니다.
+
+### `filter`
+
+`(item: ManifestItem) => boolean`
+
+매니페스트를 구성하는 파일을 필터링할 수 있습니다.
+
+### `generate`
+
+`function (manifest: ManifestObject) => ManifestObject`
+
+매니페스트 객체를 수신하고 수정한 후 수정된 매니페스트를 반환합니다.
+
+### `prefix`
+
+`string = "[publicpath]"`
+
+매니페스트의 모든 키에 대한 경로 접두사를 지정합니다.
+
+### serialize
+
+`function (manifest: ManifestObject) => string = (manifest) => JSON.stringify(manifest, null, 2)`
+
+매니페스트 객체를 수신하고 매니페스트 문자열을 반환합니다.
+
+`serialize`를 사용하여 YAML과 같은 다른 형식을 출력합니다.
+
+```javascript
+new webpack.ManifestPlugin({
+  serialize(manifest) {
+    return YAML.stringify(manifest, 4);
+  },
+});
+```

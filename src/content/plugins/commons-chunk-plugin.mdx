@@ -78,10 +78,10 @@ new webpack.optimize.CommonsChunkPlugin(options);
 
 ```javascript
 new webpack.optimize.CommonsChunkPlugin({
-  name: 'commons',
+  name: "commons",
   // (공통 청크 이름)
 
-  filename: 'commons.js',
+  filename: "commons.js",
   // (공통 청크의 파일 이름)
 
   // minChunks: 3,
@@ -105,14 +105,14 @@ new webpack.optimize.CommonsChunkPlugin({
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   entry: {
-    vendor: ['jquery', 'other-lib'],
-    app: './entry',
+    vendor: ["jquery", "other-lib"],
+    app: "./entry",
   },
   plugins: [
     new webpack.optimize.CommonsChunkPlugin({
-      name: 'vendor',
+      name: "vendor",
       // filename: "vendor.js"
       // (청크에 다른 이름을 지정하세요)
 
@@ -154,9 +154,9 @@ new webpack.optimize.CommonsChunkPlugin({
 
 ```javascript
 new webpack.optimize.CommonsChunkPlugin({
-  name: 'app',
+  name: "app",
   // 또는
-  names: ['app', 'subPageA'],
+  names: ["app", "subPageA"],
   // 단일 이름 또는 배열 형태의 이름은 비동기 청크를 생성하는
   // 엔트리 포인트의 이름과 일치해야 합니다.
 
@@ -187,9 +187,9 @@ new webpack.optimize.CommonsChunkPlugin({
 
 ```javascript
 new webpack.optimize.CommonsChunkPlugin({
-  name: 'my-single-lib-chunk',
-  filename: 'my-single-lib-chunk.js',
-  minChunks: function (module, count) {
+  name: "my-single-lib-chunk",
+  filename: "my-single-lib-chunk.js",
+  minChunks(module, count) {
     // 모듈이 경로를 가지고 있고 경로에 "somelib"이 존재하고
     // 3개의 개별 청크/엔트리에서 사용되는 경우
     // 청크의 키 이름이 "my-single-lib-chunk", 파일 이름이 "my-single-lib-chunk.js"로 분할됩니다.
@@ -204,10 +204,10 @@ new webpack.optimize.CommonsChunkPlugin({
 
 ```javascript
 new webpack.optimize.CommonsChunkPlugin({
-  name: 'vendor',
-  minChunks: function (module) {
+  name: "vendor",
+  minChunks(module) {
     // 이는 vendor의 import가 node_modules 디렉터리에 존재한다고 가정합니다.
-    return module.context && module.context.includes('node_modules');
+    return module.context && module.context.includes("node_modules");
   },
 });
 ```
@@ -218,7 +218,7 @@ webpack 부트스트랩 로직을 별도의 파일로 추출하려면 `entry`로
 
 ```javascript
 new webpack.optimize.CommonsChunkPlugin({
-  name: 'manifest',
+  name: "manifest",
   minChunks: Infinity,
 });
 ```
@@ -230,13 +230,13 @@ new webpack.optimize.CommonsChunkPlugin({
 ```javascript
 [
   new webpack.optimize.CommonsChunkPlugin({
-    name: 'vendor',
-    minChunks: function (module) {
-      return module.context && module.context.includes('node_modules');
+    name: "vendor",
+    minChunks(module) {
+      return module.context && module.context.includes("node_modules");
     },
   }),
   new webpack.optimize.CommonsChunkPlugin({
-    name: 'manifest',
+    name: "manifest",
     minChunks: Infinity,
   }),
 ];

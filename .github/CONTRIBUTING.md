@@ -55,6 +55,26 @@ Run `git config user.email` to see your Git email, and verify it with your [GitH
 The [.editorconfig][6] in the root should ensure consistent formatting. Please make sure
 you've [installed the plugin][7] if your text editor needs one.
 
+## Testing
+
+Run the full test suite (lint + Jest) with:
+
+```bash
+yarn test
+```
+
+To run only Jest tests:
+
+```bash
+yarn jest
+```
+
+To update snapshots after intentional UI changes:
+
+```bash
+NODE_OPTIONS=--experimental-vm-modules jest --config=jest.config.mjs --updateSnapshot
+```
+
 ## Branching Your Changes
 
 Making a branch in your fork for your contribution is helpful in the following ways:
@@ -80,6 +100,9 @@ will also potentially tie in to having archived docs for each major version.
 After getting some feedback, push to your fork branch and submit a pull request. We may
 suggest some changes or improvements or alternatives, but for small changes your pull
 request should be accepted and merged fairly quick.
+
+> Before submitting a pull request, ensure your feature branch is up to date with the latest changes from the upstream `main` branch to avoid conflicts during review.
+> You can go through this article to learn about [rebase technique][14]
 
 Issue the PR to the [main][8] branch.
 
@@ -126,3 +149,4 @@ any time spent fixing typos or clarifying sections in the documentation.
 [10]: http://conventionalcommits.org/
 [11]: https://github.com/conventional-changelog/standard-version
 [13]: https://yarnpkg.com/lang/en/docs/install
+[14]: https://dev.to/matks/what-it-means-to-rebase-a-pull-request-submitted-on-github-5717

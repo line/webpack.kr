@@ -35,19 +35,19 @@ class MyExampleWebpackPlugin {
   apply(compiler) {
     // attach할 이벤트 훅을 지정합니다.
     compiler.hooks.emit.tapAsync(
-      'MyExampleWebpackPlugin',
+      "MyExampleWebpackPlugin",
       (compilation, callback) => {
-        console.log('This is an example plugin!');
+        console.log("This is an example plugin!");
         console.log(
-          'Here’s the `compilation` object which represents a single build of assets:',
-          compilation
+          "Here’s the `compilation` object which represents a single build of assets:",
+          compilation,
         );
 
         // Webpack에서 제공되는 플러그인 API를 사용하여 빌드를 처리합니다.
         compilation.addModule(/* ... */);
 
         callback();
-      }
+      },
     );
   }
 }
@@ -61,10 +61,10 @@ class MyExampleWebpackPlugin {
 class HelloWorldPlugin {
   apply(compiler) {
     compiler.hooks.done.tap(
-      'Hello World Plugin',
-      (stats /* 훅의 탭이 끝나면 stats는 인자로 통과됩니다.*/) => {
-        console.log('Hello World!');
-      }
+      "Hello World Plugin",
+      (stats /* 훅의 탭이 끝나면 stats는 인자로 통과됩니다.  */) => {
+        console.log("Hello World!");
+      },
     );
   }
 }
@@ -76,7 +76,7 @@ module.exports = HelloWorldPlugin;
 
 ```javascript
 // webpack.config.js
-var HelloWorldPlugin = require('hello-world');
+const HelloWorldPlugin = require("hello-world");
 
 module.exports = {
   // ... 여기서 구성을 설정할 것 ...
@@ -87,14 +87,14 @@ module.exports = {
 플러그인 옵션을 통해 전달되는 옵션의 유효성을 확인하려면 [`schema-utils`](https://github.com/webpack/schema-utils)를 사용하세요. 다음은 사용 예제입니다.
 
 ```javascript
-import { validate } from 'schema-utils';
+import { validate } from "schema-utils";
 
 // options 객체에 대한 schema
 const schema = {
-  type: 'object',
+  type: "object",
   properties: {
     test: {
-      type: 'string',
+      type: "string",
     },
   },
 };
@@ -102,8 +102,8 @@ const schema = {
 export default class HelloWorldPlugin {
   constructor(options = {}) {
     validate(schema, options, {
-      name: 'Hello World Plugin',
-      baseDataPath: 'options',
+      name: "Hello World Plugin",
+      baseDataPath: "options",
     });
   }
 
@@ -119,10 +119,10 @@ export default class HelloWorldPlugin {
 class HelloCompilationPlugin {
   apply(compiler) {
     // callback 함수에 인자로 compilation을 제공하는 훅으로 compliation 훅을 탭 합니다.
-    compiler.hooks.compilation.tap('HelloCompilationPlugin', (compilation) => {
+    compiler.hooks.compilation.tap("HelloCompilationPlugin", (compilation) => {
       // 이제 컴파일을 통해 이용할 수 있는 다양한 훅들을 이용할 수 있습니다.
-      compilation.hooks.optimize.tap('HelloCompilationPlugin', () => {
-        console.log('Assets are being optimized.');
+      compilation.hooks.optimize.tap("HelloCompilationPlugin", () => {
+        console.log("Assets are being optimized.");
       });
     });
   }
@@ -145,14 +145,14 @@ module.exports = HelloCompilationPlugin;
 class HelloAsyncPlugin {
   apply(compiler) {
     compiler.hooks.emit.tapAsync(
-      'HelloAsyncPlugin',
+      "HelloAsyncPlugin",
       (compilation, callback) => {
         // Do something async...
-        setTimeout(function () {
-          console.log('Done with async work...');
+        setTimeout(() => {
+          console.log("Done with async work...");
           callback();
         }, 1000);
-      }
+      },
     );
   }
 }
@@ -167,15 +167,17 @@ module.exports = HelloAsyncPlugin;
 ```javascript
 class HelloAsyncPlugin {
   apply(compiler) {
-    compiler.hooks.emit.tapPromise('HelloAsyncPlugin', (compilation) => {
-      // 끝났을 때 해석을 반환해야 합니다..
-      return new Promise((resolve, reject) => {
-        setTimeout(function () {
-          console.log('Done with async work...');
-          resolve();
-        }, 1000);
-      });
-    });
+    compiler.hooks.emit.tapPromise(
+      "HelloAsyncPlugin",
+      (compilation) =>
+        // 끝났을 때 해석을 반환해야 합니다..
+        new Promise((resolve, reject) => {
+          setTimeout(() => {
+            console.log("Done with async work...");
+            resolve();
+          }, 1000);
+        }),
+    );
   }
 }
 
@@ -191,7 +193,7 @@ module.exports = HelloAsyncPlugin;
 ```javascript
 class FileListPlugin {
   static defaultOptions = {
-    outputFile: 'assets.md',
+    outputFile: "assets.md",
   };
 
   // 어떤 옵션이 플러그인의 생성자에 전달될 때,
@@ -237,19 +239,17 @@ class FileListPlugin {
 
           // 모든 애셋을 거쳐 반복하고
           // 마크다운 파일로 내용을 생성합니다.
-          const content =
-            '# In this build:\n\n' +
-            Object.keys(assets)
-              .map((filename) => `- ${filename}`)
-              .join('\n');
+          const content = `# In this build:\n\n${Object.keys(assets)
+            .map((filename) => `- ${filename}`)
+            .join("\n")}`;
 
           // 출력 디렉터리 webpack에 의해 자동으로 생성되도록
           // compilation에 새로운 애셋을 추가합니다.
           compilation.emitAsset(
             this.options.outputFile,
-            new RawSource(content)
+            new RawSource(content),
           );
-        }
+        },
       );
     });
   }
@@ -261,7 +261,7 @@ module.exports = { FileListPlugin };
 **webpack.config.js**
 
 ```javascript
-const { FileListPlugin } = require('./file-list-plugin.js');
+const { FileListPlugin } = require("./file-list-plugin.js");
 
 // 플러그인에 webpack 설정을 사용합니다.
 module.exports = {
@@ -275,7 +275,7 @@ module.exports = {
 
     // 지원되는 옵션을 전달하도록 선택할 수 있습니다.
     new FileListPlugin({
-      outputFile: 'my-assets.md',
+      outputFile: "my-assets.md",
     }),
   ],
 };
@@ -303,7 +303,7 @@ T> [`processAssets`](/api/compilation-hooks/#processassets) 훅은 지정한 단
 
 ```javascript
 this.hooks = {
-  shouldEmit: new SyncBailHook(['compilation']),
+  shouldEmit: new SyncBailHook(["compilation"]),
 };
 ```
 
@@ -314,13 +314,11 @@ this.hooks = {
 ### Synchronous Hooks
 
 - **SyncHook**
-
   - `new SyncHook([params])`로 정의됩니다.
   - `tap` 메소드를 사용하여 탭 됩니다.
   - `call(...params)` 메소드를 사용하여 호출됩니다.
 
 - **Bail Hooks**
-
   - `SyncBailHook[params]`로 정의됩니다.
   - `tap` 메소드를 사용하여 탭 됩니다.
   - `call(...params)` 메소드를 사용하여 호출됩니다.
@@ -328,7 +326,6 @@ this.hooks = {
   Bail Hook 타입의 훅들은, 각각의 callback 플러그인이 특정한 `args`를 사용하여 차례로 호출됩니다. 만약 플러그인에 의해 정의되지 않은 값을 제외하고 값이 반환된다면 훅에 의해 값이 반환되고 추가 플러그인 callback은 호출되지 않습니다. 많은 유용한 `optimizeChunks`, `optimizeChunkModules`와 같은 이벤트는 SyncBailHooks입니다.
 
 - **Waterfall Hooks**
-
   - `SyncWaterfallHook[params]`로 정의됩니다.
   - `tap` 메소드를 사용하여 탭 됩니다.
   - `call(...params)` 메소드를 사용하여 호출됩니다.
@@ -339,7 +336,6 @@ this.hooks = {
 ### Asynchronous Hooks
 
 - **Async Series Hook**
-
   - `AsyncSeriesHook[params]`로 정의됩니다.
   - `tap`/`tapAsync`/`tapPromise` 메소드를 사용하여 탭 됩니다.
   - `callAsync(...params)` 메소드를 사용하여 호출됩니다.
@@ -348,7 +344,6 @@ this.hooks = {
   Async Series Hook은 또한 `emit`, `run`과 같은 이벤트에 흔히 사용되는 패턴입니다.
 
 - **Async waterfall** 플러그인은 waterfall 방식으로 비동기식으로 적용될 것입니다.
-
   - `AsyncWaterfallHook[params]`로 정의됩니다.
   - `tap`/`tapAsync`/`tapPromise` 메소드를 사용하여 탭 됩니다.
   - `callAsync(...params)` 메소드를 사용하여 호출됩니다.
@@ -357,13 +352,11 @@ this.hooks = {
   이 플러그인 패턴은 `before-resolve`와 `after-resolve`와 같은 이벤트에서 사용할 수 있습니다.
 
 - **Async Series Bail**
-
   - `AsyncSeriesBailHook[params]`로 정의됩니다.
   - `tap`/`tapAsync`/`tapPromise` 메소드를 사용하여 탭 됩니다.
   - `callAsync(...params)` 메소드를 사용하여 호출됩니다.
 
 - **Async Parallel**
-
   - `AsyncParallelHook[params]`로 정의됩니다.
   - `tap`/`tapAsync`/`tapPromise` 메소드를 사용하여 탭 됩니다.
   - `callAsync(...params)` 메소드를 사용하여 호출됩니다.

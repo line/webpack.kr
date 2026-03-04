@@ -26,9 +26,9 @@ new webpack.SourceMapDevToolPlugin(options);
 
 다음과 같은 옵션이 제공됩니다.
 
-- `test` (`string` `RegExp` `[string, RegExp]`): 확장자에 따라 소스맵을 포함합니다. (기본값은 `.js`, `.mjs` 및 `.css`).
-- `include` (`string` `RegExp` `[string, RegExp]`): 값과 일치하는 경로의 소스맵을 포함합니다.
-- `exclude` (`string` `RegExp` `[string, RegExp]`): 값과 일치하는 모듈을 소스맵 생성에서 제외합니다.
+- `test` (`string` `RegExp` `function (asset) => boolean` `[string, RegExp, function (asset) => boolean]`): 확장자에 따라 소스맵을 포함합니다. (기본값은 `.js`, `.mjs` 및 `.css`).
+- `include` (`string` `RegExp` `function (asset) => boolean` `[string, RegExp, function (asset) => boolean]`): 값과 일치하는 경로의 소스맵을 포함합니다.
+- `exclude` (`string` `RegExp` `function (asset) => boolean` `[string, RegExp], function (asset) => boolean`): 값과 일치하는 모듈을 소스맵 생성에서 제외합니다.
 - `filename` (`string`): 소스맵의 파일 이름을 정의합니다 (값이 제공되지 않으면 인라인으로 설정됩니다).
 - `append` (`string` `function` `false`): 기존 애셋에 값을 추가합니다. 일반적으로 `#sourceMappingURL` 주석이 사용됩니다. `[url]`은 소스맵 파일의 URL로 대체됩니다. Webpack v4.36.0부터는 `[chunk]`, `[filename]` 및 `[contenthash]`와 같은 경로 파라미터가 지원됩니다. `false`로 설정하면 값 추가가 비활성화됩니다.
 
@@ -40,7 +40,7 @@ new webpack.SourceMapDevToolPlugin(options);
 
 - `moduleFilenameTemplate` (`string`): [`output.devtoolModuleFilenameTemplate`](/configuration/output/#outputdevtoolmodulefilenametemplate)을 참고하세요.
 - `fallbackModuleFilenameTemplate` (`string`): 위 링크를 참고하세요.
-- `ignoreList` (`string|RegExp|array`): 소스 맵에서 지정된 값과 일치하는 소스 파일을 무시할지 여부를 결정합니다.
+- `ignoreList` (`string` `RegExp` `function (source) => boolean` `[string, RegExp, function (source) => boolean]`): 소스 맵에서 지정된 값과 일치하는 소스 파일을 무시할지 여부를 결정합니다.
 - `module = true` (`boolean`): 로더가 소스 맵을 생성해야 하는지 여부를 나타냅니다.
 - `columns = true` (`boolean`): 열 매핑을 사용해야 하는지 여부를 나타냅니다.
 - `namespace` (`string`): DevTools에서 여러 WebPack 루트를 허용하는 네임스페이스 접두사입니다. [`output.devtoolNamespace`](/configuration/output/#outputdevtoolnamespace)를 참고하세요.
@@ -67,7 +67,7 @@ W> webpack `minimizer`의 기본값이 재정의된 경우 (`TerserPlugin` 옵�
 다음 코드를 사용하여 설정 옵션 `devtool: inline-source-map`을 커스텀 플러그인 설정으로 동등하게 바꿀 수 있습니다.
 
 ```js
-module.exports = {
+export default {
   // ...
   devtool: false,
   plugins: [new webpack.SourceMapDevToolPlugin({})],
@@ -80,8 +80,8 @@ module.exports = {
 
 ```js
 new webpack.SourceMapDevToolPlugin({
-  filename: '[file].map[query]',
-  exclude: ['vendor.js'],
+  filename: "[file].map[query]",
+  exclude: ["vendor.js"],
 });
 ```
 
@@ -91,8 +91,8 @@ new webpack.SourceMapDevToolPlugin({
 
 ```js
 new webpack.SourceMapDevToolPlugin({
-  append: '\n//# sourceMappingURL=https://example.com/sourcemap/[url]',
-  filename: '[file].map[query]',
+  append: "\n//# sourceMappingURL=https://example.com/sourcemap/[url]",
+  filename: "[file].map[query]",
 });
 ```
 
@@ -111,9 +111,9 @@ project
 
 ```js
 new webpack.SourceMapDevToolPlugin({
-  filename: 'sourcemaps/[file].map',
-  publicPath: 'https://example.com/project/',
-  fileContext: 'public',
+  filename: "sourcemaps/[file].map",
+  publicPath: "https://example.com/project/",
+  fileContext: "public",
 });
 ```
 

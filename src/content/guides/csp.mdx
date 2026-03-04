@@ -29,13 +29,13 @@ Webpack은 로드하는 모든 스크립트에 `nonce`를 추가할 수 있습�
 
 ```js
 // ...
-__webpack_nonce__ = 'c29tZSBjb29sIHN0cmluZyB3aWxsIHBvcCB1cCAxMjM=';
+__webpack_nonce__ = "c29tZSBjb29sIHN0cmluZyB3aWxsIHBvcCB1cCAxMjM=";
 // ...
 ```
 
 ## Enabling CSP
 
-CSP는 기본적으로 활성화되어 있지 않습니다. 브라우저에 CSP를 사용하도록 지시하려면 해당하는 헤더인 `Content-Security-Policy` 혹은 메타 태그 `<meta http-equiv="Content-Security-Policy" ...>`를 도큐먼트와 함께 보내야 합니다. 다음은 CDN 화이트리스트 URL을 포함한 CSP 헤더의 예시입니다.
+CSP는 기본적으로 활성화되어 있지 않습니다. 브라우저에 CSP를 사용하도록 지시하려면 해당하는 헤더인 `Content-Security-Policy` 혹은 메타 태그 `<meta http-equiv="Content-Security-Policy" ...>`를 도큐먼트와 함께 보내야 합니다. 다음은 CDN 허용 리스트 URL을 포함한 CSP 헤더의 예시입니다.
 
 ```html
 Content-Security-Policy: default-src 'self'; script-src 'self'

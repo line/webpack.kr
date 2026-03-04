@@ -18,30 +18,32 @@ translators:
 ```javascript
 class MyPlugin {
   apply(compiler) {
-    compiler.hooks.emit.tapAsync('MyPlugin', (compilation, callback) => {
+    compiler.hooks.emit.tapAsync("MyPlugin", (compilation, callback) => {
       // 각 청크(빌드 출력)를 탐색합니다.
-      compilation.chunks.forEach((chunk) => {
-        // 청크(빌드된 입력) 내의 각 모듈을 탐색합니다.
-        chunk.getModules().forEach((module) => {
-          // 모듈에 포함된 각 소스 파일 경로를 탐색합니다.
-          module.buildInfo &&
-            module.buildInfo.fileDependencies &&
-            module.buildInfo.fileDependencies.forEach((filepath) => {
-              // 이제 소스 구조에 대해 많은 것을 배웠습니다...
-            });
-        });
+      for (const chunk of compilation.chunks) {
+        // 청크 내의 각 모듈(빌드 입력)을 탐색합니다.
+        for (const module of chunk.getModules()) {
+          // 모듈에 포함된 각 소스 파일 경로를 살펴보세요.
+          if (module.buildInfo && module.buildInfo.fileDependencies) {
+            for (const fileDependency of module.buildInfo.fileDependencies) {
+              // 이제 소스 코드 구조에 대해 많은 것을 알게 되었습니다...
+              console.log(fileDependency);
+            }
+          }
+        }
 
         //  청크에 의해 생성된 각 애셋 파일 이름을 탐색합니다.
-        chunk.files.forEach((filename) => {
+        for (const filename of chunk.files) {
           // 청크에 의해 생성된 각 파일의 애셋 소스를 가져옵니다.
-          var source = compilation.assets[filename].source();
-        });
-      });
+          const source = compilation.assets[filename].source();
+        }
+      }
 
       callback();
     });
   }
 }
+
 module.exports = MyPlugin;
 ```
 
@@ -67,15 +69,13 @@ class MyPlugin {
     this.startTime = Date.now();
     this.prevTimestamps = new Map();
   }
+
   apply(compiler) {
-    compiler.hooks.emit.tapAsync('MyPlugin', (compilation, callback) => {
-      const changedFiles = Array.from(compilation.fileTimestamps.keys()).filter(
-        (watchfile) => {
-          return (
-            (this.prevTimestamps.get(watchfile) || this.startTime) <
-            (compilation.fileTimestamps.get(watchfile) || Infinity)
-          );
-        }
+    compiler.hooks.emit.tapAsync("MyPlugin", (compilation, callback) => {
+      const changedFiles = [...compilation.fileTimestamps.keys()].filter(
+        (watchfile) =>
+          (this.prevTimestamps.get(watchfile) || this.startTime) <
+          (compilation.fileTimestamps.get(watchfile) || Infinity),
       );
 
       this.prevTimestamps = compilation.fileTimestamps;
@@ -102,10 +102,11 @@ class MyPlugin {
   constructor() {
     this.chunkVersions = {};
   }
+
   apply(compiler) {
-    compiler.hooks.emit.tapAsync('MyPlugin', (compilation, callback) => {
-      var changedChunks = compilation.chunks.filter((chunk) => {
-        var oldVersion = this.chunkVersions[chunk.name];
+    compiler.hooks.emit.tapAsync("MyPlugin", (compilation, callback) => {
+      const changedChunks = compilation.chunks.filter((chunk) => {
+        const oldVersion = this.chunkVersions[chunk.name];
         this.chunkVersions[chunk.name] = chunk.hash;
         return chunk.hash !== oldVersion;
       });

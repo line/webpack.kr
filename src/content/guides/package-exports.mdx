@@ -116,13 +116,13 @@ Webpack 5.94.0+에서는 이전 동작이 `existent.js`로 확인되었을 것�
 위 조건은 다음과 같이 번역됩니다.
 
 ```ts
-if (red && valid('./stop.js')) return './stop.js';
-if (yellow && valid('./stop.js')) return './stop.js';
+if (red && valid("./stop.js")) return "./stop.js";
+if (yellow && valid("./stop.js")) return "./stop.js";
 if (green) {
-  if (free && valid('./drive.js')) return './drive.js';
-  if (valid('./wait.js')) return './wait.js';
+  if (free && valid("./drive.js")) return "./drive.js";
+  if (valid("./wait.js")) return "./wait.js";
 }
-if (valid('./drive-carefully.js')) return './drive-carefully.js';
+if (valid("./drive-carefully.js")) return "./drive-carefully.js";
 throw new ModuleNotFoundError();
 ```
 
@@ -424,9 +424,11 @@ JSON은 다른 모듈 시스템 그래프에 영향 없이 CommonJs 및 ESM에�
 }
 ```
 
+{/* eslint-disable prefer-destructuring */}
+
 ```js
 // wrapper.js
-import cjs from './index.cjs';
+import cjs from "./index.cjs";
 
 export const A = cjs.A;
 export const B = cjs.B;
@@ -501,11 +503,10 @@ Node.js는 항상 CommonJs 버전을 사용하고 ESM 래퍼를 사용하여 ESM
 
 ```js
 // wrapper-process-env.cjs
-if (process.env.NODE_ENV !== 'development') {
-  module.exports = require('./index-optimized.cjs');
-} else {
-  module.exports = require('./index-with-devtools.cjs');
-}
+module.exports =
+  process.env.NODE_ENV !== "development"
+    ? require("./index-optimized.cjs")
+    : require("./index-with-devtools.cjs");
 ```
 
 프로덕션/개발 모드를 감지할 때 `production` 또는 `development` 조건을 통한 정적 감지를 선호합니다.

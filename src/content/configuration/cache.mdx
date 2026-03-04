@@ -19,7 +19,7 @@ translators:
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   cache: false,
 };
 ```
@@ -39,7 +39,7 @@ module.exports = {
 ```js
 module.exports = {
   cache: {
-    type: 'filesystem',
+    type: "filesystem",
     allowCollectingMemory: true,
   },
 };
@@ -80,13 +80,13 @@ module.exports = {
 **webpack.config.js**
 
 ```javascript
-const path = require('path');
+const path = require("node:path");
 
 module.exports = {
-  //...
+  // ...
   cache: {
-    type: 'filesystem',
-    cacheDirectory: path.resolve(__dirname, '.temp_cache'),
+    type: "filesystem",
+    cacheDirectory: path.resolve(__dirname, ".temp_cache"),
   },
 };
 ```
@@ -102,13 +102,13 @@ W> 캐시의 최종 위치는 `cache.cacheDirectory` + `cache.name`의 조합입
 **webpack.config.js**
 
 ```javascript
-const path = require('path');
+const path = require("node:path");
 
 module.exports = {
-  //...
+  // ...
   cache: {
-    type: 'filesystem',
-    cacheLocation: path.resolve(__dirname, '.test_cache'),
+    type: "filesystem",
+    cacheLocation: path.resolve(__dirname, ".test_cache"),
   },
 };
 ```
@@ -124,9 +124,9 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   cache: {
-    type: 'memory',
+    type: "memory",
     cacheUnaffected: true,
   },
 };
@@ -146,10 +146,10 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   cache: {
-    type: 'filesystem',
-    compression: 'gzip',
+    type: "filesystem",
+    compression: "gzip",
   },
 };
 ```
@@ -166,10 +166,10 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   cache: {
-    type: 'filesystem',
-    hashAlgorithm: 'md4',
+    type: "filesystem",
+    hashAlgorithm: "md4",
   },
 };
 ```
@@ -186,9 +186,9 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //..
+  // ..
   cache: {
-    type: 'filesystem',
+    type: "filesystem",
     idleTimeout: 60000,
   },
 };
@@ -208,9 +208,9 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //..
+  // ..
   cache: {
-    type: 'filesystem',
+    type: "filesystem",
     idleTimeoutAfterLargeChanges: 1000,
   },
 };
@@ -228,9 +228,9 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //..
+  // ..
   cache: {
-    type: 'filesystem',
+    type: "filesystem",
     idleTimeoutForInitialStore: 0,
   },
 };
@@ -260,7 +260,7 @@ W> [snapshot.managedPaths](/configuration/other-options/#managedpaths)로 이동
 module.exports = {
   // ...
   cache: {
-    type: 'filesystem',
+    type: "filesystem",
     maxAge: 5184000000,
   },
 };
@@ -286,7 +286,7 @@ module.exports = {
 module.exports = {
   // ...
   cache: {
-    type: 'memory',
+    type: "memory",
     maxGenerations: Infinity,
   },
 };
@@ -316,7 +316,7 @@ module.exports = {
 module.exports = {
   // ...
   cache: {
-    type: 'filesystem',
+    type: "filesystem",
     maxMemoryGenerations: Infinity,
   },
 };
@@ -333,9 +333,9 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   cache: {
-    type: 'filesystem',
+    type: "filesystem",
     memoryCacheUnaffected: true,
   },
 };
@@ -353,10 +353,10 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   cache: {
-    type: 'filesystem',
-    name: 'AppBuildCache',
+    type: "filesystem",
+    name: "AppBuildCache",
   },
 };
 ```
@@ -371,9 +371,9 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   cache: {
-    type: 'filesystem',
+    type: "filesystem",
     profile: true,
   },
 };
@@ -387,10 +387,10 @@ webpack이 캐시를 파일 시스템에 저장하지 못하도록 합니다. `c
 
 ```js
 module.exports = {
-  //...
+  // ...
   cache: {
-    type: 'filesystem',
-    store: 'pack',
+    type: "filesystem",
+    store: "pack",
     readonly: true,
   },
 };
@@ -412,10 +412,10 @@ W> `pack`은 webpack 5.0.x 이후 버전에서만 사용할 수 있습니다.
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   cache: {
-    type: 'filesystem',
-    store: 'pack',
+    type: "filesystem",
+    store: "pack",
   },
 };
 ```
@@ -430,9 +430,9 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   cache: {
-    type: 'memory',
+    type: "memory",
   },
 };
 ```
@@ -449,10 +449,10 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   cache: {
-    type: 'filesystem',
-    version: 'your_version',
+    type: "filesystem",
+    version: "your_version",
   },
 };
 ```
@@ -478,7 +478,7 @@ variables:
 # 이것은 webpack 빌드 작업입니다
 build-job:
   cache:
-    key: '$CI_COMMIT_REF_SLUG' # 브랜치/태그 이름
+    key: "$CI_COMMIT_REF_SLUG" # 브랜치/태그 이름
     paths:
       # 캐시 디렉터리
       # 이 작업에서 "npm ci"를 실행하거나 기본 캐시 디렉터리를 변경하시 않았는지 확인하세요

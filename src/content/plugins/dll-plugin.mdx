@@ -86,23 +86,35 @@ W> `DllReferencePlugin`과 `DllPlugin`은 _별도의_ wepback 설정에서 사�
 **webpack.vendor.config.js**
 
 ```javascript
-const path = require('path');
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+// For compatibility with older Node.js versions
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 new webpack.DllPlugin({
-  context: __dirname,
-  name: '[name]_[fullhash]',
-  path: path.join(__dirname, 'manifest.json'),
+  context: import.meta.dirname,
+  name: "[name]_[fullhash]",
+  path: path.join(__dirname, "manifest.json"),
 });
 ```
 
 **webpack.app.config.js**
 
 ```javascript
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+// For compatibility with older Node.js versions
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 new webpack.DllReferencePlugin({
   context: __dirname,
-  manifest: require('./manifest.json'),
-  scope: 'xyz',
-  sourceType: 'commonjs2',
+  manifest: path.join(__dirname, "manifest.json"),
+  scope: "xyz",
+  sourceType: "commonjs2",
 });
 ```
 

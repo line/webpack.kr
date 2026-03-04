@@ -12,6 +12,7 @@ contributors:
   - wizardofhogwarts
   - astonizer
   - snitin315
+  - Brennvo
 translators:
   - keipark
 ---
@@ -46,9 +47,13 @@ webpack의 가장 멋진 기능 중 하나는 JavaScript 외에도 로더 또는
 **webpack.config.js**
 
 ```diff
- const path = require('path');
+ import path from 'node:path';
+ import { fileURLToPath } from 'node:url';
 
- module.exports = {
+ const __filename = fileURLToPath(import.meta.url);
+ const __dirname = path.dirname(__filename);
+
+ export default {
    entry: './src/index.js',
    output: {
 -    filename: 'main.js',
@@ -69,9 +74,13 @@ npm install --save-dev style-loader css-loader
 **webpack.config.js**
 
 ```diff
- const path = require('path');
+ import path from 'node:path';
+ import { fileURLToPath } from 'node:url';
 
- module.exports = {
+ const __filename = fileURLToPath(import.meta.url);
+ const __dirname = path.dirname(__filename);
+
+ export default {
    entry: './src/index.js',
    output: {
      filename: 'bundle.js',
@@ -173,9 +182,13 @@ webpack 5.4.0 compiled successfully in 2231 ms
 **webpack.config.js**
 
 ```diff
- const path = require('path');
+ import path from 'node:path';
+ import { fileURLToPath } from 'node:url';
 
- module.exports = {
+ const __filename = fileURLToPath(import.meta.url);
+ const __dirname = path.dirname(__filename);
+
+ export default {
    entry: './src/index.js',
    output: {
      filename: 'bundle.js',
@@ -286,9 +299,13 @@ webpack 5.4.0 compiled successfully in 1972 ms
 **webpack.config.js**
 
 ```diff
- const path = require('path');
+ import path from 'node:path';
+ import { fileURLToPath } from 'node:url';
 
- module.exports = {
+ const __filename = fileURLToPath(import.meta.url);
+ const __dirname = path.dirname(__filename);
+
+ export default {
    entry: './src/index.js',
    output: {
      filename: 'bundle.js',
@@ -397,9 +414,13 @@ npm install --save-dev csv-loader xml-loader
 **webpack.config.js**
 
 ```diff
- const path = require('path');
+ import path from 'node:path';
+ import { fileURLToPath } from 'node:url';
 
- module.exports = {
+ const __filename = fileURLToPath(import.meta.url);
+ const __dirname = path.dirname(__filename);
+
+ export default {
    entry: './src/index.js',
    output: {
      filename: 'bundle.js',
@@ -517,10 +538,12 @@ W> JSON 모듈의 기본 내보내기만 경고 없이 사용할 수 있습니�
 
 ```javascript
 // 경고 없음
-import data from './data.json';
+import data from "./data.json";
+```
 
+```javascript
 // 스펙에서 허용하지 않으므로 경고가 노출됨
-import { foo } from './data.json';
+import { foo } from "./data.json";
 ```
 
 ### Customize parser of JSON modules
@@ -559,13 +582,13 @@ owner:
 ```json5
 {
   // comment
-  title: 'JSON5 Example',
+  title: "JSON5 Example",
   owner: {
-    name: 'Tom Preston-Werner',
-    organization: 'GitHub',
-    bio: 'GitHub Cofounder & CEO\n\
-Likes tater tots and beer.',
-    dob: '1979-05-27T07:32:00.000Z',
+    name: "Tom Preston-Werner",
+    organization: "GitHub",
+    bio: "GitHub Cofounder & CEO\n\
+Likes tater tots and beer.",
+    dob: "1979-05-27T07:32:00.000Z",
   },
 }
 ```
@@ -581,12 +604,16 @@ npm install toml yamljs json5 --save-dev
 **webpack.config.js**
 
 ```diff
- const path = require('path');
-+const toml = require('toml');
-+const yaml = require('yamljs');
-+const json5 = require('json5');
+ import path from 'node:path';
+ import { fileURLToPath } from 'node:url';
++import toml from 'toml';
++import yaml from 'yamljs';
++import json5 from 'json5';
 
- module.exports = {
+ const __filename = fileURLToPath(import.meta.url);
+ const __dirname = path.dirname(__filename);
+
+ export default {
    entry: './src/index.js',
    output: {
      filename: 'bundle.js',
@@ -734,12 +761,16 @@ npm install toml yamljs json5 --save-dev
 **webpack.config.js**
 
 ```diff
- const path = require('path');
--const toml = require('toml');
--const yaml = require('yamljs');
--const json5 = require('json5');
+ import path from 'node:path';
+ import { fileURLToPath } from 'node:url';
+-import toml from 'toml';
+-import yaml from 'yamljs';
+-import json5 from 'json5';
 
- module.exports = {
+ const __filename = fileURLToPath(import.meta.url);
+ const __dirname = path.dirname(__filename);
+
+ export default {
    entry: './src/index.js',
    output: {
      filename: 'bundle.js',

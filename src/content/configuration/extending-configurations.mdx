@@ -3,6 +3,7 @@ title: Extends
 sort: 12
 contributors:
   - burhanuday
+  - tusharthakur04
 ---
 
 ## extends
@@ -23,18 +24,18 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        use: 'babel-loader',
+        use: "babel-loader",
         exclude: /node_modules/,
       },
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader'],
+        use: ["style-loader", "css-loader"],
       },
     ],
   },
   plugins: [
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify('production'),
+      "process.env.NODE_ENV": JSON.stringify("production"),
     }),
   ],
 };
@@ -44,11 +45,11 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  extends: path.resolve(__dirname, './base.webpack.config.js'),
-  entry: './src/index.js',
+  extends: path.resolve(__dirname, "./base.webpack.config.js"),
+  entry: "./src/index.js",
   output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'bundle.js',
+    path: path.resolve(__dirname, "dist"),
+    filename: "bundle.js",
   },
 };
 ```
@@ -67,7 +68,7 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        use: 'babel-loader',
+        use: "babel-loader",
         exclude: /node_modules/,
       },
     ],
@@ -83,7 +84,7 @@ module.exports = {
     rules: [
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader'],
+        use: ["style-loader", "css-loader"],
       },
     ],
   },
@@ -95,13 +96,13 @@ module.exports = {
 ```javascript
 module.exports = {
   extends: [
-    path.resolve(__dirname, './js.webpack.config.js'),
-    path.resolve(__dirname, './css.webpack.config.js'),
+    path.resolve(__dirname, "./js.webpack.config.js"),
+    path.resolve(__dirname, "./css.webpack.config.js"),
   ],
-  entry: './src/index.js',
+  entry: "./src/index.js",
   output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'bundle.js',
+    path: path.resolve(__dirname, "dist"),
+    filename: "bundle.js",
   },
 };
 ```
@@ -115,8 +116,8 @@ module.exports = {
 ```javascript
 module.exports = {
   output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'bundle.js',
+    path: path.resolve(__dirname, "dist"),
+    filename: "bundle.js",
   },
 };
 ```
@@ -125,13 +126,97 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  extends: path.resolve(__dirname, './base.webpack.config.js'),
-  entry: './src/index.js',
+  extends: path.resolve(__dirname, "./base.webpack.config.js"),
+  entry: "./src/index.js",
   // output 경로 및 파일 이름 재정의
   output: {
-    path: path.resolve(__dirname, 'build'),
-    filename: '[name].bundle.js',
+    path: path.resolve(__dirname, "build"),
+    filename: "[name].bundle.js",
   },
+};
+```
+
+## Concatinating rules and plugins
+
+문자열과 같은 기본 값은 덮어쓰여지지만, 배열 필드는 교체되는 대신 연결됩니다. 이러한 동작은 Webpack이 extends를 처리할 때 내부적으로 사용하는 webpack-merge 때문입니다.
+
+**base.webpack.config.js**
+
+```javascript
+const webpack = require("webpack");
+
+module.exports = {
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        use: "babel-loader",
+      },
+    ],
+  },
+  plugins: [
+    new webpack.DefinePlugin({
+      __DEV__: false,
+    }),
+  ],
+};
+```
+
+**webpack.config.js**
+
+```javascript
+const path = require("node:path");
+const webpack = require("webpack");
+
+module.exports = {
+  extends: path.resolve(__dirname, "./base.webpack.config.js"),
+
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: ["style-loader", "css-loader"],
+      },
+    ],
+  },
+
+  plugins: [new webpack.HotModuleReplacementPlugin()],
+};
+```
+
+**병합 후 결과**
+
+모듈이 교체되는 대신 규칙과 플러그인 배열이 연결되었습니다.
+
+```javascript
+const webpack = require("webpack");
+
+module.exports = {
+  module: {
+    rules: [
+      // From base.webpack.config.js
+      {
+        test: /\.js$/,
+        use: "babel-loader",
+      },
+
+      // From webpack.config.js (appended)
+      {
+        test: /\.css$/,
+        use: ["style-loader", "css-loader"],
+      },
+    ],
+  },
+
+  plugins: [
+    // From base.webpack.config.js
+    new webpack.DefinePlugin({
+      __DEV__: false,
+    }),
+
+    // From webpack.config.js (appended)
+    new webpack.HotModuleReplacementPlugin(),
+  ],
 };
 ```
 
@@ -143,11 +228,11 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  extends: require.resolve('webpack-config-foo'),
-  entry: './src/index.js',
+  extends: require.resolve("webpack-config-foo"),
+  entry: "./src/index.js",
   output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'bundle.js',
+    path: path.resolve(__dirname, "dist"),
+    filename: "bundle.js",
   },
 };
 ```

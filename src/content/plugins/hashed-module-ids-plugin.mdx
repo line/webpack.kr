@@ -24,6 +24,11 @@ new webpack.ids.HashedModuleIdsPlugin({
 - `context`: 이름을 만들기 위한 컨텍스트 디렉터리 (**절대 경로**).
 - `hashFunction`: 사용할 해싱 알고리즘, 기본 값은 `'md4'`입니다. Node.JS의 [`crypto.createHash`](https://nodejs.org/api/crypto.html#crypto_crypto_createhash_algorithm_options)의 모든 기능이 지원됩니다.
 - `hashDigest`: 해시를 생성할 때 사용할 인코딩, 기본 값은 `'base64'`입니다. Node.JS의 [`hash.digest`](https://nodejs.org/api/crypto.html#crypto_hash_digest_encoding)의 모든 인코딩이 지원됩니다.
+
+  <Badge text="5.104.0+" />
+
+  Webpack은 표준 Node.js 인코딩 외에도 `base64url`, `base62`, `base58`, `base52`, `base49`, `base36`, `base32`, `base25`와 같은 사용자 지정 다이제스트 알고리즘을 지원합니다. 이러한 알고리즘은 더 짧거나 URL에 안전한 해시 값을 생성하는 데 유용합니다.
+
 - `hashDigestLength`: 사용할 해시 다이제스트의 접두사 길이, 기본 값은 `4`입니다. 생성된 일부 ID는 모듈 ID 충돌을 피하기 위해 여기에서 지정된 것보다 길 수 있습니다.
 
 ## Usage
@@ -33,8 +38,19 @@ new webpack.ids.HashedModuleIdsPlugin({
 ```js
 new webpack.ids.HashedModuleIdsPlugin({
   context: __dirname,
-  hashFunction: 'sha256',
-  hashDigest: 'hex',
+  hashFunction: "sha256",
+  hashDigest: "hex",
   hashDigestLength: 20,
+});
+```
+
+**Using URL-safe encoding (5.104.0+):**
+
+```js
+new webpack.ids.HashedModuleIdsPlugin({
+  context: __dirname,
+  hashFunction: "md4",
+  hashDigest: "base64url", // URL-safe encoding
+  hashDigestLength: 8,
 });
 ```

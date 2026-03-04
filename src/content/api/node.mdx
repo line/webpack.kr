@@ -28,16 +28,10 @@ webpack Node.js API 사용을 시작하려면 먼저 webpack을 설치하세요.
 npm install --save-dev webpack
 ```
 
-그런 다음 Node.js 스크립트에 webpack 모듈을 요청합니다.
+다음으로 Node.js 스크립트에서 webpack 모듈을 가져옵니다.
 
 ```js
-const webpack = require('webpack');
-```
-
-또는 ES2015를 선호하다면 아래처럼 사용하세요.
-
-```js
-import webpack from 'webpack';
+import webpack from "webpack";
 ```
 
 ## webpack()
@@ -45,7 +39,7 @@ import webpack from 'webpack';
 가져온 `webpack` 함수는 webpack [설정 객체](/configuration/)를 제공하며 콜백 함수가 제공되면 webpack 컴파일러를 실행합니다.
 
 ```js
-const webpack = require('webpack');
+import webpack from "webpack";
 
 webpack({}, (err, stats) => {
   if (err || stats.hasErrors()) {
@@ -96,7 +90,7 @@ W> API는 한 번에 하나의 동시 컴파일만 지원합니다. `run` 또는
 위에서 언급한 빠른 실행 메소드와 매우 유사합니다.
 
 ```js
-const webpack = require('webpack');
+import webpack from "webpack";
 
 const compiler = webpack({
   // ...
@@ -124,7 +118,7 @@ watch(watchOptions, callback);
 ```
 
 ```js
-const webpack = require('webpack');
+import webpack from "webpack";
 
 const compiler = webpack({
   // ...
@@ -139,7 +133,7 @@ const watching = compiler.watch(
   (err, stats) => {
     // watch/build 결과를 여기에 출력...
     console.log(stats);
-  }
+  },
 );
 ```
 
@@ -158,7 +152,7 @@ W> 파일 시스템 부정확성은 하나의 변경 사항에 대해 빌드 여
 
 ```js
 watching.close((closeErr) => {
-  console.log('Watching Ended.');
+  console.log("Watching Ended.");
 });
 ```
 
@@ -209,7 +203,7 @@ T> [`MultiCompiler`](#multicompiler)를 사용할 때,
 `options`는 문자열(사전 설정) 또는 보다 세분화된 제어를 위한 객체일 수 있습니다.
 
 ```js
-stats.toJson('minimal');
+stats.toJson("minimal");
 ```
 
 ```js
@@ -241,7 +235,7 @@ stats.toString({
 다음은 `stats.toString()` 사용법의 예시입니다.
 
 ```js
-const webpack = require('webpack');
+import webpack from "webpack";
 
 webpack(
   {
@@ -257,9 +251,9 @@ webpack(
       stats.toString({
         chunks: false, // 빌드를 훨씬 조용하게 만듭니다.
         colors: true, // 콘솔에 색상을 표시합니다.
-      })
+      }),
     );
-  }
+  },
 );
 ```
 
@@ -271,16 +265,16 @@ webpack은 별도의 컴파일러를 적용하고
 모든 컴파일러가 실행된 후 `callback`을 호출합니다.
 
 ```js
-var webpack = require('webpack');
+import webpack from "webpack";
 
 webpack(
   [
-    { entry: './index1.js', output: { filename: 'bundle1.js' } },
-    { entry: './index2.js', output: { filename: 'bundle2.js' } },
+    { entry: "./index1.js", output: { filename: "bundle1.js" } },
+    { entry: "./index2.js", output: { filename: "bundle2.js" } },
   ],
   (err, stats) => {
-    process.stdout.write(stats.toString() + '\n');
-  }
+    process.stdout.write(`${stats.toString()}`);
+  },
 );
 ```
 
@@ -298,7 +292,7 @@ W> 다중 설정은 **병렬로 실행되지 않습니다**.
 다음은 이 모든 작업을 수행하는 예시입니다.
 
 ```js
-const webpack = require('webpack');
+import webpack from "webpack";
 
 webpack(
   {
@@ -324,7 +318,7 @@ webpack(
     }
 
     // Log result...
-  }
+  },
 );
 ```
 
@@ -339,8 +333,8 @@ webpack(
 디스크 대신 메모리에 파일을 쓸 수 있습니다.
 
 ```js
-const { createFsFromVolume, Volume } = require('memfs');
-const webpack = require('webpack');
+import { Volume, createFsFromVolume } from "memfs";
+import webpack from "webpack";
 
 const fs = createFsFromVolume(new Volume());
 const compiler = webpack({
@@ -350,7 +344,7 @@ const compiler = webpack({
 compiler.outputFileSystem = fs;
 compiler.run((err, stats) => {
   // 출력 나중에 읽기
-  const content = fs.readFileSync('...');
+  const content = fs.readFileSync("...");
   compiler.close((closeErr) => {
     // ...
   });

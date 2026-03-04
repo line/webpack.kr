@@ -35,6 +35,7 @@ contributors:
   - atesgoral
   - snitin315
   - artem-malko
+  - Brennvo
 translators:
   - keipark
 related:
@@ -77,17 +78,21 @@ webpack-demo
 **another-module.js**
 
 ```js
-import _ from 'lodash';
+import _ from "lodash";
 
-console.log(_.join(['Another', 'module', 'loaded!'], ' '));
+console.log(_.join(["Another", "module", "loaded!"], " "));
 ```
 
 **webpack.config.js**
 
 ```diff
- const path = require('path');
+ import path from 'node:path';
+ import { fileURLToPath } from 'node:url';
 
- module.exports = {
+ const __filename = fileURLToPath(import.meta.url);
+ const __dirname = path.dirname(__filename);
+
+ export default {
 -  entry: './src/index.js',
 +  mode: 'development',
 +  entry: {
@@ -133,9 +138,13 @@ webpack 5.4.0 compiled successfully in 245 ms
 **webpack.config.js**
 
 ```diff
- const path = require('path');
+ import path from 'node:path';
+ import { fileURLToPath } from 'node:url';
 
- module.exports = {
+ const __filename = fileURLToPath(import.meta.url);
+ const __dirname = path.dirname(__filename);
+
+ export default {
    mode: 'development',
    entry: {
 -    index: './src/index.js',
@@ -162,9 +171,13 @@ webpack 5.4.0 compiled successfully in 245 ms
 **webpack.config.js**
 
 ```diff
- const path = require('path');
+ import path from 'node:path';
+ import { fileURLToPath } from 'node:url';
 
- module.exports = {
+ const __filename = fileURLToPath(import.meta.url);
+ const __dirname = path.dirname(__filename);
+
+ export default {
    mode: 'development',
    entry: {
      index: {
@@ -218,9 +231,13 @@ webpack은 하나의 페이지에 여러 엔트리 포인트를 허용하지만,
 **webpack.config.js**
 
 ```diff
-  const path = require('path');
+  import path from 'node:path';
+  import { fileURLToPath } from 'node:url';
 
-  module.exports = {
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+
+  export default {
     mode: 'development',
     entry: {
       index: './src/index.js',
@@ -271,9 +288,13 @@ W> `import()` 호출은 내부적으로 [promises](https://developer.mozilla.org
 **webpack.config.js**
 
 ```diff
- const path = require('path');
+ import path from 'node:path';
+ import { fileURLToPath } from 'node:url';
 
- module.exports = {
+ const __filename = fileURLToPath(import.meta.url);
+ const __dirname = path.dirname(__filename);
+
+ export default {
    mode: 'development',
    entry: {
      index: './src/index.js',
@@ -384,6 +405,20 @@ webpack 5.4.0 compiled successfully in 268 ms
 
 T> 나중에 계산된 변수를 기반으로 특정 모듈을 가져와야 할 경우 `import()`에 [dynamic expression](/api/module-methods/#dynamic-expressions-in-import)을 사용 할 수 있습니다.
 
+### Understanding ChunkLoadError
+
+동적 `import()` 또는 코드 분할을 사용할 때, Webpack은 런타임에 청크 로드에 실패하면 `ChunkLoadError`를 발생시킬 수 있습니다.
+
+이 오류는 일반적으로 요청된 청크가 제대로 실행되거나 해결되지 못했음을 나타냅니다. 경우에 따라 브라우저의 기본 네트워크 오류 또는 스크립트 로딩 오류가 `ChunkLoadError` 메시지 자체에 완전히 반영되지 않을 수도 있습니다.
+
+다음과 같은 오류가 발생하는 경우:
+
+- 청크 파일이 네트워크를 통해 접근 가능한지 확인합니다.
+- `publicPath`가 올바르게 구성되었는지 확인합니다.
+- 브라우저 콘솔에서 추가적인 스크립트 또는 네트워크 오류가 있는지 확인합니다.
+
+더 자세한 내용은 webpack 이슈 트래커의 관련 논의를 참조하세요.
+
 ## Prefetching/Preloading modules
 
 Webpack 4.6.0+에서 프리페치 및 프리로드에 대한 지원이 추가되었습니다.
@@ -398,8 +433,8 @@ Webpack 4.6.0+에서 프리페치 및 프리로드에 대한 지원이 추가되
 **LoginButton.js**
 
 ```js
-//...
-import(/* webpackPrefetch: true */ './path/to/LoginModal.js');
+// ...
+import(/* webpackPrefetch: true */ "./path/to/LoginModal.js");
 ```
 
 이는 페이지 head에 `<link rel="prefetch" href="login-modal-chunk.js">`를 추가하고 브라우저에 `login-modal-chunk.js`를 유휴 시간에 미리 가져오도록 지시합니다.
@@ -420,8 +455,8 @@ T> webpack은 부모 청크가 로드된 후 프리페치 힌트를 추가합니
 **ChartComponent.js**
 
 ```js
-//...
-import(/* webpackPreload: true */ 'ChartingLibrary');
+// ...
+import(/* webpackPreload: true */ "ChartingLibrary");
 ```
 
 `ChartComponent`를 사용하는 페이지를 요청할 때 `<link rel="preload">`를 통해 charting-library-chunk도 요청됩니다. page-chunk가 더 작고 더 빨리 완료된다고 가정하면 이미 요청된 `charting-library-chunk`가 완료될 때까지 페이지에는 `LoadingIndicator`가 표시됩니다. 두 번이 아닌 한 번의 라운드 트립이 필요하므로 대기 시간이 긴 환경에서 로드 시간이 증가할 수 있습니다.
@@ -432,7 +467,7 @@ T> `webpackPreload`를 잘못 사용하면 실제로 성능이 저하 될 수 �
 
 ```js
 const lazyComp = () =>
-  import('DynamicComponent').catch((error) => {
+  import("DynamicComponent").catch((error) => {
     // 에러가 있는 작업을 수행합니다.
     // 예를 들어, 모든 네트워크 에러가 발생할 경우 요청을 재시도할 수 있습니다.
   });

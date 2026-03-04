@@ -26,12 +26,12 @@ webpack **플러그인은** [`apply`](https://developer.mozilla.org/en-US/docs/W
 **ConsoleLogOnBuildWebpackPlugin.js**
 
 ```javascript
-const pluginName = 'ConsoleLogOnBuildWebpackPlugin';
+const pluginName = "ConsoleLogOnBuildWebpackPlugin";
 
 class ConsoleLogOnBuildWebpackPlugin {
   apply(compiler) {
     compiler.hooks.run.tap(pluginName, (compilation) => {
-      console.log('The webpack build process is starting!');
+      console.log("The webpack build process is starting!");
     });
   }
 }
@@ -52,27 +52,27 @@ webpack을 사용하는 방법에 따라 여러 가지 방법으로 플러그인
 **webpack.config.js**
 
 ```javascript
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const webpack = require('webpack'); //빌트인 플러그인에 접근하기 위함
-const path = require('path');
+const path = require("node:path");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const webpack = require("webpack"); // 빌트인 플러그인에 접근하기 위함
 
 module.exports = {
-  entry: './path/to/my/entry/file.js',
+  entry: "./path/to/my/entry/file.js",
   output: {
-    filename: 'my-first-webpack.bundle.js',
-    path: path.resolve(__dirname, 'dist'),
+    filename: "my-first-webpack.bundle.js",
+    path: path.resolve(__dirname, "dist"),
   },
   module: {
     rules: [
       {
         test: /\.(js|jsx)$/,
-        use: 'babel-loader',
+        use: "babel-loader",
       },
     ],
   },
   plugins: [
     new webpack.ProgressPlugin(),
-    new HtmlWebpackPlugin({ template: './src/index.html' }),
+    new HtmlWebpackPlugin({ template: "./src/index.html" }),
   ],
 };
 ```
@@ -86,14 +86,14 @@ Node API를 사용할 때 설정의 `플러그인` 속성을 통해 플러그인
 **some-node-script.js**
 
 ```javascript
-const webpack = require('webpack'); //webpack 런타임에 접근하기 위함
-const configuration = require('./webpack.config.js');
+const webpack = require("webpack"); // webpack 런타임에 접근하기 위함
+const configuration = require("./webpack.config.js");
 
-let compiler = webpack(configuration);
+const compiler = webpack(configuration);
 
 new webpack.ProgressPlugin().apply(compiler);
 
-compiler.run(function (err, stats) {
+compiler.run((err, stats) => {
   // ...
 });
 ```

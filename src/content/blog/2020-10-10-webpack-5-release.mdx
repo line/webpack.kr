@@ -294,7 +294,7 @@ CLI에서 `--progress`에 사용하지만 플러그인에서 수동으로 사용
 새로 추가된 `percentBy`-옵션은 `ProgressPlugin`에 진행률을 계산하는 방법을 알려줍니다.
 
 ```js
-new webpack.ProgressPlugin({ percentBy: 'entries' });
+new webpack.ProgressPlugin({ percentBy: "entries" });
 ```
 
 진행률을 보다 정확하게 만들기 위해 `ProgressPlugin`은 마지막으로 알려진 총 모듈 수를 캐시하고 다음 빌드에서 총 모듈 수 값을 재사용 합니다. 첫 번째 빌드는 캐시를 워밍업하지만 다음 빌드는 캐시를 사용하고 업데이트합니다.
@@ -325,17 +325,25 @@ Webpack 5는 소스 코드에서 타입을 생성하고 npm 패키지를 통해 
 
 Webpack은 이제 export의 중첩 속성에 대한 접근을 추적할 수 있습니다. 네임스페이스 객체를 다시 export할 때 Tree Shaking (미샤용 export 제거 및 export 맹글링)을 개선할 수 있습니다.
 
-```js
-// inner.js
+**inner.js**
+
+```javascript
 export const a = 1;
 export const b = 2;
+```
 
-// module.js
-export * as inner from './inner';
+**module.js**
+
+```javascript
+export * as inner from "./inner";
 // 또는 import * as inner from './inner'; export { inner };
+```
 
-// user.js
-import * as module from './module';
+**user.js**
+
+```javascript
+import * as module from "./module";
+
 console.log(module.inner.a);
 ```
 
@@ -348,7 +356,7 @@ Webpack 4는 모듈의 export와 import 간의 의존성을 분석하지 않았�
 다음과 같은 모듈이 예시입니다.
 
 ```js
-import { something } from './something';
+import { something } from "./something";
 
 function usingSomething() {
   return something;
@@ -524,7 +532,7 @@ module.exports = {
 module.exports = {
   cache: {
     // 1. 캐시 유형을 파일 시스템으로 설정
-    type: 'filesystem',
+    type: "filesystem",
 
     buildDependencies: {
       // 2. 설정 변경 시 캐시 무효화를 얻기 위해 설정을 buildDependency로 추가합니다.
@@ -885,7 +893,7 @@ compat 레이어가 있으므로 Main/Chunk/ModuleTemplate은 여전히 존재�
 module.exports = {
   entry: {
     catalog: {
-      import: './catalog.js',
+      import: "./catalog.js",
     },
   },
 };
@@ -900,7 +908,7 @@ module.exports = {
 ```js
 module.exports = {
   entry: {
-    about: { import: './about.js', filename: 'pages/[name][ext]' },
+    about: { import: "./about.js", filename: "pages/[name][ext]" },
   },
 };
 ```
@@ -912,8 +920,8 @@ module.exports = {
 ```js
 module.exports = {
   entry: {
-    app: { import: './app.js', dependOn: 'react-vendors' },
-    'react-vendors': ['react', 'react-dom', 'prop-types'],
+    app: { import: "./app.js", dependOn: "react-vendors" },
+    "react-vendors": ["react", "react-dom", "prop-types"],
   },
 };
 ```
@@ -928,15 +936,15 @@ module.exports = {
 module.exports = {
   entry: {
     commonjs: {
-      import: './lib.js',
+      import: "./lib.js",
       library: {
-        type: 'commonjs-module',
+        type: "commonjs-module",
       },
     },
     amd: {
-      import: './lib.js',
+      import: "./lib.js",
       library: {
-        type: 'amd',
+        type: "amd",
       },
     },
   },
@@ -954,8 +962,8 @@ module.exports = {
 module.exports = {
   entry: {
     app: {
-      import: './app.js',
-      runtime: 'app-runtime',
+      import: "./app.js",
+      runtime: "app-runtime",
     },
   },
 };
@@ -970,11 +978,11 @@ module.exports = {
 module.exports = {
   entry: {
     app: {
-      import: './app.js',
+      import: "./app.js",
     },
     worker: {
-      import: './worker.js',
-      chunkLoading: 'importScripts',
+      import: "./worker.js",
+      chunkLoading: "importScripts",
     },
   },
 };
@@ -1182,7 +1190,7 @@ Webpack 5에서는 코드베이스의 의존성 참조 부분이 리팩토링 �
   module.exports = {
     resolve: {
       alias: {
-        [path.resolve(__dirname, '....')]: false,
+        [path.resolve(__dirname, "....")]: false,
       },
     },
   };

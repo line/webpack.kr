@@ -12,6 +12,7 @@ contributors:
   - anshumanv
   - snitin315
   - hai-x
+  - cengizilhan
 translators:
   - choilim
 ---
@@ -25,11 +26,11 @@ translators:
 설정에서 엔트리 포인트와 로더를 확인하기 위한 **절대 경로의** 기본 디렉터리.
 
 ```js
-const path = require('path');
+const path = require("node:path");
 
 module.exports = {
-  //...
-  context: path.resolve(__dirname, 'app'),
+  // ...
+  context: path.resolve(__dirname, "app"),
 };
 ```
 
@@ -49,11 +50,11 @@ module.exports = {
 
 ```js
 module.exports = {
-  //...
+  // ...
   entry: {
-    home: './home.js',
-    about: './about.js',
-    contact: './contact.js',
+    home: "./home.js",
+    about: "./about.js",
+    contact: "./contact.js",
   },
 };
 ```
@@ -68,23 +69,23 @@ module.exports = {
 
 ```js
 module.exports = {
-  //...
+  // ...
   entry: {
-    home: './home.js',
-    shared: ['react', 'react-dom', 'redux', 'react-redux'],
+    home: "./home.js",
+    shared: ["react", "react-dom", "redux", "react-redux"],
     catalog: {
-      import: './catalog.js',
-      filename: 'pages/catalog.js',
-      dependOn: 'shared',
+      import: "./catalog.js",
+      filename: "pages/catalog.js",
+      dependOn: "shared",
       chunkLoading: false, // 요청 시 로드되는 청크를 비활성화하고 모든 것을 기본 청크에 넣습니다.
     },
     personal: {
-      import: './personal.js',
-      filename: 'pages/personal.js',
-      dependOn: 'shared',
-      chunkLoading: 'jsonp',
+      import: "./personal.js",
+      filename: "pages/personal.js",
+      dependOn: "shared",
+      chunkLoading: "jsonp",
       asyncChunks: true, // 요청 시 로드되는 비동기 청크 생성
-      layer: 'name of layer', // 엔트리 포인트에 대한 레이어 설정
+      layer: "name of layer", // 엔트리 포인트에 대한 레이어 설정
     },
   },
 };
@@ -98,11 +99,11 @@ module.exports = {
 
 ```js
 module.exports = {
-  //...
+  // ...
   entry: {
-    app: './app.js',
-    home: { import: './contact.js', filename: 'pages/[name].js' },
-    about: { import: './about.js', filename: 'pages/[name].js' },
+    app: "./app.js",
+    home: { import: "./contact.js", filename: "pages/[name].js" },
+    about: { import: "./about.js", filename: "pages/[name].js" },
   },
 };
 ```
@@ -115,10 +116,10 @@ module.exports = {
 
 ```js
 module.exports = {
-  //...
+  // ...
   entry: {
-    app: { import: './app.js', dependOn: 'react-vendors' },
-    'react-vendors': ['react', 'react-dom', 'prop-types'],
+    app: { import: "./app.js", dependOn: "react-vendors" },
+    "react-vendors": ["react", "react-dom", "prop-types"],
   },
 };
 ```
@@ -129,13 +130,13 @@ module.exports = {
 
 ```js
 module.exports = {
-  //...
+  // ...
   entry: {
-    moment: { import: 'moment-mini', runtime: 'runtime' },
-    reactvendors: { import: ['react', 'react-dom'], runtime: 'runtime' },
+    moment: { import: "moment-mini", runtime: "runtime" },
+    reactvendors: { import: ["react", "react-dom"], runtime: "runtime" },
     testapp: {
-      import: './wwwroot/component/TestApp.tsx',
-      dependOn: ['reactvendors', 'moment'],
+      import: "./wwwroot/component/TestApp.tsx",
+      dependOn: ["reactvendors", "moment"],
     },
   },
 };
@@ -145,10 +146,10 @@ module.exports = {
 
 ```js
 module.exports = {
-  //...
+  // ...
   entry: {
-    app: { import: ['./app.js', './app2.js'], dependOn: 'react-vendors' },
-    'react-vendors': ['react', 'react-dom', 'prop-types'],
+    app: { import: ["./app.js", "./app2.js"], dependOn: "react-vendors" },
+    "react-vendors": ["react", "react-dom", "prop-types"],
   },
 };
 ```
@@ -161,8 +162,8 @@ module.exports = {
 
 ```js
 module.exports = {
-  //...
-  entry: () => './demo',
+  // ...
+  entry: () => "./demo",
 };
 ```
 
@@ -170,8 +171,24 @@ module.exports = {
 
 ```js
 module.exports = {
-  //...
-  entry: () => new Promise((resolve) => resolve(['./demo', './demo2'])),
+  // ...
+  entry: () =>
+    new Promise((resolve) => {
+      resolve(["./demo", "./demo2"]);
+    }),
+};
+```
+
+### Multiple Entry Points in Different Folders
+
+경우에 따라서는 구조화 및 유지 관리 용이성을 위해 진입점을 여러 폴더로 분류하는 것이 좋을 수 있습니다. 다음은 여러 폴더에 위치한 여러 진입점을 정의하는 방법입니다.
+
+```javascript
+module.exports = {
+  entry: {
+    "/scriptFolder/one/app": "./src/one/app.js",
+    "/scriptFolder/two/main": "./src/two/main.js",
+  },
 };
 ```
 
@@ -197,14 +214,14 @@ Webpack 'v5.43.0' 이후 새로운 런타임 청크를 방지하기 위해 엔�
 
 ```js
 module.exports = {
-  //...
+  // ...
   entry: {
     home: {
-      import: './home.js',
-      runtime: 'home-runtime',
+      import: "./home.js",
+      runtime: "home-runtime",
     },
     about: {
-      import: './about.js',
+      import: "./about.js",
       runtime: false,
     },
   },

@@ -21,6 +21,7 @@ contributors:
   - wizardofhogwarts
   - aholzner
   - snitin315
+  - Brennvo
 translators:
   - YukJiSoo
 related:
@@ -47,10 +48,14 @@ T> `webpack-dev-server` 대신 `webpack-dev-middleware`를 사용한다면 [`web
 **webpack.config.js**
 
 ```diff
-  const path = require('path');
-  const HtmlWebpackPlugin = require('html-webpack-plugin');
+  import path from 'node:path';
+  import { fileURLToPath } from 'node:url';
+  import HtmlWebpackPlugin from 'html-webpack-plugin';
 
-  module.exports = {
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+
+  export default {
     entry: {
        app: './src/index.js',
 -      print: './src/print.js',
@@ -78,11 +83,15 @@ HMR에 대한 수동 엔트리포인트를 제공할 수도 있습니다.
 **webpack.config.js**
 
 ```diff
-  const path = require('path');
-  const HtmlWebpackPlugin = require('html-webpack-plugin');
-+ const webpack = require("webpack");
+  import path from 'node:path';
+  import { fileURLToPath } from 'node:url';
+  import HtmlWebpackPlugin from 'html-webpack-plugin';
++ import webpack from 'webpack';
 
-  module.exports = {
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+
+  export default {
     entry: {
        app: './src/index.js',
 -      print: './src/print.js',
@@ -183,45 +192,50 @@ HMR을 활성화하려면 HMR 엔트리 포인트를 포함하도록 webpack 설
 **dev-server.js**
 
 ```javascript
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import HtmlWebpackPlugin from "html-webpack-plugin";
+import webpack from "webpack";
+import WebpackDevServer from "webpack-dev-server";
 
-const webpack = require('webpack');
-const webpackDevServer = require('webpack-dev-server');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const config = {
-  mode: 'development',
+  mode: "development",
   entry: [
     // hot module replacement를 위한 런타임 코드
-    'webpack/hot/dev-server.js',
+    "webpack/hot/dev-server.js",
     // 웹 소켓 전송, hot 및 live 리로드 로직을 위한 개발 서버 클라이언트
-    'webpack-dev-server/client/index.js?hot=true&live-reload=true',
+    "webpack-dev-server/client/index.js?hot=true&live-reload=true",
     // 엔트리
-    './src/index.js',
+    "./src/index.js",
   ],
-  devtool: 'inline-source-map',
+  devtool: "inline-source-map",
   plugins: [
     // hot module replacement를 위한 플러그인
     new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
-      title: 'Hot Module Replacement',
+      title: "Hot Module Replacement",
     }),
   ],
   output: {
-    filename: '[name].bundle.js',
-    path: path.resolve(__dirname, 'dist'),
+    filename: "[name].bundle.js",
+    path: path.resolve(__dirname, "dist"),
     clean: true,
   },
 };
 const compiler = webpack(config);
 
 // `hot` 및 `client` 옵션을 수동으로 추가했기 때문에 비활성화됩니다.
-const server = new webpackDevServer({ hot: false, client: false }, compiler);
+const server = new WebpackDevServer({ hot: false, client: false }, compiler);
 
-(async () => {
+try {
   await server.start();
-  console.log('dev server is running');
-})();
+  console.log("dev server is running");
+} catch (err) {
+  throw new Error(`Failed to start dev server: ${err.message}`, { cause: err });
+}
 ```
 
 [`webpack-dev-server` Node.js API 전체 문서](/api/webpack-dev-server/)를 참고하세요.
@@ -288,10 +302,14 @@ npm install --save-dev style-loader css-loader
 **webpack.config.js**
 
 ```diff
-  const path = require('path');
-  const HtmlWebpackPlugin = require('html-webpack-plugin');
+  import path from 'node:path';
+  import { fileURLToPath } from 'node:url';
+  import HtmlWebpackPlugin from 'html-webpack-plugin';
 
-  module.exports = {
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+
+  export default {
     entry: {
       app: './src/index.js',
     },

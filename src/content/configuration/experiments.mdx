@@ -39,7 +39,7 @@ W> 실험적 기능은 시멘틱 버저닝을 완화하고 주요 변경 사항�
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   experiments: {
     asyncWebAssembly: true,
     buildHttp: true,
@@ -59,7 +59,7 @@ module.exports = {
 
 ```js
 module.exports = {
-  //...
+  // ...
   experiments: {
     backCompat: true,
   },
@@ -93,7 +93,7 @@ module.exports = {
   ```javascript
   // webpack.config.js
   module.exports = {
-    //...
+    // ...
     experiments: {
       buildHttp: true,
     },
@@ -102,7 +102,8 @@ module.exports = {
 
   ```js
   // src/index.js
-  import pMap1 from 'https://cdn.skypack.dev/p-map';
+  import pMap1 from "https://cdn.skypack.dev/p-map";
+
   // `buildHttp`가 활성화되면, webpack은 일반 로컬 모듈처럼 pMap1을 빌드합니다.
   console.log(pMap1);
   ```
@@ -117,12 +118,12 @@ module.exports = {
   ```javascript
   // webpack.config.js
   module.exports = {
-    //...
+    // ...
     experiments: {
       buildHttp: {
         allowedUris: [
-          'http://localhost:9990/',
-          'https://raw.githubusercontent.com/',
+          "http://localhost:9990/",
+          "https://raw.githubusercontent.com/",
         ],
       },
     },
@@ -141,7 +142,7 @@ module.exports = {
   ```javascript
   // webpack.config.js
   module.exports = {
-    //...
+    // ...
     experiments: {
       buildHttp: {
         cacheLocation: false,
@@ -191,9 +192,41 @@ module.exports = {
 실험적 기능:
 
 - CSS 모듈 지원: webpack은 각 CSS 클래스에 대해 고유한 이름을 생성합니다. CSS 모듈에는 `.module.css` 확장자를 사용하세요.
-- <Badge text="5.87.0+" /> `package.json` 파일의 스타일별 필드 해석 webpack은
-  `package.json` 파일에서 `style` 필드를 찾고 CSS 파일 내부에 import를 위해
-  존재하는 경우 이 파일을 사용합니다.
+
+  <Badge text="5.103.0+" />
+
+  Webpack은 CSS Modules의 `composes` 속성을 기본적으로 지원하므로 동일한 파일, 다른 CSS 모듈 또는 전역 클래스의 클래스를 조합할 수 있습니다.
+
+  ```css
+  /* styles.module.css */
+  .base {
+    color: blue;
+  }
+
+  .button {
+    composes: base;
+    padding: 10px;
+  }
+
+  .primary {
+    composes: button;
+    background: blue;
+  }
+
+  /* Compose from another CSS module */
+  .composed {
+    composes: className from "./other.module.css";
+  }
+
+  /* Compose from global classes */
+  .globalComposed {
+    composes: global-class from global;
+  }
+  ```
+
+- <Badge text="5.87.0+" /> Style-specific fields resolution in `package.json`
+  files: webpack은 `package.json` 파일에서 `style` 필드를 찾고, 해당 필드가
+  존재하면 CSS 파일 내의 import 문에 사용합니다.
 
   예를 들어 CSS 파일에 `@import 'bootstrap';`을 추가하면 webpack은 `node_modules`에서 `bootstrap`을 찾고 거기에서 `package.json`의 `style` 필드를 사용합니다. `style` 필드가 없으면 webpack은 이전 버전과의 호환성을 유지하기 위해 `main` 필드를 대신 사용합니다.
 
@@ -222,10 +255,15 @@ tc39 제안[`import defer` 제안](https://github.com/tc39/proposal-defer-import
 
 다음 구문을 활성화합니다.
 
+{/* eslint-skip */}
+
 ```js
-import defer * as module from 'module-name';
-// 또는
-import * as module2 from /* webpackDefer: true */ 'module-name2';
+import defer * as module from "module-name";
+import * as module2 from /* webpackDefer: true */ "module-name2";
+
+// 또는 동적 import 사용
+import.defer("module-name3");
+import(/* webpackDefer: true */ "module-name4");
 
 export function f() {
   // module-name을 동기적으로 평가한 후 doSomething()을 호출합니다.
@@ -239,9 +277,11 @@ export function f() {
 
 매직 주석을 `import` 키워드 뒤에 넣는 것은 파일 시스템 캐시와 호환되지 않습니다.
 
+{/* eslint-skip */}
+
 ```js
-import /* webpackDefer: true */ * as ns from '...'; // 알려진 문제
-import * as ns from /* webpackDefer: true */ '...'; // 권장
+import /* webpackDefer: true */ * as ns from "..."; // 알려진 문제
+import * as ns from /* webpackDefer: true */ "..."; // 권장
 ```
 
 로더가 매직 주석을 제거하지 않도록 해야 합니다.
@@ -250,14 +290,9 @@ TypeScript, Babel, SWC 및 Flow.js는 매직 주석을 보존하도록 구성할
 
 Esbuild는 이 기능과 호환되지 않습니다([evanw/esbuild#1439](https://github.com/evanw/esbuild/issues/1439) 및 [evanw/esbuild#309](https://github.com/evanw/esbuild/issues/309) 참조). 하지만 향후 지원될 수 있습니다.
 
-#### Not implemented
+<Badge text="5.105.0+" />
 
-이 제안의 비동기 형식은 아직 구현되지 않았습니다.
-
-```js
-import.defer('module-name'); // 구현되지 않음
-import(/* webpackDefer: true */ 'module-name'); // 구현되지 않음
-```
+`import.defer()`가 이제 ContextModule에서 지원됩니다(가져오기 경로는 동적 표현식입니다). 예제는 [지연 로딩 가이드](/guides/lazy-loading/#defer-import-example)를 참조하세요.
 
 ### experiments.futureDefaults
 
@@ -267,7 +302,7 @@ import(/* webpackDefer: true */ 'module-name'); // 구현되지 않음
 
 ```js
 module.exports = {
-  //...
+  // ...
   experiments: {
     futureDefaults: true,
   },

@@ -30,12 +30,9 @@ translators:
 
 ```js
 compiler.resolverFactory.hooks.resolver
-  .for('[type]')
-  .tap('name', (resolver) => {
-    // 이제 resolver.hooks를 활용할 수 있습니다.
-    resolver.hooks.result.tap('MyPlugin', (result) => {
-      return result;
-    });
+  .for("normal")
+  .tap("MyResolverPlugin", (resolver) => {
+    resolver.hooks.result.tap("MyResolverPlugin", (result) => result);
   });
 ```
 

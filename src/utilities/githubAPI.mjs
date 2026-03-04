@@ -1,30 +1,36 @@
-import { Octokit as GithubAPI } from '@octokit/rest';
-import { createActionAuth } from '@octokit/auth-action';
+// eslint-disable-next-line import/no-unresolved
+import { createActionAuth } from "@octokit/auth-action";
+// eslint-disable-next-line import/no-unresolved
+import { Octokit as GithubAPI } from "@octokit/rest";
+
 /** @type import('@octokit/rest').Octokit */
+// eslint-disable-next-line import/no-mutable-exports
 let api;
+
 if (
   process.env.CI &&
   process.env.GITHUB_ACTION &&
-  (process.env.CI === 'true' || process.env.CI === '1') // see https://github.com/cypress-io/github-action/blob/9674a20f82e9e45ec75aa66038310b00e2f24657/index.js#L223 for CI === '1'
+  (process.env.CI === "true" || process.env.CI === "1") // see https://github.com/cypress-io/github-action/blob/9674a20f82e9e45ec75aa66038310b00e2f24657/index.js#L223 for CI === '1'
 ) {
   const auth = createActionAuth();
   const authentication = await auth();
   api = new GithubAPI({
     auth: authentication.token,
   });
-  console.log('api is authenticated');
+  console.log("api is authenticated");
 } else if (process.env.CI && process.env.VERCEL) {
   // see https://vercel.com/docs/concepts/projects/environment-variables/system-environment-variables#system-environment-variables
   api = new GithubAPI({
     auth: process.env.WEBPACK_JS_ORG_VERCEL_KEY, // this is a personal access token of @chenxsan
   });
-  console.log('api is authenticated on vercel');
+  console.log("api is authenticated on vercel");
 } else {
   // pass a private token to run internal build.
-  const token = process.env.token || '';
+  const token = process.env.token || "";
   api = new GithubAPI({
-    auth: token
+    auth: token,
   });
-  console.log('api is not authenticated');
+  console.log("api is not authenticated");
 }
+
 export default api;

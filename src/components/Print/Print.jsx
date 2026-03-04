@@ -1,21 +1,27 @@
-import './Print.scss';
-import icon from '../../assets/icon-print.svg';
-import BarIcon from '../../styles/icons/vertical-bar.svg';
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
+import "./Print.scss";
+import icon from "../../assets/icon-print.svg";
+import BarIcon from "../../styles/icons/vertical-bar.svg";
 
 const PRINTABLE_SECTIONS = [
-  'api',
-  'concepts',
-  'configuration',
-  'contribute',
-  'guides',
-  'loaders',
-  'migrate',
-  'plugins',
+  "api",
+  "concepts",
+  "configuration",
+  "contribute",
+  "guides",
+  "loaders",
+  "migrate",
+  "plugins",
 ];
-Print.propTypes = {
-  url: PropTypes.string,
-};
+
+function _printPageUrlFromUrl(urlRaw) {
+  const urlSplit = urlRaw.split("/");
+
+  return PRINTABLE_SECTIONS.includes(urlSplit[1])
+    ? `/${urlSplit[1]}/printable/`
+    : false;
+}
+
 export default function Print(props) {
   const { url } = props;
   const printUrl = _printPageUrlFromUrl(url);
@@ -26,7 +32,7 @@ export default function Print(props) {
   }
 
   return (
-    <div className="sidebar-item sidebar-item--disabled`">
+    <div className="sidebar-item sidebar-item--disabled">
       <BarIcon
         className="sidebar-item__toggle"
         width={15}
@@ -48,9 +54,6 @@ export default function Print(props) {
   );
 }
 
-function _printPageUrlFromUrl(urlRaw) {
-  let urlSplit = urlRaw.split('/');
-  return PRINTABLE_SECTIONS.includes(urlSplit[1])
-    ? `/${urlSplit[1]}/printable/`
-    : false;
-}
+Print.propTypes = {
+  url: PropTypes.string,
+};

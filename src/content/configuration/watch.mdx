@@ -28,7 +28,7 @@ watch 모드를 켭니다. 이제 초기 빌드 후 webpack은 해석 된 파일
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   watch: true,
 };
 ```
@@ -45,7 +45,7 @@ watch 모드를 사용자 지정하는 데 사용되는 일련의 옵션입니�
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   watchOptions: {
     aggregateTimeout: 200,
     poll: 1000,
@@ -61,7 +61,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   watchOptions: {
     aggregateTimeout: 600,
   },
@@ -78,7 +78,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   watchOptions: {
     ignored: /node_modules/,
   },
@@ -91,9 +91,9 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   watchOptions: {
-    ignored: '**/node_modules',
+    ignored: "**/node_modules",
   },
 };
 ```
@@ -104,9 +104,9 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   watchOptions: {
-    ignored: ['**/files/**/*.js', '**/node_modules'],
+    ignored: ["**/files/**/*.js", "**/node_modules"],
   },
 };
 ```
@@ -114,11 +114,12 @@ module.exports = {
 또한 절대 경로를 지정할 수 있습니다.
 
 ```js
-const path = require('path');
+const path = require("node:path");
+
 module.exports = {
-  //...
+  // ...
   watchOptions: {
-    ignored: [path.posix.resolve(__dirname, './ignored-dir')],
+    ignored: [path.posix.resolve(__dirname, "./ignored-dir")],
   },
 };
 ```
@@ -137,7 +138,7 @@ T> `require.context`를 사용하면 webpack이 전체 디렉터리를 감시합
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   watchOptions: {
     poll: 1000, // Check for changes every second
   },
@@ -155,7 +156,7 @@ T> 만약 감시 기능이 작동하지 않는다면, 이 옵션을 사용해 �
 
   ```js
   module.exports = {
-    //...
+    // ...
     watchOptions: {
       followSymlinks: true,
     },
@@ -171,7 +172,7 @@ stdin 스트림이 종료되면 감시를 중단합니다.
 
   ```js
   module.exports = {
-    //...
+    // ...
     watchOptions: {
       stdin: true,
     },

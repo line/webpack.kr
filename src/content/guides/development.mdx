@@ -17,6 +17,7 @@ contributors:
   - maxloh
   - snitin315
   - f3ndot
+  - Brennvo
 translators:
   - choilim
 ---
@@ -32,10 +33,14 @@ W> 이 가이드의 도구는 **오직 개발을 위한 것입니다**, 프로�
 **webpack.config.js**
 
 ```diff
- const path = require('path');
- const HtmlWebpackPlugin = require('html-webpack-plugin');
+ import path from 'node:path';
+ import { fileURLToPath } from 'node:url';
+ import HtmlWebpackPlugin from 'html-webpack-plugin';
 
- module.exports = {
+ const __filename = fileURLToPath(import.meta.url);
+ const __dirname = path.dirname(__filename);
+
+ export default {
 +  mode: 'development',
    entry: {
      index: './src/index.js',
@@ -68,10 +73,14 @@ webpack이 소스 코드를 번들로 묶을 때, 오류와 경고의 원래 위
 **webpack.config.js**
 
 ```diff
- const path = require('path');
- const HtmlWebpackPlugin = require('html-webpack-plugin');
+ import path from 'node:path';
+ import { fileURLToPath } from 'node:url';
+ import HtmlWebpackPlugin from 'html-webpack-plugin';
 
- module.exports = {
+ const __filename = fileURLToPath(import.meta.url);
+ const __dirname = path.dirname(__filename);
+
+ export default {
    mode: 'development',
    entry: {
      index: './src/index.js',
@@ -205,10 +214,14 @@ npm install --save-dev webpack-dev-server
 **webpack.config.js**
 
 ```diff
- const path = require('path');
- const HtmlWebpackPlugin = require('html-webpack-plugin');
+ import path from 'node:path';
+ import { fileURLToPath } from 'node:url';
+ import HtmlWebpackPlugin from 'html-webpack-plugin';
 
- module.exports = {
+ const __filename = fileURLToPath(import.meta.url);
+ const __dirname = path.dirname(__filename);
+
+ export default {
    mode: 'development',
    entry: {
      index: './src/index.js',
@@ -294,10 +307,14 @@ npm install --save-dev express webpack-dev-middleware
 **webpack.config.js**
 
 ```diff
- const path = require('path');
- const HtmlWebpackPlugin = require('html-webpack-plugin');
+ import path from 'node:path';
+ import { fileURLToPath } from 'node:url';
+ import HtmlWebpackPlugin from 'html-webpack-plugin';
 
- module.exports = {
+ const __filename = fileURLToPath(import.meta.url);
+ const __dirname = path.dirname(__filename);
+
+ export default {
    mode: 'development',
    entry: {
      index: './src/index.js',
@@ -341,12 +358,12 @@ npm install --save-dev express webpack-dev-middleware
 **server.js**
 
 ```javascript
-const express = require('express');
-const webpack = require('webpack');
-const webpackDevMiddleware = require('webpack-dev-middleware');
+import express from "express";
+import webpack from "webpack";
+import webpackDevMiddleware from "webpack-dev-middleware";
+import config from "./webpack.config.js";
 
 const app = express();
-const config = require('./webpack.config.js');
 const compiler = webpack(config);
 
 // express에서 webpack-dev-middleware와 webpack.config.js를 사용하도록 설정하세요.
@@ -354,12 +371,12 @@ const compiler = webpack(config);
 app.use(
   webpackDevMiddleware(compiler, {
     publicPath: config.output.publicPath,
-  })
+  }),
 );
 
-// 포트 3000에서 파일 제공
-app.listen(3000, function () {
-  console.log('Example app listening on port 3000!\n');
+// 트 3000에서 파일 제공
+app.listen(3000, () => {
+  console.log("Example app listening on port 3000!\n");
 });
 ```
 

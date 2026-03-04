@@ -29,8 +29,8 @@ W> 이 옵션은 [Node.js API](/api/node)를 사용할 경우에는 아무 효�
 
 ```js
 module.exports = {
-  //...
-  stats: 'errors-only',
+  // ...
+  stats: "errors-only",
 };
 ```
 
@@ -61,7 +61,7 @@ T> stats 설정 객체의 모든 옵션은 선택 사항입니다.
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     all: undefined,
   },
@@ -76,7 +76,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     assets: false,
   },
@@ -91,9 +91,9 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
-    assetsSort: '!size',
+    assetsSort: "!size",
   },
 };
 ```
@@ -106,7 +106,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     assetsSpace: 15,
   },
@@ -121,7 +121,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     builtAt: false,
   },
@@ -140,7 +140,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     cachedAssets: false,
   },
@@ -155,7 +155,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     cachedModules: false,
   },
@@ -170,7 +170,7 @@ children에 대한 정보를 추가할지 여부를 `stats`에 알려줍니다.
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     children: false,
   },
@@ -185,7 +185,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     chunkGroupAuxiliary: false,
   },
@@ -200,7 +200,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     chunkGroupChildren: false,
   },
@@ -215,7 +215,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     chunkGroupMaxAssets: 5,
   },
@@ -230,7 +230,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     chunkGroups: false,
   },
@@ -245,7 +245,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     chunkModules: false,
   },
@@ -260,7 +260,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     chunkModulesSpace: 15,
   },
@@ -275,7 +275,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     chunkOrigins: false,
   },
@@ -290,7 +290,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     chunkRelations: false,
   },
@@ -305,7 +305,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     chunks: false,
   },
@@ -320,9 +320,9 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
-    chunksSort: 'name',
+    chunksSort: "name",
   },
 };
 ```
@@ -335,7 +335,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     colors: true,
   },
@@ -358,9 +358,9 @@ npx webpack --no-stats-colors
 
 ```js
 module.exports = {
-  //...
+  // ...
   colors: {
-    green: '\u001b[32m',
+    green: "\u001B[32m",
   },
 };
 ```
@@ -372,12 +372,12 @@ module.exports = {
 stats 기본 디렉터리이며, 요청 정보를 단축하기 위한 **절대경로** 입니다.
 
 ```javascript
-const path = require('path');
+const path = require("node:path");
 
 module.exports = {
-  //...
+  // ...
   stats: {
-    context: path.resolve(__dirname, 'src/components'),
+    context: path.resolve(__dirname, "src/components"),
   },
 };
 ```
@@ -392,7 +392,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     dependentModules: false,
   },
@@ -407,7 +407,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     depth: true,
   },
@@ -422,7 +422,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     entrypoints: false,
   },
@@ -439,7 +439,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     env: true,
   },
@@ -454,7 +454,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     errorCause: true,
   },
@@ -469,7 +469,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     errorDetails: false,
   },
@@ -486,7 +486,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     errorErrors: true,
   },
@@ -501,7 +501,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     errorStack: false,
   },
@@ -516,7 +516,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     errors: false,
   },
@@ -531,7 +531,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     errorsCount: false,
   },
@@ -548,7 +548,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     errorsSpace: 5,
   },
@@ -567,12 +567,12 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     excludeAssets: [
-      'filter',
+      "filter",
       /filter/,
-      (assetName) => assetName.contains('moduleA'),
+      (assetName) => assetName.contains("moduleA"),
     ],
   },
 };
@@ -586,9 +586,9 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
-    excludeModules: ['filter', /filter/, (moduleSource) => true],
+    excludeModules: ["filter", /filter/, (moduleSource) => true],
   },
 };
 ```
@@ -597,7 +597,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     excludeModules: false,
   },
@@ -612,7 +612,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     groupAssetsByChunk: false,
   },
@@ -627,7 +627,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     groupAssetsByEmitStatus: false,
   },
@@ -642,7 +642,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     groupAssetsByExtension: false,
   },
@@ -657,7 +657,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     groupAssetsByInfo: false,
   },
@@ -672,7 +672,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     groupAssetsByPath: false,
   },
@@ -687,7 +687,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     groupModulesByAttributes: false,
   },
@@ -702,7 +702,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     groupModulesByCacheStatus: true,
   },
@@ -717,7 +717,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     groupModulesByExtension: true,
   },
@@ -732,7 +732,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     groupModulesByLayer: true,
   },
@@ -747,7 +747,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     groupModulesByPath: true,
   },
@@ -762,7 +762,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     groupModulesByType: true,
   },
@@ -779,7 +779,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     groupReasonsByOrigin: true,
   },
@@ -794,7 +794,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     hash: false,
   },
@@ -809,7 +809,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     ids: true,
   },
@@ -831,9 +831,9 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
-    logging: 'verbose',
+    logging: "verbose",
   },
 };
 ```
@@ -846,13 +846,13 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     loggingDebug: [
-      'MyPlugin',
+      "MyPlugin",
       /MyPlugin/,
       /webpack/, // 코어 로깅을 얻기 위해서
-      (name) => name.contains('MyPlugin'),
+      (name) => name.contains("MyPlugin"),
     ],
   },
 };
@@ -866,7 +866,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     loggingTrace: false,
   },
@@ -881,7 +881,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     moduleAssets: false,
   },
@@ -896,7 +896,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     moduleTrace: false,
   },
@@ -911,7 +911,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     modules: false,
   },
@@ -926,9 +926,9 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
-    modulesSort: 'size',
+    modulesSort: "size",
   },
 };
 ```
@@ -941,7 +941,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     modulesSpace: 15,
   },
@@ -956,7 +956,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     nestedModules: true,
   },
@@ -971,7 +971,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     nestedModulesSpace: 15,
   },
@@ -986,7 +986,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     optimizationBailout: false,
   },
@@ -1001,7 +1001,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     orphanModules: true,
   },
@@ -1016,7 +1016,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     outputPath: false,
   },
@@ -1031,7 +1031,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     performance: false,
   },
@@ -1046,9 +1046,9 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
-    preset: 'minimal',
+    preset: "minimal",
   },
 };
 ```
@@ -1063,7 +1063,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     providedExports: true,
   },
@@ -1078,7 +1078,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     publicPath: false,
   },
@@ -1093,7 +1093,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     reasons: false,
   },
@@ -1110,7 +1110,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     reasonsSpace: 1000,
   },
@@ -1127,7 +1127,7 @@ T> [`세부 프리셋`](#stats-presets)은 기본적으로 [`modulesSpace`](#sta
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     relatedAssets: true,
   },
@@ -1142,7 +1142,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     runtimeModules: false,
   },
@@ -1157,7 +1157,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     source: true,
   },
@@ -1172,7 +1172,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     timings: false,
   },
@@ -1187,7 +1187,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     usedExports: true,
   },
@@ -1202,7 +1202,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     version: false,
   },
@@ -1217,7 +1217,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     warnings: false,
   },
@@ -1232,7 +1232,7 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     warningsCount: false,
   },
@@ -1247,9 +1247,9 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
-    warningsFilter: ['filter', /filter/, (warning) => true],
+    warningsFilter: ["filter", /filter/, (warning) => true],
   },
 };
 ```
@@ -1266,7 +1266,7 @@ W> `stats.warningsFilter`는 지원이 중단되어 대신 [`ignoreWarnings`](/c
 
 ```javascript
 module.exports = {
-  //...
+  // ...
   stats: {
     warningsSpace: 5,
   },
@@ -1305,9 +1305,9 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  //..
+  // ..
   stats: {
-    preset: 'minimal',
+    preset: "minimal",
     moduleTrace: true,
     errorDetails: true,
   },

@@ -67,11 +67,15 @@ npm install workbox-webpack-plugin --save-dev
 **webpack.config.js**
 
 ```diff
-  const path = require('path');
-  const HtmlWebpackPlugin = require('html-webpack-plugin');
-+ const WorkboxPlugin = require('workbox-webpack-plugin');
+  import path from "node:path";
+  import { fileURLToPath } from 'node:url';
+  import HtmlWebpackPlugin from "html-webpack-plugin";
++ import WorkboxPlugin from "workbox-webpack-plugin";
 
-  module.exports = {
+ const __filename = fileURLToPath(import.meta.url);
+ const __dirname = path.dirname(__filename);
+
+  export default {
     entry: {
       app: './src/index.js',
       print: './src/print.js',

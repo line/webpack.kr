@@ -23,6 +23,7 @@ contributors:
   - aholzner
   - EugeneHlushko
   - snitin315
+  - Brennvo
 translators:
   - limong
 ---
@@ -63,10 +64,14 @@ npm install --save-dev webpack-merge
 **webpack.common.js**
 
 ```diff
-+ const path = require('path');
-+ const HtmlWebpackPlugin = require('html-webpack-plugin');
++ import path from 'node:path';
++ import { fileURLToPath } from 'node:url';
++ import HtmlWebpackPlugin from 'html-webpack-plugin';
 +
-+ module.exports = {
++ const __filename = fileURLToPath(import.meta.url);
++ const __dirname = path.dirname(__filename);
++
++ export default {
 +   entry: {
 +     app: './src/index.js',
 +   },
@@ -86,10 +91,10 @@ npm install --save-dev webpack-merge
 **webpack.dev.js**
 
 ```diff
-+ const { merge } = require('webpack-merge');
-+ const common = require('./webpack.common.js');
++ import { merge } from 'webpack-merge';
++ import common from './webpack.common.js';
 +
-+ module.exports = merge(common, {
++ export default merge(common, {
 +   mode: 'development',
 +   devtool: 'inline-source-map',
 +   devServer: {
@@ -101,10 +106,10 @@ npm install --save-dev webpack-merge
 **webpack.prod.js**
 
 ```diff
-+ const { merge } = require('webpack-merge');
-+ const common = require('./webpack.common.js');
++ import { merge } from 'webpack-merge';
++ import common from './webpack.common.js';
 +
-+ module.exports = merge(common, {
++ export default merge(common, {
 +   mode: 'production',
 + });
 ```
@@ -159,15 +164,15 @@ _production_ 설정을 계속 추가하는대로 출력이 어떻게 변경되�
 **webpack.prod.js**
 
 ```diff
-  const { merge } = require('webpack-merge');
-  const common = require('./webpack.common.js');
+  import { merge } from 'webpack-merge';
+  import common from './webpack.common.js';
 
-  module.exports = merge(common, {
+  export default merge(common, {
     mode: 'production',
   });
 ```
 
-T> 기술적으로 `NODE_ENV`는 Node.js가 실행 중인 스크립트가 참고할 수 있는 시스템 환경 변수입니다. 이것은 서버 툴, 빌드 스크립트 및 클라이언트 라이브러리에 의한 dev-vs-prod의 동작을 결정하는 규칙에 사용됩니다. 예상과 달리 `process.env.NODE_ENV`는 빌드 스크립트인 `webpack.config.js` **안에서** `process.env.NODE_ENV`가 자동으로 설정되지 않습니다.  따라서 `process.env.NODE_ENV === 'production' ? '[name].[contenthash].bundle.js' : '[name].bundle.js'`와 같은 조건은 CLI를 통해 `NODE_ENV=production`으로 명시적으로 `NODE_ENV`를 지정하지 않는 한 webpack 설정에서 예상대로 동작하지 않습니다.
+T> 기술적으로 `NODE_ENV`는 Node.js가 실행 중인 스크립트가 참고할 수 있는 시스템 환경 변수입니다. 이것은 서버 툴, 빌드 스크립트 및 클라이언트 라이브러리에 의한 dev-vs-prod의 동작을 결정하는 규칙에 사용됩니다. 예상과 달리 `process.env.NODE_ENV`는 빌드 스크립트인 `webpack.config.js` **안에서** `process.env.NODE_ENV`가 자동으로 설정되지 않습니다. 따라서 `process.env.NODE_ENV === 'production' ? '[name].[contenthash].bundle.js' : '[name].bundle.js'`와 같은 조건은 CLI를 통해 `NODE_ENV=production`으로 명시적으로 `NODE_ENV`를 지정하지 않는 한 webpack 설정에서 예상대로 동작하지 않습니다.
 
 [`react`](https://reactjs.org/)와 같은 라이브러리를 사용한다면 `DefinePlugin`을 추가한 후에 명확하게 번들 크기가 줄어야 합니다. 또한 로컬 `/src`의 코드 역시 제어 할 수 있습니다. 따라서 다음 검사는 유효합니다.
 
@@ -211,10 +216,10 @@ Webpack v4+의 [`production mode`](/configuration/mode/#mode-production)에서�
 **webpack.prod.js**
 
 ```diff
-  const { merge } = require('webpack-merge');
-  const common = require('./webpack.common.js');
+  import { merge } from 'webpack-merge';
+  import common from './webpack.common.js';
 
-  module.exports = merge(common, {
+  export default merge(common, {
     mode: 'production',
 +   devtool: 'source-map',
   });
