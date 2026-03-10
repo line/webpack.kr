@@ -12,6 +12,7 @@ contributors:
   - adyjs
   - anshumanv
   - ritikbanger
+  - saishankar404
 translators:
   - choilim
 ---
@@ -23,6 +24,8 @@ translators:
 
 이 과정의 결과는 나중에 `output` 구성에 따라 디스크에 기록됩니다.
 `output` 구성은 번들로 묶인 파일이 어디에 어떻게 저장되는지를 제어합니다.
+
+T> When running webpack without a configuration file, the entry defaults to `'./src/index.js'`. If that file is missing — even if your `src/` directory exists — webpack will throw: <br /> **`ERROR in Entry module not found: Error: Can't resolve './src'`** <br /><br /> The error says `'./src'` rather than `'./src/index.js'` because webpack resolves the directory first, then fails to find `index.js` inside it. To use a different entry filename, configure the `entry` option as shown in the sections below.
 
 ## Single Entry (Shorthand) Syntax
 

@@ -310,11 +310,11 @@ T> 또한 자동으로 publicPath를 결정하는 [`output.publicPath`](/configu
 **index.js**
 
 ```jsx
-import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import App from "./App";
 
-ReactDOM.render(<App />, document.getElementById("root"));
+const root = createRoot(document.getElementById("root"));
+root.render(<App />);
 ```
 
 `bootstrap.js` 파일을 만들고 엔트리의 콘텐츠을 이 파일로 이동한 다음, 부트스트랩을 엔트리로 가져오겠습니다.
@@ -323,19 +323,20 @@ ReactDOM.render(<App />, document.getElementById("root"));
 
 ```diff
 + import('./bootstrap');
-- import React from 'react';
-- import ReactDOM from 'react-dom';
+- import { createRoot } from 'react-dom/client';
 - import App from './App';
-- ReactDOM.render(<App />, document.getElementById('root'));
+
+- const root = createRoot(document.getElementById('root'));
+- root.render(<App />);
 ```
 
 **bootstrap.js**
 
 ```diff
-+ import React from 'react';
-+ import ReactDOM from 'react-dom';
++ import { createRoot } from 'react-dom/client';
 + import App from './App';
-+ ReactDOM.render(<App />, document.getElementById('root'));
++ const root = createRoot(document.getElementById('root'));
++ root.render(<App />);
 ```
 
 이 메소드는 동작하지만 제약사항이나 단점이 있을 수 있습니다.

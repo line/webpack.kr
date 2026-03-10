@@ -23,7 +23,7 @@ W> webpack의 `target` 프로퍼티를 `output.libraryTarget` 프로퍼티와 �
 **webpack.config.js**
 
 ```javascript
-module.exports = {
+export default {
   target: "node",
 };
 ```
@@ -41,7 +41,11 @@ webpack에서는 한 개 이상의 문자열을 `target` 프로퍼티에 전달�
 **webpack.config.js**
 
 ```javascript
-const path = require("node:path");
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const serverConfig = {
   target: "node",
@@ -61,7 +65,7 @@ const clientConfig = {
   // …
 };
 
-module.exports = [serverConfig, clientConfig];
+export default [serverConfig, clientConfig];
 ```
 
 위 예제에서는 `dist` 폴더에 `lib.js`와 `lib.node.js` 파일을 생성합니다.

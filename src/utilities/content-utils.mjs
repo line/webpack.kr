@@ -21,16 +21,24 @@ export const walkContent = (tree, callback) => {
  * @return {array}       - A flattened list of leaf node descendants
  */
 export const flattenContent = (tree) => {
-  if (tree.children) {
-    return tree.children.reduce(
-      (flat, item) => [
-        ...flat,
-        ...(Array.isArray(item.children) ? flattenContent(item) : [item]),
-      ],
-      [],
-    );
+  const flat = [];
+  const walk = (node) => {
+    if (node && Array.isArray(node.children)) {
+      for (const child of node.children) {
+        walk(child);
+      }
+    } else {
+      flat.push(node);
+    }
+  };
+
+  if (tree && Array.isArray(tree.children)) {
+    for (const child of tree.children) {
+      walk(child);
+    }
   }
-  return [];
+
+  return flat;
 };
 
 /**

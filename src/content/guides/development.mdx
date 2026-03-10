@@ -173,9 +173,9 @@ webpack의 watch 모드를 시작하는 npm 스크립트를 추가해 보겠습�
    "author": "",
    "license": "ISC",
    "devDependencies": {
-     "html-webpack-plugin": "^4.5.0",
+     "html-webpack-plugin": "^5.0.0",
      "webpack": "^5.4.0",
-     "webpack-cli": "^4.2.0"
+     "webpack-cli": "^6.0.0"
    },
    "dependencies": {
      "lodash": "^4.17.20"
@@ -275,10 +275,10 @@ W> webpack-dev-server는 컴파일 후 출력 파일을 작성하지 않습니�
    "author": "",
    "license": "ISC",
    "devDependencies": {
-     "html-webpack-plugin": "^4.5.0",
+     "html-webpack-plugin": "^5.0.0",
      "webpack": "^5.4.0",
-     "webpack-cli": "^4.2.0",
-     "webpack-dev-server": "^3.11.0"
+     "webpack-cli": "^6.0.0",
+     "webpack-dev-server": "^5.0.0"
    },
    "dependencies": {
      "lodash": "^4.17.20"
@@ -344,15 +344,15 @@ npm install --save-dev express webpack-dev-middleware
 
 ```diff
   webpack-demo
-  |- package.json
-  |- package-lock.json
-  |- webpack.config.js
-+ |- server.js
-  |- /dist
-  |- /src
-    |- index.js
-    |- print.js
-  |- /node_modules
+   ├── package.json
+   ├── package-lock.json
+   ├── webpack.config.js
++  ├── server.js
+   ├── /dist
+   ├── /src
+   │   ├── index.js
+   │   └── print.js
+   └── /node_modules
 ```
 
 **server.js**
@@ -402,11 +402,11 @@ app.listen(3000, () => {
    "license": "ISC",
    "devDependencies": {
      "express": "^4.17.1",
-     "html-webpack-plugin": "^4.5.0",
+     "html-webpack-plugin": "^5.0.0",
      "webpack": "^5.4.0",
-     "webpack-cli": "^4.2.0",
+     "webpack-cli": "^6.0.0",
      "webpack-dev-middleware": "^4.0.2",
-     "webpack-dev-server": "^3.11.0"
+     "webpack-dev-server": "^5.0.0"
    },
    "dependencies": {
      "lodash": "^4.17.20"

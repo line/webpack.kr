@@ -111,16 +111,16 @@ T> webpack은 정규 표현식을 사용하여 어떤 파일을 찾아 특정 �
 
 ```diff
   webpack-demo
-  |- package.json
-  |- package-lock.json
-  |- webpack.config.js
-  |- /dist
-    |- bundle.js
-    |- index.html
-  |- /src
-+   |- style.css
-    |- index.js
-  |- /node_modules
+   ├── package.json
+   ├── package-lock.json
+   ├── webpack.config.js
+   ├── /dist
+   │   ├── bundle.js
+   │   └── index.html
+   ├── /src
++  │   ├── style.css
+   │   └── index.js
+   └── /node_modules
 ```
 
 **src/style.css**
@@ -217,17 +217,17 @@ webpack 5.4.0 compiled successfully in 2231 ms
 
 ```diff
   webpack-demo
-  |- package.json
-  |- package-lock.json
-  |- webpack.config.js
-  |- /dist
-    |- bundle.js
-    |- index.html
-  |- /src
-+   |- icon.png
-    |- style.css
-    |- index.js
-  |- /node_modules
+   ├── package.json
+   ├── package-lock.json
+   ├── webpack.config.js
+   ├── /dist
+   │   ├── bundle.js
+   │   └── index.html
+   ├── /src
++  │   ├── icon.png
+   │   ├── style.css
+   │   └── index.js
+   └── /node_modules
 ```
 
 **src/index.js**
@@ -336,19 +336,19 @@ webpack 5.4.0 compiled successfully in 1972 ms
 
 ```diff
   webpack-demo
-  |- package.json
-  |- package-lock.json
-  |- webpack.config.js
-  |- /dist
-    |- bundle.js
-    |- index.html
-  |- /src
-+   |- my-font.woff
-+   |- my-font.woff2
-    |- icon.png
-    |- style.css
-    |- index.js
-  |- /node_modules
+   ├── package.json
+   ├── package-lock.json
+   ├── webpack.config.js
+   ├── /dist
+   │   ├── bundle.js
+   │   └── index.html
+   ├── /src
++  │   ├── my-font.woff
++  │   ├── my-font.woff2
+   │   ├── icon.png
+   │   ├── style.css
+   │   └── index.js
+   └── /node_modules
 ```
 
 로더를 설정하고 폰트가 맞는 위치에 있으면 `@font-face` 선언을 통해 적용 할 수 있습니다. 로컬 `url(...)` 지시문은 이미지와 마찬가지로 webpack에서 골라냅니다.
@@ -459,21 +459,21 @@ npm install --save-dev csv-loader xml-loader
 
 ```diff
   webpack-demo
-  |- package.json
-  |- package-lock.json
-  |- webpack.config.js
-  |- /dist
-    |- bundle.js
-    |- index.html
-  |- /src
-+   |- data.xml
-+   |- data.csv
-    |- my-font.woff
-    |- my-font.woff2
-    |- icon.png
-    |- style.css
-    |- index.js
-  |- /node_modules
+   ├── package.json
+   ├── package-lock.json
+   ├── webpack.config.js
+   ├── /dist
+   │   ├── bundle.js
+   │   └── index.html
+   ├── /src
++  │   ├── data.xml
++  │   ├── data.csv
+   │   ├── my-font.woff
+   │   ├── my-font.woff2
+   │   ├── icon.png
+   │   ├── style.css
+   │   └── index.js
+   └── /node_modules
 ```
 
 **src/data.xml**
@@ -717,13 +717,13 @@ npm install toml yamljs json5 --save-dev
 위에서 언급 한 모든 것 중 가장 멋진 점은 이러한 방식으로 애셋을 로드하면 모듈과 애셋을 보다 직관적인 방식으로 그룹화할 수 있다는 것입니다. 모든 것을 포함한 글로벌 `/assets` 디렉터리에 의존하는 대신 애셋을 사용하는 코드와 그룹화할 수 있습니다. 예를 들어 다음과 같은 구조가 유용할 수 있습니다.
 
 ```diff
-- |- /assets
-+ |– /components
-+ |  |– /my-component
-+ |  |  |– index.jsx
-+ |  |  |– index.css
-+ |  |  |– icon.svg
-+ |  |  |– img.png
+- ├── /assets
++ └── /components
++     └── /my-component
++         ├── index.jsx
++         ├── index.css
++         ├── icon.svg
++         └── img.png
 ```
 
 이러한 설정은 밀접하게 연결된 모든 것이 함께 있기 때문에 코드를 다른 곳에 훨씬 더 쉽게 적용할 수 있도록 합니다. 다른 프로젝트에서 `/my-component`를 사용한다고 가정해 봅시다. 간단히 복사하거나 다른 프로젝트의 `/components` 디렉터리로 옮기면 됩니다. _외부 의존성을_ 설치하고 _설정에 동일한 로더가 정의되어있는 한_ 아무 문제가 없습니다.
@@ -738,24 +738,24 @@ npm install toml yamljs json5 --save-dev
 
 ```diff
   webpack-demo
-  |- package.json
-  |- package-lock.json
-  |- webpack.config.js
-  |- /dist
-    |- bundle.js
-    |- index.html
-  |- /src
--   |- data.csv
--   |- data.json5
--   |- data.toml
--   |- data.xml
--   |- data.yaml
--   |- icon.png
--   |- my-font.woff
--   |- my-font.woff2
--   |- style.css
-    |- index.js
-  |- /node_modules
+   ├── package.json
+   ├── package-lock.json
+   ├── webpack.config.js
+   ├── /dist
+   │   ├── bundle.js
+   │   └── index.html
+   ├── /src
+-  │   ├── data.csv
+-  │   ├── data.json5
+-  │   ├── data.toml
+-  │   ├── data.xml
+-  │   ├── data.yaml
+-  │   ├── icon.png
+-  │   ├── my-font.woff
+-  │   ├── my-font.woff2
+-  │   ├── style.css
+   │   └── index.js
+   └── /node_modules
 ```
 
 **webpack.config.js**

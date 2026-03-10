@@ -24,6 +24,7 @@ contributors:
   - EugeneHlushko
   - snitin315
   - Brennvo
+  - ThierryRakotomanana
 translators:
   - limong
 ---
@@ -48,17 +49,17 @@ npm install --save-dev webpack-merge
 
 ```diff
   webpack-demo
-  |- package.json
-  |- package-lock.json
-- |- webpack.config.js
-+ |- webpack.common.js
-+ |- webpack.dev.js
-+ |- webpack.prod.js
-  |- /dist
-  |- /src
-    |- index.js
-    |- math.js
-  |- /node_modules
+  ├── package.json
+  ├── package-lock.json
+- ├── webpack.config.js
++ ├── webpack.common.js
++ ├── webpack.dev.js
++ ├── webpack.prod.js
+  ├── /dist
+  ├── /src
+  │   ├── index.js
+  │   └── math.js
+  └── /node_modules
 ```
 
 **webpack.common.js**

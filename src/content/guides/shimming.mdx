@@ -43,14 +43,14 @@ T> 간단하게 시작하기 위해 이 가이드는 [시작하기](/guides/gett
 
 ```diff
 webpack-demo
-|- package.json
-|- package-lock.json
-|- webpack.config.js
-|- /dist
-  |- index.html
-|- /src
-  |- index.js
-|- /node_modules
+ ├── package.json
+ ├── package-lock.json
+ ├── webpack.config.js
+ ├── /dist
+ │   └── index.html
+ ├── /src
+ │   └── index.js
+ └── /node_modules
 ```
 
 우리가 사용했던 `lodash` 패키지를 기억하시나요? 데모 목적으로 애플리케이션에서 전역적으로 제공하고 싶다고 가정해 보겠습니다. 이를 위해 `ProvidePlugin`을 사용할 수 있습니다.
@@ -225,14 +225,14 @@ const __dirname = path.dirname(__filename);
 
 ```diff
   webpack-demo
-  |- package.json
-  |- package-lock.json
-  |- webpack.config.js
-  |- /dist
-  |- /src
-    |- index.js
-+   |- globals.js
-  |- /node_modules
+  ├── package.json
+  ├── package-lock.json
+  ├── webpack.config.js
+  ├── /dist
+  ├── /src
+  │   ├── index.js
++ │   ├── globals.js
+  └── /node_modules
 ```
 
 **src/globals.js**
@@ -357,15 +357,15 @@ npm install --save whatwg-fetch
 
 ```diff
   webpack-demo
-  |- package.json
-  |- package-lock.json
-  |- webpack.config.js
-  |- /dist
-  |- /src
-    |- index.js
-    |- globals.js
-+   |- polyfills.js
-  |- /node_modules
+  ├── package.json
+  ├── package-lock.json
+  ├── webpack.config.js
+  ├── /dist
+  ├── /src
+  │   ├── index.js
+  │   ├── globals.js
++ │   └── polyfills.js
+  └── /node_modules
 ```
 
 **src/polyfills.js**

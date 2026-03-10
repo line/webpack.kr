@@ -36,6 +36,7 @@ contributors:
   - snitin315
   - artem-malko
   - Brennvo
+  - ThierryRakotomanana
 translators:
   - keipark
 related:
@@ -64,15 +65,15 @@ T> 이 가이드는 [Getting Started](/guides/getting-started)에 제공된 예�
 **project**
 
 ```diff
-webpack-demo
-|- package.json
-|- package-lock.json
-|- webpack.config.js
-|- /dist
-|- /src
-  |- index.js
-+ |- another-module.js
-|- /node_modules
+ webpack-demo
+  ├── package.json
+  ├── package-lock.json
+  ├── webpack.config.js
+  ├── /dist
+  ├── /src
+  │   ├── index.js
++ │   └── another-module.js
+  └── /node_modules
 ```
 
 **another-module.js**
@@ -317,15 +318,15 @@ W> `import()` 호출은 내부적으로 [promises](https://developer.mozilla.org
 **project**
 
 ```diff
-webpack-demo
-|- package.json
-|- package-lock.json
-|- webpack.config.js
-|- /dist
-|- /src
-  |- index.js
-- |- another-module.js
-|- /node_modules
+ webpack-demo
+  ├── package.json
+  ├── package-lock.json
+  ├── webpack.config.js
+  ├── /dist
+  ├── /src
+  │   ├── index.js
+- │   └── another-module.js
+  └── /node_modules
 ```
 
 이제 정적으로 가져오던 `lodash`를 동적으로 가져와서 청크를 분리해보겠습니다.

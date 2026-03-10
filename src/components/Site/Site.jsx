@@ -77,15 +77,29 @@ function Site(props) {
     }
 
     return array
-      .map(({ title, name, url, group, sort, anchors, children }) => ({
-        title: title || name,
-        content: title || name,
-        url,
-        group,
-        sort,
-        anchors,
-        children: children ? _strip(children) : [],
-      }))
+      .map(
+        ({
+          title,
+          name,
+          url,
+          group,
+          sort,
+          anchors,
+          children,
+          date,
+          teaser,
+        }) => ({
+          title: title || name,
+          content: title || name,
+          url,
+          group,
+          sort,
+          anchors,
+          date,
+          teaser,
+          children: children ? _strip(children) : [],
+        }),
+      )
       .filter(
         (page) =>
           page.title !== "printable.mdx" && !page.content.includes("Printable"),
@@ -122,6 +136,42 @@ function Site(props) {
         wb.register();
       });
     }
+  }, []);
+
+  useEffect(() => {
+    if (process.env.NODE_ENV === "production") {
+      const GA_ID = "UA-192982695-2";
+
+      if (!window.ga) {
+        window.ga ||= function ga() {
+          (ga.q = ga.q || []).push(arguments); // eslint-disable-line
+        };
+        ga.l = +new Date(); // eslint-disable-line
+
+        const gads = document.createElement("script");
+        gads.async = true;
+        gads.type = "text/javascript";
+        gads.src = "//www.google-analytics.com/analytics.js";
+        const [head] = document.getElementsByTagName("head");
+        head.appendChild(gads);
+
+        window.ga("create", GA_ID, "auto");
+      }
+
+      const path = location.pathname + location.search;
+      window.ga("set", {
+        page: path,
+        title: document.title,
+        location: document.location,
+      });
+      window.ga("send", { hitType: "pageview" });
+    }
+  }, [location]);
+
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
   }, []);
 
   const sections = extractSections(Content);
@@ -249,7 +299,7 @@ function Site(props) {
         />
       </div>
 
-      {isClient ? (
+      {mounted ? (
         <SidebarMobile
           isOpen={mobileSidebarOpen}
           sections={_strip(Content.children)}
@@ -317,7 +367,13 @@ function PageElement(props) {
         currentPage={currentPage}
         pages={sidebarPages}
       />
-      <Page {...page} content={content} previous={previous} next={next} />
+      <Page
+        {...page}
+        content={content}
+        previous={previous}
+        next={next}
+        pages={sidebarPages}
+      />
     </Fragment>
   );
 }
@@ -325,6 +381,7 @@ function PageElement(props) {
 PageElement.propTypes = {
   currentPage: PropTypes.string,
   sidebarPages: PropTypes.array,
+  pages: PropTypes.array,
   previous: PropTypes.object,
   next: PropTypes.object,
   page: PropTypes.object,

@@ -22,7 +22,7 @@ webpack 설정의 `output` 프로퍼티는 최소한 객체로 값을 설정해�
 **webpack.config.js**
 
 ```javascript
-module.exports = {
+export default {
   output: {
     filename: "bundle.js",
   },
@@ -36,9 +36,13 @@ module.exports = {
 설정에서 하나 이상의 "청크"를 생성하면(다중 엔트리 포인트나 CommonsChunkPlugin과 같은 플러그인을 사용하는 경우) [substitution](/configuration/output/#outputfilename)을 사용하여 파일이 고유한 이름을 갖도록 해야 합니다.
 
 ```javascript
-const path = require("node:path");
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
   entry: {
     app: "./src/app.js",
     search: "./src/search.js",
@@ -59,7 +63,7 @@ module.exports = {
 **config.js**
 
 ```javascript
-module.exports = {
+export default {
   // ...
   output: {
     path: "/home/proj/cdn/assets/[fullhash]",

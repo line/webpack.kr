@@ -10,6 +10,7 @@ contributors:
   - AnayaDesign
   - tapanprakasht
   - snitin315
+  - ThierryRakotomanana
 translators:
   - dkstyle
 related:
@@ -33,14 +34,14 @@ T> 이 가이드는 [코드 스플리팅](/guides/code-splitting)에 대한 작�
 
 ```diff
 webpack-demo
-|- package.json
-|- package-lock.json
-|- webpack.config.js
-|- /dist
-|- /src
-  |- index.js
-+ |- print.js
-|- /node_modules
+ ├── package.json
+ ├── package-lock.json
+ ├── webpack.config.js
+ ├── /dist
+ ├── /src
+ │   ├── index.js
++│   └── print.js
+ └── /node_modules
 ```
 
 **src/print.js**
@@ -121,15 +122,15 @@ W> 이 기능은 아직 실험 단계이며, 향후 webpack 버전에서 변경�
 **project**
 
 ```diff
-webpack-demo
-|- package.json
-|- package-lock.json
-|- webpack.config.js
-|- /dist
-|- /src
-  |- index.js
-+ |- print.js
-|- /node_modules
+ webpack-demo
+  ├── package.json
+  ├── package-lock.json
+  ├── webpack.config.js
+  ├── /dist
+  ├── /src
+  │   ├── index.js
++ │   └── print.js
+  └── /node_modules
 ```
 
 **src/print.js**

@@ -1,5 +1,6 @@
 ---
-title: Webpack 5.105 (2026-02-03)
+title: Webpack 5.105
+sort: 20260203
 contributors:
   - bjohansebas
 ---
@@ -154,7 +155,7 @@ if (!import.meta.UNKNOWN_PROPERTY) {
 }
 ```
 
-`output.module`이 활성화되어 있지 않으면 명시적으로 다른 설정을 하지 않는 한 Webpack은 알 수 없는 속성을 계속 제거합니다. 이러한 속성을 수동으로 유지하려면 `webpack.config.js` 파일에서 `module.parser.javascript.importMeta`를 'preserve-unknown'으로 설정할 수 있습니다.
+`output.module`이 활성화되어 있지 않으면 명시적으로 다른 옵션을 지정하지 않는 한 Webpack은 알 수 없는 속성을 계속 제거합니다. 이러한 속성을 수동으로 유지하려면 `webpack.config.js` 파일에서 `module.parser.javascript.importMeta`를 'preserve-unknown'으로 설정할 수 있습니다.
 
 ```js
 // webpack.config.js

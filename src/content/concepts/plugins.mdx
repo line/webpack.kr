@@ -17,7 +17,7 @@ translators:
 
 [로더](/concepts/loaders)가 할 수 없는 **다른 작업을** 수행할 목적으로 제공됩니다.
 
-T> 플러그인에서 [`webpack-sources`](https://github.com/webpack/webpack-sources) 패키지를 사용할 때 `require('webpack-sources')` 대신 `require('webpack').sources`를 사용하면, 영구 캐시에 대한 버전 충돌을 방지합니다.
+T> 플러그인에서 [`webpack-sources`](https://github.com/webpack/webpack-sources) 패키지를 사용할 때는 영구 캐싱에 대한 버전 충돌을 방지하기 위해 `webpack` 또는 `webpack-sources`에서 가져오는 대신 `compiler.webpack.sources`를 사용하는 것이 좋습니다.
 
 ## Anatomy
 
@@ -36,7 +36,7 @@ class ConsoleLogOnBuildWebpackPlugin {
   }
 }
 
-module.exports = ConsoleLogOnBuildWebpackPlugin;
+export default ConsoleLogOnBuildWebpackPlugin;
 ```
 
 컴파일러 훅의 탭 메서드의 첫 번째 파라미터는 플러그인 이름의 카멜화된 버전으로 작성하는 것이 좋습니다. 모든 훅에서 재사용 할 수 있도록 하기 위해서 상수를 사용하는 것이 좋습니다.
@@ -52,11 +52,15 @@ webpack을 사용하는 방법에 따라 여러 가지 방법으로 플러그인
 **webpack.config.js**
 
 ```javascript
-const path = require("node:path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const webpack = require("webpack"); // 빌트인 플러그인에 접근하기 위함
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import HtmlWebpackPlugin from "html-webpack-plugin";
+import webpack from "webpack"; // 빌트인 플러그인에 접근하기 위함
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
   entry: "./path/to/my/entry/file.js",
   output: {
     filename: "my-first-webpack.bundle.js",
@@ -86,8 +90,8 @@ Node API를 사용할 때 설정의 `플러그인` 속성을 통해 플러그인
 **some-node-script.js**
 
 ```javascript
-const webpack = require("webpack"); // webpack 런타임에 접근하기 위함
-const configuration = require("./webpack.config.js");
+import webpack from "webpack"; // webpack 런타임에 접근하기 위함
+import configuration from "./webpack.config.js";
 
 const compiler = webpack(configuration);
 

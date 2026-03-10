@@ -63,11 +63,11 @@ npm install webpack webpack-cli --save-dev
 
 ```diff
   webpack-demo
-  |- package.json
-  |- package-lock.json
-+ |- index.html
-+ |- /src
-+   |- index.js
+  ├── package.json
+  ├── package-lock.json
++ ├── index.html
++ └── src/
++    └── index.js
 ```
 
 **src/index.js**
@@ -123,7 +123,7 @@ T> `package.json`의 내부 동작을 더 알고 싶으면 [npm 문서](https://
    "license": "MIT",
    "devDependencies": {
      "webpack": "^5.38.1",
-     "webpack-cli": "^4.7.2"
+     "webpack-cli": "^6.0.0"
    }
  }
 ```
@@ -146,13 +146,13 @@ T> `package.json`의 내부 동작을 더 알고 싶으면 [npm 문서](https://
 
 ```diff
   webpack-demo
-  |- package.json
-  |- package-lock.json
-+ |- /dist
-+   |- index.html
-- |- index.html
-  |- /src
-    |- index.js
+   ├── package.json
+   ├── package-lock.json
++  ├── /dist
++  │   └── index.html
+-  ├── index.html
+   └── /src
+       └── index.js
 ```
 
 T> 자세히 관찰한 분들은 비록 `index.html`이 `dist` 디렉터리에 있지만, 수동으로 생성되었다는 것을 알아챘을 것입니다. 나중에 [다른 가이드에서](/guides/output-management/#setting-up-htmlwebpackplugin), `index.html`을 수동으로 수정하는 대신 자동으로 생성할 것입니다. 이 작업이 완료되면 `dist` 디렉터리를 비우고 모든 파일을 다시 생성해도 좋습니다.
@@ -243,13 +243,13 @@ Webpack configuration files can be written using either CommonJS or ECMAScript m
 
 ```diff
   webpack-demo
-  |- package.json
-  |- package-lock.json
-+ |- webpack.config.js
-  |- /dist
-    |- index.html
-  |- /src
-    |- index.js
+   ├── package.json
+   ├── package-lock.json
++  ├── webpack.config.js
+   ├── /dist
+   │   └── index.html
+   └── /src
+       └── index.js
 ```
 
 **webpack.config.js**
@@ -312,7 +312,7 @@ CLI에서 webpack의 로컬 사본을 실행하기 위해 약간의 단축 명�
    "license": "ISC",
    "devDependencies": {
      "webpack": "^5.4.0",
-     "webpack-cli": "^4.2.0"
+     "webpack-cli": "^6.0.0"
    },
    "dependencies": {
      "lodash": "^4.17.20"
@@ -348,15 +348,15 @@ T> 사용자 지정 파라미터는 `npm run build` 명령과 파라미터 사�
 
 ```diff
 webpack-demo
-|- package.json
-|- package-lock.json
-|- webpack.config.js
-|- /dist
-  |- main.js
-  |- index.html
-|- /src
-  |- index.js
-|- /node_modules
+ ├── package.json
+ ├── package-lock.json
+ ├── webpack.config.js
+ ├── /dist
+ │   ├── main.js
+ │   └── index.html
+ ├── /src
+ │   └── index.js
+ └── /node_modules
 ```
 
 W> 신뢰할 수 없는 코드는 webpack으로 컴파일하지 마세요. 이로 인해 컴퓨터, 원격 서버 또는 애플리케이션 최종 사용자의 웹 브라우저에서 악성 코드가 실행될 수 있습니다.

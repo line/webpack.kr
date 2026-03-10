@@ -41,7 +41,7 @@ export default "the app";
 **./webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   entry: "./index.js",
 };
 ```
@@ -54,7 +54,7 @@ module.exports = {
 **./webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   entry: {
     home: "./home.js",
     about: "./about.js",
@@ -79,7 +79,7 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   entry: "./src/index.jsx",
 };
 ```
@@ -87,11 +87,11 @@ module.exports = {
 **./src/index.jsx**
 
 ```jsx
-import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 
 import("./app.jsx").then((App) => {
-  ReactDOM.render(<App />, root);
+  const root = createRoot(document.getElementById("root"));
+  root.render(<App />);
 });
 ```
 
@@ -118,7 +118,8 @@ import(
   /* webpackChunkName: "app" */
   "./app.jsx"
 ).then((App) => {
-  ReactDOM.render(<App />, root);
+  const root = createRoot(document.getElementById("root"));
+  root.render(<App />);
 });
 ```
 
