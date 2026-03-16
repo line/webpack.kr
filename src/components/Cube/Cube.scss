@@ -1,4 +1,5 @@
-@import "functions";
+@use "../../styles/partials/functions" as *;
+@use "sass:color";
 
 .cube {
   position: relative;
@@ -27,7 +28,7 @@
   }
 
   .cube__outer .cube__face {
-    background: transparentize(getColor(malibu), 0.5);
+    background: color.adjust(getColor(malibu), $alpha: -0.5);
     transition: border-width 0.2s;
     transition-delay: 0.2s;
   }

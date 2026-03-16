@@ -501,8 +501,9 @@ Node.js는 항상 CommonJs 버전을 사용하고 ESM 래퍼를 사용하여 ESM
 }
 ```
 
+**wrapper-process-env.cjs**
+
 ```js
-// wrapper-process-env.cjs
 module.exports =
   process.env.NODE_ENV !== "development"
     ? require("./index-optimized.cjs")

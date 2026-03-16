@@ -23,8 +23,8 @@ related:
 
 설정에서 `mode` 옵션을 사용합니다.
 
-```javascript
-module.exports = {
+```js
+export default {
   mode: "development",
 };
 ```
@@ -51,7 +51,7 @@ T> 설정이나 CLI를 통해 `mode`가 제공되지 않으면 CLI는 `mode`에 
 
 ```js
 // webpack.development.config.js
-module.exports = {
+export default {
   mode: "development",
 };
 ```
@@ -60,7 +60,7 @@ module.exports = {
 
 ```js
 // webpack.production.config.js
-module.exports = {
+export default {
   mode: "production",
 };
 ```
@@ -69,20 +69,20 @@ module.exports = {
 
 ```js
 // webpack.custom.config.js
-module.exports = {
+export default {
   mode: "none",
 };
 ```
 
 _webpack.config.js_ 안의 **mode** 변수에 따라 동작을 변경하려면, 객체 대신 함수를 export 해야 합니다.
 
-```javascript
+```js
 const config = {
   entry: "./app.js",
   // ...
 };
 
-module.exports = (env, argv) => {
+export default (env, argv) => {
   if (argv.mode === "development") {
     config.devtool = "source-map";
   }

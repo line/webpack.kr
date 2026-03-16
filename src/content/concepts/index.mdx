@@ -62,9 +62,9 @@ export default {
 };
 ```
 
-T> 설정 파일 없이 webpack을 실행하면 기본 엔트리포인트는 `./src/index.js`로 설정됩니다. `src/` 디렉터리가 존재하더라도 해당 파일이 없으면 webpack은 다음과 같은 오류를 발생시킵니다. <br /> **`ERROR in Entry module not found: Error: Can't resolve './src'`** <br /><br /> 오류 메시지에 `./src/index.js`가 아닌 `./src`가 표시되는 이유는 webpack이 먼저 디렉터리를 확인한 후 그 안에 있는 기본 `index.js` 파일을 찾지 못했기 때문입니다. 다른 엔트리포인트 파일 이름을 사용하려면 위 예시와 같이 `webpack.config.js` 파일을 추가하세요.
+T> 설정 파일 없이 webpack을 실행하면 기본 엔트리 포인트는`./src/index.js`로 설정됩니다. `src/` 디렉터리가 존재하더라도 해당 파일이 없으면 webpack은 다음과 같은 오류를 발생시킵니다. <br /> **`ERROR in Entry module not found: Error: Can't resolve './src'`** <br /><br /> 오류 메시지에 `./src/index.js`가 아닌 `./src`가 표시되는 이유는 webpack이 먼저 디렉터리를 확인한 후 그 안에 있는 기본 `index.js` 파일을 찾지 못했기 때문입니다. 다른 엔트리 포인트 파일 이름을 사용하려면 위 예시와 같이 `webpack.config.js` 파일을 추가하세요.
 
-T> [엔트리 포인트](/concepts/entry-points)에서 자세히 알아보세요.
+T> [엔트리 포인트](/concepts/entry-points) 섹션에서 자세히 알아보세요.
 
 ## Output
 
@@ -74,7 +74,7 @@ T> [엔트리 포인트](/concepts/entry-points)에서 자세히 알아보세요
 
 **webpack.config.js**
 
-```javascript
+```js
 import path from "node:path";
 
 // For compatibility with older Node.js versions
@@ -107,7 +107,7 @@ W> webpack의 특정 기능 중 하나인 모든 유형의 모듈(예: `.css`)�
 
 **webpack.config.js**
 
-```javascript
+```js
 import path from "node:path";
 
 export default {
@@ -140,7 +140,7 @@ T> [플러그인 인터페이스](/api/plugins)를 사용하여 webpack의 기�
 
 **webpack.config.js**
 
-```javascript
+```js
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import webpack from "webpack"; // 내장 plugin에 접근하는 데 사용
 
@@ -162,7 +162,7 @@ webpack 설정에서 플러그인을 사용하는 것은 간단하지만, 추가
 
 `mode` 파라미터를 `development`, `production` 또는 `none`으로 설정하면 webpack에 내장된 환경별 최적화를 활성화 할 수 있습니다. 기본값은 `production` 입니다.
 
-```javascript
+```js
 export default {
   mode: "production",
 };

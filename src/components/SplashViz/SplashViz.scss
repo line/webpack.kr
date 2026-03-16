@@ -1,6 +1,7 @@
-@import "functions";
-@import "vars";
-@import "mixins";
+@use "../../styles/partials/functions" as *;
+@use "../../styles/partials/vars" as *;
+@use "../../styles/partials/mixins" as *;
+@use "sass:map";
 
 .splash-viz {
   position: relative;
@@ -32,7 +33,7 @@
     left: 50%;
     width: 60vw;
     min-width: 550px;
-    max-width: map-get($screens, medium);
+    max-width: map.get($screens, medium);
     margin: 0 auto;
     transform: translate(-50%, -50%);
     display: none;

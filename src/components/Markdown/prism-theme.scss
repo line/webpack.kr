@@ -1,5 +1,6 @@
-@import "functions";
-@import "mixins";
+@use "../../styles/partials/functions" as *;
+@use "../../styles/partials/mixins" as *;
+@use "sass:color";
 
 code[class*="lang-"],
 pre[class*="lang-"] {
@@ -11,7 +12,7 @@ pre[class*="lang-"] {
   line-height: 1.5;
   tab-size: 4;
   hyphens: none;
-  color: desaturate(getColor(malibu), 40%);
+  color: color.adjust(getColor(malibu), $saturation: -40%);
   @include fontantialias(false);
 
   a {
@@ -56,7 +57,10 @@ pre[class*="lang-"] {
 .token.number,
 .token.constant,
 .token.symbol {
-  color: desaturate(darken(getColor(malibu), 15%), 15%);
+  color: color.adjust(
+    color.adjust(getColor(malibu), $lightness: -15%),
+    $saturation: -15%
+  );
 }
 
 .token.selector,
@@ -66,7 +70,7 @@ pre[class*="lang-"] {
 .token.regex,
 .token.attr-value,
 .token.important {
-  color: desaturate(#2dd271, 23%);
+  color: color.adjust(#2dd271, $saturation: -23%);
 }
 
 .token.inserted {
@@ -90,7 +94,10 @@ pre[class*="lang-"] {
 .token.attr-name,
 .token.keyword,
 .token.function {
-  color: darken(desaturate(getColor(malibu), 30%), 15%);
+  color: color.adjust(
+    color.adjust(getColor(malibu), $lightness: -15%),
+    $saturation: -30%
+  );
 }
 
 .token.important,

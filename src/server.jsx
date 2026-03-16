@@ -21,14 +21,14 @@ export default (locals) => {
           // note that here we use require instead of import
           // i.e., can't reuse App.jsx
           // eslint-disable-next-line no-undef
-          import={(path) => require(`./content/${path}`)}
+          loadContent={(path) => require(`./content/${path}`)}
         />
       </HelmetProvider>
     </StaticRouter>,
   );
 
   const css = assets.css
-    .map((path) => `<link rel="stylesheet" href=${`${path}`} />`)
+    .map((path) => `<link rel="stylesheet" href="${path}" />`)
     .join("");
 
   const scripts = isPrintPage(locals.path)

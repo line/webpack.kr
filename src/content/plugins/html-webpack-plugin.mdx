@@ -23,12 +23,11 @@ npm install --save-dev html-webpack-plugin
 플러그인은 `script` 태그를 사용하여 body에 모든 webpack 번들을 포함하는 HTML5 파일을 생성합니다.
 적용은 아래와 같이 webpack에 플러그인을 추가하기만 하면 됩니다.
 
-```javascript
+```js
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 
-// For compatibility with older Node.js versions
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 

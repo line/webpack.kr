@@ -27,7 +27,7 @@ webpack 플러그인의 배열입니다. 예를 들어 [`DefinePlugin`](/plugins
 {/* eslint-disable no-constant-binary-expression */}
 
 ```js
-module.exports = {
+export default {
   // ...
   plugins: [
     new webpack.DefinePlugin({
@@ -43,12 +43,12 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-const webpack = require("webpack");
+import webpack from "webpack";
 // webpack에 기본적으로 제공되지 않는 플러그인을 import
-const DashboardPlugin = require("webpack-dashboard/plugin");
+import DashboardPlugin from "webpack-dashboard/plugin";
 
 // 설정에 플러그인 추가
-module.exports = {
+export default {
   // ...
   plugins: [
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),

@@ -15,7 +15,7 @@ translators:
 
 컴파일이 완료된 후에는, 컴파일 내의 모든 구조를 확인할 수 있습니다.
 
-```javascript
+```js
 class MyPlugin {
   apply(compiler) {
     compiler.hooks.emit.tapAsync("MyPlugin", (compilation, callback) => {
@@ -44,7 +44,7 @@ class MyPlugin {
   }
 }
 
-module.exports = MyPlugin;
+export default MyPlugin;
 ```
 
 - `compilation.modules`: 컴파일 결과물의 모듈(빌드된 입력) 집합입니다. 각 모듈은 소스 라이브러리의 원시 파일의 빌드를 관리합니다.
@@ -63,7 +63,7 @@ W> **Deprecation warning**: 배열 함수는 계속 작동합니다.
 
 webpack 미들웨어를 실행하는 동안, 각 컴파일 결과물은 `fileDependencies` `Set` (감시되고 있는 파일) 그리고 된 파일 경로를 타임스탬프에 매핑하는 `fileTimestamps` `Map` 을 포함합니다. 다음은 컴파일 결과물 내에서 변경된 파일을 감지하는데 매우 유용합니다.
 
-```javascript
+```js
 class MyPlugin {
   constructor() {
     this.startTime = Date.now();
@@ -84,7 +84,7 @@ class MyPlugin {
   }
 }
 
-module.exports = MyPlugin;
+export default MyPlugin;
 ```
 
 파일이 변경될 때 컴파일 트리거를 수신하도록 감시 그래프에 새로운 파일 경로를 제공할 수도 있습니다. 유효한 파일 경로를 `compilation.fileDependencies` `Set` 에 더하여 감시된 파일에 추가합니다.
@@ -97,7 +97,7 @@ W> wepback 5부터, `compilation.fileDependencies` , `compilation.contextDepende
 
 감시 그래프와 유사하게, 해시를 추적하여 컴파일 결과물 내에서 변경된 청크(또는 모듈)를 모니터링할 수 있습니다.
 
-```javascript
+```js
 class MyPlugin {
   constructor() {
     this.chunkVersions = {};
@@ -115,5 +115,5 @@ class MyPlugin {
   }
 }
 
-module.exports = MyPlugin;
+export default MyPlugin;
 ```

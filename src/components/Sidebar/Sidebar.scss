@@ -1,6 +1,6 @@
-@import "vars";
-@import "mixins";
-@import "functions";
+@use "../../styles/partials/vars" as *;
+@use "../../styles/partials/mixins" as *;
+@use "../../styles/partials/functions" as *;
 
 .sidebar {
   display: none;

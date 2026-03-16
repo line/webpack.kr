@@ -52,7 +52,7 @@ browserslist 설정이 없으면 `'browserslist'` 혹은 `'web'`으로 설정됩
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   target: "node12.18",
 };
@@ -82,7 +82,7 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   target: ["web", "es5"],
 };
@@ -95,7 +95,7 @@ Webpack은 웹 플랫폼을 위해 런타임 코드를 생성하고 ES5 기능�
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   target: ["web", "node"],
 };
@@ -110,7 +110,7 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   target: false,
 };
@@ -121,9 +121,9 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-const webpack = require("webpack");
+import webpack from "webpack";
 
-module.exports = {
+export default {
   // ...
   target: false,
   plugins: [

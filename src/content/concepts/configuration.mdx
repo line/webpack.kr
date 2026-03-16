@@ -6,6 +6,7 @@ contributors:
   - simon04
   - EugeneHlushko
   - byzyk
+  - mr-baraiya
 translators:
   - choilim
 ---
@@ -16,7 +17,7 @@ webpack은 표준 Node.js 모듈이므로, **다음과 같은 작업을 할 수 
 
 - `require(...)` 또는 `import`를 통해 다른 파일을 가져옵니다.
 - `require(...)` 또는 `import`를 통해 npm 유틸리티를 사용합니다.
-- JavaScript 제어 흐름 표현식(예: `?:` 연산자)을 사용합니다.
+- JavaScript 제어 흐름 표현식(예: `?:`, `if`, `for` 등)을 사용하세요.
 - 자주 사용하는 값에 상수 또는 변수를 사용합니다.
 - 설정의 일부를 생성하는 함수를 작성하고 실행합니다.
 
@@ -24,7 +25,7 @@ webpack은 표준 Node.js 모듈이므로, **다음과 같은 작업을 할 수 
 
 기술적으로는 가능하지만, **아래 방법의 사용은 피해야 합니다.**
 
-- webpack CLI를 사용할 때, 자체 CLI를 작성하거나 [`--env`](/configuration/configuration-types/)를 사용하는 대신, CLI 인자에 접근하기
+- Webpack CLI를 사용할 때 CLI 인수에 접근할 수 있습니다. 하지만 이렇게 하면 설정이 이식성이 떨어지고 유지 관리가 어려워질 수 있습니다. 대신, 자체 CLI 명령어를 작성하거나 `--env` 옵션을 사용하여 환경 변수를 전달하는 것이 좋습니다(`/api/cli/#env`).
 - 결정되지 않은 값을 내보내기 (webpack을 두 번 호출하면 동일한 출력 파일이 생성됩니다)
 - 긴 설정 작성하기 (대신 설정을 여러 파일로 분할)
 
@@ -36,11 +37,10 @@ T> 이 문서에서 가장 중요한 부분은 webpack 설정을 형식화하고
 
 **webpack.config.js**
 
-```javascript
+```js
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-// For compatibility with older Node.js versions
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 

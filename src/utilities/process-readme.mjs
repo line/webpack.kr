@@ -30,7 +30,7 @@ function linkFixerFactory(sourceUrl) {
     const oldHref = href;
 
     if (href.includes("//npmjs.com")) {
-      href = href.replace("//www.npmjs.com");
+      href = href.replace("//npmjs.com", "//www.npmjs.com");
     }
 
     // Only resolve non-absolute urls from their source if they are not a document fragment link

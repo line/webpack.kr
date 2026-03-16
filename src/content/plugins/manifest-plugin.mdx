@@ -12,7 +12,7 @@ contributors:
 
 **webpack.config.js**
 
-```javascript
+```js
 new webpack.ManifestPlugin({
   // options...
 });
@@ -30,7 +30,7 @@ new webpack.ManifestPlugin({
 
 **webpack.config.js**
 
-```javascript
+```js
 export default {
   entry: {
     entry1: {
@@ -97,7 +97,7 @@ export default {
 
 `serialize`를 사용하여 YAML과 같은 다른 형식을 출력합니다.
 
-```javascript
+```js
 new webpack.ManifestPlugin({
   serialize(manifest) {
     return YAML.stringify(manifest, 4);

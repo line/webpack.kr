@@ -1,5 +1,5 @@
-@import "functions";
-@import "mixins";
+@use "../../styles/partials/functions" as *;
+@use "../../styles/partials/mixins" as *;
 
 .splash {
   position: relative;

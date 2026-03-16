@@ -137,7 +137,10 @@ function Navigation({ links, pathname, hash = "", toggleSidebar }) {
           <Link to="/" className="md:mr-auto">
             <Logo />
           </Link>
-          <nav className="hidden md:inline-grid md:grid-flow-col md:gap-x-[18px] md:items-center">
+          <nav
+            className="hidden md:inline-grid md:grid-flow-col md:gap-x-[18px] md:items-center"
+            aria-label="Main navigation"
+          >
             {links.map(({ content, url, isActive, ariaLabel }) => (
               <NavigationItem
                 key={url}
@@ -194,7 +197,7 @@ function Navigation({ links, pathname, hash = "", toggleSidebar }) {
               ]}
             />
           </nav>
-          <div className="inline-flex items-center ml-[18px]">
+          <div className="inline-flex items-center gap-x-[18px] ml-[18px]">
             <HelloDarkness />
             {mounted && (
               <DocSearch
@@ -202,7 +205,7 @@ function Navigation({ links, pathname, hash = "", toggleSidebar }) {
                 apiKey={"0bf212faf8487900d5d5ee6754c1572a"}
                 indexName="webpack_korea"
                 disableUserPersonalization={true}
-                placeholder="Search webpack documentation"
+                placeholder="webpack 문서를 검색해보세요"
                 transformItems={(items) =>
                   items.map(({ url, ...others }) => {
                     const { origin } = new URL(url);
@@ -237,7 +240,7 @@ function Navigation({ links, pathname, hash = "", toggleSidebar }) {
                 >
                   {link.children.map((child) => {
                     const classNames =
-                      "text-blue-400 py-5 text-sm capitalize hover:text-black dark:hover:text-white";
+                      "text-blue-400 dark:text-[#69a8ee] py-5 text-sm capitalize hover:text-black dark:hover:text-white";
                     const isActive = location.pathname.startsWith(child.url);
                     return (
                       <NavLink

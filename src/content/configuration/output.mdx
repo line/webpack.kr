@@ -53,8 +53,8 @@ translators:
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     // ...
@@ -73,8 +73,8 @@ W> [`output.library.auxiliaryComment`](#outputlibraryauxiliarycomment)를 사용
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     library: "someLibName",
@@ -89,7 +89,7 @@ module.exports = {
 
 **someLibName.js**
 
-```javascript
+```js
 (function webpackUniversalModuleDefinition(root, factory) {
   // Test Comment
   if (typeof exports === "object" && typeof module === "object") {
@@ -116,8 +116,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     // ...
@@ -151,8 +151,8 @@ T> `<script>`태그의 `charset`속성이 [지원 중단](https://developer.mozi
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     // ...
@@ -165,8 +165,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     chunkFilename: (pathData) =>
@@ -187,8 +187,8 @@ T> 이 옵션의 기본값은 [`target`](/configuration/target/) 과 [`output.mo
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     // ...
@@ -205,8 +205,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     // ...
@@ -223,8 +223,8 @@ webpack에서 청크를 로드하기 위해 사용하는 전역 변수입니다.
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     // ...
@@ -243,8 +243,8 @@ T> 이 옵션의 기본 값은 [`target`](/configuration/target/)과 [`chunkForm
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     // ...
@@ -259,8 +259,8 @@ module.exports = {
 
 `boolean` `{ dry?: boolean, keep?: RegExp | string | ((filename: string) => boolean) }`
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     clean: true, // 내보내기 전에 output 디렉터리를 정리합니다.
@@ -268,8 +268,8 @@ module.exports = {
 };
 ```
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     clean: {
@@ -279,8 +279,8 @@ module.exports = {
 };
 ```
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     clean: {
@@ -288,10 +288,10 @@ module.exports = {
     },
   },
 };
+```
 
-// 또는
-
-module.exports = {
+```js
+export default {
   // ...
   output: {
     clean: {
@@ -305,7 +305,7 @@ module.exports = {
 
 hook과 함께 사용할 수도 있습니다.
 
-```javascript
+```js
 webpack.CleanPlugin.getCompilationHooks(compilation).keep.tap(
   "Test",
   (asset) => {
@@ -322,8 +322,8 @@ webpack.CleanPlugin.getCompilationHooks(compilation).keep.tap(
 
 W> 동일한 내용의 파일이 디스크에 이미 있는 경우 webpack은 출력 파일을 만들지 않습니다.
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     compareBeforeEmit: false,
@@ -374,8 +374,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     devtoolModuleFilenameTemplate:
@@ -399,8 +399,8 @@ module.exports = {
 
 함수를 사용할 때 `info` 파라미터를 통해 동일한 옵션을 camel case로 사용할 수 있습니다.
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     devtoolModuleFilenameTemplate: (info) =>
@@ -423,8 +423,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     filename: "[name]-bundle.js",
@@ -443,8 +443,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     // ...
@@ -459,8 +459,8 @@ module.exports = {
 
 엔트리 포인트에서 사용할 수 있는 라이브러리 타입 목록입니다.
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     enabledLibraryTypes: ["module"],
@@ -474,8 +474,8 @@ module.exports = {
 
 엔트리 포인트에서 사용할 수 있는 wasm 로딩 유형 목록입니다.
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     enabledWasmLoadingTypes: ["fetch"],
@@ -487,8 +487,8 @@ module.exports = {
 
 생성된 런타임 코드에서 어떤 종류의 ES 기능을 사용할 수 있는지 webpack에 알려줍니다.
 
-```javascript
-module.exports = {
+```js
+export default {
   output: {
     environment: {
       // 화살표 기능('() => { ... }')을 지원합니다.
@@ -539,8 +539,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     filename: "bundle.js",
@@ -554,8 +554,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     filename: "[name].bundle.js",
@@ -567,8 +567,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     filename: "[id].bundle.js",
@@ -580,8 +580,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     filename: "[contenthash].bundle.js",
@@ -593,8 +593,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     filename: "[name].[contenthash].bundle.js",
@@ -606,8 +606,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     filename: (pathData) =>
@@ -683,7 +683,7 @@ T> `[file]`은 `[path][base]`와 같습니다. `[base]`는 `[name][ext]`와 같�
 반환된 문자열에도 substitution이 적용됩니다.
 전달 된 객체의 타입은 다음과 같습니다. 프로퍼티는 컨텍스트에 따라 사용 가능합니다.
 
-```typescript
+```ts
 type PathData = {
   hash: string;
   hashWithLength: (number) => string;
@@ -726,8 +726,8 @@ T> 일부 컨텍스트에서 프로퍼티는 원시 값 대신 JavaScript 코드
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     library: {
@@ -764,7 +764,7 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   output: {
     hashDigest: "base64url", // 파일 이름에 대한 URL 안전한 인코딩
   },
@@ -785,8 +785,8 @@ T> `webpack v5.65.0+`의 경우, [`experiments.futureDefaults`](/configuration/e
 
 사용할 해싱 알고리즘입니다. Node.JS의 [`crypto.createHash`](https://nodejs.org/api/crypto.html#crypto_crypto_createhash_algorithm_options)의 모든 기능이 지원됩니다. `4.0.0-alpha2`부터 `hashFunction`은 커스텀 해시 함수의 생성자가 될 수 있습니다. 성능상의 이유로 비 암호화 해시 함수를 제공할 수 있습니다.
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     hashFunction: require("metrohash").MetroHash64,
@@ -812,8 +812,8 @@ Node.JS의 [`hash.update`](https://nodejs.org/api/crypto.html#crypto_hash_update
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     hotUpdateChunkFilename: "[id].[fullhash].hot-update.js",
@@ -847,8 +847,8 @@ T> 일반적으로 `output.hotUpdateMainFilename`을 변경할 필요가 없습�
 
 내보낸 코드에 [IIFE](https://developer.mozilla.org/en-US/docs/Glossary/IIFE) 래퍼를 추가하도록 webpack에 지시합니다.
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     iife: true,
@@ -866,8 +866,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     ignoreBrowserWarnings: true,
@@ -883,8 +883,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     importFunctionName: "__import__",
@@ -900,8 +900,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     importMetaName: "pseudoImport.meta",
@@ -920,7 +920,7 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // …
   entry: "./src/index.js",
   output: {
@@ -951,7 +951,7 @@ export function hello(name) {
 1. `entry` 포인트로 `array`를 제공하면 배열의 마지막 항목만 내보냅니다.
 
    ```js
-   module.exports = {
+   export default {
      // …
      entry: ["./src/a.js", "./src/b.js"], // 오직 b.js의 출력만 노출됩니다.
      output: {
@@ -963,7 +963,7 @@ export function hello(name) {
 2. `객체`가 `entry` 포인트로 제공되면 `library`의 `array` 구문을 사용하여 모든 항목을 내보낼 수 있습니다.
 
    ```js
-   module.exports = {
+   export default {
      // …
      entry: {
        a: "./src/a.js",
@@ -992,7 +992,7 @@ export function hello(name) {
    엔트리 포인트 별로 라이브러리 옵션을 설정하려는 경우 위 설정이 예상대로 작동하지 않습니다. [각 엔트리 별 설정](/concepts/entry-points/#entrydescription-object)에 대한 방법은 아래와 같습니다.
 
    ```js
-   module.exports = {
+   export default {
      // …
      entry: {
        main: {
@@ -1024,7 +1024,7 @@ export function hello(name) {
 W> `amdContainer` 값은 **반드시** 전역 변수로 설정되어야 합니다.
 
 ```js
-module.exports = {
+export default {
   // …
   output: {
     library: {
@@ -1044,7 +1044,7 @@ globalThis.clientContainer.define(/* define args */); // 또는 'amd-require' wi
 ### output.library.name
 
 ```js
-module.exports = {
+export default {
   // …
   output: {
     library: {
@@ -1079,7 +1079,7 @@ module.exports = {
 ##### type: 'var'
 
 ```js
-module.exports = {
+export default {
   // …
   output: {
     library: {
@@ -1092,7 +1092,7 @@ module.exports = {
 
 라이브러리가 로드되면 **엔트리 포인트의 반환 값이** 변수에 할당됩니다.
 
-```javascript
+```js
 const MyLibrary = _entry_return_;
 
 // `MyLibrary`가 로드 된 별도의 스크립트
@@ -1102,7 +1102,7 @@ MyLibrary.doSomething();
 ##### type: 'assign'
 
 ```js
-module.exports = {
+export default {
   // …
   output: {
     library: {
@@ -1115,7 +1115,7 @@ module.exports = {
 
 이렇게 하면 기존 값을 다시 할당할 수 있는 암시적인 전역이 생성됩니다. 이 값은 주의해서 사용해야 합니다.
 
-```javascript
+```js
 MyLibrary = _entry_return_;
 ```
 
@@ -1126,7 +1126,7 @@ MyLibrary = _entry_return_;
 <Badge text="5.16.0+" />
 
 ```js
-module.exports = {
+export default {
   // …
   output: {
     library: {
@@ -1162,7 +1162,7 @@ MyLibrary.hello("World");
 ##### type: 'this'
 
 ```js
-module.exports = {
+export default {
   // …
   output: {
     library: {
@@ -1175,7 +1175,7 @@ module.exports = {
 
 **엔트리 포인트의 반환 값은** `output.library.name`이라는 속성 아래의 `this`에 할당됩니다. `this`의 의미는 당신에게 달려있습니다.
 
-```javascript
+```js
 this.MyLibrary = _entry_return_;
 
 // 별도의 스크립트
@@ -1186,7 +1186,7 @@ MyLibrary.doSomething(); // `this`가 window인 경우
 ##### type: 'window'
 
 ```js
-module.exports = {
+export default {
   // …
   output: {
     library: {
@@ -1199,7 +1199,7 @@ module.exports = {
 
 **엔트리 포인트의 반환 값은** `output.library.name`값을 사용하여 `window` 객체에 할당됩니다.
 
-```javascript
+```js
 globalThis.MyLibrary = _entry_return_;
 
 globalThis.MyLibrary.doSomething();
@@ -1208,7 +1208,7 @@ globalThis.MyLibrary.doSomething();
 ##### type: 'global'
 
 ```js
-module.exports = {
+export default {
   // …
   output: {
     library: {
@@ -1221,7 +1221,7 @@ module.exports = {
 
 **엔트리 포인트의 반환 값은** `output.library.name`값을 사용하여 전역 개체에 할당됩니다. [`target`](/configuration/target/) 값에 따라 전역 객체가 `self`, `global` 또는 `globalThis`로 변경될 수 있습니다.
 
-```javascript
+```js
 globalThis.MyLibrary = _entry_return_;
 
 globalThis.MyLibrary.doSomething();
@@ -1230,7 +1230,7 @@ globalThis.MyLibrary.doSomething();
 ##### type: 'commonjs'
 
 ```js
-module.exports = {
+export default {
   // …
   output: {
     library: {
@@ -1243,7 +1243,7 @@ module.exports = {
 
 **엔트리 포인트의 반환 값은** `output.library.name` 값을 사용하여 `exports`객체에 할당됩니다. 이름에서 알 수 있듯이 CommonJS 환경에서 사용됩니다.
 
-```javascript
+```js
 exports.MyLibrary = _entry_return_;
 
 require("MyLibrary").doSomething();
@@ -1258,7 +1258,7 @@ W> `output.library.name`을 설정하지 않으면 엔트리 포인트에서 반
 ##### type: 'module'
 
 ```js
-module.exports = {
+export default {
   // …
   experiments: {
     outputModule: true,
@@ -1281,7 +1281,7 @@ ES 모듈을 출력합니다.
 <Badge text="v5.93.0+" />
 
 ```js
-module.exports = {
+export default {
   // …
   experiments: {
     outputModule: true,
@@ -1302,7 +1302,7 @@ module.exports = {
 ##### type: 'commonjs2'
 
 ```js
-module.exports = {
+export default {
   // …
   output: {
     library: {
@@ -1315,8 +1315,8 @@ module.exports = {
 
 **엔트리 포인트의 반환 값은** `module.exports`에 할당됩니다. 이름에서 알 수 있듯이 Node.js (CommonJS) 환경에서 사용됩니다.
 
-```javascript
-module.exports = _entry_return_;
+```js
+export default _entry_return_;
 
 require("MyLibrary").doSomething();
 ```
@@ -1334,7 +1334,7 @@ T> CommonJS와 CommonJS2의 차이점이 궁금하신가요? 비슷하지만 web
 <Badge text="5.66.0+" />
 
 ```js
-module.exports = {
+export default {
   // …
   output: {
     library: {
@@ -1349,13 +1349,13 @@ module.exports = {
 
 입력:
 
-```javascript
+```js
 export function doSomething() {}
 ```
 
 출력:
 
-```javascript
+```js
 function doSomething() {}
 
 // …
@@ -1365,13 +1365,13 @@ exports.doSomething = __webpack_exports__.doSomething;
 
 Consumption (CommonJS):
 
-```javascript
+```js
 const { doSomething } = require("./output.cjs"); // doSomething => [Function: doSomething]
 ```
 
 Consumption (ESM):
 
-```javascript
+```js
 import { doSomething } from "./output.cjs"; // doSomething => [Function: doSomething]
 ```
 
@@ -1385,8 +1385,8 @@ AMD 모듈은 일반적으로 RequireJS 또는 almond같은 호환 가능한 로
 
 아래의 설정을 참고하세요.
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     library: {
@@ -1399,13 +1399,13 @@ module.exports = {
 
 생성된 출력은 `"MyLibrary"`라는 이름으로 정의됩니다. 예제는 아래와 같습니다.
 
-```javascript
+```js
 define("MyLibrary", [], () => _entry_return_);
 ```
 
 번들은 script 태그의 일부로 포함될 수 있으며 번들은 다음과 같이 호출될 수 있습니다.
 
-```javascript
+```js
 require(["MyLibrary"], (MyLibrary) => {
   // 라이브러리로 무언가를 할 수 있습니다.
 });
@@ -1413,7 +1413,7 @@ require(["MyLibrary"], (MyLibrary) => {
 
 `output.library.name`이 정의되어 있지 않으면 아래의 코드가 대신 생성됩니다.
 
-```javascript
+```js
 define(() => _entry_return_);
 ```
 
@@ -1421,8 +1421,8 @@ define(() => _entry_return_);
 
 ##### type: 'amd-require'
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     library: {
@@ -1445,8 +1445,8 @@ module.exports = {
 
 이 경우 모듈 이름을 지정하려면 `library.name` 프로퍼티가 필요합니다.
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     library: {
@@ -1459,7 +1459,7 @@ module.exports = {
 
 출력은 다음과 같습니다.
 
-```javascript
+```js
 (function webpackUniversalModuleDefinition(root, factory) {
   if (typeof exports === "object" && typeof module === "object") {
     module.exports = factory();
@@ -1475,8 +1475,8 @@ module.exports = {
 
 `library.name`을 생략하면 [객체 할당 섹션](#expose-via-object-assignment)에 설명 된 대로 엔트리 포인트에서 반환된 모든 속성이 루트 객체에 직접 할당됩니다. 예제는 아래와 같습니다.
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     type: "umd",
@@ -1486,7 +1486,7 @@ module.exports = {
 
 출력은 다음과 같습니다.
 
-```javascript
+```js
 (function webpackUniversalModuleDefinition(root, factory) {
   if (typeof exports === "object" && typeof module === "object") {
     module.exports = factory();
@@ -1501,8 +1501,8 @@ module.exports = {
 
 target마다 다른 이름을 설정하기 위해 `library.name`에 대한 객체를 설정할 수 있습니다.
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     library: {
@@ -1523,8 +1523,8 @@ module.exports = {
 
 시스템 모듈은 webpack 번들이 실행될 때 브라우저에 전역 변수 `System`이 있어야합니다. `System.register`형식으로 컴파일하면 추가 설정없이 `System.import('/bundle.js')`를 수행하고 webpack 번들을 시스템 모듈 레지스트리에 로드할 수 있습니다.
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     library: {
@@ -1536,7 +1536,7 @@ module.exports = {
 
 출력은 다음과 같습니다.
 
-```javascript
+```js
 System.register([], (__WEBPACK_DYNAMIC_EXPORT__, __system_context__) => ({
   execute() {
     // ...
@@ -1546,7 +1546,7 @@ System.register([], (__WEBPACK_DYNAMIC_EXPORT__, __system_context__) => ({
 
 `output.library.type`을 `system`으로 설정하는 것 외에도 `output.library.name`을 설정에 추가하면 출력 번들은 `System.register`에 대한 인수로 라이브러리 이름을 갖게됩니다.
 
-```javascript
+```js
 System.register(
   "MyLibrary",
   [],
@@ -1563,7 +1563,7 @@ System.register(
 ##### type: 'jsonp'
 
 ```js
-module.exports = {
+export default {
   // …
   output: {
     library: {
@@ -1578,7 +1578,7 @@ module.exports = {
 
 {/* eslint-disable new-cap */}
 
-```javascript
+```js
 MyLibrary(_entry_return_);
 ```
 
@@ -1595,7 +1595,7 @@ T> `output.library.name` 및 `output.library.type`에 대한 자세한 내용은
 `undefined`가 기본값으로 설정되어 있으며 전체 네임스페이스 객체를 내보냅니다. 아래 예는 [`output.library.type: 'var'`](#type-var)를 사용할 때 이 설정의 효과를 보여줍니다.
 
 ```js
-module.exports = {
+export default {
   output: {
     library: {
       name: "MyLibrary",
@@ -1616,7 +1616,7 @@ const MyLibrary = _entry_return_.default;
 `output.library.export`에도 배열을 전달할 수 있으며, 라이브러리 이름에 할당될 모듈의 경로로 해석됩니다.
 
 ```js
-module.exports = {
+export default {
   output: {
     library: {
       name: "MyLibrary",
@@ -1642,7 +1642,7 @@ UMD 래퍼에 주석을 추가합니다.
 각 `umd` 타입에 대해 동일한 주석을 삽입하려면 `auxiliaryComment`를 문자열로 설정하세요.
 
 ```js
-module.exports = {
+export default {
   // …
   mode: "development",
   output: {
@@ -1681,7 +1681,7 @@ module.exports = {
 세부적인 제어를 위해 객체를 전달합니다.
 
 ```js
-module.exports = {
+export default {
   // …
   mode: "development",
   output: {
@@ -1705,8 +1705,8 @@ module.exports = {
 
 `output.library.type: "umd"`를 사용할 때 `output.library.umdNamedDefine`을 `true`로 설정하면 UMD 빌드의 AMD 모듈 이름이 지정됩니다. 그렇지 않으면 익명의 `define`이 사용됩니다.
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     library: {
@@ -1736,26 +1736,26 @@ W> 지원을 중단 할 수 있으므로 `libraryExport`와 동일하게 작동�
 
 `libraryExport: 'default'` - **엔트리 포인트의 default export** 가 라이브러리 target에 할당됩니다.
 
-```javascript
+```js
 // 엔트리에 `MyDefaultModule`의 default export가 있는 경우
 const MyDefaultModule = _entry_return_.default;
 ```
 
 `libraryExport: 'MyModule'` - **지정된 모듈** 이 라이브러리 target에 할당됩니다.
 
-```javascript
+```js
 const { MyModule } = _entry_return_;
 ```
 
 `libraryExport: ['MyModule', 'MySubModule']` - 배열은 라이브러리 target에 할당 될 **모듈 경로** 로 해석됩니다.
 
-```javascript
+```js
 const { MySubModule } = _entry_return_.MyModule;
 ```
 
 위에 지정된 `libraryExport` 설정을 사용하면 결과 라이브러리를 다음과 같이 활용할 수 있습니다.
 
-```javascript
+```js
 MyDefaultModule.doSomething();
 MyModule.doSomething();
 MySubModule.doSomething();
@@ -1781,7 +1781,7 @@ W> [`output.library.type: 'var'`](#type-var)를 사용하는 것이 좋습니다
 
 라이브러리가 로드되면 **엔트리 포인트의 반환 값이** 변수에 할당됩니다.
 
-```javascript
+```js
 const MyLibrary = _entry_return_;
 
 // In a separate script...
@@ -1794,7 +1794,7 @@ W> [`output.library.type: 'assign'`](#type-assign)을 사용하는 것이 좋습
 
 이렇게 하면 기존 값을 다시 할당할 수 있는 암시적인 전역이 생성됩니다. 주의해서 사용하세요.
 
-```javascript
+```js
 MyLibrary = _entry_return_;
 ```
 
@@ -1832,7 +1832,7 @@ W> [`output.library`](#outputlibrary)에 빈 문자열은 유효하지 않습니
 
 `output.library`에 빈 문자열이 할당된 경우 기본 동작은 엔트리 포인트에서 반환된 모든 프로퍼티가 다음 코드를 통해 `output.libraryTarget`에 정의된 대로 객체에 할당되는 것입니다.
 
-```javascript
+```js
 (function (e, a) {
   for (const i in a) {
     e[i] = a[i];
@@ -1848,7 +1848,7 @@ W> [`output.library.type: 'this'`](#type-this)를 사용하는 것이 좋습니�
 
 **엔트리 포인트의 반환 값은** `output.library`라는 프로퍼티 아래에 할당됩니다. `this`의 의미는 당신에게 달려있습니다.
 
-```javascript
+```js
 this.MyLibrary = _entry_return_;
 
 // In a separate script...
@@ -1862,7 +1862,7 @@ W> [`output.library.type: 'window'`](#type-window)를 사용하는 것이 좋습
 
 **엔트리 포인트의 반환 값은** `output.library` 값을 사용하여 `window` 객체에 할당됩니다.
 
-```javascript
+```js
 globalThis.MyLibrary = _entry_return_;
 
 globalThis.MyLibrary.doSomething();
@@ -1874,7 +1874,7 @@ W> [`output.library.type: 'global'`](#type-global)을 사용하는 것이 좋습
 
 **엔트리 포인트의 반환 값은** `output.library` 값을 사용하여 `global` 객체에 할당됩니다.
 
-```javascript
+```js
 globalThis.MyLibrary = _entry_return_;
 
 globalThis.MyLibrary.doSomething();
@@ -1886,7 +1886,7 @@ W> [`output.library.type: 'commonjs'`](#type-commonjs)를 사용하는 것이 �
 
 **엔트리 포인트의 반환 값은** `output.library` 값을 사용하여 `exports` 객체에 할당됩니다. 이름에서 알 수 있듯이 CommonJS 환경에서 사용됩니다.
 
-```javascript
+```js
 exports.MyLibrary = _entry_return_;
 
 require("MyLibrary").doSomething();
@@ -1910,8 +1910,8 @@ W> [`output.library.type: 'commonjs2'`](#type-commonjs2)를 사용하는 것이 
 
 **엔트리 포인트의 반환 값은** `module.exports`에 할당됩니다. 이름에서 알 수 있듯이 CommonJS 환경에서 사용됩니다.
 
-```javascript
-module.exports = _entry_return_;
+```js
+export default _entry_return_;
 
 require("MyLibrary").doSomething();
 ```
@@ -1930,8 +1930,8 @@ AMD 모듈은 일반적으로 RequireJS 또는 almond같은 호환 가능한 로
 
 아래의 설정을 참고하세요.
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     library: "MyLibrary",
@@ -1942,13 +1942,13 @@ module.exports = {
 
 생성된 출력은 `"MyLibrary"`라는 이름으로 정의됩니다. 예제는 아래와 같습니다.
 
-```javascript
+```js
 define("MyLibrary", [], () => _entry_return_);
 ```
 
 번들은 script 태그의 일부로 포함될 수 있으며 번들은 다음과 같이 호출될 수 있습니다.
 
-```javascript
+```js
 require(["MyLibrary"], (MyLibrary) => {
   // Do something with the library...
 });
@@ -1956,7 +1956,7 @@ require(["MyLibrary"], (MyLibrary) => {
 
 `output.library`가 정의되어 있지 않다면, 아래의 코드가 대신 생성됩니다.
 
-```javascript
+```js
 define([], () => _entry_return_);
 ```
 
@@ -1980,8 +1980,8 @@ W> [`output.library.type: 'umd'`](#type-umd)를 사용하는 것이 좋습니다
 
 이 경우 모듈 이름을 지정하려면 `library` 프로퍼티가 필요합니다.
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     library: "MyLibrary",
@@ -1992,7 +1992,7 @@ module.exports = {
 
 출력은 다음과 같습니다.
 
-```javascript
+```js
 (function webpackUniversalModuleDefinition(root, factory) {
   if (typeof exports === "object" && typeof module === "object") {
     module.exports = factory();
@@ -2011,8 +2011,8 @@ module.exports = {
 
 `library`를 생략하면 [객체 할당 섹션](#expose-via-object-assignment)에 설명 된 대로 엔트리 포인트에서 반환된 모든 속성이 루트 객체에 직접 할당됩니다. 예제는 아래와 같습니다.
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     libraryTarget: "umd",
@@ -2022,7 +2022,7 @@ module.exports = {
 
 출력은 다음과 같습니다.
 
-```javascript
+```js
 (function webpackUniversalModuleDefinition(root, factory) {
   if (typeof exports === "object" && typeof module === "object") {
     module.exports = factory();
@@ -2040,8 +2040,8 @@ module.exports = {
 
 webpack 3.1.0부터는 target마다 다른 이름을 설정하기 위해 `library`에 대한 객체를 설정할 수 있습니다.
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     library: {
@@ -2062,8 +2062,8 @@ W> [`output.library.type: 'system'`](#type-system)을 사용하는 것이 좋습
 
 시스템 모듈은 webpack 번들이 실행될 때 브라우저에 전역 변수 `System`이 있어야 합니다. `System.register`형식으로 컴파일하면 추가 설정없이 `System.import('/bundle.js')`를 수행하고 webpack 번들을 시스템 모듈 레지스트리에 로드할 수 있습니다.
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     libraryTarget: "system",
@@ -2073,7 +2073,7 @@ module.exports = {
 
 출력은 다음과 같습니다.
 
-```javascript
+```js
 System.register([], (_export) => ({
   setters: [],
   execute() {
@@ -2084,7 +2084,7 @@ System.register([], (_export) => ({
 
 `output.libraryTarget`을 `system`으로 설정하는 것 외에도 `output.library`를 설정에 추가하면 출력 번들은 `System.register`에 대한 인수를 라이브러리 이름으로 갖게됩니다.
 
-```javascript
+```js
 System.register("my-library", [], (_export) => ({
   setters: [],
   execute() {
@@ -2095,7 +2095,7 @@ System.register("my-library", [], (_export) => ({
 
 `__system_context__`를 통해 [SystemJS 컨텍스트](https://github.com/systemjs/systemjs/blob/master/docs/system-register.md#format-definition)에 접근할 수 있습니다.
 
-```javascript
+```js
 // 현재 SystemJS 모듈의 URL을 기록합니다.
 console.log(__system_context__.meta.url);
 
@@ -2115,7 +2115,7 @@ W> [`output.library.type: 'jsonp'`](#type-jsonp)를 사용하는 것이 좋습�
 
 {/* eslint-disable new-cap */}
 
-```javascript
+```js
 MyLibrary(_entry_return_);
 ```
 
@@ -2131,8 +2131,8 @@ MyLibrary(_entry_return_);
 
 다른 사용자가 사용할 라이브러리를 컴파일하기 위해 webpack을 사용하는 경우 `output.module`이 `true` 일 때 [`output.libraryTarget`](#librarytarget-module)을 `'module'`로 설정해야 합니다.
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   experiments: {
     outputModule: true,
@@ -2153,10 +2153,14 @@ W> `output.module`은 실험적 기능이며 [`experiments.outputModule`](/confi
 
 **webpack.config.js**
 
-```javascript
-const path = require("node:path");
+```js
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
   // ...
   output: {
     path: path.resolve(__dirname, "dist/assets"),
@@ -2178,8 +2182,8 @@ W> 이 주석이 제공하는 데이터는 개발 중에 생성된 코드를 읽
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     pathinfo: true,
@@ -2203,10 +2207,14 @@ T> 또한 생성된 번들에 트리 쉐이킹에 대한 정보를 추가합니�
 
 **webpack.config.js**
 
-```javascript
-const path = require("node:path");
+```js
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
   // ...
   output: {
     path: path.resolve(__dirname, "public/assets"),
@@ -2219,8 +2227,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     publicPath: "/assets/",
@@ -2249,8 +2257,8 @@ webpack-dev-server는 `publicPath`에서 힌트를 가져 와서 출력 파일�
 
 Examples (one of the below):
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     // 이 기능은 `import.meta.url`, `document.currentScript`, `<script />` 또는 `self.location`에서 공개 경로를 자동으로 결정합니다.
@@ -2259,8 +2267,8 @@ module.exports = {
 };
 ```
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     // CDN (항상 HTTPS)
@@ -2269,8 +2277,8 @@ module.exports = {
 };
 ```
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     // CDN (같은 프로토콜)
@@ -2279,8 +2287,8 @@ module.exports = {
 };
 ```
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     // 서버의 상대 경로
@@ -2289,8 +2297,8 @@ module.exports = {
 };
 ```
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     // HTML 페이지의 상대 경로
@@ -2299,8 +2307,8 @@ module.exports = {
 };
 ```
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     // HTML 페이지의 상대 경로
@@ -2309,8 +2317,8 @@ module.exports = {
 };
 ```
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     // HTML 페이지의 상대 경로 (같은 디렉터리)
@@ -2321,7 +2329,7 @@ module.exports = {
 
 컴파일 타임에 출력 파일의 `publicPath`를 알 수 없는 경우 공백으로 남겨두고 런타임에 [자유 변수](https://stackoverflow.com/questions/12934929/What-are-free-variables) `__webpack_public_path__`를 사용하여 엔트리 파일에서 동적으로 설정할 수 있습니다.
 
-```javascript
+```js
 __webpack_public_path__ = myRuntimePublicPath;
 
 // 애플리케션 엔트리의 나머지
@@ -2339,8 +2347,8 @@ T> `web`과 `web-worker`가 target인 경우 `output.publicPath`의 기본값은
 
 T> [`output.module`](#outputmodule)이 `true`로 설정되어 있다면 `output.scriptType`의 기본값은 `false`대신 `'module'`로 설정될 것 입니다.
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     scriptType: "module",
@@ -2364,8 +2372,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     sourcePrefix: "\t",
@@ -2384,8 +2392,8 @@ T> 일반적으로 `output.sourcePrefix`를 변경할 필요가 없습니다.
 - 타입: `boolean`
 - 가능한 버전: 5.25.0+
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     strictModuleErrorHandling: true,
@@ -2408,13 +2416,13 @@ W> 지원이 중단되었습니다.
 
 예를 들어 `module.js`를 고려해봅시다.
 
-```javascript
+```js
 throw new Error("error");
 ```
 
 `strictModuleExceptionHandling`을 `false`로 설정하면 첫 번째 `require`만 예외가 발생합니다.
 
-```javascript
+```js
 // strictModuleExceptionHandling = false 로 설정
 require("node:module"); // <- 예외 발생
 require("node:module"); // <- 예외 발생하지 않음
@@ -2422,7 +2430,7 @@ require("node:module"); // <- 예외 발생하지 않음
 
 대신 `strictModuleExceptionHandling`을 `true`로 설정하면 이 모듈의 모든 `require`에서 예외가 발생합니다.
 
-```javascript
+```js
 // strictModuleExceptionHandling = true 로 설정
 require("node:module"); // <- 예외 발생
 require("node:module"); // <- 예외 발생
@@ -2444,8 +2452,8 @@ require("node:module"); // <- 예외 발생
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     // ...
@@ -2464,8 +2472,8 @@ module.exports = {
 
 [`require-trusted-types-for 'script'`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security- Policy/require-trusted-types-for)가 적용되지 않았거나 정책 이름이 CSP 'trusted-types' 목록에 없거나 중복되어 'trustedTypes.createPolicy(...)'에 대한 호출이 실패하는 경우 즉시 실패 처리합니다.
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     // ...
@@ -2485,8 +2493,8 @@ W> [`output.library.umdNamedDefine`](#outputlibraryumdnameddefine)을 사용하�
 
 `libraryTarget: "umd"`를 사용할 때 `output.umdNamedDefine`을 `true`로 설정하면 UMD 빌드의 AMD 모듈 이름이 지정됩니다. 그렇지 않으면 익명의 `define`이 사용됩니다.
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     umdNamedDefine: true,
@@ -2506,8 +2514,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     uniqueName: "my-package-xyz",
@@ -2526,8 +2534,8 @@ WebAssembly 모듈을 로드하는 방법을 설정하는 옵션입니다. 기�
 - [`target`](/configuration/target/)이 `'web'`, `'webworker'`, `'electron-renderer'` 또는 `'node-webkit'`으로 설정된 경우 기본값은 `'fetch'`입니다.
 - [`target`](/configuration/target/)이 `'node'`, `'async-node'`, `'electron-main'` 또는 `'electron-preload'`로 설정된 경우 기본값은 `'async-node'`입니다.
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     wasmLoading: "fetch",
@@ -2541,8 +2549,8 @@ module.exports = {
 
 WebAssembly 모듈의 파일 이름을 지정합니다. `output.path` 디렉토리 내 상대 경로로 제공되어야 합니다.
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     webassemblyModuleFilename: "[id].[hash].wasm",
@@ -2560,8 +2568,8 @@ T> 이 옵션의 기본값은 [`target`](/configuration/target/) 설정에 따�
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     workerChunkLoading: false,
@@ -2577,8 +2585,8 @@ Worker에 대한 공용 경로를 설정합니다. 기본값은 [output.publicPa
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     workerPublicPath: "/workerPublicPath2/",
@@ -2594,8 +2602,8 @@ Worker에서 WebAssembly 모듈을 로드하는 방법을 설정하는 옵션이
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   output: {
     workerWasmLoading: "fetch",

@@ -50,7 +50,7 @@ function webpackLoader(content, map, meta) {
 
 **sync-loader.js**
 
-```javascript
+```js
 export default function syncLoader(content, map, meta) {
   return someSyncOperation(content);
 }
@@ -62,7 +62,7 @@ export default function syncLoader(content, map, meta) {
 
 {/* eslint-disable no-useless-return */}
 
-```javascript
+```js
 export default function syncLoaderWithMultipleResults(content, map, meta) {
   this.callback(null, someSyncOperation(content), map, meta);
   return; // callback() 함수를 호출하면 항상 undefined를 반환합니다.
@@ -75,7 +75,7 @@ export default function syncLoaderWithMultipleResults(content, map, meta) {
 
 **async-loader.js**
 
-```javascript
+```js
 export default async function asyncLoader(content, map, meta) {
   const result = await someAsyncOperation(content);
   return result;
@@ -86,7 +86,7 @@ export default async function asyncLoader(content, map, meta) {
 
 **async-loader-with-callback.js**
 
-```javascript
+```js
 export default function asyncLoaderWithCallback(content, map, meta) {
   const callback = this.async();
   someAsyncOperation(content, (err, result) => {
@@ -98,7 +98,7 @@ export default function asyncLoaderWithCallback(content, map, meta) {
 
 **async-loader-with-multiple-results.js**
 
-```javascript
+```js
 export default function asyncLoaderWithMultipleResults(content, map, meta) {
   const callback = this.async();
   someAsyncOperation(content, (err, result, sourceMaps, meta) => {
@@ -116,7 +116,7 @@ T> 로더는 원래 Node.js([enhanced-require](https://github.com/webpack/enhanc
 
 **raw-loader.js**
 
-```javascript
+```js
 export default function rawLoader(content) {
   assert(content instanceof Buffer);
   return someSyncOperation(content);
@@ -134,7 +134,7 @@ T> 로더는 요청에 인라인으로 추가되고 인라인 접두사를 통�
 
 다음과 같은 [`use`](/configuration/module/#ruleuse) 설정을 살펴보겠습니다.
 
-```javascript
+```js
 export default {
   // ...
   module: {
@@ -164,7 +164,7 @@ export default {
 
 첫째, `pitch` 메소드에 전달된 `data`는 실행 단계에서도 `this.data` 아래에 노출되며 실행 주기의 초기부터 정보를 캡처하고 공유하는 데 유용할 수 있습니다.
 
-```javascript
+```js
 export default function myLoaderName(content) {
   return someSyncOperation(content, this.data.value);
 }
@@ -176,7 +176,7 @@ export function pitch(remainingRequest, precedingRequest, data) {
 
 둘째, 로더가 `pitch` 방식으로 결과를 전달하면 프로세스가 돌아가 나머지 로더를 건너뜁니다. 아래는 위의 예시에서 `b-loader`의 `pitch` 메소드가 무언가를 반환했을 때의 경우를 살펴봅니다.
 
-```javascript
+```js
 export default function myLoaderName(content) {
   return someSyncOperation(content);
 }
@@ -206,13 +206,13 @@ export function pitch(remainingRequest, precedingRequest, data) {
 
 `/abc/file.js`의 경우
 
-```javascript
+```js
 import "./loader1?xyz!loader2!./resource?rrr";
 ```
 
 ### this.addContextDependency
 
-```typescript
+```ts
 addContextDependency(directory: string)
 ```
 
@@ -220,7 +220,7 @@ addContextDependency(directory: string)
 
 ### this.addDependency
 
-```typescript
+```ts
 addDependency(file: string)
 dependency(file: string) // 단축
 ```
@@ -229,7 +229,7 @@ dependency(file: string) // 단축
 
 ### this.addMissingDependency
 
-```typescript
+```ts
 addMissingDependency(file: string)
 ```
 
@@ -243,7 +243,7 @@ addMissingDependency(file: string)
 
 아래는 캐시 가능 여부를 플래그로 설정하는 함수입니다.
 
-```typescript
+```ts
 cacheable(flag = true: boolean)
 ```
 
@@ -275,7 +275,7 @@ T> 로더 간에 공통 AST(추상 구문 트리)를 공유하려는 경우 빌�
 
 ### this.clearDependencies
 
-```typescript
+```ts
 clearDependencies();
 ```
 
@@ -293,7 +293,7 @@ clearDependencies();
 
 ### this.emitError
 
-```typescript
+```ts
 emitError(error: Error)
 ```
 
@@ -310,7 +310,7 @@ T> 오류를 직접 던지는 것과 달리 현재 모듈의 컴파일 프로세
 
 ### this.emitFile
 
-```typescript
+```ts
 emitFile(name: string, content: Buffer|string, sourceMap: {...})
 ```
 
@@ -318,7 +318,7 @@ emitFile(name: string, content: Buffer|string, sourceMap: {...})
 
 ### this.emitWarning
 
-```typescript
+```ts
 emitWarning(warning: Error)
 ```
 
@@ -378,7 +378,7 @@ T> webpack 5부터 `this.getOptions`는 로더 컨텍스트에서 사용할 수 
 
 ### this.getResolve
 
-```typescript
+```ts
 getResolve(options: ResolveOptions): resolve
 
 resolve(context: string, request: string, callback: function(err, result: string))
@@ -397,7 +397,7 @@ Webpack [`resolve` 옵션](/configuration/resolve/#resolve) 아래의 모든 옵
 
 로더용 HMR에 대한 정보입니다.
 
-```javascript
+```js
 export default function (source) {
   console.log(this.hot); // --hot 플래그 또는 webpack 설정을 통해 HMR이 활성화된 경우 true입니다.
   return source;
@@ -469,12 +469,12 @@ export default {
 **a-pitching-loader.js**
 
 ```js
-module.exports.pitch = async function pitch(remaining) {
+export async function pitch(remaining) {
   const result = await this.importModule(
     `${this.resourcePath}.webpack[javascript/auto]!=!${remaining}`,
   );
   return result.default || result;
-};
+}
 ```
 
 **src/stylesheet.js**
@@ -515,7 +515,7 @@ import stylesheet from "./stylesheet.js";
 
 ### this.loadModule
 
-```typescript
+```ts
 loadModule(request: string, callback: function(err, source, sourceMap, module))
 ```
 
@@ -533,7 +533,7 @@ loaders = [{request: string, path: string, query: string, module: function}]
 
 [예제](#example-for-the-loader-context)의 내용입니다.
 
-```javascript
+```js
 [
   {
     request: "/abc/loader1.js?xyz",
@@ -569,7 +569,7 @@ loaders = [{request: string, path: string, query: string, module: function}]
 
 ### this.resolve
 
-```typescript
+```ts
 resolve(context: string, request: string, callback: function(err, result: string))
 ```
 
@@ -704,7 +704,7 @@ Boolean 플래그입니다. 디버그 모드일 때 설정됩니다.
 
 **./src/index.js**
 
-```javascript
+```js
 import "./loader!./lib";
 ```
 
@@ -712,7 +712,7 @@ import "./loader!./lib";
 
 **./src/loader.js**
 
-```javascript
+```js
 export default function (source) {
   throw new Error("This is a Fatal Error!");
 }
@@ -722,7 +722,7 @@ export default function (source) {
 
 **./src/loader.js**
 
-```javascript
+```js
 export default function (source) {
   const callback = this.async();
   // ...
@@ -782,7 +782,7 @@ T> 상대 `matchResource`는 포함하는 모듈의 현재 컨텍스트를 기�
 
 **file.js**
 
-```javascript
+```js
 /* STYLE: body { background: red; } */
 console.log("yep");
 ```
@@ -791,7 +791,7 @@ console.log("yep");
 
 **file.js** (로더에 의해 변환되었습니다)
 
-```javascript
+```js
 import "./file.js.css!=!extract-style-loader/getStyles!./file.js";
 
 console.log("yep");
@@ -803,7 +803,7 @@ console.log("yep");
 
 **extract-style-loader/index.js**
 
-```javascript
+```js
 import getStylesLoader from "./getStyles";
 
 export default function (source) {
@@ -822,7 +822,7 @@ export default function (source) {
 
 **extract-style-loader/getStyles.js**
 
-```javascript
+```js
 export default function (source) {
   const match = source.match(STYLES_REGEXP);
   return match[0];

@@ -36,8 +36,8 @@ W> 이 페이지는 아직 작업 중입니다. 설명이나 예제가 불완전
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   amd: {
     jQuery: true,
@@ -60,8 +60,8 @@ jQuery 1.7.0 ~ 1.9.1 같이 AMD로 작성된 특정 인기 모듈은 로더가 �
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   bail: true,
 };
@@ -87,7 +87,7 @@ W> [`watch`](/configuration/watch) 모드에서 `bail` 옵션을 사용하지 �
 **webpack.config.js**
 
 ```js
-module.exports = [
+export default [
   {
     name: "client",
     target: "web",
@@ -113,8 +113,8 @@ module.exports = [
 
 `ignoreWarnings`은 위의 항목 일부 또는 전체를 갖는 `배열`이어야 합니다.
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   ignoreWarnings: [
     {
@@ -140,8 +140,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   loader: {
     answer: 42,
@@ -153,12 +153,12 @@ module.exports = {
 
 **custom-loader.js**
 
-```javascript
-module.exports = function (source) {
+```js
+export default function (source) {
   // ...
   console.log(this.answer); // `42`를 기록합니다.
   return source;
-};
+}
 ```
 
 T> webpack은 `loader`에 정의된 모든 속성을 로더 컨텍스트에 복사하므로 로더 컨텍스트의 속성을 재정의 할 수 있습니다.
@@ -169,13 +169,32 @@ T> webpack은 `loader`에 정의된 모든 속성을 로더 컨텍스트에 복�
 
 설정의 이름입니다. 여러 설정을 로드할 때 사용됩니다.
 
+This is especially useful when exporting an array of configurations. webpack uses `name` to identify each config in logs and stats output.
+
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   name: "admin-app",
 };
+```
+
+For multi-configuration builds:
+
+```js
+export default [
+  {
+    name: "client",
+    target: "web",
+    // ...
+  },
+  {
+    name: "server",
+    target: "node",
+    // ...
+  },
+];
 ```
 
 ## parallelism
@@ -184,19 +203,62 @@ module.exports = {
 
 병렬 처리되는 모듈의 수를 제한하세요. 성능을 미세하게 조정하거나 보다 안정적인 프로파일링 결과를 얻는 경우 사용할 수 있습니다.
 
+Lower values reduce concurrent work and memory pressure, but may increase total build time. Higher values can improve throughput on powerful machines.
+
+**webpack.config.js**
+
+```js
+export default {
+  // ...
+  parallelism: 50,
+};
+```
+
+Use cases:
+
+- Reduce `parallelism` when builds hit memory limits (for example in constrained CI runners).
+- Increase it when you have enough CPU and memory and want to maximize build throughput.
+
 ## profile
 
 `boolean`
 
 통계 및 힌트를 포함하여 애플리케이션의 "프로필"을 캡처 한 다음 [분석](https://webpack.github.io/analyse/) 도구를 사용하여 분석 할 수 있습니다. 또한 모듈 타이밍에 대한 요약도 기록합니다.
 
-T> 정확한 타이밍을 얻으려면 `profile: true`를 `parallelism: 1`과 결합하세요. 이렇게 하면 빌드 속도도 느려집니다.
+**webpack.config.js**
+
+```js
+export default {
+  // ...
+  profile: true,
+};
+```
+
+T> 정확한 빌드 시간을 얻으려면 `profile: true`와 `parallelism: 1`을 함께 사용하세요. 단, 이렇게 하면 빌드 속도가 느려질 수 있습니다.
 
 ## recordsInputPath
 
 `string`
 
 마지막 레코드 세트를 읽을 파일을 지정하세요. 레코드 파일의 이름을 바꾸는 데 사용할 수 있습니다. 아래 예제를 참고하세요.
+
+When this option is set, webpack reads previously generated records from this path and uses them as input for stable module/chunk id tracking.
+
+**webpack.config.js**
+
+```js
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
+  // ...
+  recordsInputPath: path.join(__dirname, "records.json"),
+  recordsOutputPath: path.join(__dirname, "records-next.json"),
+};
+```
 
 ## recordsOutputPath
 
@@ -206,10 +268,14 @@ T> 정확한 타이밍을 얻으려면 `profile: true`를 `parallelism: 1`과 �
 
 **webpack.config.js**
 
-```javascript
-const path = require("node:path");
+```js
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
   // ...
   recordsInputPath: path.join(__dirname, "records.json"),
   recordsOutputPath: path.join(__dirname, "newRecords.json"),
@@ -224,10 +290,14 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-const path = require("node:path");
+```js
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
   // ...
   recordsPath: path.join(__dirname, "records.json"),
 };
@@ -247,10 +317,14 @@ W> `recordsPath`를 설정하면 기본적으로 `recordsInputPath`와 `recordsO
 
 **webpack.config.js**
 
-```javascript
-const path = require("node:path");
+```js
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
   // ...
   snapshot: {
     managedPaths: [path.resolve(__dirname, "../node_modules")],
@@ -316,7 +390,7 @@ module.exports = {
 `managedPaths`의 일반적인 사용 사례는 `node_modules`에서 일부 폴더를 제외하는 것입니다. 예를 들어, `node_modules/@azure/msal-browser` 폴더의 파일이 변경될 것으로 예상된다는 것을 webpack에 알리고자 합니다. 이는 아래와 같은 정규식으로 수행할 수 있습니다.
 
 ```js
-module.exports = {
+export default {
   snapshot: {
     managedPaths: [
       /^(.+?[\\/]node_modules[\\/](?!(@azure[\\/]msal-browser))(@.+?[\\/])?.+?)[\\/]/,

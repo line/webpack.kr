@@ -1,5 +1,10 @@
+@use "sass:color";
+@use "sass:map";
+
 $colors: (
   malibu: #8dd6f9,
+  dusty-blue: #9ab3c0,
+  light-gray: #36393c,
   denim: #175d96,
   fiord: #465e69,
   elephant: #2b3a42,
@@ -32,4 +37,4 @@ $font-stack-heading:
 $font-stack-code:
   "Source Code Pro", Consolas, "Liberation Mono", Menlo, Courier, monospace;
 
-$text-color-highlight: lighten(map-get($colors, denim), 5%);
+$text-color-highlight: color.adjust(map.get($colors, denim), $lightness: 5%);

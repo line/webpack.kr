@@ -33,11 +33,10 @@ new webpack.ProvidePlugin({
 
 또한 전체 경로도 지정할 수 있습니다.
 
-```javascript
+```js
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-// For compatibility with older Node.js versions
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -55,7 +54,7 @@ ES2015 모듈의 기본 export를 가져오려면 모듈의 기본 프로퍼티�
 
 `jquery`를 자동으로 로드하려면 해당 노드 모듈에 노출되는 두 변수를 모두 가리킬 수 있습니다.
 
-```javascript
+```js
 new webpack.ProvidePlugin({
   $: "jquery",
   jQuery: "jquery",
@@ -64,7 +63,7 @@ new webpack.ProvidePlugin({
 
 소스 코드 중 어느 것이라도 동일합니다.
 
-```javascript
+```js
 // 모듈에서
 $("#item"); // <= 동작합니다.
 jQuery("#item"); // <= 이 또한 동작합니다.
@@ -75,7 +74,7 @@ jQuery("#item"); // <= 이 또한 동작합니다.
 
 Angular는 jQuery가 존재하는지 찾기 위해 `window.jQuery`를 찾습니다. 소스 코드를 참고하세요.(https://github.com/angular/angular.js/blob/v1.5.9/src/Angular.js#L1821-L1823).
 
-```javascript
+```js
 new webpack.ProvidePlugin({
   "window.jQuery": "jquery",
 });
@@ -83,7 +82,7 @@ new webpack.ProvidePlugin({
 
 ## Usage: Lodash Map
 
-```javascript
+```js
 new webpack.ProvidePlugin({
   _map: ["lodash", "map"],
 });
@@ -91,7 +90,7 @@ new webpack.ProvidePlugin({
 
 ### Usage: Vue.js
 
-```javascript
+```js
 new webpack.ProvidePlugin({
   Vue: ["vue/dist/vue.esm.js", "default"],
 });

@@ -46,8 +46,8 @@ translators:
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   externals: {
     jquery: "jQuery",
@@ -57,7 +57,7 @@ module.exports = {
 
 이렇게 하면 종속 모듈이 변경되지 않습니다. 즉, 아래 표시된 코드가 계속 작동합니다.
 
-```javascript
+```js
 import $ from "jquery";
 
 $(".my-element").animate(/* ... */);
@@ -73,8 +73,8 @@ $(".my-element").animate(/* ... */);
 
 1개의 외부 속성만 정의하는 경우에도 축약된 구문을 사용할 수 있습니다.
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   externals: "jquery",
 };
@@ -82,8 +82,8 @@ module.exports = {
 
 이는 아래와 동일합니다.
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   externals: {
     jquery: "jquery",
@@ -95,8 +95,8 @@ module.exports = {
 
 예를들어 외부 라이브러리가 [CommonJS 모듈](#externalstypecommonjs)인 경우, 다음과 같이 지정할 수 있습니다.
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   externals: {
     jquery: "commonjs jquery",
@@ -106,8 +106,8 @@ module.exports = {
 
 ### [string]
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   externals: {
     subtract: ["./math", "subtract"],
@@ -121,8 +121,8 @@ module.exports = {
 
 문자열 구문(#string)과 유사하게, 배열의 첫 번째 항목에 `${externalsType} ${libraryName}` 구문을 사용하여 외부 라이브러리 유형을 지정할 수 있습니다. 예를 들면 다음과 같습니다.
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   externals: {
     subtract: ["commonjs ./math", "subtract"],
@@ -134,8 +134,8 @@ module.exports = {
 
 W> `{ root, amd, commonjs, ... }`가 있는 객체는 [`libraryTarget: 'umd'`](/configuration/output/#outputlibrarytarget)에만 허용됩니다. 다른 라이브러리 타켓에는 허용되지 않습니다.
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   // 또는
   externals: {
@@ -145,7 +145,7 @@ module.exports = {
 ```
 
 ```js
-module.exports = {
+export default {
   // ...
   // or
   externals: {
@@ -159,7 +159,7 @@ module.exports = {
 ```
 
 ```js
-module.exports = {
+export default {
   // ...
   // 또는
   externals: {
@@ -198,8 +198,8 @@ webpack에서 외부화하려는 동작을 제어하기 위해 자체 함수를 
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   externals: [
     function ({ context, request }, callback) {
@@ -219,8 +219,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   externals: [
     function (ctx, callback) {
       // external은 `@scope/library`에 있는 `commonjs2` 모듈입니다.
@@ -232,8 +232,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   externals: [
     function (ctx, callback) {
       // external은 `nameOfGlobal`이라는 전역 변수입니다.
@@ -245,8 +245,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   externals: [
     function (ctx, callback) {
       // external은 `@scope/library` 모듈에서 명명된 export입니다.
@@ -258,8 +258,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   externals: [
     function (ctx, callback) {
       // external은 UMD 모듈입니다.
@@ -280,8 +280,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   externals: /^(jquery|\$)$/i,
 };
@@ -295,8 +295,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   externals: [
     {
@@ -336,8 +336,8 @@ W> [기본 유형](/configuration/externals/#externalstype)은 유형 없이 `ex
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   externals: {
     byLayer: {
       layer: {
@@ -380,8 +380,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   externalsType: "promise",
 };
@@ -393,14 +393,14 @@ module.exports = {
 
 #### Example
 
-```javascript
+```js
 import fs from "fs-extra";
 ```
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   externalsType: "commonjs",
   externals: {
@@ -411,8 +411,8 @@ module.exports = {
 
 이는 다음과 같이 생성됩니다.
 
-```javascript
-const fs = require("fs-extra");
+```js
+import fs from "fs-extra";
 ```
 
 출력 번들에 `require()`가 있다는 점을 유의하세요.
@@ -423,7 +423,7 @@ const fs = require("fs-extra");
 
 #### Example
 
-```javascript
+```js
 import jq from "jquery";
 
 jq(".my-element").animate(/* ... */);
@@ -431,8 +431,8 @@ jq(".my-element").animate(/* ... */);
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   externalsType: "global",
   externals: {
@@ -446,7 +446,7 @@ module.exports = {
 
 이는 다음과 같이 생성됩니다.
 
-```javascript
+```js
 const jq = globalThis.$;
 
 jq(".my-element").animate(/* ... */);
@@ -460,7 +460,7 @@ jq(".my-element").animate(/* ... */);
 
 #### Example
 
-```javascript
+```js
 import jq from "jquery";
 
 jq(".my-element").animate(/* ... */);
@@ -469,7 +469,7 @@ jq(".my-element").animate(/* ... */);
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   experiments: {
     outputModule: true,
   },
@@ -482,7 +482,7 @@ module.exports = {
 
 이는 다음과 같이 생성됩니다.
 
-```javascript
+```js
 import * as __WEBPACK_EXTERNAL_MODULE_jquery__ from "jquery";
 
 const jq = __WEBPACK_EXTERNAL_MODULE_jquery__.default;
@@ -499,7 +499,7 @@ jq(".my-element").animate(/* ... */);
 
 #### Example
 
-```javascript
+```js
 async function foo() {
   const jq = await import("jQuery");
   jq(".my-element").animate(/* ... */);
@@ -509,7 +509,7 @@ async function foo() {
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   externalsType: "import",
   externals: {
     jquery: "jquery",
@@ -519,7 +519,7 @@ module.exports = {
 
 아래와 같이 생성합니다.
 
-```javascript
+```js
 const __webpack_modules__ = {
   jQuery: (module) => {
     module.exports = import("jQuery");
@@ -548,7 +548,7 @@ async function foo() {
 
 #### Example
 
-```javascript
+```js
 import { attempt } from "lodash";
 
 async function foo() {
@@ -560,7 +560,7 @@ async function foo() {
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   externalsType: "module-import",
   externals: {
     jquery: "jquery",
@@ -571,7 +571,7 @@ module.exports = {
 
 아래와 같이 생성됩니다.
 
-```javascript
+```js
 import * as __WEBPACK_EXTERNAL_MODULE_lodash__ from "lodash";
 
 const lodash = __WEBPACK_EXTERNAL_MODULE_jquery__;
@@ -597,7 +597,7 @@ async function foo() {
 모듈이 `import` 또는 `import()`를 통해 임포트되지 않으면 webpack은 `"module"` 외부 유형을 폴백으로 사용합니다. 다른 종류의 외부를 폴백으로 사용하려면 `externals` 옵션에서 함수로 지정할 수 있습니다. 예를 들어 보겠습니다.
 
 ```js
-module.exports = {
+export default {
   externalsType: "module-import",
   externals: [
     function ({ request, dependencyType }, callback) {
@@ -638,7 +638,7 @@ module.export = {
 
 이는 다음과 같이 생성됩니다.
 
-```javascript
+```js
 import { createRequire } from "node:module";
 
 const jq = createRequire(import.meta.url)("jquery");
@@ -663,7 +663,7 @@ util.inherits(ChunkStream, Stream);
 ```js
 const { builtinModules } = require("node:module");
 
-module.exports = {
+export default {
   experiments: { outputModule: true },
   externalsType: "node-commonjs",
   externals: ({ request }, callback) => {
@@ -703,7 +703,7 @@ const __webpack_modules__ = {
 
 #### Example
 
-```javascript
+```js
 import jq from "jquery";
 
 jq(".my-element").animate(/* ... */);
@@ -711,8 +711,8 @@ jq(".my-element").animate(/* ... */);
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   externalsType: "promise",
   externals: {
@@ -723,7 +723,7 @@ module.exports = {
 
 이는 다음과 같이 생성됩니다.
 
-```javascript
+```js
 const jq = await $;
 
 jq(".my-element").animate(/* ... */);
@@ -735,7 +735,7 @@ jq(".my-element").animate(/* ... */);
 
 #### Example
 
-```javascript
+```js
 import jq from "jquery";
 
 jq(".my-element").animate(/* ... */);
@@ -743,8 +743,8 @@ jq(".my-element").animate(/* ... */);
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   externalsType: "self",
   externals: {
@@ -755,7 +755,7 @@ module.exports = {
 
 이는 다음과 같이 생성됩니다.
 
-```javascript
+```js
 const jq = globalThis.$;
 
 jq(".my-element").animate(/* ... */);
@@ -767,8 +767,8 @@ jq(".my-element").animate(/* ... */);
 
 #### Syntax
 
-```javascript
-module.exports = {
+```js
+export default {
   externalsType: "script",
   externals: {
     packageName: [
@@ -783,8 +783,8 @@ module.exports = {
 
 프로퍼티를 지정하지 않을 경우 바로 가기 구문을 사용할 수도 있습니다.
 
-```javascript
-module.exports = {
+```js
+export default {
   externalsType: "script",
   externals: {
     packageName: "global@http://example.com/script.js", // 여기엔 프로퍼티가 없습니다
@@ -801,7 +801,7 @@ CDN에서 `lodash`를 로드해 보겠습니다.
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   externalsType: "script",
   externals: {
@@ -821,7 +821,7 @@ console.log(_.head([1, 2, 3]));
 위의 예제 코드를 위해 다음과 같이 프로퍼티를 지정해야 합니다.
 
 ```js
-module.exports = {
+export default {
   // ...
   externalsType: "script",
   externals: {
@@ -857,7 +857,7 @@ T> 모듈 간 종속성이 필요한 경우 `externalsType: "import"` / `externa
 
 #### Example
 
-```javascript
+```js
 import jq from "jquery";
 
 jq(".my-element").animate(/* ... */);
@@ -865,8 +865,8 @@ jq(".my-element").animate(/* ... */);
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   externalsType: "this",
   externals: {
@@ -877,7 +877,7 @@ module.exports = {
 
 이는 다음과 같이 생성됩니다.
 
-```javascript
+```js
 const jq = this.$;
 
 jq(".my-element").animate(/* ... */);
@@ -889,7 +889,7 @@ jq(".my-element").animate(/* ... */);
 
 #### Example
 
-```javascript
+```js
 import jq from "jquery";
 
 jq(".my-element").animate(/* ... */);
@@ -897,8 +897,8 @@ jq(".my-element").animate(/* ... */);
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   externalsType: "var",
   externals: {
@@ -909,7 +909,7 @@ module.exports = {
 
 이는 다음과 같이 생성됩니다.
 
-```javascript
+```js
 const jq = $;
 
 jq(".my-element").animate(/* ... */);
@@ -921,7 +921,7 @@ jq(".my-element").animate(/* ... */);
 
 #### Example
 
-```javascript
+```js
 import jq from "jquery";
 
 jq(".my-element").animate(/* ... */);
@@ -929,8 +929,8 @@ jq(".my-element").animate(/* ... */);
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   externalsType: "window",
   externals: {
@@ -941,7 +941,7 @@ module.exports = {
 
 이는 다음과 같이 생성됩니다.
 
-```javascript
+```js
 const jq = globalThis.$;
 
 jq(".my-element").animate(/* ... */);
@@ -973,7 +973,7 @@ node.js 관련 프리셋으로 ES 모듈을 출력하려는 경우, webpack은 �
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   externalsPresets: {
     node: true,

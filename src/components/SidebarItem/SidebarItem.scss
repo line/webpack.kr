@@ -1,5 +1,5 @@
-@import "mixins";
-@import "functions";
+@use "../../styles/partials/mixins" as *;
+@use "../../styles/partials/functions" as *;
 
 .sidebar-item {
   position: relative;

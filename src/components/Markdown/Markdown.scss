@@ -1,7 +1,8 @@
 @use "sass:color";
-@import "vars";
-@import "functions";
-@import "prism-theme";
+@use "../../styles/partials/vars" as *;
+@use "../../styles/partials/functions" as *;
+@use "../../styles/partials/mixins" as *;
+@use "prism-theme";
 
 $bannerHeight: 56px;
 $navigationHeight: 56px;
@@ -124,6 +125,7 @@ $topHeightMobileWithBanner: $bannerHeight + $topHeightMobile;
   ul,
   ol {
     padding-left: 30px;
+    list-style: revert;
 
     &:first-child {
       margin-top: 0;
@@ -191,22 +193,25 @@ $topHeightMobileWithBanner: $bannerHeight + $topHeightMobile;
       > .preview__prefix,
       > .todo__prefix {
         text-transform: capitalize;
-        font-weight: 700;
-        color: #000;
-        font-size: getFontSize(1);
+        font-weight: 600; // slightly bold but not heading-level
+        color: #1a1a1a;
+        font-size: getFontSize(0);
+        display: block;
+        margin-bottom: 0.25em;
+        color: #1a1a1a;
       }
     }
 
     &.tip {
       background-color: #eaf8ff;
       color: #4e7182;
-      border-left-color: darken(#eaf8ff, 40%);
+      border-left-color: color.adjust(#eaf8ff, $lightness: -40%);
     }
 
     &.warning {
       background-color: #fdf5d8;
       color: #716b53;
-      border-left-color: darken(#fdf5d8, 40%);
+      border-left-color: color.adjust(#fdf5d8, $lightness: -40%);
     }
 
     &.preview {
@@ -218,7 +223,7 @@ $topHeightMobileWithBanner: $bannerHeight + $topHeightMobile;
     &.todo {
       background-color: #fbddcd;
       color: #907a6e;
-      border-left-color: darken(#fbddcd, 40%);
+      border-left-color: color.adjust(#fbddcd, $lightness: -40%);
 
       .tip-content::before {
         content: "[TODO]: ";
@@ -270,7 +275,7 @@ $topHeightMobileWithBanner: $bannerHeight + $topHeightMobile;
     font-weight: bold;
     text-align: left;
     padding: 6px 12px;
-    background: darken(#f4f6f6, 1%);
+    background: color.adjust(#f4f6f6, $lightness: -1%);
     border-right: 1px solid #cccccc;
 
     &:last-child {
@@ -349,15 +354,19 @@ $topHeightMobileWithBanner: $bannerHeight + $topHeightMobile;
     margin: 0 2px;
     padding: 2px 6px;
     white-space: normal;
-    background-color: transparentize(getColor(fiord), 0.95);
+    background-color: color.adjust(getColor(fiord), $alpha: -0.95);
     border-radius: 3px;
-    text-shadow: 0 1px 0 transparentize(getColor(white), 0.4);
+    text-shadow: 0 1px 0 color.adjust(getColor(white), $alpha: -0.4);
   }
 
   a code {
     color: $text-color-highlight;
   }
-
+  a {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    text-decoration-thickness: 1px;
+  }
   pre {
     background-color: #2d3748;
     color: #e2e8f0;
@@ -375,8 +384,12 @@ $topHeightMobileWithBanner: $bannerHeight + $topHeightMobile;
       white-space: pre;
       border: none;
       background: transparent;
-      text-shadow: 0 1px 0 transparentize(darken(getColor(elephant), 10%), 0.5);
-      color: desaturate(getColor(malibu), 40%);
+      text-shadow: 0 1px 0
+        color.adjust(
+          color.adjust(getColor(elephant), $lightness: -10%),
+          $alpha: -0.5
+        );
+      color: color.adjust(getColor(malibu), $saturation: -40%);
       font-family: monospace;
 
       .code-details-summary-span {
@@ -389,7 +402,7 @@ $topHeightMobileWithBanner: $bannerHeight + $topHeightMobile;
           position: relative;
           left: -2px;
           text-align: center;
-          color: lighten(getColor(denim), 10%);
+          color: color.adjust(getColor(denim), $lightness: 10%);
           font-size: 16px;
         }
       }
@@ -402,7 +415,7 @@ $topHeightMobileWithBanner: $bannerHeight + $topHeightMobile;
         position: relative;
 
         &:hover {
-          color: lighten(getColor(denim), 15%);
+          color: color.adjust(getColor(denim), $lightness: 15%);
         }
       }
     }

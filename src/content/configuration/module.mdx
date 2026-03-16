@@ -37,7 +37,7 @@ translators:
 자세한 내용은 [소스 코드](https://github.com/webpack/webpack/blob/dc4d97429b2013f7770ba785721b65cf82c2ef04/lib/config/defaults.js#L608)를 참고하세요.
 
 ```js
-module.exports = {
+export default {
   module: {
     defaultRules: [
       "...", // "..."를 사용하여 기본적으로 webpack에 의해 적용되는 규칙을 참조할 수 있습니다.
@@ -51,7 +51,7 @@ Webpack 5.87.0부터 `0`, `""`, `false`, `null` 및 `undefined`를 포함한 fal
 {/* eslint-disable */}
 
 ```js
-module.exports = {
+export default {
   module: {
     defaultRules: [
       false &&
@@ -72,7 +72,7 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   module: {
     generator: {
       asset: {
@@ -215,7 +215,7 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   module: {
     parser: {
       asset: {
@@ -311,7 +311,7 @@ module.exports = {
 CSS 파서에 대한 옵션을 설정합니다.
 
 ```js
-module.exports = {
+export default {
   module: {
     parser: {
       css: {
@@ -332,7 +332,7 @@ module.exports = {
 - Example:
 
   ```js
-  module.exports = {
+  export default {
     module: {
       parser: {
         css: {
@@ -371,7 +371,7 @@ T> 특정 가져오기를 필터링하려면 Webpack의 기본 제공 [IgnorePlu
 - Example:
 
   ```js
-  module.exports = {
+  export default {
     module: {
       parser: {
         css: {
@@ -404,7 +404,7 @@ T> 특정 가져오기를 필터링하려면 Webpack의 내장 [IgnorePlugin](/p
 - Example:
 
   ```js
-  module.exports = {
+  export default {
     module: {
       parser: {
         css: {
@@ -460,7 +460,7 @@ CSS 모듈에서 `@keyframes` 애니메이션 이름 변경 기능을 활성화 
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   module: {
     parser: {
       css: {
@@ -483,7 +483,7 @@ CSS 모듈에서 `@container` 이름 변경을 활성화 또는 비활성화합�
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   module: {
     parser: {
       css: {
@@ -506,7 +506,7 @@ CSS 모듈에서 사용자 지정 식별자의 이름 변경을 활성화 또는
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   module: {
     parser: {
       css: {
@@ -529,7 +529,7 @@ CSS 사용자 지정 속성(예: `--my-variable`)과 같은 하이픈으로 구�
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   module: {
     parser: {
       css: {
@@ -552,7 +552,7 @@ CSS 모듈에서 `@function` 이름 변경을 활성화 또는 비활성화합�
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   module: {
     parser: {
       css: {
@@ -575,7 +575,7 @@ CSS 모듈에서 그리드 식별자 이름 변경 기능을 활성화 또는 �
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   module: {
     parser: {
       css: {
@@ -595,7 +595,7 @@ CSS 콘텐츠를 내보내는 방법을 설정합니다.
 - Example:
 
   ```js
-  module.exports = {
+  export default {
     module: {
       parser: {
         css: {
@@ -618,7 +618,7 @@ CSS 콘텐츠를 내보내는 방법을 설정합니다.
 JavaScript 파서를 위한 옵션을 설정할 수 있습니다.
 
 ```js
-module.exports = {
+export default {
   module: {
     parser: {
       javascript: {
@@ -641,7 +641,7 @@ CommonJS를 위해 [magic comments](/api/module-methods/#magic-comments) 지원�
 - 예제:
 
   ```js
-  module.exports = {
+  export default {
     module: {
       parser: {
         javascript: {
@@ -667,7 +667,7 @@ const x = require(/* webpackIgnore: true */ "x");
 - 예제:
 
   ```js
-  module.exports = {
+  export default {
     module: {
       parser: {
         javascript: {
@@ -687,7 +687,7 @@ const x = require(/* webpackIgnore: true */ "x");
 - 예제:
 
   ```js
-  module.exports = {
+  export default {
     module: {
       parser: {
         javascript: {
@@ -707,7 +707,7 @@ const x = require(/* webpackIgnore: true */ "x");
 - 예제:
 
   ```js
-  module.exports = {
+  export default {
     module: {
       parser: {
         javascript: {
@@ -727,7 +727,7 @@ const x = require(/* webpackIgnore: true */ "x");
 - 예제:
 
   ```js
-  module.exports = {
+  export default {
     module: {
       parser: {
         javascript: {
@@ -747,7 +747,7 @@ const x = require(/* webpackIgnore: true */ "x");
 - 예제:
 
   ```js
-  module.exports = {
+  export default {
     module: {
       parser: {
         javascript: {
@@ -767,7 +767,7 @@ const x = require(/* webpackIgnore: true */ "x");
 - 예제:
 
   ```js
-  module.exports = {
+  export default {
     module: {
       parser: {
         javascript: {
@@ -780,14 +780,24 @@ const x = require(/* webpackIgnore: true */ "x");
 
 #### module.parser.javascript.importMeta
 
-`import.meta` 평가를 활성화 또는 비활성화합니다.
+번들링 중에 webpack이 `import.meta` 표현식을 평가하는 방식을 제어합니다.
 
-- 타입: `boolean = true`
+- 타입: `boolean | 'preserve-unknown'`
+- 기본값: `true`
 - 가능한 버전: 5.68.0+
-- 예제:
+
+허용되는 값:
+
+- `true` - webpack은 알려진 `import.meta` 속성(예: `import.meta.url`, `import.meta.webpackHot`)을 평가합니다. 알려지지 않은 속성의 동작은 다른 구성(예: `output.module`)에 따라 달라집니다.
+- `false` - `import.meta` 평가를 모두 비활성화합니다. webpack은 표현식을 그대로 유지합니다.
+- `'preserve-unknown'` <Badge text="5.105.0+" /> - 알려진 속성은 평소와 같이 평가하지만, 비표준 속성은 제거하는 대신 출력에 그대로 유지합니다.
+
+  W> `output.module`이 `true`인 경우, 이 옵션을 사용하지 않아도 알 수 없는 `import.meta` 속성이 자동으로 보존됩니다.
+
+- 예시 - `import.meta` 평가를 완전히 비활성화합니다.
 
   ```js
-  module.exports = {
+  export default {
     module: {
       parser: {
         javascript: {
@@ -796,6 +806,30 @@ const x = require(/* webpackIgnore: true */ "x");
       },
     },
   };
+  ```
+
+- Example - preserve custom `import.meta` properties without enabling `output.module`:
+
+  ```js
+  // webpack.config.js
+  export default {
+    module: {
+      parser: {
+        javascript: {
+          importMeta: "preserve-unknown",
+        },
+      },
+    },
+  };
+  ```
+
+  With this configuration, custom properties on `import.meta` set by the build tool or runtime are preserved in the generated output:
+
+  ```js
+  // import.meta.customProp is set externally (e.g. by a build tool or runtime)
+  if (import.meta.customProp) {
+    console.log(import.meta.customProp);
+  }
   ```
 
 #### module.parser.javascript.importMetaContext
@@ -807,7 +841,7 @@ const x = require(/* webpackIgnore: true */ "x");
 - 예제:
 
   ```js
-  module.exports = {
+  export default {
     module: {
       parser: {
         javascript: {
@@ -827,7 +861,7 @@ const x = require(/* webpackIgnore: true */ "x");
 - Example:
 
   ```js
-  module.exports = {
+  export default {
     module: {
       parser: {
         javascript: {
@@ -847,7 +881,7 @@ const x = require(/* webpackIgnore: true */ "x");
 - 예제:
 
   ```js
-  module.exports = {
+  export default {
     module: {
       parser: {
         javascript: {
@@ -866,7 +900,7 @@ const x = require(/* webpackIgnore: true */ "x");
 - 예제:
 
   ```js
-  module.exports = {
+  export default {
     module: {
       parser: {
         javascript: {
@@ -906,7 +940,7 @@ Webpack의 AST 분석이 올바르게 작동하도록 `ast`, `comments`, `semico
 - 예시:
 
   ```js
-  module.exports = {
+  export default {
     module: {
       parser: {
         javascript: {
@@ -939,7 +973,7 @@ Webpack의 AST 분석이 올바르게 작동하도록 `ast`, `comments`, `semico
 JSON 파서에 대한 옵션을 설정합니다.
 
 ```js
-module.exports = {
+export default {
   module: {
     parser: {
       json: {
@@ -959,7 +993,7 @@ module.exports = {
 - Example:
 
 ```js
-module.exports = {
+export default {
   module: {
     parser: {
       json: {
@@ -989,7 +1023,7 @@ module.exports = {
 - Example:
 
 ```js
-module.exports = {
+export default {
   module: {
     parser: {
       json: {
@@ -1012,9 +1046,9 @@ module.exports = {
 - Example:
 
 ```js
-const json5 = require("json5");
+import json5 from "json5";
 
-module.exports = {
+export default {
   module: {
     parser: {
       json: {
@@ -1038,8 +1072,8 @@ T> Windows에서는 `\`, Mac/Linux에서는 `/`와 일치시키려면 정규식�
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   module: {
     noParse: /jquery|lodash|src[\\/]vendor[\\/]somelib/,
@@ -1047,8 +1081,8 @@ module.exports = {
 };
 ```
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   module: {
     noParse: (content) =>
@@ -1068,8 +1102,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   module: {
     unsafeCache: false,
@@ -1142,15 +1176,15 @@ Rule에는 두 가지 출력 값이 있습니다.
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   module: {
     rules: [
       {
         // "assert { type: 'json' }" 어설션을 사용하여 가져오기를 처리합니다.
         assert: { type: "json" },
-        loader: require.resolve("./loader-assert.js"),
+        loader: import.meta.resolve("./loader-assert.js"),
       },
     ],
   },
@@ -1161,7 +1195,7 @@ module.exports = {
 
 {/* eslint-skip */}
 
-```javascript
+```js
 import one from "./pkg-1.json" assert { type: "json" };
 ```
 
@@ -1173,8 +1207,8 @@ import one from "./pkg-1.json" assert { type: "json" };
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   name: "compiler",
   module: {
@@ -1215,17 +1249,17 @@ module.exports = {
 
 모든 일반, 사후 및 사전 로더는 요청에 `!!`를 접두사로 추가하여 생략(재정의) 할 수 있습니다.
 
-```javascript
+```js
 // 일반 로더 비활성화
 import { a } from "!./file1.js";
 ```
 
-```javascript
+```js
 // 사전, 일반 로더 비활성화
 import { b } from "-!./file2.js";
 ```
 
-```javascript
+```js
 // 모든 로더 비활성화
 import { c } from "!!./file3.js";
 ```
@@ -1246,7 +1280,7 @@ import { c } from "!!./file3.js";
 
 **index.js**
 
-```javascript
+```js
 import A from "./a.js";
 ```
 
@@ -1259,7 +1293,7 @@ issuer의 계층별로 필터링하고 일치시킬 수 있습니다.
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   module: {
     rules: [
@@ -1280,7 +1314,7 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   module: {
     rules: [
@@ -1302,7 +1336,7 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   module: {
     rules: [
@@ -1332,7 +1366,7 @@ W> 이 옵션은 `Rule.use`로 **대체되었습니다**.
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   module: {
     rules: [
@@ -1353,8 +1387,8 @@ Rule이 일치할 때 첫 번째 일치하는 Rule만 사용되는 [`Rules`](#ru
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   module: {
     rules: [
@@ -1398,7 +1432,13 @@ W> `Rule.query`는 `Rule.options`과 `UseEntry.options`으로 대체되었습니
 **예제** (기본 플러그인의 파서 옵션):
 
 ```js
-module.exports = {
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
   // ...
   module: {
     rules: [
@@ -1441,7 +1481,7 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   module: {
     rules: [
@@ -1463,7 +1503,7 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   module: {
     rules: [
@@ -1495,7 +1535,7 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   module: {
     rules: [
@@ -1516,7 +1556,7 @@ module.exports = {
 함수로 사용하면 모든 모듈에 대해 실행되며 데이터 URI 문자열을 반환해야 합니다.
 
 ```js
-module.exports = {
+export default {
   // ...
   module: {
     rules: [
@@ -1547,7 +1587,7 @@ module.exports = {
 - 예제:
 
   ```js
-  module.exports = {
+  export default {
     // …
     module: {
       rules: [
@@ -1570,7 +1610,7 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   output: {
     assetModuleFilename: "images/[hash][ext][query]",
@@ -1601,7 +1641,7 @@ module.exports = {
 - 가능한 버전: <Badge text='5.28.0+' />
 
 ```js
-module.exports = {
+export default {
   // ...
   output: {
     publicPath: "static/",
@@ -1628,7 +1668,7 @@ module.exports = {
 - 가능한 버전: <Badge text='5.67.0+' />
 
 ```js
-module.exports = {
+export default {
   // ...
   output: {
     publicPath: "static/",
@@ -1658,8 +1698,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   module: {
     rules: [
@@ -1681,10 +1721,10 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-const toml = require("toml");
+```js
+import toml from "toml";
 
-module.exports = {
+export default {
   // ...
   module: {
     rules: [
@@ -1716,7 +1756,7 @@ T> 자세한 정보는 [`중첩된 rules`](#nested-rules)를 참고하세요.
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   module: {
     rules: [
       {
@@ -1748,8 +1788,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   module: {
     rules: [
@@ -1773,7 +1813,7 @@ module.exports = {
 `css/auto` 모듈 유형의 사용 사례는 [여기](https://github.com/webpack/webpack/issues/16572)를 참고하세요. `css/auto`를 사용하려면 [`experiments.css`](/configuration/experiments/#experimentscss)를 활성화해야 합니다.
 
 ```js
-module.exports = {
+export default {
   target: "web",
   mode: "development",
   experiments: {
@@ -1807,8 +1847,8 @@ Webpack 5.87.0부터 `undefined` `null`과 같은 falsy 값을 사용하여 조�
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   module: {
     rules: [
@@ -1850,8 +1890,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   module: {
     rules: [
@@ -1892,7 +1932,7 @@ W> `Rule.resolve`는 webpack 4.36.1 이후로 사용 가능합니다.
 
 **./src/index.js**
 
-```javascript
+```js
 import footer from "footer";
 
 console.log(footer);
@@ -1900,20 +1940,20 @@ console.log(footer);
 
 **./src/footer/default.js**
 
-```javascript
+```js
 export default "default footer";
 ```
 
 **./src/footer/overridden.js**
 
-```javascript
+```js
 export default "overridden footer";
 ```
 
 **webpack.js.org**
 
-```javascript
-module.exports = {
+```js
+export default {
   resolve: {
     alias: {
       footer: "./footer/default.js",
@@ -1926,8 +1966,8 @@ module.exports = {
 
 **webpack.js.org**
 
-```javascript
-module.exports = {
+```js
+export default {
   resolve: {
     alias: {
       footer: "./footer/default.js",
@@ -1958,7 +1998,7 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   module: {
     rules: [
@@ -1983,15 +2023,15 @@ W> `resolve.fullySpecified`는 [mainFields](/configuration/resolve/#resolvemainf
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   module: {
     rules: [
       {
         // "with { type: 'json' }" 조건으로 가져오기를 처리합니다.
         with: { type: "json" },
-        loader: require.resolve("./loader-assert.js"),
+        loader: import.meta.resolve("./loader-assert.js"),
       },
     ],
   },
@@ -2000,7 +2040,7 @@ module.exports = {
 
 **index.js**
 
-```javascript
+```js
 import one from "./pkg-1.json" with { type: "json" };
 ```
 
@@ -2024,10 +2064,14 @@ Condition은 아래 항목중의 하나가 됩니다.
 
 **Example:**
 
-```javascript
-const path = require("node:path");
+```js
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
   // ...
   module: {
     rules: [
@@ -2064,8 +2108,8 @@ webpack은 옵션을 포함한 모든 로더와 리소스에서 고유한 모듈
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   module: {
     rules: [
@@ -2093,8 +2137,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   module: {
     rules: [
@@ -2131,8 +2175,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   module: {
     exprContextCritical: true,

@@ -37,7 +37,7 @@ related:
 
 webpack 및 CLI를 아직 설치하지 않은 경우 [설치 가이드](/guides/installation)를 읽어보세요.
 
-W> `webpack-cli` v6.0.0+에는 node >= v18.12.0, `webpack >= v5.82.0`, `webpack-dev-server >= v5.0.0`이 필요합니다.
+W> `webpack-cli` v7.0.0 이상 버전을 사용하려면 Node >= v20.9.0, `webpack >= v5.101.0`, `webpack-dev-server >= v5.0.0`이 필요합니다.
 
 W> `npx`를 사용하여 webpack을 실행하려면 `webpack-cli`가 설치되어 있는지 확인하세요.
 
@@ -45,15 +45,15 @@ W> `npx`를 사용하여 webpack을 실행하려면 `webpack-cli`가 설치되�
 
 webpack-cli는 webpack을 더 쉽게 사용할 수 있도록 다양한 명령을 제공합니다. 기본적으로 webpack은 다음과 같은 명령어를 제공합니다.
 
-| 명령어                      | 사용법                                    | 설명                                                                       |
-| --------------------------- | ----------------------------------------- | -------------------------------------------------------------------------- |
-| [`build`](#build)           | `build\|bundle\|b [entries...] [options]` | webpack을 실행합니다. (기본 명령어, 생략 가능).                            |
-| [`configtest`](#configtest) | `configtest\|t [config-path]`             | webpack 설정을 검증합니다.                                                 |
-| [`help`](#help)             | `help\|h [command] [option]`              | 명령어 및 옵션에 대한 도움말을 표시합니다.                                 |
-| [`info`](#info)             | `info\|i [options]`                       | 시스템 정보를 출력합니다.                                                  |
-| [`serve`](#serve)           | `serve\|server\|s [options]`              | `webpack-dev-server`를 실행합니다.                                         |
-| [`version`](#version)       | `version\|v [commands...]`                | `webpack`, `webpack-cli` 및 `webpack-dev-server`의 버전 넘버를 출력합니다. |
-| [`watch`](#watch)           | `watch\|w [entries...] [options]`         | webpack을 실행하고 파일 변경을 감지합니다.                                 |
+| Command                     | Usage                                     | Description                                                                                        |
+| --------------------------- | ----------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| [`build`](#build)           | `build\|bundle\|b [entries...] [options]` | webpack을 실행합니다. (기본 명령어, 생략 가능).                                                      |
+| [`configtest`](#configtest) | `configtest\|t [config-path]`             | webpack 설정을 검증합니다.                                                                        |
+| [`help`](#help)             | `help\|h [command] [option]`              | 명령어 및 옵션에 대한 도움말을 표시합니다.                                                             |
+| [`info`](#info)             | `info\|i [options]`                       | 시스템 정보를 출력합니다.                                                             |
+| [`serve`](#serve)           | `serve\|server\|s [options]`              | `webpack-dev-server`를 실행합니다.                                                                      |
+| [`version`](#version)       | `version\|v [commands...]`                | 'webpack', 'webpack-cli', 'webpack-dev-server' 및 기타 패키지의 버전 번호를 출력합니다. |
+| [`watch`](#watch)           | `watch\|w [entries...] [options]`         | webpack을 실행하고 파일 변경을 감지합니다.                                                           |
 
 ### Build
 
@@ -407,9 +407,9 @@ CLI는 프로젝트 경로에서 일부 기본 설정을 찾습니다. 아래는
 
 오름차순으로 우선 조회합니다.
 
-> 예 - 설정 파일 조회 순서는 .webpack/webpackfile > .webpack/webpack.config.js > webpack.config.js 입니다.
+> 예시 - 설정 파일 조회 순서는 webpack.config.js > .webpack/webpack.config.js > .webpack/webpackfile.js입니다.
 
-```txt
+```text
 'webpack.config',
 '.webpack/webpack.config',
 '.webpack/webpackfile',
@@ -447,7 +447,7 @@ npx webpack help --mode
 
 ### version
 
-**설치된 패키지 및 하위 패키지의 버전 표시**
+**'webpack', 'webpack-cli', 'webpack-dev-server' 및 기타 패키지의 버전 번호를 출력합니다.**
 
 사용 중인 `webpack` 및 `webpack-cli`의 버전을 검사하려면 다음 명령을 실행하세요.
 
@@ -469,21 +469,6 @@ webpack-cli 4.6.0
 `webpack-dev-server`가 설치된 경우 해당 버전도 출력합니다.
 
 ```bash
-webpack 5.31.2
-webpack-cli 4.6.0
-webpack-dev-server 3.11.2
-```
-
-`@webpack-cli/info`와 같은 `webpack-cli`의 하위 패키지 버전을 검사하려면 다음과 같은 명령을 실행합니다.
-
-```bash
-npx webpack info --version
-```
-
-그러면 다음 결과가 출력됩니다.
-
-```bash
-@webpack-cli/info 1.2.3
 webpack 5.31.2
 webpack-cli 4.6.0
 webpack-dev-server 3.11.2
@@ -619,37 +604,27 @@ T> 사용법에 대한 자세한 내용은 [환경 변수](/guides/environment-v
 
 번들 코드 내에서는 이러한 내장 환경 변수에 접근할 수 없는 점을 알아두세요.
 
-```javascript
+```js
 export default (env, argv) => ({
   mode: env.WEBPACK_SERVE ? "development" : "production",
 });
 ```
 
-### node-env
-
-`--node-env` 옵션을 사용하여 `process.env.NODE_ENV`를 설정할 수 있으며, 이는 사용자 코드와 webpack 설정 모두에서 사용할 수 있습니다.
-
-```bash
-npx webpack --node-env production   # process.env.NODE_ENV = 'production'
-```
-
-W> 이 옵션은 `--config-node-env` 옵션으로 인해 webpack-cli v6에서 더 이상 사용되지 않습니다.
-
 ### config-node-env
 
 <Badge text="webpack-cli v6.0.0+" />
 
-`process.env.NODE_ENV`를 설정하기 위한 [`--node-env`](/api/cli/#node-env)의 별칭입니다.
+설정에 따라 `process.env.NODE_ENV`를 설정하세요.
 
 ```bash
-npx webpack --config-node-env production   # process.env.NODE_ENV = 'production'
+npx webpack --config-node-env production   # process.env.NODE_ENV = 'production' in `webpack.config.js`
 ```
 
 설정에서 `mode` 옵션이 지정되지 않은 경우 `--config-node-env` 옵션을 사용하여 `mode`를 설정할 수 있습니다. 예를 들어, `--config-node-env production`을 사용하면 `process.env.NODE_ENV`와 `mode`가 모두 `'production'`으로 설정됩니다.
 
 설정이 함수를 내보내는 경우, 함수가 반환된 후 `--config-node-env` 값이 mode에 할당됩니다. 즉, `mode`는 함수 인수(`env` 및 `argv`)에서 사용할 수 없습니다. 그러나 `--config-node-env`의 값은 함수 내에서 `argv.nodeEnv`로 접근 가능하며 그에 따라 사용할 수 있습니다.
 
-```javascript
+```js
 export default (env, argv) => {
   console.log(argv.defineProcessEnvNodeEnv); // 'production' --config-node-env production이 사용되는 경우
   return {
@@ -758,13 +733,13 @@ WEBPACK_PACKAGE=webpack-5 npx webpack
 
 TypeScript에서 기본 ESM을 사용하는 경우 이와 같은 오류가 발생할 수 있습니다 (예: `package.json`의 `type: "module"`).
 
-`webpack-cli`는 `CommonJS` 및 `ESM` 형식의 설정을 모두 지원하며, 처음에는 `require()`를 사용하여 설정을 로드하려고 시도합니다. 일단 실패하면 `'ERR_REQUIRE_ESM'` (이 경우의 특수한 코드) `import()`를 사용하여 설정 로드를 시도합니다.
-그러나, `import()` 메소드는 [loader 훅](https://nodejs.org/api/esm.html#esm_experimental_loaders)이 활성화되어 있지 않으면 `ts-node`에서 작동하지 않습니다. ([`TypeStrong/ts-node#1007`](https://github.com/TypeStrong/ts-node/issues/1007)에 설명되어 있습니다).
+`webpack-cli`는 `CommonJS`와 `ESM` 형식의 설정을 모두 지원하며, 처음에는 `import()`를 사용하여 설정을 로드하려고 시도하고, 실패하면 `require()`를 사용하여 설정을 로드하려고 시도합니다.
+하지만 `import()` 메서드는 `ts-node`에서 [로더 훅](https://nodejs.org/api/esm.html#esm_experimental_loaders)을 활성화하지 않으면 작동하지 않습니다(자세한 내용은 [`TypeStrong/ts-node#1007`](https://github.com/TypeStrong/ts-node/issues/1007) 참고).
 
 위의 오류를 수정하려면 다음 명령을 사용하세요.
 
 ```bash
-NODE_OPTIONS="--loader ts-node/esm" npx webpack --entry ./src/index.js --mode production
+NODE_OPTIONS="--import=data:text/javascript,import { register } from 'node:module'; import { pathToFileURL } from 'node:url'; register('ts-node/esm', pathToFileURL('./'));" npx webpack --entry ./src/index.js --mode production
 ```
 
 자세한 내용은 [`TypeScript`로 webpack 설정 작성](/configuration/configuration-languages/#typescript)에 대한 문서를 참고하세요.

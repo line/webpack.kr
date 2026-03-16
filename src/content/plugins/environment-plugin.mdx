@@ -16,13 +16,13 @@ translators:
 
 `EnvironmentPlugin`은 키로 구성된 배열 혹은 키에 기본값이 매핑된 객체를 받습니다.
 
-```javascript
+```js
 new webpack.EnvironmentPlugin(["NODE_ENV", "DEBUG"]);
 ```
 
 이는 다음과 같은 `DefinePlugin` 적용과 동일합니다.
 
-```javascript
+```js
 new webpack.DefinePlugin({
   "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV),
   "process.env.DEBUG": JSON.stringify(process.env.DEBUG),
@@ -35,7 +35,7 @@ W> `EnvironmentPlugin`은 지정된 변수에 대해 `process.env`를 확인합�
 
 또는, `EnvironmentPlugin`은 키에 기본값을 매핑한 객체를 지원합니다. 키가 `process.env`에 정의되지 않은 경우에는 기본값을 사용합니다.
 
-```javascript
+```js
 new webpack.EnvironmentPlugin({
   NODE_ENV: "development", // process.env.NODE_ENV가 정의되지 않은 경우 'development'를 사용하세요.
   DEBUG: false,
@@ -52,7 +52,7 @@ T> 기본값이 `null`인 경우와 `undefined`인 경우는 다르게 동작합
 
 지금까지 구성해온 `EnvironmentPlugin` 설정을 테스트 파일 `entry.js`에 적용했을 때 어떻게 동작하는지 알아봅시다.
 
-```javascript
+```js
 if (process.env.NODE_ENV === "production") {
   console.log("Welcome to production");
 }
@@ -65,7 +65,7 @@ if (process.env.DEBUG) {
 
 {/* eslint-disable no-self-compare, no-constant-condition */}
 
-```javascript
+```js
 if ("production" === "production") {
   // <-- NODE_ENV의 'production'이 사용됩니다.
   console.log("Welcome to production");
@@ -80,7 +80,7 @@ if (false) {
 
 {/* eslint-disable no-self-compare, no-constant-condition */}
 
-```javascript
+```js
 if ("development" === "production") {
   // <-- 기본값이 사용됩니다.
   console.log("Welcome to production");
@@ -95,11 +95,11 @@ if ("false") {
 
 다음과 같은 `EnvironmentPlugin` 설정은 저장소의 마지막 커밋에 따른 `process.env.GIT_VERSION` (예시 "v5.4.0-2-g25139f57f")과 `process.env.GIT_AUTHOR_DATE` (예시 "2020-11-04T12:25:16+01:00")를 제공합니다.
 
-```javascript
-const child_process = require("node:child_process");
+```js
+import childProcess from "node:child_process";
 
 function git(command) {
-  return child_process.execSync(`git ${command}`, { encoding: "utf8" }).trim();
+  return childProcess.execSync(`git ${command}`, { encoding: "utf8" }).trim();
 }
 
 new webpack.EnvironmentPlugin({
@@ -119,7 +119,7 @@ DB_PASS=foobar
 S3_API=mysecretkey
 ```
 
-```javascript
+```js
 new Dotenv({
   path: "./.env", // env 파일 경로 (기본값)
   safe: true, // .env.example 로드 (기본값은 dotenv-safe를 사용하지 않는 "false")

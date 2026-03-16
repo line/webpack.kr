@@ -225,17 +225,35 @@ export default () => {
 
 <Badge text="5.105.0+" />
 
-`import.defer()`가 이제 컨텍스트 모듈(동적 가져오기 경로)을 지원합니다. 이는 동적 표현식을 통해 로드된 모듈의 평가를 지연해야 할 때 유용합니다.
+`import.defer()`는 컨텍스트 모듈에서도 작동하며, 임포트 경로는 동적 표현식일 수 있습니다. Webpack은 일치하는 모든 모듈을 모듈 그래프에 포함시키지만, 선택된 모듈의 평가는 네임스페이스 객체의 속성에 처음 접근할 때까지 지연됩니다.
+
+다음 예제는 동적 컨텍스트 경로를 사용하여 로케일 모듈의 평가를 지연시키는 방법을 보여줍니다.
+
+**src/locales/en.js**
+
+```js
+export const greeting = "Hello";
+```
+
+**src/locales/fr.js**
+
+```js
+export const greeting = "Bonjour";
+```
 
 **src/index.js**
 
-```js
-import _ from "lodash";
+```text
+const language = navigator.language.split("-")[0]; // "en", "fr", etc.
+const locale = import.defer("./locales/" + language + ".js");
 
-// const modules = import.defer("./locale/" + language + ".js");
+document.getElementById("btn").addEventListener("click", () => {
+  // The locale module is evaluated here, on first property access.
+  document.getElementById("output").textContent = locale.greeting;
+});
 ```
 
-이 예제에서는 locale 모듈이 로드되고 파싱되지만, 네임스페이스 객체에 접근할 때까지 평가가 지연됩니다. 이를 통해 여러 로케일 파일을 즉시 실행하지 않고 로드할 수 있습니다.
+Webpack은 일치하는 모든 로케일 모듈을 실행 준비 상태로 만들지만, 선택된 모듈은 `locale.greeting`에 처음 접근할 때만 평가됩니다. 이를 통해 여러 로케일 파일을 즉시 실행하지 않고도 로드할 수 있습니다.
 
 ## Frameworks
 

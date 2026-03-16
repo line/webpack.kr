@@ -38,6 +38,17 @@ W> webpack 5를 실행하기 위한 최소 Node.js 버전은 10.13.0(LTS) 입니
 
 <StackBlitzPreview example="getting-started?terminal=" />
 
+## Quick Start (Minimal Working Example)
+
+If you just want to get a working webpack project up and running quickly, the easiest way is to scaffold one using `create-new-webpack-app`.
+
+```bash
+npx create-new-webpack-app webpack-demo
+cd webpack-demo
+```
+
+T> This command generates a ready-to-use webpack project with a sensible default configuration. Continue below if you'd like to understand how to set up webpack manually step by step.
+
 ## Basic Setup
 
 먼저 디렉터리를 생성합니다. 그 다음 npm을 초기화하고, [webpack을 로컬로 설치](/guides/installation/#local-installation)한 후 [`webpack-cli`](https://github.com/webpack/webpack-cli)(커맨드-라인에서 webpack을 실행할 때 사용되는 도구)를 설치합니다.
@@ -72,7 +83,7 @@ npm install webpack webpack-cli --save-dev
 
 **src/index.js**
 
-```javascript
+```js
 function component() {
   const element = document.createElement("div");
 
@@ -254,7 +265,7 @@ Webpack configuration files can be written using either CommonJS or ECMAScript m
 
 **webpack.config.js**
 
-```javascript
+```js
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 

@@ -441,7 +441,7 @@ module.exports = {
 
 webpack 1에서는 [`require.ensure()`](/api/module-methods/#requireensure) 를 응용 프로그램의 청크를 지연 로드하는 방법으로 사용할 수 있습니다.
 
-```javascript
+```js
 require.ensure([], (require) => {
   const foo = require("./module");
 });
@@ -480,7 +480,7 @@ function route(path, query) {
 
 AMD 및 CommonJS의 경우 세 가지 모듈 유형을 모두 자유롭게 혼합할 수 있습니다(동일한 파일 내에서도). 이 경우 Webpack은 babel 및 node-eps와 유사하게 동작합니다.
 
-```javascript
+```js
 // CommonJS consuming ES2015 Module
 const book = require("./book");
 
@@ -489,14 +489,14 @@ book.readPage();
 book.default === "This is a book";
 ```
 
-```javascript
+```js
 // ES2015 Module consuming CommonJS
 import fs from "node:fs"; // module.exports map to default
 
 typeof fs.readFileSync === "function";
 ```
 
-```javascript
+```js
 // ES2015 Module consuming CommonJS
 import { readFileSync } from "node:fs"; // named exports are read from returned object+
 

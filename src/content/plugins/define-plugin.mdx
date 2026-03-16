@@ -14,7 +14,7 @@ translators:
 
 `DefinePlugin`을 사용하면 **컴파일** 타임에 구성할 수 있는 전역 상수를 만들 수 있습니다. 이는 개발 빌드와 프로덕션 빌드 간에 서로 다른 동작을 하고 싶을 때 유용합니다. 개발 빌드에서 로깅을 수행하지만, 프로덕션 빌드에서는 수행하지 않는 경우 전역 상수를 사용하여 로깅을 수행할지 여부를 결정할 수 있습니다. 이것이 `DefinePlugin`가 유용한 이유입니다. 이 플러그인을 설정하고 개발 및 프로덕션 빌드 환경을 잊어버리세요.
 
-```javascript
+```js
 new webpack.DefinePlugin({
   // Definitions...
 });
@@ -31,7 +31,7 @@ new webpack.DefinePlugin({
 
 값은 코드에 인라인 되어 중복 조건을 제거하기 위한 최소화 단계를 거치게 됩니다.
 
-```javascript
+```js
 new webpack.DefinePlugin({
   PRODUCTION: JSON.stringify(true),
   VERSION: JSON.stringify("5fa3b9"),
@@ -42,7 +42,7 @@ new webpack.DefinePlugin({
 });
 ```
 
-```javascript
+```js
 console.log(`Running App version ${VERSION}`);
 if (!BROWSER_SUPPORTS_HTML5) require("html5shiv");
 ```
@@ -51,7 +51,7 @@ W> `process`의 값을 정의할 때 `process: { env: { NODE_ENV: JSON.stringify
 
 T> 플러그인은 텍스트에 직접 수정 작업을 진행하기 때문에 주어진 값은 반드시 문자열 자체에 **실제 따옴표**를 포함해야 합니다. 일반적으로 이것은 `'"production"'`과 같은 대체 따옴표를 사용하거나 `JSON.stringify('production')`를 사용하여 수행됩니다.
 
-```javascript
+```js
 if (!PRODUCTION) {
   console.log("Debug info");
 }
@@ -65,7 +65,7 @@ if (PRODUCTION) {
 
 {/* eslint-disable no-constant-condition */}
 
-```javascript
+```js
 if (!true) {
   console.log("Debug info");
 }
@@ -76,7 +76,7 @@ if (true) {
 
 그 후 최소화 단계를 거친 결과는 다음과 같습니다.
 
-```javascript
+```js
 console.log("Production log");
 ```
 
@@ -84,7 +84,7 @@ console.log("Production log");
 
 [기능 플래그](https://en.wikipedia.org/wiki/Feature_toggle)를 사용하여 프로덕션/개발 빌드 기능을 활성화/비활성화 할 수 있습니다.
 
-```javascript
+```js
 new webpack.DefinePlugin({
   NICE_FEATURE: JSON.stringify(true),
   EXPERIMENTAL_FEATURE: JSON.stringify(false),
@@ -95,7 +95,7 @@ new webpack.DefinePlugin({
 
 프로덕션/개발 빌드에서 서로 다른 서비스 URL을 사용할 수 있습니다.
 
-```javascript
+```js
 new webpack.DefinePlugin({
   SERVICE_URL: JSON.stringify("https://dev.example.com"),
 });
@@ -117,7 +117,13 @@ new webpack.DefinePlugin({
   - `buildDependencies?: string[]` 함수가 의존하는 빌드 의존성 목록입니다.
   - `version?: string | () => string` 함수의 버전입니다.
 
-```javascript
+```js
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const fileDep = path.resolve(__dirname, "sample.txt");
 
 new webpack.DefinePlugin({

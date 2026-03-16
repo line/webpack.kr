@@ -20,8 +20,8 @@ related:
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   dotenv: true,
 };
@@ -29,8 +29,8 @@ module.exports = {
 
 `dotenv`를 `true`로 설정하면 기본 옵션으로 플러그인이 활성화됩니다. 사용자 지정 구성의 경우 옵션 객체를 전달하세요.
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   dotenv: {
     prefix: "WEBPACK_",
@@ -52,8 +52,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   dotenv: {
     prefix: "APP_", // APP_* 변수만 노출합니다.
@@ -63,8 +63,8 @@ module.exports = {
 
 **Multiple prefixes:**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   dotenv: {
     prefix: ["APP_", "CONFIG_"], // APP_* 및 CONFIG_* 변수를 모두 노출합니다.
@@ -88,8 +88,8 @@ T> 보안상의 이유로 빈 문자열 `''`는 접두사로 허용되지 않습
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   dotenv: {
     dir: "./config", // ./config 디렉토리에서 로드
@@ -99,8 +99,8 @@ module.exports = {
 
 **Disable loading:**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   dotenv: {
     dir: false, // process.env 변수만 사용하세요
@@ -120,8 +120,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   mode: "production",
   dotenv: {
@@ -132,8 +132,8 @@ module.exports = {
 
 **Custom patterns:**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   dotenv: {
     template: [
@@ -174,7 +174,7 @@ WEBPACK_PORT=${WEBPACK_PORT:-3000}  # process.env 또는 3000을 기본값으로
 
 **코드에서:**
 
-```javascript
+```js
 console.log(process.env.WEBPACK_API_URL); // "https://api.example.com/v1"
 console.log(process.env.WEBPACK_PORT); // process.env에서 WEBPACK_PORT를 사용하거나 기본값으로 3000을 사용합니다.
 ```
@@ -211,8 +211,8 @@ SECRET_KEY=should-not-be-exposed  # 노출되지 않음 (WEBPACK_ 접두사가 �
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   dotenv: true, // 기본 접두사 "WEBPACK_"를 사용합니다.
 };
@@ -220,7 +220,7 @@ module.exports = {
 
 **In your application:**
 
-```javascript
+```js
 console.log(process.env.WEBPACK_API_URL); // "https://api.example.com"
 console.log(process.env.WEBPACK_FEATURE_FLAG); // "true"
 console.log(process.env.SECRET_KEY); // 정의되지 않음(노출되지 않음)
@@ -269,8 +269,8 @@ PRIVATE_KEY=secret  # 노출되지 않음
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   dotenv: {
     prefix: ["APP_", "CONFIG_"],
@@ -284,8 +284,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   dotenv: {
     dir: "./environments",

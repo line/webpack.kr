@@ -28,25 +28,29 @@ Webpack용 plugin은 다음과 같이 구성됩니다.
 - webpack 내부에 있는 인스턴스의 특정한 데이터를 처리합니다.
 - 기능적으로 완벽해지면 webpack에서 제공하는 callback을 호출합니다.
 
-```javascript
+```js
 // A JavaScript class.
 class MyExampleWebpackPlugin {
   // `apply`를 compiler를 인자로 받는 프로토타입 메소드로 정의합니다.
   apply(compiler) {
     // attach할 이벤트 훅을 지정합니다.
-    compiler.hooks.emit.tapAsync(
+    compiler.hooks.thisCompilation.tap(
       "MyExampleWebpackPlugin",
-      (compilation, callback) => {
-        console.log("This is an example plugin!");
-        console.log(
-          "Here’s the `compilation` object which represents a single build of assets:",
-          compilation,
+      (compilation) => {
+        // Specify the asset processing hook
+        compilation.hooks.processAssets.tap(
+          {
+            name: "MyExampleWebpackPlugin",
+            stage: compiler.webpack.Compilation.PROCESS_ASSETS_STAGE_ADDITIONS,
+          },
+          (assets) => {
+            console.log("This is an example plugin!");
+            console.log(
+              "Here’s the `compilation` object which represents a single build of assets:",
+              compilation,
+            );
+          },
         );
-
-        // Webpack에서 제공되는 플러그인 API를 사용하여 빌드를 처리합니다.
-        compilation.addModule(/* ... */);
-
-        callback();
       },
     );
   }
@@ -57,7 +61,7 @@ class MyExampleWebpackPlugin {
 
 플러그인은 `apply`라는 프로토타입 메소드로 인스턴스화 된 객체입니다. 이러한 `apply` 메소드는 플러그인을 설치하는 동안 webpack 컴파일러에 의해 한번 호출됩니다. `apply` 메소드는 컴파일러 callback에 대해 접근 권한을 부여하는 기본 webpack 컴파일러에 의해 참조됩니다. 플러그인의 구조는 다음과 같습니다.
 
-```javascript
+```js
 class HelloWorldPlugin {
   apply(compiler) {
     compiler.hooks.done.tap(
@@ -69,16 +73,16 @@ class HelloWorldPlugin {
   }
 }
 
-module.exports = HelloWorldPlugin;
+export default HelloWorldPlugin;
 ```
 
 그런 다음에 플러그인을 사용하려면 webpack의 설정인 `plugins` 배열에 인스턴스를 포함해야합니다.
 
-```javascript
+```js
 // webpack.config.js
-const HelloWorldPlugin = require("hello-world");
+import HelloWorldPlugin from "hello-world";
 
-module.exports = {
+export default {
   // ... 여기서 구성을 설정할 것 ...
   plugins: [new HelloWorldPlugin({ options: true })],
 };
@@ -86,7 +90,7 @@ module.exports = {
 
 플러그인 옵션을 통해 전달되는 옵션의 유효성을 확인하려면 [`schema-utils`](https://github.com/webpack/schema-utils)를 사용하세요. 다음은 사용 예제입니다.
 
-```javascript
+```js
 import { validate } from "schema-utils";
 
 // options 객체에 대한 schema
@@ -115,7 +119,7 @@ export default class HelloWorldPlugin {
 
 플러그인 개발 중 가장 중요한 두 개의 리소스는 [`compiler`](/api/node/#compiler-instance) 와 [`compilation`](/api/compilation-hooks/) 객체입니다. 두 가지의 역할을 이해하는 것은 webpack 엔진을 확장하는 첫 번째 단계입니다.
 
-```javascript
+```js
 class HelloCompilationPlugin {
   apply(compiler) {
     // callback 함수에 인자로 compilation을 제공하는 훅으로 compliation 훅을 탭 합니다.
@@ -128,7 +132,7 @@ class HelloCompilationPlugin {
   }
 }
 
-module.exports = HelloCompilationPlugin;
+export default HelloCompilationPlugin;
 ```
 
 `compiler`, `compilation` 그리고 다른 중요한 객체에서 사용 가능한 훅의 목록은 [플러그인 API](/api/plugins/) 문서를 참고해 주세요.
@@ -141,7 +145,7 @@ module.exports = HelloCompilationPlugin;
 
 `tapAsync` 메소드를 사용하여 플러그인을 탭해야 할 경우 함수에서 마지막 인자로 제공되는 callback 함수를 호출해야 할 필요가 있습니다.
 
-```javascript
+```js
 class HelloAsyncPlugin {
   apply(compiler) {
     compiler.hooks.emit.tapAsync(
@@ -157,14 +161,14 @@ class HelloAsyncPlugin {
   }
 }
 
-module.exports = HelloAsyncPlugin;
+export default HelloAsyncPlugin;
 ```
 
 #### tapPromise
 
 플러그인에 탭 하기 위해 `tapPromise`를 사용할 때, 동기식 작업이 완료될 때의 해석 promise를 반드시 반환해야 할 필요가 있습니다.
 
-```javascript
+```js
 class HelloAsyncPlugin {
   apply(compiler) {
     compiler.hooks.emit.tapPromise(
@@ -181,7 +185,7 @@ class HelloAsyncPlugin {
   }
 }
 
-module.exports = HelloAsyncPlugin;
+export default HelloAsyncPlugin;
 ```
 
 ## Example
@@ -190,7 +194,7 @@ module.exports = HelloAsyncPlugin;
 
 새로운 빌드 파일인 `assets.md`를 생성하는 예제를 작성해봅시다. 내용은 빌드에 있는 모든 애셋 파일을 나열합니다. 이 플러그인은 다음과 같습니다.
 
-```javascript
+```js
 class FileListPlugin {
   static defaultOptions = {
     outputFile: "assets.md",
@@ -255,16 +259,16 @@ class FileListPlugin {
   }
 }
 
-module.exports = { FileListPlugin };
+export default FileListPlugin;
 ```
 
 **webpack.config.js**
 
-```javascript
-const { FileListPlugin } = require("./file-list-plugin.js");
+```js
+import FileListPlugin from "./file-list-plugin.js";
 
 // 플러그인에 webpack 설정을 사용합니다.
-module.exports = {
+export default {
   // …
 
   plugins: [
@@ -301,7 +305,7 @@ T> [`processAssets`](/api/compilation-hooks/#processassets) 훅은 지정한 단
 
 예시는 다음과 같습니다.
 
-```javascript
+```js
 this.hooks = {
   shouldEmit: new SyncBailHook(["compilation"]),
 };
@@ -364,3 +368,42 @@ this.hooks = {
 ### Configuration defaults
 
 플러그인의 기본값이 적용된 후 webpack은 설정의 기본값을 적용합니다. 이를 통해 플러그인은 고유의 기본값을 제공하고 사전에 플러그인의 설정을 만드는 방법을 제공합니다.
+
+### Example: AssetLoggerPlugin
+
+다음 예시는 Webpack의 로거 인터페이스를 사용하여 생성된 모든 애셋을 로깅하는 최소한의 Webpack 플러그인을 보여줍니다.
+
+```js
+class AssetLoggerPlugin {
+  apply(compiler) {
+    compiler.hooks.thisCompilation.tap("AssetLoggerPlugin", (compilation) => {
+      const logger = compilation.getLogger("AssetLoggerPlugin");
+      compilation.hooks.processAssets.tap(
+        {
+          name: "AssetLoggerPlugin",
+          stage: compilation.constructor.PROCESS_ASSETS_STAGE_SUMMARIZE,
+        },
+        (assets) => {
+          logger.info("Generated assets:");
+          for (const assetName of Object.keys(assets)) {
+            logger.info(assetName);
+          }
+        },
+      );
+    });
+  }
+}
+
+export default AssetLoggerPlugin;
+```
+
+이 플러그인은 Webpack 컴파일러의 `emit` 훅을 활용하여 생성된 모든 애셋의 이름을 콘솔에 출력합니다. Webpack 훅을 사용하여 플러그인이 컴파일 프로세스와 상호 작용하는 방법을 보여주는 예시입니다.
+
+예를 들어, Webpack 빌드를 실행하면 다음과 같은 출력이 나타날 수 있습니다.
+
+```text
+Generated assets:
+main.js
+vendor.js
+styles.css
+```

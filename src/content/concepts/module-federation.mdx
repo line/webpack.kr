@@ -160,7 +160,7 @@ loadComponent("abtests", "test123");
 일반적으로, 원격은 다음 예시와 같은 URL을 사용하여 설정합니다.
 
 ```js
-module.exports = {
+export default {
   plugins: [
     new ModuleFederationPlugin({
       name: "host",
@@ -175,7 +175,7 @@ module.exports = {
 하지만 원격에 promise를 전달할 수도 있고, 이는 런타임에 해석됩니다. 위에서 설명한 `get/init` 인터페이스에 맞는 모듈로 이 promise를 해석해야 합니다. 예를 들어 사용할 통합 모듈의 버전을 전달하려는 경우 쿼리 매개 변수를 통해 다음과 같은 작업을 수행할 수 있습니다.
 
 ```js
-module.exports = {
+export default {
   plugins: [
     new ModuleFederationPlugin({
       name: "host",
@@ -233,7 +233,7 @@ module.exports = {
 **webpack.config.js (remote)**
 
 ```js
-module.exports = {
+export default {
   entry: {
     remote: "./public-path",
   },
@@ -273,7 +273,7 @@ publicPath.set("/your-public-path");
 **webpack.config.js (remote)**
 
 ```js
-module.exports = {
+export default {
   entry: {
     remote: "./setup-public-path",
   },

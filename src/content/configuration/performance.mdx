@@ -35,7 +35,7 @@ function assetFilter(assetFilename) {
 다음과 같이 함수를 전달하여 속성을 재정의할 수 있습니다.
 
 ```js
-module.exports = {
+export default {
   // ...
   performance: {
     assetFilter(assetFilename) {
@@ -56,7 +56,7 @@ module.exports = {
 250kb를 초과하는 애셋이 생성된 경우입니다.
 
 ```js
-module.exports = {
+export default {
   // ...
   performance: {
     hints: false,
@@ -67,7 +67,7 @@ module.exports = {
 힌트 경고 또는 오류가 표시되지 않습니다
 
 ```js
-module.exports = {
+export default {
   // ...
   performance: {
     hints: "warning",
@@ -78,7 +78,7 @@ module.exports = {
 큰 애셋을 알리는 경고가 표시됩니다. 개발 환경에서는 이처럼 사용하는 것을 권장합니다.
 
 ```js
-module.exports = {
+export default {
   // ...
   performance: {
     hints: "error",
@@ -95,7 +95,7 @@ module.exports = {
 애셋은 webpack에서 내보낸 파일입니다. 이 옵션은 webpack이 개별 애셋 크기(단위:bytes)를 기준으로 성능 힌트를 내보낼 시기를 제어합니다.
 
 ```js
-module.exports = {
+export default {
   // ...
   performance: {
     maxAssetSize: 100000,
@@ -110,7 +110,7 @@ module.exports = {
 엔트리 포인트는 특정 항목의 초기 로드 시간 동안 사용될 모든 애셋을 나타냅니다. 이 옵션은 webpack이 최대 엔트리 포인트 크기(단위:bytes)를 기준으로 성능 힌트를 내보낼 시기를 제어합니다.
 
 ```js
-module.exports = {
+export default {
   // ...
   performance: {
     maxEntrypointSize: 400000,

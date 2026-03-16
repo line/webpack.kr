@@ -25,9 +25,9 @@ translators:
 **webpack.config.js**
 
 ```js
-const path = require("node:path");
+import path from "node:path";
 
-module.exports = {
+export default {
   // ...
   module: {
     rules: [
@@ -52,9 +52,11 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-const path = require("node:path");
+import path from "node:path";
 
-module.exports = {
+const __dirname = import.meta.dirname;
+
+export default {
   // ...
   resolveLoader: {
     modules: ["node_modules", path.resolve(__dirname, "loaders")],
@@ -87,7 +89,7 @@ T> 로더 작성을 시작하는데 필요한 보일러플레이트 코드를 �
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   module: {
     rules: [
@@ -178,7 +180,7 @@ export default function (source) {
 
 Webpack에서는 로더를 체인화하여 체인의 후속 로더와 데이터를 공유할 수 있습니다. 이를 위해서는 raw 로더에서 `this.callback` 메소드를 사용하여 콘텐츠(소스 코드)와 함께 데이터를 전달할 수 있습니다. Raw 로더의 기본 내보내기 함수에서는 `this.callback`의 네 번째 인수를 사용하여 데이터를 전달할 수 있습니다.
 
-```javascript
+```js
 export default function (source) {
   const options = getOptions(this);
   // Pass data using the fourth argument of this.callback
@@ -229,18 +231,20 @@ T> 언어가 오직 상대 경로(예를 들어, `url(file)`은 항상 `./file`�
 
 ### Common Code
 
-로더가 처리하는 모든 모듈 안의 공통적인 코드가 생성되지 않도록 하세요. 대신, 로더 안에 런타임 파일을 만들고, 해당 공유 모듈에 `require`를 생성하세요.
+- 로더가 처리하는 모든 모듈에 공통 코드를 생성하지 마세요. 대신 로더 내에 런타임 파일을 생성하고 `import`(또는 `require`)하여 공유 모듈로 사용하세요.
+
+W> CommonJS 구문(`require`)도 완벽하게 지원되지만, 새로운 로더에는 ECMAScript 모듈(`import`) 사용을 적극 권장합니다.
 
 **src/loader-runtime.js**
 
 ```js
-const { someOtherModule } = require("./some-other-module");
+import { someOtherModule } from "./some-other-module.js";
 
-module.exports = function runtime(params) {
+export default function runtime(params) {
   const x = params.y * 2;
 
   return someOtherModule(params, x);
-};
+}
 ```
 
 **src/loader.js**
@@ -297,7 +301,7 @@ npm install --save-dev jest babel-jest @babel/core @babel/preset-env
 **babel.config.js**
 
 ```js
-module.exports = {
+export default {
   presets: [
     [
       "@babel/preset-env",
@@ -345,6 +349,8 @@ npm install --save-dev webpack memfs
 import path from "node:path";
 import { Volume, createFsFromVolume } from "memfs";
 import webpack from "webpack";
+
+const __dirname = import.meta.dirname;
 
 export default (fixture, options = {}) => {
   const compiler = webpack({

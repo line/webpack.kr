@@ -1,5 +1,6 @@
-@import "functions";
-@import "mixins";
+@use "../../styles/partials/functions" as *;
+@use "../../styles/partials/mixins" as *;
+@use "sass:color";
 
 .sidebar-mobile {
   position: fixed;
@@ -67,7 +68,7 @@
   -webkit-tap-highlight-color: transparent;
 
   &:hover {
-    background-color: darken(getColor(denim), 20%);
+    background-color: color.adjust(getColor(denim), $lightness: -20%);
   }
 }
 
@@ -79,7 +80,7 @@
     border-left: 2px solid getColor(malibu);
 
     .sidebar-mobile__section-header {
-      color: lighten(getColor(fiord), 15%);
+      color: color.adjust(getColor(fiord), $lightness: 15%);
     }
   }
 }

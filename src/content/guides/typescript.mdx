@@ -139,39 +139,93 @@ T> import 부분에서 기본적으로 이 작업을 하도록 하고 TypeScript
 
 ## Ways to Use TypeScript in `webpack.config.ts`
 
-`webpack.config.ts`에서 TypeScript를 사용하는 방법은 5가지가 있습니다.
+`webpack.config.ts`에서 TypeScript를 사용하는 방법은 세 가지입니다.
 
-1. **TypeScript 구성과 함께 webpack 사용**
+1. **Node.js의 내장 타입 제거 기능을 사용하는 webpack (권장)**
 
    ```bash
    webpack -c ./webpack.config.ts
    ```
 
-   (`rechoir`와 `interpret`의 한계로 인해 모든 기능이 지원되지는 않습니다.)
+   Node.js의 내장 [타입 제거](https://nodejs.org/api/typescript.html#type-stripping)를 사용하여 구성을 로드하려고 시도한 다음, `interpret` 및 `rechoir`를 사용하여 구성 파일을 로드하려고 시도합니다(이 경우 `tsx` 또는 `ts-node` 또는 기타 도구를 설치해야 합니다).
 
-2. **Node.js에 사용자 정의 `--import` 사용:**
-
-   ```bash
-   NODE_OPTIONS='--import tsx'  webpack --disable-interpret -c ./webpack.config.ts
-   ```
-
-3. **Node.js v22.7.0 ≥ 당신의 NODE.JS 버전 < v23.6.0에 내장된 TypeScript 모듈 사용**
+2. **Using custom `--import`/`--require` for Node.js:**
 
    ```bash
-   NODE_OPTIONS='--experimental-strip-types' webpack --disable-interpret -c ./webpack.config.ts
+   NODE_OPTIONS='--import=tsx --no-experimental-strip-types'  webpack -c ./webpack.config.ts
    ```
-
-4. **Node.js에 내장된 TypeScript 모듈 사용 ≥ v22.6.0:**
 
    ```bash
-   webpack --disable-interpret -c ./webpack.config.ts
+   NODE_OPTIONS='--require=ts-node/register --no-experimental-strip-types'  webpack -c ./webpack.config.ts
    ```
 
-5. **Node.js ≥ v22.6.0에 tsx 사용**
+   > Node.js 버전 22.7.0부터는 `--no-experimental-strip-types` 플래그가 필수입니다.
+
+3. **Node.js 22.7.0 이상 버전에서 Node.js의 내장 변환 유형 기능을 사용하는 방법:**
+
+   열거형 선언, 매개변수 속성 등과 같이 JavaScript 코드 생성이 필요한, 지울 수 없는 TypeScript 구문의 변환을 가능하게 합니다.
 
    ```bash
-   NODE_OPTIONS='--no-experimental-strip-types --import tsx' webpack --disable-interpret -c ./webpack.config.ts
+   NODE_OPTIONS='--experimental-transform-types' webpack --disable-interpret -c ./webpack.config.ts
    ```
+
+## TypeScript Path Aliases
+
+<Badge text="5.105.0+" />
+
+`tsconfig.json` 파일에서 `compilerOptions.paths` 또는 `compilerOptions.baseUrl`을 사용하여 임포트 별칭을 생성하는 경우, webpack 5.105 버전부터는 webpack이 `resolve.tsconfig` 파일을 통해 이러한 별칭을 직접 읽을 수 있습니다. 따라서 기존의 `tsconfig-paths-webpack-plugin` 플러그인은 더 이상 사용하지 않아야 합니다.
+
+`resolve.tsconfig` accepts `boolean | string | object`:
+
+**webpack.config.js**
+
+```js
+export default {
+  resolve: {
+    tsconfig: true, // tsconfig.json 파일을 자동으로 찾습니다.
+  },
+};
+```
+
+특정 파일을 가리키는 문자열을 전달합니다(모노레포 환경에서 유용).
+
+```js
+export default {
+  resolve: {
+    tsconfig: "./tsconfig.app.json",
+  },
+};
+```
+
+Pass an object to also resolve [TypeScript project references](https://www.typescriptlang.org/docs/handbook/project-references.html):
+
+```js
+export default {
+  resolve: {
+    tsconfig: {
+      configFile: "./tsconfig.json",
+      references: "auto", // inherit references from tsconfig, or pass an array of paths
+    },
+  },
+};
+```
+
+**tsconfig.json**
+
+```json
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  }
+}
+```
+
+With the above, `@/components/Button` resolves to `src/components/Button` without any additional plugins or duplicating aliases in `resolve.alias`.
+
+W> `resolve.tsconfig` only handles module resolution — it does not transpile TypeScript. You still need `ts-loader`, `babel-loader` with `@babel/preset-typescript`, or another transpilation step.
 
 ## Loader
 
@@ -280,7 +334,7 @@ TypeScript와 함께 비코드 애셋을 사용하려면 이러한 import에 대
 
 **custom.d.ts**
 
-```typescript
+```ts
 declare module "*.svg" {
   const content: any;
   export default content;

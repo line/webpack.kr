@@ -18,7 +18,7 @@ translators:
 
 예를 들어, `.ejs` 파일을 포함하는 다음과 같은 폴더 구조가 있습니다.
 
-```bash
+```text
 example_directory
 └── template/
     ├── table.ejs
@@ -29,14 +29,14 @@ example_directory
 
 `import()` 또는 `require()` 호출이 평가될 때:
 
-```javascript
+```js
 import(`./template/${name}.ejs`);
 require(`./template/${name}.ejs`);
 ```
 
 Webpack은 `import()` 또는 `require()` 호출을 분석하여 몇 가지 정보를 추출합니다.
 
-```code
+```text
 Directory: ./template
 Regular expression: /^.*\.ejs$/
 ```
@@ -63,7 +63,7 @@ Regular expression: /^.*\.ejs$/
 
 The ESM equivalent of `require.context` is `import.meta.webpackContext`.
 
-```javascript
+```js
 import.meta.webpackContext(directory, {
   recursive: true,
   regExp: /^\.\/.*$/,
@@ -84,7 +84,7 @@ Webpack은 빌드 하는 동안 코드에서 `require.context()`를 구문 분�
 
 구문은 다음과 같습니다.
 
-```javascript
+```js
 require.context(
   directory,
   (useSubdirectories = true),
@@ -95,12 +95,12 @@ require.context(
 
 예:
 
-```javascript
+```js
 require.context("./test", false, /\.test\.js$/);
 // test 디렉터리에서 요청이 `.test.js`로 끝나는 파일이 있는 컨텍스트입니다.
 ```
 
-```javascript
+```js
 require.context("../", true, /\.stories\.js$/);
 // 상위 폴더와 그 하위 폴더에서 `.stories.js`로 끝나는 파일이 있는 컨텍스트입니다.
 ```
@@ -120,7 +120,7 @@ export된 함수는 `resolve`, `keys`, `id` 3가지 속성을 가집니다.
 
 {/* eslint-disable */}
 
-```javascript
+```js
 function importAll(r) {
   r.keys().forEach(r);
 }
@@ -133,7 +133,7 @@ importAll(
 );
 ```
 
-```javascript
+```js
 const cache = {};
 
 function importAll(r) {

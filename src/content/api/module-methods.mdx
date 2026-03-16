@@ -44,7 +44,7 @@ Webpack 버전 2는 기본적으로 ES6 모듈 구문을 지원합니다. 즉, b
 
 다른 모듈의 `export`를 정적으로 `import` 합니다.
 
-```javascript
+```js
 import MyModule from "./my-module.js";
 import { NamedExport } from "./other-module.js";
 ```
@@ -53,7 +53,7 @@ W> 여기서 키워드는 **정적으로**입니다. 일반적인 `import` 문�
 
 Data URI를 `import` 할 수도 있습니다.
 
-```javascript
+```js
 import "data:text/javascript;charset=utf-8;base64,Y29uc29sZS5sb2coJ2lubGluZSAxJyk7";
 import {
   fn,
@@ -65,7 +65,7 @@ import {
 
 무엇이든 `default` 또는 이름이 지정된 내보내기로 내보냅니다.
 
-```javascript
+```js
 // 이름이 지정된 내보내기
 export const Count = 5;
 export function Multiply(a, b) {
@@ -86,7 +86,7 @@ export default {
 
 T> [ES2015 로더 사양](https://whatwg.github.io/loader/)에서는 `import()`를 런타임에 ES2015 모듈을 동적으로 로드하는 메서드로 정의하고 있습니다.
 
-```javascript
+```js
 if (module.hot) {
   import("lodash").then((_) => {
     // lodash(일명 '_')로 작업 수행...
@@ -103,7 +103,7 @@ W> 이 기능은 내부적으로 [`Promise`](https://developer.mozilla.org/en-US
 `import()`는 최소한 모듈 위치에 대한 정보를 포함해야 합니다. 번들링은 특정 디렉터리 또는 파일 집합으로 제한될 수 있습니다. 그러므로 동적 표현 식을 사용할 때 `import()` 호출 시 잠재적으로 요청 가능한 모든 모듈이 포함됩니다.
 예를 들어, ``import(`./locale/${language}.json`)``는 `./locale` 디렉터리와 하위 디렉터리에 있는 모든 `.json` 파일만 새 청크로 묶고 다른 파일 확장자를 가진 파일은 제외합니다. 런타임에 `language` 변수가 계산되면 `english.json`이나 `german.json`과 같은 모든 파일을 사용할 수 있습니다.
 
-```javascript
+```js
 // 쿠키나 다른 저장소에서 언어를 가져오는 방법이 있다고 상상해 보세요.
 const language = detectVisitorLanguage();
 import(`./locale/${language}.json`).then((module) => {
@@ -243,13 +243,13 @@ CommonJS의 목표는 브라우저 외부에서 JavaScript용 생태계를 지�
 
 ### require
 
-```typescript
+```ts
 require(dependency: String);
 ```
 
 다른 모듈의 내보내기를 동기적으로 검색합니다. 컴파일러는 출력 번들에서 의존성을 사용할 수 있는지 확인합니다.
 
-```javascript
+```js
 import $ from "jquery";
 import myModule from "my-module";
 ```
@@ -260,7 +260,7 @@ W> 비동기식으로 사용하면 예상한 효과가 없을 수 있습니다.
 
 ### require.resolve
 
-```typescript
+```ts
 require.resolve(dependency: String);
 ```
 
@@ -276,7 +276,7 @@ W> 모듈 ID의 유형은 [`optimization.moduleIds`](/configuration/optimization
 
 W> 이것은 드문 경우에만 호환성을 위해 필요합니다!
 
-```javascript
+```js
 import d1 from "dependency";
 
 // In ESM, module caching is handled automatically.
@@ -288,7 +288,7 @@ if (import.meta.webpackHot) {
 }
 ```
 
-```javascript
+```js
 // file.js에서
 // ESM에서는 수동 캐시 조작이 지원되지 않습니다.
 // Webpack은 모듈 캐싱을 내부적으로 처리합니다.
@@ -311,7 +311,7 @@ require.ensure(
 
 W> 이 기능은 내부적으로 [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)에 의존합니다. 이전 브라우저에서 `require.ensure`를 사용하는 경우 [es6-promise](https://github.com/stefanpenner/es6-promise) 또는 [promise-polyfill](https://github.com/taylorhakes/promise-polyfill)과 같은 폴리필을 사용하여 `Promise`를 대체해야 합니다.
 
-```javascript
+```js
 const a = require("normal-dep");
 
 if (module.hot) {
@@ -348,7 +348,7 @@ define([name: String], [dependencies: String[]], factoryMethod: function(...))
 
 W> Webpack은 `name` 인수를 무시합니다.
 
-```javascript
+```js
 define(["jquery", "my-module"], ($, myModule) =>
   // $와 myModule로 작업을 수행하세요...
 
@@ -368,7 +368,7 @@ define(value: !Function)
 
 제공된 `value`를 내보냅니다. 여기서 `value`는 함수를 제외한 모든 것이 될 수 있습니다.
 
-```javascript
+```js
 define({
   answer: 42,
 });
@@ -386,7 +386,7 @@ require(dependencies: String[], [callback: function(...)])
 
 W> 이 기능은 내부적으로 [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)에 의존합니다. Internet Explorer 11과 같은 이전 브라우저에서 AMD를 사용하는 경우 [es6-promise](https://github.com/stefanpenner/es6-promise) 또는 [promise-polyfill](https://github.com/taylorhakes/promise-polyfill)과 같은 폴리필을 사용하여 `Promise`를 대체해야 합니다.
 
-```javascript
+```js
 import("b").then((b) => {
   import("c").then((c) => {
     // b और c का इस्तेमाल करें
@@ -451,7 +451,7 @@ require.context(
 
 `directory`에 대한 경로, `includeSubdirs` 옵션, 포함된 모듈을 좀 더 세밀하게 제어하기 위한 `filter`, 로드 작동 방식을 정의하는 `mode`를 사용하여 전체 의존성 그룹을 지정합니다. 그러면 기본 모듈은 나중에 해석할 수 있습니다.
 
-```javascript
+```js
 const context = import.meta.webpackContext("components", {
   recursive: true,
   regExp: /\.html$/,
@@ -461,7 +461,7 @@ const componentA = context.resolve("componentA");
 
 `mode`가 `'lazy'`로 설정되면 기본 모듈이 비동기식으로 로드됩니다.
 
-```javascript
+```js
 const context = import.meta.webpackContext("locales", {
   recursive: true,
   regExp: /\.json$/,
@@ -482,7 +482,7 @@ require.include((dependency: String));
 
 실행하지 않고 `dependency`를 포함합니다. 출력 청크에서 모듈의 위치를 최적화하는 데 사용할 수 있습니다.
 
-```javascript
+```js
 import("a");
 import("b");
 import("c").then((moduleC) => {
@@ -502,7 +502,7 @@ import("c").then((moduleC) => {
 
 `require.resolve`와 유사하지만, `module`을 번들로 가져오지 않습니다. 이것은 "약한" 의존성으로 간주합니다.
 
-```javascript
+```js
 if (__webpack_modules__[require.resolveWeak("module")]) {
   // 모듈을 사용할 수 있을 때 수행...
 }
@@ -524,7 +524,7 @@ T> `require.resolveWeak`은 [react-universal-component](https://github.com/facey
 
 예제 코드:
 
-```javascript
+```js
 someFn(require);
 require.bind(null);
 require(variable);
