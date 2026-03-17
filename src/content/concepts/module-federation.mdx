@@ -377,6 +377,42 @@ new ModuleFederationPlugin({
 원격 컨테이너가 누락되었을 가능성이 있으므로 추가되었는지 확인하세요.
 사용하려는 원격 컨테이너가 로드되었지만 이 오류가 계속 나타나면 호스트 컨테이너의 원격 컨테이너 파일도 HTML에 추가하세요.
 
-### Collision between modules from different remotes
+### Setting `output.uniqueName`
 
-서로 다른 원격에서 여러 모듈을 로드하는 경우 원격 빌드에 대해 [`output.uniqueName`](/configuration/output/#outputuniquename)을 설정하여 여러 webpack 런타임 간의 충돌을 방지하는 것이 좋습니다.
+모듈 페더레이션 설정에서 호스트와 각 원격 저장소는 전역적으로 고유한 `output.uniqueName` 값을 가져야 합니다. Webpack은 기본적으로 `package.json` 파일의 `name` 필드에서 이 값을 가져옵니다. 즉, 동일한 `package.json` 파일의 `name` 필드를 공유하는 두 빌드(기존 프로젝트에서 원격 저장소를 분리할 때 흔히 발생하는 패턴)는 런타임에 충돌을 일으킬 수 있습니다.
+
+한 가지 해결책은 각 구성마다 고유한 이름을 가진 별도의 `package.json` 파일을 사용하는 것입니다.
+
+또는 각 webpack 설정에서 `output.uniqueName`을 명시적으로 설정할 수도 있습니다.
+
+**webpack.config.js (host)**
+
+```js
+module.exports = {
+  output: {
+    uniqueName: "my-host-app",
+  },
+  plugins: [
+    new ModuleFederationPlugin({
+      // ...
+    }),
+  ],
+};
+```
+
+**webpack.config.js (remote)**
+
+```js
+module.exports = {
+  output: {
+    uniqueName: "my-remote-app", // must differ from host and all other remotes
+  },
+  plugins: [
+    new ModuleFederationPlugin({
+      // ...
+    }),
+  ],
+};
+```
+
+The value can be any string, as long as it is unique across every federated build loaded on a given page.

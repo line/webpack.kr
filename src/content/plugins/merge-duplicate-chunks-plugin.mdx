@@ -1,0 +1,39 @@
+---
+title: MergeDuplicateChunksPlugin
+group: webpack
+contributors:
+  - shivxmsharma
+translators:
+  - dkstyle
+---
+
+동일한 모듈을 포함하는 청크를 병합합니다. 이 플러그인은 webpack의 내부 최적화의 일부로 기본적으로 활성화되어 있습니다. 이 플러그인을 공개적으로 내보내면 개발자는 병합이 발생하는 `stage`를 구성할 수 있습니다. 이는 청크 병합이 [`SplitChunksPlugin`](/plugins/split-chunks-plugin) 이후에 실행되어야 할 때 유용합니다.
+
+```js
+new webpack.optimize.MergeDuplicateChunksPlugin({
+  // 옵션...
+});
+```
+
+## Options
+
+### stage
+
+`number`
+
+중복 청크 병합이 실행되는 최적화 단계를 제어합니다. 기본적으로 병합은 `SplitChunksPlugin`보다 먼저 발생합니다. `stage` 값을 높게 설정하면 병합은 `SplitChunksPlugin`과 같은 다른 최적화 작업 *이후*에 실행됩니다.
+
+**webpack.config.js**
+
+```js
+import webpack from "webpack";
+
+export default {
+  // ...
+  plugins: [
+    new webpack.optimize.MergeDuplicateChunksPlugin({
+      stage: 10, // SplitChunksPlugin 실행 후
+    }),
+  ],
+};
+```
