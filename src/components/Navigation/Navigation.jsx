@@ -4,6 +4,13 @@ import PropTypes from "prop-types";
 import { useEffect, useRef, useState } from "react";
 import { Link as ReactDOMLink, NavLink, useLocation } from "react-router-dom";
 
+// Import Internal Config
+import {
+  DOCSEARCH_API_KEY,
+  DOCSEARCH_APP_ID,
+  DOCSEARCH_INDEX_NAME,
+} from "../../config/docsearch.js";
+
 // Import Components
 import DiscordIcon from "../../styles/icons/discord.svg";
 import GithubIcon from "../../styles/icons/github.svg";
@@ -202,9 +209,9 @@ function Navigation({ links, pathname, hash = "", toggleSidebar }) {
             <HelloDarkness />
             {mounted && (
               <DocSearch
-                appId="78PIF746H9"
-                apiKey={"0bf212faf8487900d5d5ee6754c1572a"}
-                indexName="webpack_korea"
+                appId={DOCSEARCH_APP_ID}
+                apiKey={DOCSEARCH_API_KEY}
+                indexName={DOCSEARCH_INDEX_NAME}
                 disableUserPersonalization={true}
                 placeholder="webpack 문서를 검색해보세요"
                 transformItems={(items) =>
