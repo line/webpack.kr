@@ -6,9 +6,6 @@ import LoadingIcon from "../../styles/icons/loading.svg";
 import Print from "../Print/Print.jsx";
 import SidebarItem from "../SidebarItem/SidebarItem.jsx";
 
-// Load Styling
-import "./Sidebar.scss";
-
 const versions = [5, 4];
 const currentDocsVersion = 5;
 
@@ -28,9 +25,11 @@ export default function Sidebar({ className = "", pages, currentPage }) {
   let group;
 
   return (
-    <nav className={`sidebar ${className}`}>
-      <div className="sidebar__inner">
-        <div className="relative z-0 bg-white dark:bg-gray-100 ">
+    <nav
+      className={`hidden md:block w-full max-w-[280px] will-change-transform ${className}`}
+    >
+      <div className="p-6 sticky top-[-1px] overflow-y-auto max-h-screen">
+        <div className="relative z-0 bg-white dark:bg-gray-100">
           <label htmlFor="docs-version" className="sr-only">
             Select webpack version
           </label>
@@ -75,7 +74,9 @@ export default function Sidebar({ className = "", pages, currentPage }) {
           return (
             <div key={page.url}>
               {displayGroup ? (
-                <h4 className="sidebar__group">{group}</h4>
+                <h4 className="mt-6 ml-1 capitalize text-lg font-bold text-slate-800 dark:text-slate-100">
+                  {group}
+                </h4>
               ) : null}
 
               <SidebarItem

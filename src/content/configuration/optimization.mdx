@@ -43,12 +43,25 @@ export default {
 
 ## optimization.chunkIds
 
-`boolean = false` `string: 'natural' | 'named' | 'size' | 'total-size' | 'deterministic'`
+`boolean` | `natural` | `named` | `size` | `total-size` | `deterministic`
 
-청크 ID를 선택할 때 사용할 알고리즘을 결정합니다. `optimization.chunkIds`를 `false`로 설정하면, 플러그인을 통해 사용자 정의 알고리즘이 제공될 수 있으므로 내장 알고리즘을 사용해서는 안 된다고 webpack에 알립니다. `optimization.chunkIds`에 대한 몇 가지 기본값이 있습니다.
+- `false`: webpack의 내장 청크 ID 알고리즘을 비활성화합니다.
+- 다음 값 중 하나:
+  - `'natural'`
+  - `'named'`
+  - `'size'`
+  - `'total-size'`
+  - `'deterministic'`
 
-- 또한 개발 환경인 경우 `optimization.chunkIds`는` 'named'`로 설정되고 프로덕션 환경에서는 `'deterministic'`으로 설정됩니다.
-- 위의 어느 것도 해당하지 않으면 `optimization.chunkIds`는 `'natural'`로 기본 설정됩니다.
+Webpack에게 청크 ID에 사용할 알고리즘을 지정합니다. `optimization.chunkIds`를 `false`로 설정하면 Webpack은 내장 알고리즘을 사용하지 않고 플러그인을 통해 사용자 지정 알고리즘을 제공하도록 지시합니다. `optimization.chunkIds`에는 몇 가지 기본값이 있습니다.
+
+`optimization.chunkIds`의 기본값은 [`mode`](/configuration/mode/)에 따라 다릅니다.
+
+| 모드          | 기본값            |
+| ------------- | ----------------- |
+| `development` | `'named'`         |
+| `production`  | `'deterministic'` |
+| `none`        | `'natural'`       |
 
 다음 문자열 값이 지원됩니다.
 
@@ -132,7 +145,9 @@ W> webpack [CLI](/api/cli/)를 사용한다면, 이 플러그인이 활성화되
 
 <Badge text="5.95.0+" />
 
-`optimization.avoidEntryIife`를 사용하면 엔트리 모듈이 필요할 때 IIFE로 감싸지는 것을 피할 수 있습니다([JavascriptModulesPlugin](https://github.com/webpack/webpack/blob/main/lib/javascript/JavascriptModulesPlugin.js)에서 `"This entry needs to be wrap in an IIFE because"`를 검색하세요). 이 접근 방식은 JavaScript 엔진의 성능을 최적화하는 데 도움이 되며 ESM 라이브러리를 빌드할 때 트리 쉐이킹을 가능하게 합니다.
+T> IIFE(즉시 실행 함수 표현식)는 생성된 직후 바로 실행되는 함수입니다. Webpack은 이를 사용하여 코드를 래핑하고 변수 충돌을 방지합니다.
+
+진입 모듈을 IIFE로 감싸야 하는 경우 `optimization.avoidEntryIife`를 사용하여 IIFE 래핑을 피하십시오([JavascriptModulesPlugin](https://github.com/webpack/webpack/blob/main/lib/javascript/JavascriptModulesPlugin.js)에서 `"This entry needs to be wrapped in an IIFE because"`를 검색하십시오). 이 접근 방식은 JavaScript 엔진의 성능을 최적화하고 ESM 라이브러리 빌드 시 트리 셰이킹을 가능하게 합니다.
 
 현재 `optimization.avoidEntryIife`는 다른 모듈과 함께 단일 항목 모듈만 최적화할 수 있습니다.
 
@@ -149,7 +164,7 @@ export default {
 };
 ```
 
-W> `⁠optimization.avoidEntryIife` 옵션은 빌드 성능에 부정적인 영향을 미칠 수 있습니다. 이러한 최적화보다 빌드 성능을 우선시하는 경우 이 옵션을 비활성화하는 것을 고려하세요.
+W> `optimization.avoidEntryIife` 옵션은 빌드 성능에 부정적인 영향을 미칠 수 있습니다. 이러한 최적화보다 빌드 성능을 우선시하는 경우 이 옵션을 비활성화하는 것을 고려하십시오.
 
 ## optimization.flagIncludedChunks
 
@@ -347,7 +362,15 @@ export default {
 
 모듈 ID를 선택할 때 사용할 알고리즘을 결정합니다. `optimization.moduleIds`를 `false`로 설정하면, 플러그인을 통해 사용자 정의 알고리즘이 제공될 수 있으므로 내장 알고리즘을 사용해서는 안 된다고 webpack에 알립니다.
 
-다음 문자열 값이 지원됩니다.
+`optimization.moduleIds`의 기본값은 [`mode`](/configuration/mode/)에 따라 다릅니다.
+
+| 모드          | 기본값            |
+| ------------- | ----------------- |
+| `development` | `'named'`         |
+| `production`  | `'deterministic'` |
+| `none`        | `'natural'`       |
+
+The following string values are supported:
 
 | 옵션            | 설명                                                 |
 | --------------- | ---------------------------------------------------- |
@@ -367,7 +390,7 @@ export default {
 };
 ```
 
-`deterministic` 옵션은 장기 캐싱에 유용하지만 `hashed` 옵션에 비해 더 작은 번들을 생성합니다. 숫자 값의 길이는 ID 스페이스의 최대 80%를 채우게 됩니다. `optimization.moduleIds`가 `deterministic`으로 설정된 경우 기본적으로 최소 3자리 숫자가 사용됩니다. 기본 동작을 오버라이드하려면 `optimization.moduleIds`를 `false`로 설정하고 `webpack.ids.DeterministicModuleIdsPlugin`을 사용하세요.
+`deterministic` 옵션은 장기 캐싱에 유용하지만, `hashed` 옵션에 비해 번들 크기가 더 작습니다. 숫자 값의 길이는 ID 공간의 최대 80%를 채우도록 선택됩니다. 기본적으로 `optimization.moduleIds`가 `deterministic`으로 설정된 경우 최소 3자리 숫자가 사용됩니다. 기본 동작을 재정의하려면 `optimization.moduleIds`를 `false`로 설정하고 `webpack.ids.DeterministicModuleIdsPlugin`을 사용하십시오.
 
 **webpack.config.js**
 

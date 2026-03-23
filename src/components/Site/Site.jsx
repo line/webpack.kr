@@ -42,7 +42,6 @@ import Sponsors from "../Sponsors/Sponsors.jsx";
 // Load Styling
 import "../../styles/index.scss";
 import "../../styles/ko.scss"; // kr patch
-import "./Site.scss";
 
 // Load Content Tree
 
@@ -218,7 +217,7 @@ function Site(props) {
   }, [location, navigate]);
 
   return (
-    <div className="site">
+    <div className="flex flex-col min-h-screen bg-white dark:bg-gray-900">
       <Helmet>
         <html lang="ko" />
         <meta charset="utf-8" />
@@ -272,7 +271,7 @@ function Site(props) {
         <meta name="msapplication-TileImage" content="/icon_150x150.png" />
         <meta name="msapplication-TileColor" content="#465e69" />
       </Helmet>
-      <div className="site__header">
+      <div className="z-[100] fixed w-full">
         <OfflineBanner />
         <Navigation
           pathname={location.pathname}
@@ -316,9 +315,11 @@ function Site(props) {
         <Route index element={<Splash />} />
         <Route
           element={
-            <Container className="site__content">
-              <Outlet />
-            </Container>
+            <div className="flex-[1_1_auto] relative mt-[110px] print:mt-0">
+              <Container className="flex">
+                <Outlet />
+              </Container>
+            </div>
           }
         >
           <Route path="app-shell" element={<Fragment />} />
@@ -369,7 +370,7 @@ function PageElement(props) {
     <Fragment>
       <Sponsors />
       <Sidebar
-        className="site__sidebar"
+        className="flex-[0_0_280px]"
         currentPage={currentPage}
         pages={sidebarPages}
       />

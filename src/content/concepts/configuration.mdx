@@ -56,6 +56,29 @@ export default {
 
 지원하는 모든 설정 옵션에 대해서는 [설정 섹션](/configuration/)을 _봐주세요._
 
+## Using multiple configurations
+
+Webpack은 여러 개의 설정 객체를 내보내는 것을 지원하며, 이는 서로 다른 대상이나 출력물을 빌드할 때(예: 클라이언트 번들과 서버 번들을 분리할 때) 유용할 수 있습니다.
+
+대부분의 프로젝트에서는 하나의 설정 객체로도 충분하지만, 여러 개의 설정 객체를 사용하면 더 복잡한 설정을 체계적으로 관리할 수 있습니다.
+
+```js
+module.exports = [
+  {
+    entry: "./src/client.js",
+    output: {
+      filename: "client.bundle.js",
+    },
+  },
+  {
+    entry: "./src/server.js",
+    output: {
+      filename: "server.bundle.js",
+    },
+  },
+];
+```
+
 ## Multiple Targets
 
 단일 설정을 객체, [함수](/configuration/configuration-types/#exporting-a-function) 또는 [promise](/configuration/configuration-types/#exporting-a-promise)로 export 하는 것과 함께, 다중 설정을 export 할 수 있습니다.

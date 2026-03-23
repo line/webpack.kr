@@ -376,7 +376,18 @@ cacheable modules 530 KiB
 webpack 5.4.0 compiled successfully in 268 ms
 ```
 
-`import()`는 promise를 반환하므로 [`async` 함수](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function)와 함께 사용할 수 있습니다. 코드를 단순화하는 방법은 다음과 같습니다.
+T> 또한 `import()`와 함께 매직 주석 `webpackExports`를 사용하여 동적으로 가져온 모듈의 특정 내보내기를 노출할 수 있습니다.
+
+```js
+import(
+  /* webpackExports: ["default", "namedExport"] */
+  "./module"
+);
+```
+
+이렇게 하면 웹팩이 사용되지 않는 다른 내보내기를 트리 쉐이킹하는 데 도움이 될 수 있습니다. 자세한 내용은 [매직 주석](/api/module-methods/#magic-comments)을 참고하세요.
+
+`import()`는 프로미스를 반환하므로 `async` 함수와 함께 사용할 수 있습니다. 다음은 이를 사용하여 코드를 간소화하는 방법입니다.
 
 **src/index.js**
 

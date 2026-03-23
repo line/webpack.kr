@@ -33,6 +33,9 @@ T> When running webpack without a configuration file, the entry defaults to `'./
 
 Usage: `entry: string | [string]`
 
+- `string`: 단일 항목 파일
+- `[string]`: 다중 항목 파일
+
 **webpack.config.js**
 
 ```js
@@ -84,6 +87,11 @@ export default {
 ## Object Syntax
 
 Usage: `entry: { <entryChunkName> string | [string] } | {}`
+
+- `<entryChunkName>`: name of the entry chunk
+- `string`: 단일 항목 파일
+- `[string]`: 다중 항목 파일
+- `{}`: 빈 객체
 
 **webpack.config.js**
 
@@ -193,22 +201,26 @@ export default {
 };
 ```
 
+`production` 모드로 빌드할 때:
+
 **webpack.prod.js**
 
 ```js
 export default {
   output: {
-    filename: "[name].[contenthash].bundle.js",
+    filename: "[name].[contenthash].bundle.js", // eg: main.abc123.bundle.js, vendor.abc123.bundle.js
   },
 };
 ```
+
+`development` 모드로 빌드할 때:
 
 **webpack.dev.js**
 
 ```js
 export default {
   output: {
-    filename: "[name].bundle.js",
+    filename: "[name].bundle.js", // 예: main.bundle.js, vendor.bundle.js
   },
 };
 ```
