@@ -126,7 +126,9 @@ related:
 })();
 ```
 
-컨테이너는 공유 모듈을 제공하려고 시도하지만, 공유 모듈이 이미 사용된 경우, 경고 및 제공된 공유 모듈이 무시됩니다. 컨테이너는 여전히 대체 수단으로 사용할 수 있습니다.
+T> **컨테이너는** 통합된 빌드에서 노출되는 원격 컨테이너 엔트리 포인트 객체로, 일반적으로 해당 원격의 `remoteEntry.js`를 통해 제공됩니다. 이 객체는 여기에 표시된 `get` 및 `init` 메서드를 제공합니다. `window[scope]` 또는 `globalThis.someContainer`와 같은 예에서 컨테이너는 원격 컨테이너 스크립트가 이미 로드된 후에만 존재해야 합니다.
+
+컨테이너는 공유 모듈을 제공하려고 시도하지만, 공유 모듈이 이미 사용 중인 경우 경고가 표시되고 제공된 공유 모듈은 무시됩니다. 하지만 컨테이너는 필요에 따라 해당 모듈을 대체 모듈로 사용할 수 있습니다.
 
 이렇게 하면 다른 버전의 공유 모듈을 제공하는 A/B 테스트를 동적으로 로드 할 수 있습니다.
 
@@ -141,8 +143,8 @@ function loadComponent(scope, module) {
   return async () => {
     // 공유 범위를 초기화 합니다. 이 빌드와 모든 원격에서 제공된 모듈로 채웁니다
     await __webpack_init_sharing__("default");
-    const container = window[scope]; // 또는 다른 곳에서 컨테이너를 얻으십시오
-    // 컨테이너 초기화, 공유 모듈 제공 가능합니다
+    const container = window[scope]; // 로드된 remoteEntry.js 스크립트에 의해 노출된 원격 컨테이너
+    // 컨테이너를 초기화하면 공유 모듈이 제공될 수 있습니다.
     await container.init(__webpack_share_scopes__.default);
     const factory = await window[scope].get(module);
     const Module = factory();

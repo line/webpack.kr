@@ -1,8 +1,8 @@
+import { clsx } from "clsx";
 import PropTypes from "prop-types";
 import { Component } from "react";
 import CloseIcon from "../../styles/icons/cross.svg";
 import Link from "../Link/Link.jsx";
-import "./SidebarMobile.scss";
 
 // TODO: Check to make sure all pages are shown and properly sorted
 export default class SidebarMobile extends Component {
@@ -20,28 +20,34 @@ export default class SidebarMobile extends Component {
 
   render() {
     const { isOpen, toggle } = this.props;
-    const openMod = isOpen ? " sidebar-mobile--visible" : "";
-
     this._toggleBodyListener(isOpen);
 
     return (
       <nav
-        className={`sidebar-mobile${openMod}`}
+        className={clsx(
+          "sidebar-mobile fixed w-[300px] h-screen z-[100] top-0 overflow-y-auto overflow-x-hidden [-webkit-overflow-scrolling:touch] transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] md:hidden",
+          isOpen
+            ? "sidebar-mobile--visible translate-x-0"
+            : "[transform:translate3d(calc(-100%+5px),0,0)]",
+        )}
         ref={(ref) => (this._container = ref)}
         onTouchStart={this._handleTouchStart}
         onTouchMove={this._handleTouchMove}
         onTouchEnd={this._handleTouchEnd}
       >
         <div
-          className="sidebar-mobile__toggle"
+          className={clsx(
+            "absolute top-[45px] bottom-0 w-[32px] left-[285px]",
+            isOpen && "hidden",
+          )}
           onTouchStart={this._handleTouchStart}
           onTouchMove={this._handleOpenerTouchMove}
           onTouchEnd={this._handleTouchEnd}
         />
 
-        <div className="sidebar-mobile__content">
+        <div className="relative w-[285px] h-screen overflow-x-hidden py-1 bg-white shadow-[0_0_15px_rgba(0,0,0,0.2)]">
           <button
-            className="sidebar-mobile__close"
+            className="sidebar-mobile__close absolute cursor-pointer border-none right-[22px] top-[10px] text-[1.3em] bg-[#175d96] text-white w-[30px] h-[30px] flex items-center justify-center rounded-full transition-colors duration-150 [-webkit-tap-highlight-color:transparent] hover:bg-[#135d96]"
             onClick={toggle.bind(null, false)}
             aria-label="Close navigation menu"
           >
@@ -72,18 +78,23 @@ export default class SidebarMobile extends Component {
       pathname = window.location.pathname;
     }
 
-    return this.props.sections.map((section) => {
+    return this.props.sections.map((section, index) => {
       const active = section.url !== "/" && pathname.startsWith(section.url);
 
       return (
         <div
-          className={`sidebar-mobile__section ${
-            active ? "sidebar-mobile__section--active" : ""
-          }`}
+          className={clsx(
+            "border-l-2 pb-[0.5em]",
+            active ? "border-blue-200" : "border-transparent",
+          )}
           key={section.url}
         >
           <Link
-            className="sidebar-mobile__section-header"
+            className={clsx(
+              "uppercase pt-[0.75em] px-4 pb-[0.25em] font-semibold block text-[1.1rem]",
+              active ? "text-[#465E69]" : "text-[#2B3A42]",
+              index > 0 && "border-t border-gray-200",
+            )}
             key={section.url}
             to={section.url}
             onClick={this.props.toggle.bind(null, false)}
@@ -117,9 +128,12 @@ export default class SidebarMobile extends Component {
       return (
         <Link
           key={url}
-          className={`sidebar-mobile__page sidebar-mobile__section-child ${
-            active ? "sidebar-mobile__page--active" : ""
-          }`}
+          className={clsx(
+            "block py-[0.5em] px-[17px] capitalize [-webkit-tap-highlight-color:transparent] ml-[20px]",
+            active
+              ? "text-gray-900 font-semibold bg-[#f1f4f4]"
+              : "text-gray-600 hover:text-gray-600 active:text-gray-900 active:font-semibold active:bg-[#f1f4f4]",
+          )}
           to={url}
           onClick={this.props.toggle.bind(null, false)}
         >
@@ -146,7 +160,7 @@ export default class SidebarMobile extends Component {
     this._initialTouchPosition.y = event.touches[0].pageY;
 
     // For instant transform along with the touch
-    this._container.classList.add("no-delay");
+    this._container.classList.add("!duration-0");
   };
 
   _handleTouchMove = (event) => {
@@ -182,7 +196,7 @@ export default class SidebarMobile extends Component {
     const threshold = 20;
 
     // Free up all the inline styling
-    this._container.classList.remove("no-delay");
+    this._container.classList.remove("!duration-0");
     this._container.style.transform = "";
 
     // are we open?

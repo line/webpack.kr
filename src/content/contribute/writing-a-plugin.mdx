@@ -64,6 +64,7 @@ class MyExampleWebpackPlugin {
 ```js
 class HelloWorldPlugin {
   apply(compiler) {
+    // 이 훅은 빌드 프로세스가 완전히 완료되었을 때 실행됩니다.
     compiler.hooks.done.tap(
       "Hello World Plugin",
       (stats /* 훅의 탭이 끝나면 stats는 인자로 통과됩니다.  */) => {

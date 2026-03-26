@@ -115,14 +115,14 @@ export default {
     filename: "my-first-webpack.bundle.js",
   },
   module: {
-    rules: [{ test: /\.txt$/, use: "raw-loader" }],
+    rules: [{ test: /\.js$/, use: "babel-loader" }],
   },
 };
 ```
 
 위 설정에서는 `test`와 `use`라는 두 가지 필수 속성을 가진 하나의 모듈을 위해 `rules` 속성을 정의했습니다. 이는 webpack의 컴파일러에 다음과 같이 말합니다.
 
-> "이봐 webpack 컴파일러, `require ()`/`import` 문 내에서 '.txt' 파일로 확인되는 경로를 발견하면 번들에 추가하기 전에 `raw-loader`를 **사용하여** 변환해."
+> "Webpack 컴파일러야, `require()`나 `import` 문 안에서 '.js' 파일로 해석되는 경로를 만나면, 번들에 추가하기 전에 `babel-loader`를 **사용**해서 변환해 줘."
 
 W> webpack 설정에서 규칙을 정의할 때 `rules`가 아닌 `module.rules` 아래에 정의한다는 것을 기억하세요. 당신의 편의를 위해 webpack은 잘못 정의한 경우에 경고를 합니다.
 
@@ -146,7 +146,7 @@ import webpack from "webpack"; // 내장 plugin에 접근하는 데 사용
 
 export default {
   module: {
-    rules: [{ test: /\.txt$/, use: "raw-loader" }],
+    rules: [{ test: /\.js$/, use: "babel-loader" }],
   },
   plugins: [new HtmlWebpackPlugin({ template: "./src/index.html" })],
 };

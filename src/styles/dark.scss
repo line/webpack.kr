@@ -98,13 +98,6 @@
       }
     }
   }
-  .sidebar-item__title,
-  .sidebar-item__anchor a {
-    color: #b8b8b8;
-  }
-  .sidebar-item__title.active {
-    color: #fff;
-  }
   .gitter__button {
     background: #1c3b39;
   }
@@ -114,10 +107,6 @@
   }
   .page-links__gap {
     color: #999;
-  }
-  .sidebar-item__toggle,
-  .sidebar-item--disabled .sidebar-item__toggle {
-    color: #69a8ee;
   }
   .site {
     background: #121212 !important;
@@ -175,7 +164,6 @@
 }
 
 @layer base {
-  [data-theme="dark"] .sidebar-item__anchor a:hover,
   [data-theme="dark"] a:hover {
     color: #82b7f6;
   }
