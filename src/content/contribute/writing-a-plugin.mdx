@@ -300,6 +300,82 @@ T> 위의 예시에서 비동기식 동작으로 수행할 필요가 없기 때�
 
 T> [`processAssets`](/api/compilation-hooks/#processassets) 훅은 지정한 단계를 실행하기 전에 다른 플러그인에 의하여 추가된 애셋 뿐만 아니라 나중에 추가된 애셋을 가로챌 수도 있는 `additionalAssets` 프로퍼티도 지원합니다. 이는 compilation의 일부분인 애셋을 완전히 가로 챌 수도 있습니다. 그러나 이 예시에서 이전 단계에서 생성된 모든 애셋을 캡쳐하기 위한 단계인 `SUMMARIZE`를 사용하는 것이 좋습니다.(이는 일반적으로 모든 애셋을 설명합니다.)
 
+## Watching for file changes
+
+webpack이 watch 모드(`webpack --watch` 또는 `webpack serve`)로 실행될 때,
+파일 변경으로 인해 재빌드가 발생할 때마다 새로운 컴파일을 생성합니다.
+
+`compiler.modifiedFiles` 세트는 플러그인이 **어떤 특정 파일이 
+재빌드를 트리거했는지** 알 수 있도록 해주므로, 관련 없는 파일에 대한 비용이 많이 드는 작업을 건너뛸 수 있습니다.
+
+이 기능은 특정 파일 변경 사항에만 반응해야 하는 플러그인에 유용합니다.
+(예: 에셋 재생성, 템플릿 재처리 또는 캐시 무효화).
+
+```js
+class WatchNotifierPlugin {
+  apply(compiler) {
+    compiler.hooks.watchRun.tap("WatchNotifierPlugin", (compiler) => {
+      if (compiler.modifiedFiles) {
+        const changedFiles = [...compiler.modifiedFiles]
+          .map((file) => `  • ${file}`)
+          .join("\n");
+
+        console.log(`\nFiles changed:\n${changedFiles}`);
+      }
+    });
+  }
+}
+
+export default WatchNotifierPlugin;
+```
+
+> **Note**:
+>
+> - `compiler.modifiedFiles`는 배열이 아니라 `Set`입니다.
+> - 첫 번째(콜드) 빌드 시에는 `undefined`입니다.
+> - 이 변수는 watch 재빌드 중에만 채워집니다.
+
+### Adding custom file dependencies
+
+플러그인이 webpack이 기본적으로 추적하지 않는 외부 파일(설정 파일, 템플릿 등)을 읽는 경우, 
+webpack이 해당 파일을 감시하도록 지정해야 합니다.
+
+webpack에게 다양한 유형의 종속성을 감시하도록 지시할 수 있습니다.
+
+- `compilation.fileDependencies`는 플러그인이 의존하는 개별 파일을 추적하는 데 사용되므로, webpack은 해당 파일이 변경될 때 재빌드를 트리거할 수 있습니다.
+
+- `compilation.contextDependencies`는 디렉터리를 감시하는 데 사용되므로 해당 디렉터리 내의 변경 사항이 발생하면 다시 빌드가 트리거됩니다.
+
+- `compilation.missingDependencies`는 현재 누락된 파일을 추적하는 데 사용되므로 해당 파일이 생성되면 webpack이 다시 빌드를 트리거할 수 있습니다.
+
+```js
+import path from "node:path";
+
+class TemplateWatchPlugin {
+  apply(compiler) {
+    compiler.hooks.compilation.tap("TemplateWatchPlugin", (compilation) => {
+      const templatePath = path.resolve(__dirname, "my-template.html");
+
+      // webpack이 이 파일을 감시하도록 설정하세요
+      compilation.fileDependencies.add(templatePath);
+
+      // 디렉토리 감시(컨텍스트 종속성)
+      const templatesDir = path.resolve(__dirname, "templates");
+      compilation.contextDependencies.add(templatesDir);
+
+      // 예시: 누락된 종속성을 표시합니다.
+      const missingFile = path.resolve(__dirname, "missing-file.txt");
+      compilation.missingDependencies.add(missingFile);
+    });
+  }
+}
+
+export default TemplateWatchPlugin;
+```
+
+`fileDependencies.add()`를 호출하지 않으면 플러그인이 해당 파일에 의존하더라도 
+파일이 변경될 때 webpack은 다시 빌드를 트리거하지 않습니다.
+
 ## Different Plugin Shapes
 
 플러그인은 탭 하는 이벤트 훅에 따라 타입으로 분류될 수 있습니다. 모든 이벤트 훅은 동기 또는 비동기 waterfall 또는 병렬 훅으로 사전에 정의되어 있고 훅은 내부적으로 call/callAsync 메소드를 사용하여 호출됩니다. 지원되거나 탭이 된 훅의 목록은 일반적으로 `this.hooks` 프로퍼티에 명시되어 있습니다.

@@ -45,7 +45,7 @@ export default class SidebarMobile extends Component {
           onTouchEnd={this._handleTouchEnd}
         />
 
-        <div className="relative w-[285px] h-screen overflow-x-hidden py-1 bg-white shadow-[0_0_15px_rgba(0,0,0,0.2)]">
+        <div className="relative w-[285px] h-screen overflow-x-hidden py-1 bg-white dark:bg-[#121212] shadow-[0_0_15px_rgba(0,0,0,0.2)]">
           <button
             className="sidebar-mobile__close absolute cursor-pointer border-none right-[22px] top-[10px] text-[1.3em] bg-[#175d96] text-white w-[30px] h-[30px] flex items-center justify-center rounded-full transition-colors duration-150 [-webkit-tap-highlight-color:transparent] hover:bg-[#135d96]"
             onClick={toggle.bind(null, false)}
@@ -93,7 +93,8 @@ export default class SidebarMobile extends Component {
             className={clsx(
               "uppercase pt-[0.75em] px-4 pb-[0.25em] font-semibold block text-[1.1rem]",
               active ? "text-[#465E69]" : "text-[#2B3A42]",
-              index > 0 && "border-t border-gray-200",
+              index > 0 && "border-t border-gray-200 dark:border-[#343434]",
+              "dark:text-[#cadbe6]",
             )}
             key={section.url}
             to={section.url}
@@ -131,8 +132,8 @@ export default class SidebarMobile extends Component {
           className={clsx(
             "block py-[0.5em] px-[17px] capitalize [-webkit-tap-highlight-color:transparent] ml-[20px]",
             active
-              ? "text-gray-900 font-semibold bg-[#f1f4f4]"
-              : "text-gray-600 hover:text-gray-600 active:text-gray-900 active:font-semibold active:bg-[#f1f4f4]",
+              ? "text-gray-900 font-semibold bg-[#f1f4f4] dark:text-white dark:bg-[#222424]"
+              : "text-gray-600 dark:text-[#a3a3a3] hover:text-gray-600 active:text-gray-900 active:font-semibold active:bg-[#f1f4f4] dark:active:bg-[#222424] dark:active:text-white",
           )}
           to={url}
           onClick={this.props.toggle.bind(null, false)}
