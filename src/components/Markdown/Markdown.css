@@ -1,0 +1,372 @@
+@reference "tailwindcss";
+@import "./prism-theme.css";
+
+/*
+  Local constants (previously Sass variables):
+  $bannerHeight: 56px
+  $navigationHeight: 56px
+  $navigationSubHeight: 28px
+  $someExtraHeight: 10px
+  $topHeightDesktop: 94px  (56 + 28 + 10)
+  $topHeightMobile: 56px
+*/
+
+.markdown {
+  @apply leading-normal;
+
+  h1 {
+    @apply text-4xl;
+  }
+  h2 {
+    @apply text-3xl;
+  }
+  h3 {
+    @apply text-2xl;
+  }
+  h4 {
+    @apply text-xl;
+  }
+  h5 {
+    @apply text-base;
+  }
+  h6 {
+    @apply text-sm;
+  }
+
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    > span[id] {
+      @apply absolute w-0 block invisible pointer-events-none pt-14 -mt-14;
+      @media (min-width: 768px) {
+        @apply pt-[94px] -mt-[94px];
+      }
+    }
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply block font-semibold text-[#32434a] leading-[1.4];
+    font-family:
+      "Source Serif Pro", ui-serif, Georgia, Cambria, "Times New Roman", Times,
+      serif;
+    margin: 0 0 0.25em;
+    word-break: break-word;
+
+    tt,
+    code {
+      font-size: 90%;
+      color: inherit;
+    }
+
+    a[aria-hidden="true"] {
+      @apply ml-2 text-[0.8em] h-[1em] opacity-0 invisible;
+      transition: all 250ms;
+    }
+
+    &:hover a[aria-hidden="true"] {
+      @apply opacity-100 visible;
+    }
+  }
+
+  h1:first-child {
+    margin: 0;
+    @apply leading-none;
+  }
+
+  p,
+  blockquote,
+  aside,
+  table,
+  pre {
+    @apply my-[1em];
+  }
+
+  ul,
+  ol,
+  dl {
+    @apply mt-[0.5em] mb-[1em];
+  }
+
+  li {
+    @apply my-[0.5em];
+  }
+
+  hr {
+    @apply border-none bg-gray-200 h-[3px] my-[2em];
+  }
+
+  ul,
+  ol {
+    @apply pl-[30px];
+    list-style: revert;
+
+    &:first-child {
+      margin-top: 0;
+    }
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  dl {
+    dt {
+      @apply text-base font-bold italic mt-[15px] mb-[5px];
+
+      &:first-child {
+        padding: 0;
+      }
+    }
+
+    dd {
+      @apply mb-[15px] px-[15px];
+    }
+
+    dt,
+    dd {
+      > :first-child {
+        margin-top: 0;
+      }
+      > :last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  aside {
+    @apply border-l-4 border-solid border-l-[#dddddd] py-[0.75em] px-[1em] text-gray-500;
+    > :first-child {
+      margin-top: 0;
+    }
+    > :last-child {
+      margin-bottom: 0;
+    }
+    &.tip,
+    &.warning,
+    &.preview,
+    &.todo {
+      @apply border-l-[3px];
+
+      .tip-content {
+        @apply italic;
+      }
+
+      code {
+        color: inherit;
+      }
+
+      > .tip__prefix,
+      > .warning__prefix,
+      > .preview__prefix,
+      > .todo__prefix {
+        @apply capitalize font-semibold block text-base text-[#1a1a1a] mb-[0.25em];
+      }
+    }
+
+    &.tip {
+      @apply bg-[#eaf8ff] text-[#4e7182] border-l-[#1eb4ff];
+    }
+
+    &.warning {
+      @apply bg-[#fdf5d8] text-[#716b53] border-l-[#f3c316];
+    }
+
+    &.preview {
+      @apply bg-gray-100 text-[#716b53] border-l-[#1e72b3];
+    }
+
+    &.todo {
+      @apply bg-[#fbddcd] text-[#907a6e] border-l-[#e95d13];
+
+      .tip-content::before {
+        content: "[TODO]: ";
+        font-style: normal;
+      }
+    }
+  }
+
+  blockquote {
+    @apply border-l-4 border-solid border-l-[#dddddd] py-[0.75em] px-[1em] text-gray-500 italic;
+
+    > :first-child {
+      margin-top: 0;
+    }
+    > :last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  table {
+    @apply my-[1em];
+
+    @media (min-width: 768px) {
+      @apply block overflow-x-auto overflow-y-hidden;
+    }
+
+    p {
+      margin: 0;
+    }
+
+    code {
+      padding-top: 0;
+    }
+  }
+
+  thead {
+    @apply hidden;
+    @media (min-width: 768px) {
+      display: table-header-group;
+    }
+  }
+
+  th {
+    @apply font-bold text-left py-1.5 px-3 bg-[#f1f4f4] border-r border-solid border-r-[#cccccc];
+
+    &:last-child {
+      @apply border-r-0;
+    }
+  }
+
+  tr {
+    @apply border border-solid border-[#cccccc] block mb-2.5;
+
+    &:nth-child(2n) {
+      @apply bg-[#f8f8f8];
+    }
+
+    &:last-child {
+      @apply border-b border-b-[#cccccc];
+    }
+
+    @media (min-width: 768px) {
+      @apply mb-0;
+      display: table-row;
+    }
+  }
+
+  td {
+    @apply py-1 px-3 border-r-0 grid grid-cols-2 text-left border-b border-solid border-b-gray-100;
+    &::before {
+      content: attr(data-th);
+      @apply font-bold;
+    }
+    &:last-child {
+      @apply border-b-0;
+    }
+    @media (min-width: 768px) {
+      display: table-cell;
+      @apply py-3.5 px-[22px];
+      text-align: unset;
+      &::before {
+        content: none;
+      }
+      @apply border-r border-r-[#cccccc] border-b-0;
+      &:last-child {
+        @apply border-r-0;
+      }
+    }
+  }
+
+  img:not([class*="support__"]) {
+    @apply max-w-full h-auto;
+  }
+
+  b,
+  strong {
+    font-weight: 600;
+  }
+
+  i,
+  em {
+    @apply italic;
+  }
+
+  code,
+  tt {
+    font-family:
+      "Source Code Pro", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    @apply text-[90%] mx-0.5 py-0.5 px-1.5 whitespace-normal bg-[rgba(70,94,105,0.05)] rounded-[3px];
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+  }
+
+  a code {
+    @apply text-[#1a6bac];
+  }
+  a {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    text-decoration-thickness: 1px;
+  }
+  pre {
+    @apply bg-[#2d3748] text-[#e2e8f0] p-4 pr-14 rounded-[3px] text-sm leading-normal overflow-auto;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    code {
+      @apply m-0 p-0 whitespace-pre border-none bg-transparent text-[#a5cee1];
+      font-family: monospace;
+      text-shadow: 0 1px 0 rgba(22, 31, 35, 0.5);
+
+      .code-details-summary-span {
+        @apply -ml-[15px] cursor-pointer;
+
+        &::after {
+          content: "›";
+          @apply float-left relative -left-0.5 text-center text-[#1e78c2] text-base;
+        }
+      }
+
+      a {
+        border-bottom: 1px dotted;
+        @apply border-b-[#175d96];
+      }
+
+      .code-link {
+        @apply relative;
+
+        &:hover {
+          @apply text-[#2186d8];
+        }
+      }
+    }
+
+    code,
+    tt {
+      @apply bg-transparent border-none;
+    }
+  }
+
+  p {
+    code,
+    tt {
+      @apply max-w-full overflow-auto;
+      line-height: initial;
+      margin: 0;
+    }
+  }
+
+  span {
+    code,
+    tt {
+      @apply whitespace-pre-line;
+    }
+  }
+
+  h2 {
+    @apply mt-[2em];
+  }
+  h2:first-child {
+    @apply mt-[1em];
+  }
+  h2 + h3 {
+    @apply mt-[0.5em];
+  }
+  h3 {
+    @apply mt-[1.5em];
+  }
+}

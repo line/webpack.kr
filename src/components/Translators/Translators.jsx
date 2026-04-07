@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { useEffect, useRef, useState } from "react";
 import SmallIcon from "../../assets/icon-square-small-slack.png";
-import "./Translators.scss";
+import "./Translators.css";
 
 function Translators({ translators = [] }) {
   const [inView, setInView] = useState(false);

@@ -40,8 +40,8 @@ import Splash from "../Splash/Splash.jsx";
 import Sponsors from "../Sponsors/Sponsors.jsx";
 
 // Load Styling
-import "../../styles/index.scss";
-import "../../styles/ko.scss"; // kr patch
+import "../../styles/index.css";
+import "../../styles/ko.css"; // kr patch
 
 // Load Content Tree
 

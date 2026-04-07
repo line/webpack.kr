@@ -1,9 +1,7 @@
 @charset "UTF-8";
-@use "sass:color";
 /* webpack kr patch */
 
 @import url("https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@700&display=swap");
-@import "functions";
 
 body {
   font-family:
@@ -42,7 +40,7 @@ body {
     serif;
 }
 
-// Text rotater
+/* Text rotater */
 
 @media screen and (max-width: 767px) {
   .splash-viz__cube {
@@ -69,7 +67,7 @@ body {
   }
 }
 
-// Main page's sub title style
+/* Main page's sub title style */
 
 .index-sub-title {
   font-family:
@@ -84,13 +82,13 @@ body {
 
   justify-content: center;
 
-  font-size: getFontSize(3);
+  font-size: 20px;
 
   display: block;
   font-weight: 600;
   line-height: 1.4;
   margin: 0 0 0.25em;
-  color: color.adjust(getColor(fiord), $lightness: -10%);
+  color: #32434a;
   word-break: break-word;
 
   margin-top: 2em;
