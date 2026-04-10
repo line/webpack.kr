@@ -89,7 +89,7 @@ export default {
 };
 ```
 
-플러그인 옵션을 통해 전달되는 옵션의 유효성을 확인하려면 [`schema-utils`](https://github.com/webpack/schema-utils)를 사용하세요. 다음은 사용 예제입니다.
+`5.106` 이전 버전의 webpack에서 플러그인 옵션의 유효성을 검사하는 일반적인 방법은 생성자에서 `schema-utils`를 사용하는 것입니다.
 
 ```js
 import { validate } from "schema-utils";
@@ -115,6 +115,27 @@ export default class HelloWorldPlugin {
   apply(compiler) {}
 }
 ```
+
+webpack `5.106` 버전부터는 `compiler.hooks.validate`를 활용하고 `compiler.validate(...)`를 호출함으로써 해당 유효성 검사를 `apply()` 함수 안으로 옮길 수 있습니다.
+
+```js
+export default class HelloWorldPlugin {
+  constructor(options = {}) {
+    this.options = options;
+  }
+
+  apply(compiler) {
+    compiler.hooks.validate.tap("HelloWorldPlugin", () => {
+      compiler.validate(
+        () => require("./schema/hello-world-plugin.json"),
+        this.options,
+      );
+    });
+  }
+}
+```
+
+W> `validate: false`로 설정된 webpack에서는 이 유효성 검사 과정이 건너뛰어집니다. `experiments.futureDefaults`를 사용하면 개발 모드에서는 유효성 검사가 기본적으로 활성화되고 프로덕션 모드에서는 기본적으로 비활성화됩니다.
 
 ## Compiler and Compilation
 

@@ -87,6 +87,27 @@ compiler.hooks.entryOption.tap("MyPlugin", (context, entry) => {
 
 - 콜백 파라미터: `compiler`
 
+### validate
+
+`SyncHook`
+
+<Badge text="5.106.0+" />
+
+Webpack 설정, 플러그인 및 로더에 대한 유효성 검사 작업을 등록하기 위해 호출됩니다. 플러그인 개발자는 이 훅을 활용하여 `compiler.validate(...)`를 사용하여 webpack의 내장 유효성 검사 흐름에 참여할 수 있습니다.
+
+W> 해당 훅은 항상 사용 가능합니다. `compiler.validate(...)`는 `validate: false`로 설정된 경우 유효성 검사를 건너뜁니다. `experiments.futureDefaults`를 사용하면 webpack은 개발 환경에서는 기본적으로 유효성 검사를 활성화하고 프로덕션 환경에서는 기본적으로 비활성화합니다.
+
+```js
+compiler.hooks.validate.tap("MyPlugin", () => {
+  compiler.validate(
+    () => require("./schema/MyPlugin.json"),
+    options,
+    { name: "My Plugin", baseDataPath: "options" },
+    (validatedOptions) => require("./schema/MyPlugin.check")(validatedOptions),
+  );
+});
+```
+
 ### initialize
 
 `SyncHook`
