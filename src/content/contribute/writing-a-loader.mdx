@@ -10,6 +10,8 @@ contributors:
   - chenxsan
   - dev-itsheng
   - evenstensberg
+  - hagemaruwu
+  - raj-sapalya
 translators:
   - KiKi-Daehaksaeng
 ---
@@ -101,6 +103,47 @@ export default {
   },
 };
 ```
+
+## Pitching loaders
+
+로더는 일반적으로 **오른쪽에서 왼쪽으로** 실행됩니다.
+로더는 또한 일반 단계가 시작되기 전에 **왼쪽에서 오른쪽으로** 실행되는 `피치` 함수를 내보낼 수 있습니다.
+이를 통해 로더는 데이터를 자체 정상 단계로 전달하거나 나머지 로더 체인을 단락시킬 수 있습니다.
+
+```js
+// my-loader.js
+export default function (source) {
+  // Normal phase — runs right to left
+  const prefix = this.data.value ?? "";
+  return `${prefix}\n${source}`;
+}
+
+export function pitch(remainingRequest, precedingRequest, data) {
+  // 피치 단계 - 일반 로더보다 먼저 왼쪽에서 오른쪽으로 이동합니다.
+  data.value = "/* my-loader에 의해 처리됨 */";
+}
+```
+
+T> `data`는 동일한 로더의 `pitch` 함수와 일반 함수 간에만 공유됩니다. 체인 내의 다른 로더 간에는 공유되지 않습니다.
+
+### Short-circuiting the loader chain
+
+`pitch` 함수가 값을 반환하면 webpack은 나머지
+오른쪽 로더를 건너뛰고 즉시 역순으로 진행합니다. 이는 모듈 코드를 조기에 생성하고 일반적인 단계를 건너뛰려는 경우에 유용할 수 있습니다.
+
+```js
+export function pitch(remainingRequest) {
+  return `
+import style from ${JSON.stringify(`!!${remainingRequest}`)};
+const el = document.createElement("style");
+el.textContent = style;
+document.head.appendChild(el);
+  `;
+}
+```
+
+W> `pitch` 함수가 값을 반환하면 해당 로더의 기본 내보내기는 실행되지 않습니다.
+이 패턴은 일반적인 처리 파이프라인을 대체하려는 경우에만 사용하십시오.
 
 ## Guidelines
 

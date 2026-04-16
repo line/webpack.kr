@@ -4,6 +4,7 @@ sort: 12
 contributors:
   - snitin315
   - chenxsan
+  - shivxmsharma
 translators:
   - YukJiSoo
   - dkstyle
@@ -13,7 +14,15 @@ translators:
 
 `boolean` `object`
 
-생성된 webpack 모듈 및 청크를 캐시하여 빌드 속도를 개선하세요. `cache`는 [`development` 모드](/configuration/mode/#mode-development)에서 `type: 'memory'`로 설정되고 [`production` 모드](/configuration/mode/#mode-production)에서는 비활성화됩니다. `cache: true`는 `cache: { type: 'memory' }`의 별칭입니다. 캐싱을 비활성화하려면 `false`로 설정하세요.
+빌드 속도를 향상시키기 위해 생성된 webpack 모듈 및 청크를 캐시합니다. `cache: true`는 `cache: { type: 'memory' }`의 별칭입니다. 캐싱을 비활성화하려면 `false`를 전달하세요.
+
+`cache`의 기본값은 [`mode`](/configuration/mode/)에 따라 다릅니다.
+
+| 모드            | 기본값               |
+| --------------- | -------------------- |
+| `"production"`  | `false`              |
+| `"development"` | `{ type: 'memory' }` |
+| `"none"`        | `false`              |
 
 **webpack.config.js**
 
@@ -30,8 +39,16 @@ export default {
 
 역 직렬화를 하는 동안 미사용 할당 메모리를 수집합니다. [`cache.type`](#cachetype)이 `'filesystem'`으로 설정된 경우에만 사용할 수 있습니다. 이를 위해서는 데이터를 더 작은 버퍼에 복사해야 하며 성능이 저하됩니다.
 
-- 타입: `boolean`
-  - 프로덕션 모드에서는 기본적으로 `false`이고 개발 모드에서는 `true`입니다.
+- Type: `boolean`
+
+`cache.allowCollectingMemory`의 기본값은 [`mode`](/configuration/mode/)에 따라 다릅니다.
+
+| 모드            | 기본값  |
+| --------------- | ------- |
+| `"production"`  | `false` |
+| `"development"` | `true`  |
+| `"none"`        | `false` |
+
 - <Badge text="5.35.0+" />
 
 **webpack.config.js**
@@ -319,9 +336,13 @@ export default {
 
 - `cache.maxMemoryGenerations`: 0보다 큰 작은 숫자는 GC 작업에 대한 성능 비용이 있습니다. 숫자가 증가할수록 낮아집니다.
 
-- `cache.maxMemoryGenerations`: 기본값은 `development` 모드에서 10이고 `production` 모드에서 `Infinity` 입니다.
+`cache.maxMemoryGenerations`의 기본값은 [`mode`](/configuration/mode/)에 따라 달라집니다.
 
-`cache.maxMemoryGenerations`은 [`cache.type`](#cachetype)이 `'filesystem'`으로 설정된 경우에만 사용할 수 있습니다.
+| 모드            | 기본값     |
+| --------------- | ---------- |
+| `"production"`  | `Infinity` |
+| `"development"` | `5`        |
+| `"none"`        | `Infinity` |
 
 **webpack.config.js**
 

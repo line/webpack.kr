@@ -24,6 +24,7 @@ contributors:
   - vabushkevich
   - ahabhgk
   - hai-x
+  - shivxmsharma
 translators:
   - YukJiSoo
 ---
@@ -986,7 +987,15 @@ export default {
 
 ### module.parser.json.exportsDepth
 
-`exportInfo`로 플래그가 지정된 json 종속성의 깊이입니다. 기본적으로 프로덕션 모드에서는 `Infinity`로 설정되고 개발 모드에서는 `1`로 설정됩니다.
+`exportInfo`로 표시된 JSON 종속성의 깊이입니다.
+
+`module.parser.json.exportsDepth`의 기본값은 [`mode`](/configuration/mode/)에 따라 달라집니다.
+
+| 모드            | 기본값     |
+| --------------- | ---------- |
+| `"production"`  | `Infinity` |
+| `"development"` | `1`        |
+| `"none"`        | `Infinity` |
 
 - Type: `number`
 - Available: <Badge text='5.98.0+' />

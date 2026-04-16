@@ -4,6 +4,7 @@ sort: 1
 contributors:
   - pranshuchittora
   - EugeneHlushko
+  - shivxmsharma
 translators:
   - angrymusic
 ---
@@ -207,7 +208,35 @@ W> 이것은 Warning입니다.
 
 이를 통해 기본값, 열거 및 기타 정보를 표시할 수 있습니다.
 
-객체의 키가 동적이며 사용자 정의된 경우 `<key>`를 사용하여 설명합니다.
+옵션의 기본값이 [`모드`](/configuration/mode/)에 따라 다를 경우, inline `= 값` 구문 대신 기본값 테이블을 사용하십시오.
+
+**configuration.example.option**
+
+`string: 'natural' | 'named' | 'deterministic'`
+
+The default value of `configuration.example.option` depends on the [`mode`](/configuration/mode/):
+
+| 모드            | 기본값            |
+| --------------- | ----------------- |
+| `"production"`  | `'deterministic'` |
+| `"development"` | `'named'`         |
+| `"none"`        | `'natural'`       |
+
+If an option has a boolean default that varies by mode:
+
+**configuration.example.flag**
+
+`boolean`
+
+The default value of `configuration.example.flag` depends on the [`mode`](/configuration/mode/):
+
+| 모드            | 기본값  |
+| --------------- | ------- |
+| `"production"`  | `true`  |
+| `"development"` | `false` |
+| `"none"`        | `false` |
+
+If the object's key is dynamic, user-defined, use `<key>` to describe it:
 
 `object = { <key> string }`
 

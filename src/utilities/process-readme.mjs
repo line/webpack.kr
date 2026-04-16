@@ -1,4 +1,3 @@
-import url from "node:url";
 import { excludedLoaders, excludedPlugins } from "./constants.mjs";
 
 const beginsWithDocsDomainRegex = /^(?:https?:)\/\/webpack\.js\.org/;
@@ -40,8 +39,7 @@ function linkFixerFactory(sourceUrl) {
         .replace(/raw.githubusercontent.com/, "github.com")
         .replace(/master/, "blob/master");
 
-      // eslint-disable-next-line n/no-deprecated-api
-      href = url.resolve(renderedUrl, href);
+      href = new URL(href, renderedUrl).href;
     }
 
     // Modify absolute documentation links to be root relative

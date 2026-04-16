@@ -296,13 +296,15 @@
     text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
   }
 
-  a code {
-    @apply text-brand-link;
-  }
   a {
-    text-decoration: underline;
+    @apply text-brand-link;
+    text-decoration: no underline;
     text-underline-offset: 2px;
     text-decoration-thickness: 1px;
+  }
+
+  a:hover {
+    @apply text-brand-link-hover;
   }
   pre {
     @apply bg-code-pre-bg text-code-pre-text p-4 pr-14 rounded-[3px] text-sm leading-normal overflow-auto;
@@ -370,4 +372,86 @@
   h3 {
     @apply mt-[1.5em];
   }
+}
+
+.dark .markdown h1,
+.dark .markdown h2,
+.dark .markdown h3,
+.dark .markdown h4,
+.dark .markdown h5,
+.dark .markdown h6 {
+  @apply text-dark-heading;
+}
+
+.dark .markdown code,
+.dark .markdown tt {
+  text-shadow: none;
+  @apply bg-dark-code-inline-bg;
+}
+
+.dark .markdown blockquote {
+  @apply border-l-dark-section-border text-dark-muted;
+}
+
+.dark .markdown blockquote.tip {
+  @apply bg-dark-aside-tip-bg text-dark-aside-tip-text;
+}
+
+.dark .markdown blockquote.warning {
+  @apply bg-dark-aside-warning-bg text-dark-aside-warning-text;
+}
+
+.dark .markdown blockquote.todo {
+  @apply bg-dark-aside-todo-bg text-dark-aside-todo-text;
+}
+
+.dark .markdown hr {
+  @apply bg-dark-section-border;
+}
+
+.dark .markdown th {
+  @apply bg-dark-bg border-dark-border;
+}
+
+.dark .markdown tr,
+.dark .markdown tr:last-child {
+  @apply border-dark-border;
+}
+
+.dark .markdown tr:nth-child(2n) {
+  @apply bg-dark-surface;
+}
+
+.dark .markdown td {
+  @apply border-dark-border;
+}
+
+.dark .markdown pre {
+  @apply bg-dark-code-bg;
+}
+
+.dark .markdown pre code {
+  @apply bg-transparent;
+}
+
+.dark .markdown a {
+  @apply text-dark-link;
+}
+
+.dark .markdown a:hover {
+  @apply text-dark-link-hover;
+}
+
+.dark .markdown aside.tip,
+.dark .markdown aside.warning,
+.dark .markdown aside.preview,
+.dark .markdown aside.todo {
+  @apply bg-dark-surface-2 text-white;
+}
+
+.dark .markdown aside.tip > .tip__prefix,
+.dark .markdown aside.warning > .warning__prefix,
+.dark .markdown aside.preview > .preview__prefix,
+.dark .markdown aside.todo > .todo__prefix {
+  @apply text-white;
 }

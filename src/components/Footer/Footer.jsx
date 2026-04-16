@@ -21,24 +21,27 @@ const Footer = () => (
         </a>
       </div>
       <p className="mx-auto text-[15px] leading-[1.6] text-[#333333] dark:text-[#e0e0e0]">
-        Copyright <a href="https://openjsf.org">OpenJS Foundation</a> and
-        webpack contributors. All rights reserved. The{" "}
-        <a href="https://openjsf.org">OpenJS Foundation</a> has registered
-        trademarks and uses trademarks. For a list of trademarks of the{" "}
-        <a href="https://openjsf.org">OpenJS Foundation</a>, please see our{" "}
-        <a href="https://trademark-policy.openjsf.org">Trademark Policy</a> and{" "}
-        <a href="https://trademark-list.openjsf.org">Trademark List</a>.
-        Trademarks and logos not indicated on the{" "}
+        저작권은 <a href="https://openjsf.org">OpenJS Foundation</a> 및 webpack
+        기여자에게 있으며, 모든 권리는 보호됩니다.{" "}
+        <a href="https://openjsf.org">OpenJS Foundation</a>은 등록 상표를
+        보유하고 있으며 상표를 사용합니다.{" "}
+        <a href="https://openjsf.org">OpenJS Foundation</a>의 상표 목록은{" "}
+        <a href="https://trademark-policy.openjsf.org">Trademark Policy</a>와{" "}
+        <a href="https://trademark-list.openjsf.org">Trademark List</a>에서
+        확인할 수 있습니다.{" "}
         <a href="https://trademark-list.openjsf.org">
-          list of OpenJS Foundation trademarks
-        </a>{" "}
-        are trademarks&trade; or registered&reg; trademarks of their respective
-        holders. Use of them does not imply any affiliation with or endorsement
-        by them.
+          OpenJS Foundation 상표 목록
+        </a>
+        에 표시되지 않은 상표 및 로고는 각 소유자의 상표&trade; 또는 등록
+        상표&reg;입니다. 이를 사용한다고 해서 해당 소유자와의 제휴 관계나 보증을
+        의미하지는 않습니다.
       </p>
       <p className="mx-auto mt-[18px] text-[15px] leading-[1.6] text-[#333333] dark:text-[#e0e0e0]">
         <a href="https://openjsf.org">The OpenJS Foundation</a> |{" "}
-        <a href="https://terms-of-use.openjsf.org">Terms of Use</a> |{" "}
+        <a href="https://ai-coding-assistants-policy.openjsf.org/">
+          AI Coding Assistants Policy
+        </a>{" "}
+        | <a href="https://terms-of-use.openjsf.org">Terms of Use</a> |{" "}
         <a href="https://privacy-policy.openjsf.org">Privacy Policy</a> |{" "}
         <a href="https://bylaws.openjsf.org">Bylaws</a> |{" "}
         <a href="https://code-of-conduct.openjsf.org">Code of Conduct</a> |{" "}

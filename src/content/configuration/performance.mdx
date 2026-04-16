@@ -7,6 +7,7 @@ contributors:
   - byzyk
   - madhavarshney
   - EugeneHlushko
+  - shivxmsharma
 translators:
   - dkstyle
 ---
@@ -49,11 +50,19 @@ export default {
 
 ### performance.hints
 
-`string = 'warning': 'error' | 'warning'` `boolean: false`
+`string: 'error' | 'warning'` `boolean: false`
 
 힌트를 켜거나 끕니다. 또한 힌트가 발견되면 webpack에 오류나 경고를 표시하도록 합니다.
 
-250kb를 초과하는 애셋이 생성된 경우입니다.
+`performance.hints`의 기본값은 [`mode`](/configuration/mode/)에 따라 다릅니다.
+
+| 모드            | 기본값      |
+| --------------- | ----------- |
+| `"production"`  | `'warning'` |
+| `"development"` | `false`     |
+| `"none"`        | `false`     |
+
+생성된 에셋의 크기가 250KB를 초과하는 경우:
 
 ```js
 export default {

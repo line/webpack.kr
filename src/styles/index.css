@@ -1,7 +1,6 @@
 @reference "tailwindcss";
 @import url("https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600&family=Source+Sans+Pro:ital,wght@0,400;0,600;1,400&family=Source+Serif+Pro:wght@600&display=swap");
 @import "./theme.css";
-@import "./dark.css";
 
 * {
   box-sizing: inherit;
@@ -21,6 +20,10 @@ body {
     Arial,
     sans-serif;
   @apply text-blue-800;
+}
+
+.dark body {
+  @apply bg-dark-bg text-dark-text;
 }
 
 .header-link {

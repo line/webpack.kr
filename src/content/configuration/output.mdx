@@ -31,6 +31,7 @@ contributors:
   - long76
   - ahabhgk
   - tanyabouman
+  - shivxmsharma
 translators:
   - YukJiSoo
 ---
@@ -2174,9 +2175,17 @@ W> 경로에는 느낌표(`!`)가 포함되어서는 안 되며, 이는 webpack�
 
 ## output.pathinfo
 
-`boolean=true` `string: 'verbose'`
+`boolean` `string: 'verbose'`
 
-포함된 모듈에 대한 정보를 주석으로 번들에 포함하도록 webpack에 지시합니다. 이 옵션의 기본값은 `development`에서 `true`이고 `production` [모드](/configuration/mode/)에서는 `false`입니다. `'verbose'`는 export, 런타임 요구 사항 및 bailouts와 같은 더 많은 정보를 보여줍니다.
+`output.pathinfo`는 webpack이 번들에 포함된 모듈에 대한 정보를 주석으로 포함하도록 지시합니다. `verbose` 옵션을 사용하면 내보내기, 런타임 요구 사항 및 오류 메시지와 같은 더 자세한 정보를 볼 수 있습니다.
+
+`output.pathinfo`의 기본값은 `mode`(`configuration/mode/`)에 따라 다릅니다.
+
+| 모드            | 기본값  |
+| --------------- | ------- |
+| `"production"`  | `false` |
+| `"development"` | `true`  |
+| `"none"`        | `false` |
 
 W> 이 주석이 제공하는 데이터는 개발 중에 생성된 코드를 읽을 때는 유용하지만 프로덕션에서 사용해서는 **안 됩니다**.
 

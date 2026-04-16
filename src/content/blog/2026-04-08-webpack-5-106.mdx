@@ -5,14 +5,14 @@ contributors:
   - bjohansebas
 ---
 
-**Webpack 5.106에서는 플러그인 유효성 검사 후크, CSS Modules용 내장 런타임 스타일 삽입, CommonJS 구조 분해 할당을 위한 더욱 효율적인 트리 셰이킹, WebAssembly 모듈의 소스 단계 가져오기, 그리고 JavaScript 파싱 속도 향상을 위한 `oxc-parser`와의 실험적 통합 기능이 도입되었습니다.**
+**Webpack 5.106에서는 플러그인 유효성 검사 후크, CSS Modules용 내장 런타임 스타일 삽입, CommonJS 구조 분해 할당을 위한 더욱 효율적인 트리 셰이킹, WebAssembly 모듈의 `source phase import`, 그리고 JavaScript 파싱 속도 향상을 위한 `oxc-parser`와의 실험적 통합 기능이 도입되었습니다.**
 
 이번 릴리스의 새로운 기능을 살펴보세요:
 
 - [**`compiler.hooks.validate`를 사용한 플러그인 유효성 검사**](#plugin-validation-with-compilerhooksvalidate)
 - [**런타임 스타일 주입 기능이 있는 CSS 모듈**](#css-modules-with-runtime-style-injection)
-- [**CommonJS 구조 분해 할당을 위한 더 나은 트리 쉐이킹**](#better-tree-shaking-for-commonjs-destructuring)
-- [**웹어셈블리용 소스 단계 가져오기(실험적)**](#source-phase-imports-for-webassembly-experimental)
+- [**CommonJS 구조 분해 할당을 위한 더 나은 트리 셰이킹**](#better-tree-shaking-for-commonjs-destructuring)
+- [**웹어셈블리용 `source phase import`(실험적)**](#source-phase-imports-for-webassembly-experimental)
 - [**`create-webpack-app` 시작하기**](#getting-started-with-create-webpack-app)
 - [**VirtualUrlPlugin에 대한 컨텍스트 지원**](#context-support-for-virtualurlplugin)
 - [**`oxc-parser`를 사용한 실험적인 JavaScript 파싱**](#experimental-javascript-parsing-with-oxc-parser)
@@ -23,7 +23,7 @@ contributors:
 
 Webpack은 최상위 `validate` 옵션과 [`compiler.hooks.validate`](/api/compiler-hooks/#validate) hook을 추가하여 webpack 설정, 플러그인 및 로더 전반에 걸쳐 스키마 유효성 검사 방식을 표준화했습니다.
 
-지금까지는 플러그인이 스키마 유효성 검사를 Webpack 빌드 라이프사이클에 통합하는 통일된 방법이 없었습니다. 각 플러그인이 자체적으로 유효성 검사를 처리했습니다. 새로운 `compiler.hooks.validate`는 이러한 문제를 해결합니다. hook gives plugin authors a standard API to register their validation logic, and `compiler.validate(...)` to run it. This means all validation from webpack's core config to every plugin that adopts the hook is controlled by a single `validate` flag and follows the same patterns:
+지금까지는 플러그인이 스키마 유효성 검사를 Webpack 빌드 라이프사이클에 통합하는 통일된 방법이 없었습니다. 각 플러그인이 자체적으로 유효성 검사를 처리했습니다. 새로운 `compiler.hooks.validate`는 이러한 문제를 해결합니다. 이 hook은 플러그인 작성자가 자신의 유효성 검사 로직을 등록할 수 있는 표준 API와, 이를 실행하기 위한 `compiler.validate(...)`를 제공합니다. 즉, webpack의 core config부터 이 hook을 채택한 모든 플러그인의 유효성 검사까지 하나의 `validate` 플래그로 제어되며, 동일한 패턴을 따르게 됩니다.
 
 ```js
 module.exports = {
@@ -34,12 +34,12 @@ module.exports = {
 
 기본값은 빌드 모드에 따라 다릅니다.
 
-| 모드        | `experiments.futureDefaults` | 기본값 `validate` |
-| ----------- | :--------------------------: | :----------------: |
-| development |           `false`            |       `true`       |
-| development |            `true`            |       `true`       |
-| production  |           `false`            |       `true`       |
-| production  |            `true`            |      `false`       |
+| 모드        | `experiments.futureDefaults` | `validate` 기본값 |
+| ----------- | :--------------------------: | :---------------: |
+| development |           `false`            |      `true`       |
+| development |            `true`            |      `true`       |
+| production  |           `false`            |      `true`       |
+| production  |            `true`            |      `false`      |
 
 플러그인 개발자에게 유효성 검사 통합은 간단합니다. `compiler.hooks.validate`에 탭을 등록하기만 하면 webpack이 나머지를 처리해 줍니다. 사용자가 `validate: false`로 설정하면 유효성 검사를 완전히 건너뛰는 것도 포함됩니다.
 
@@ -146,11 +146,11 @@ const { a, b } = module.require("./module");
 
 ## Source Phase Imports for WebAssembly (Experimental)
 
-Webpack은 이제 WebAssembly 모듈을 가져올 때 TC39 [소스 단계 가져오기](https://github.com/tc39/proposal-source-phase-imports)에 대한 실험적 지원을 포함합니다.
+Webpack은 이제 WebAssembly 모듈을 가져올 때 TC39 [`Source Phase Imports`](https://github.com/tc39/proposal-source-phase-imports)에 대한 실험적 지원을 포함합니다.
 
-이 제안은 현재 **3단계**에 있으며, 모듈을 즉시 평가하는 대신 _소스 단계_에서 가져오는 방법을 도입합니다. WebAssembly의 경우, 이는 컴파일된 `WebAssembly.Module`을 먼저 얻은 다음 나중에 사용자 정의 가져오기를 통해 인스턴스를 생성할 수 있음을 의미합니다.
+이 제안은 현재 **3단계**에 있으며, 모듈을 즉시 평가하는 대신 *source phase*에서 가져오는 방법을 도입합니다. WebAssembly의 경우, 이는 컴파일된 `WebAssembly.Module`을 먼저 얻은 다음 나중에 사용자 정의 가져오기를 통해 인스턴스를 생성할 수 있음을 의미합니다.
 
-webpack 5.106에서는 `experiments.sourceImport`를 통해 WebAssembly 소스 가져오기에 대한 실험적 지원이 제공됩니다. 다음 마이너 릴리스에서는 JavaScript 지원으로 초점이 옮겨질 예정입니다.
+webpack 5.106에서는 `experiments.sourceImport`를 통해 WebAssembly의 `source import`에 대한 실험적 지원이 제공됩니다. 다음 마이너 릴리스에서는 JavaScript 지원으로 초점이 옮겨질 예정입니다.
 
 `experiments.sourceImport`를 사용하여 이 기능을 활성화하세요.
 
@@ -163,7 +163,7 @@ module.exports = {
 };
 ```
 
-그런 다음 정적 또는 동적 소스 단계 구문을 사용하세요.
+그런 다음 정적 또는 동적 `source phase` 구문을 사용하세요.
 
 ```text
 // 정적 형태
@@ -272,9 +272,9 @@ Webpack에 기본 JavaScript 파서를 **`oxc-parser`** 로 교체하는 방법�
 
 대신, **개발 환경**이나 **벤치마크 브랜치**에서 사용하도록 고안되었으며, 커뮤니티에서 실제 프로젝트에서 대체 파싱 전략을 실험해 볼 수 있도록 합니다. 이를 통해 **파싱 시간 및 빌드 성능** 개선 가능성을 평가하고 **호환성 문제**를 식별할 수 있습니다.
 
-**Example**
+**예시**
 
-The following configuration limits the custom parser to `.js` files:
+다음 구성은 `custom parser`가 `.js` 파일에만 적용되도록 제한합니다.
 
 ```js
 "use strict";
@@ -305,9 +305,9 @@ module.exports = {
 ## Ecosystem Updates
 
 - **Webpack-cli**가 새로운 메이저 버전인 [7.0.0](https://github.com/webpack/webpack-cli/releases/tag/webpack-cli%407.0.0)을 출시했습니다. 이제 지원되는 최소 Node.js 버전은 `20.9.0`이며, 설정 파일은 기본적으로 동적 `import()`를 통해 로드됩니다. 이를 통해 외부 로더 없이도 Node.js 타입 스트리핑을 통해 네이티브 TypeScript 설정 지원이 가능해졌습니다.
-`--node-env` 인수는 `--config-node-env`로 대체되었으며, 더 이상 사용되지 않는 프로그래밍 방식 API가 제거되었습니다. 또한, 설정 동결이 허용되고, 파일 시스템 캐시가 활성화된 경우 정상적인 종료가 개선되었으며, 전반적인 성능이 향상되었습니다. 자세한 내용은 [릴리스](https://github.com/webpack/webpack-cli/releases/tag/webpack-cli%407.0.0)을 참고하세요.
+  `--node-env` 인수는 `--config-node-env`로 대체되었으며, 더 이상 사용되지 않는 프로그래밍 방식 API가 제거되었습니다. 또한, 설정 동결이 허용되고, 파일 시스템 캐시가 활성화된 경우 정상적인 종료가 개선되었으며, 전반적인 성능이 향상되었습니다. 자세한 내용은 [릴리스](https://github.com/webpack/webpack-cli/releases/tag/webpack-cli%407.0.0)을 참고하세요.
 - **Webpack-dev-middleware**가 새로운 메이저 버전인 [8.0.0](https://github.com/webpack/webpack-dev-middleware/releases/tag/v8.0.0)을 출시했습니다. 이제 지원되는 최소 Node.js 버전은 `20.9.0`이고 최소 webpack 버전은 `5.101.0`입니다. `getFilenameFromUrl` 함수는 이제 비동기식으로 작동하며, 변경 불가능한 자산 캐싱(`cacheImmutable`)이 기본적으로 활성화되었고, 새로운 `forwardError` 옵션을 통해 오류를 다음 미들웨어로 전달할 수 있습니다.
-플러그인 사용 지원이 추가되었으며, 전반적인 성능이 향상되었습니다. 자세한 내용은 [릴리스](https://github.com/webpack/webpack-dev-middleware/releases/tag/v8.0.0)을 참고하세요.
+  플러그인 사용 지원이 추가되었으며, 전반적인 성능이 향상되었습니다. 자세한 내용은 [릴리스](https://github.com/webpack/webpack-dev-middleware/releases/tag/v8.0.0)을 참고하세요.
 - **Compression-webpack-plugin**, **html-minimizer-webpack-plugin**, **css-minimizer-webpack-plugin**, **image-minimizer-webpack-plugin** 및 기타 플러그인들이 최소 지원 Node.js 버전을 `20.9.0`으로 맞추기 위해 새로운 주요 버전을 출시했습니다. 이는 최근 출시된 webpack-cli 7 및 webpack-dev-middleware 8의 주요 버전과 함께 webpack 생태계 전반의 일관성을 유지하기 위한 것입니다.
 
 ## Bug Fixes

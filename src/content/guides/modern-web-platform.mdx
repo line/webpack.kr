@@ -1,0 +1,199 @@
+---
+title: Modern Web Platform
+description: webpack 5와 함께 사용하는 Web Components, import maps, 그리고 PWA.
+sort: 26
+contributors:
+  - phoekerson
+---
+
+이 가이드는 **Web Components**, **Import Maps**, 그리고 **Service Workers**를 사용하는 **Progressive Web Apps**(PWA)를 위한 실용적인 webpack 패턴을 설명합니다. 각 섹션은 문제를 설명하고, 바로 복사해 사용할 수 있는 최소 설정을 보여주며, 앞으로의 webpack 개선과 비교했을 때 현재의 한계도 함께 짚어줍니다.
+
+T> [code splitting](/guides/code-splitting/), [caching](/guides/caching/) (`[contenthash]`), 그리고 [`SplitChunksPlugin`](/plugins/split-chunks-plugin/)에 익숙하면 도움이 됩니다.
+
+## Web Components with webpack
+
+### Problem
+
+둘 이상의 JavaScript 번들이 같은 태그 이름에 대해 `customElements.define()`를 실행하면, 브라우저는 [`DOMException`](https://developer.mozilla.org/en-US/docs/Web/API/DOMException)인 `Failed to execute 'define' on 'CustomElementRegistry'`를 발생시킵니다. 이런 일은 요소를 등록하는 모듈이 중복될 때 자주 발생합니다. 즉, 서로 다른 엔트리 포인트나 비동기 청크에 등록 코드 사본이 각각 들어 있어 두 번들이 같은 태그에 대해 모두 `define`을 실행하게 됩니다.
+
+### Approach
+
+요소를 정의하는 모듈이 한 번만 로드되는 **단일 공유 청크**에 들어가도록 [`optimization.splitChunks`](/configuration/optimization/#optimizationsplitchunks)를 사용하세요. `cacheGroups`를 조정해 요소 정의 코드(또는 `src/elements/` 같은 전용 폴더)를 하나의 청크로 강제로 묶을 수 있습니다. 전반적인 아이디어는 [Prevent Duplication](/guides/code-splitting/#prevent-duplication)을 참고하세요.
+
+**webpack.config.js**
+
+```js
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
+  entry: {
+    main: "./src/main.js",
+    admin: "./src/admin.js",
+  },
+  output: {
+    filename: "[name].js",
+    path: path.resolve(__dirname, "dist"),
+    clean: true,
+  },
+  optimization: {
+    splitChunks: {
+      chunks: "all",
+      cacheGroups: {
+        // Put shared custom element modules in one async chunk.
+        customElements: {
+          test: /[\\/]src[\\/]elements[\\/]/,
+          name: "custom-elements",
+          chunks: "all",
+          enforce: true,
+        },
+      },
+    },
+  },
+};
+```
+
+두 엔트리 모두 동일한 등록 모듈(예: `./elements/my-element.js`)을 import하도록 해야 webpack이 중복 등록 코드를 `main`과 `admin`에 각각 인라인하는 대신, 하나의 `custom-elements.js` 청크를 생성할 수 있습니다.
+
+### Limitations and future work
+
+청크 분할만으로 **브라우저**의 규칙이 바뀌지는 않습니다. 태그 이름은 여전히 문서마다 정확히 한 번만 등록되어야 합니다. Webpack은 아직 청크 그래프 제어를 넘어서는, “이 커스텀 요소를 한 번만 등록하라”는 일급 기능을 제공하지 않습니다. 빌드 전반에서 커스텀 요소 등록을 중복 제거하는 네이티브 지원은 **계획되어 있지만**, 그때까지는 공유 청크와 단일 등록 모듈에 의존해야 합니다.
+
+## Import Maps with webpack
+
+### Problem
+
+[Import maps](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script/type/importmap)는 브라우저가 **bare specifier**를 해석할 수 있게 해줍니다(`importmap.json` 또는 인라인 `<script type="importmap">`를 통한 `import "lodash-es"` 같은 형태). Webpack이 해당 의존성을 **번들링**한다면 그 의존성에 대해 import map은 필요하지 않습니다. 반대로 애플리케이션 코드는 bare import를 유지하면서 의존성은 **브라우저**가 URL(CDN 또는 `/vendor/`)에서 직접 로드하게 하고 싶다면, 그 모듈들을 [`externals`](/configuration/externals/)로 지정해 webpack이 import map과 일치하는 `import` 구문을 출력하도록 해야 합니다.
+
+### Approach
+
+[ES module output](/configuration/output/#outputmodule)(`experiments.outputModule` 및 `output.module`)을 활성화하고, 정적 import에 대해 [`externalsType: "module"`](/configuration/externals/#externalstypemodule)을 설정한 뒤, 각 bare specifier를 `externals`에 import map에서 브라우저가 해석할 것과 같은 문자열로 나열하세요.
+
+**webpack.config.js**
+
+```js
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
+  mode: "production",
+  experiments: {
+    outputModule: true,
+  },
+  entry: "./src/index.js",
+  externalsType: "module",
+  externals: {
+    "lodash-es": "lodash-es",
+  },
+  output: {
+    module: true,
+    filename: "[name].mjs",
+    path: path.resolve(__dirname, "dist"),
+    clean: true,
+  },
+};
+```
+
+**importmap.json** (HTML과 함께 제공되어야 하며 URL은 실제 배포 환경과 일치해야 합니다)
+
+로컬 vendor 파일:
+
+```json
+{
+  "imports": {
+    "lodash-es": "/vendor/lodash-es.js"
+  }
+}
+```
+
+CDN(직접 호스팅 불필요):
+
+```json
+{
+  "imports": {
+    "lodash-es": "https://cdn.jsdelivr.net/npm/lodash-es@4/+esm"
+  }
+}
+```
+
+`"lodash-es"` 키는 **`externals` 키**와 소스 코드 안의 **specifier**(`import … from "lodash-es"`) 모두와 일치해야 합니다. 값은 브라우저가 로드할 URL이며, 로컬 경로일 수도 있고 CDN URL일 수도 있습니다. Webpack은 해당 파일의 유효성을 검사하지 않습니다.
+
+**index.html** (순서가 중요합니다. 번들보다 import map이 먼저 와야 합니다)
+
+```html
+<script type="importmap" src="/importmap.json"></script>
+<script type="module" src="/dist/main.mjs"></script>
+```
+
+W> [`experiments.outputModule`](/configuration/experiments/#experimentsoutputmodule)과 [`output.module`](/configuration/output/#outputmodule)은 아직 실험적 기능입니다. 프로덕션에서 사용하기 전에 최신 [webpack release notes](https://github.com/webpack/webpack/releases)를 확인하세요.
+
+### Limitations and future work
+
+Webpack은 `importmap.json`을 대신 생성하거나 업데이트해주지 **않습니다**. specifier와 URL이 `externals` 및 서버 레이아웃과 계속 맞도록 이 맵을 직접 관리해야 합니다. 현재 webpack 5에서는 import map 자동 생성 기능을 사용할 수 **없으며**, 앞으로의 도구 개선으로 이 수작업 단계가 줄어들 수 있습니다.
+
+## Progressive Web Apps (PWA) and Service Workers
+
+### Problem
+
+오래 유지되는 캐싱을 위해서는 HTML에는 **안정적인 URL**이 필요하고, 스크립트와 스타일에는 **버전이 반영된 URL**이 필요합니다. `output.filename`에 [`[contenthash]`](/guides/caching/)를 사용하면 이 URL은 빌드할 때마다 바뀝니다. **service worker**의 precache 목록은 매 빌드 후의 **정확한** URL을 나열해야 하며, 그렇지 않으면 오프라인 셸이 존재하지 않는 파일을 가리키게 됩니다.
+
+[`workbox-webpack-plugin`](/guides/progressive-web-application/)의 **`GenerateSW`** 플러그인은 전체 service worker를 대신 생성해줍니다. 편리하긴 하지만, service worker 코드에 대한 **완전한 제어**(커스텀 라우팅, `skipWaiting` 동작, 또는 `[contenthash]` 및 다른 플러그인과의 연동)가 필요하다면 **`InjectManifest`**가 더 적합합니다. 워커 코드는 직접 작성하고, Workbox가 빌드 시점에 webpack의 에셋 목록을 바탕으로 precache manifest를 주입합니다.
+
+### Approach
+
+출력되는 에셋에는 `[contenthash]`를 사용하고, `workbox-webpack-plugin`의 **`InjectManifest`**를 추가하세요. 소스 템플릿에서는 `workbox-precaching`을 import한 뒤 `precacheAndRoute(self.__WB_MANIFEST)`를 호출합니다. 그러면 플러그인이 `self.__WB_MANIFEST`를 webpack 에셋 목록(해시된 파일명 포함)으로 치환합니다.
+
+설치:
+
+```bash
+npm install workbox-webpack-plugin workbox-precaching --save-dev
+```
+
+**webpack.config.js**
+
+```js
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import HtmlWebpackPlugin from "html-webpack-plugin";
+import { InjectManifest } from "workbox-webpack-plugin";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
+  entry: "./src/index.js",
+  output: {
+    filename: "[name].[contenthash].js",
+    path: path.resolve(__dirname, "dist"),
+    clean: true,
+  },
+  plugins: [
+    new HtmlWebpackPlugin({ title: "PWA + content hashes" }),
+    new InjectManifest({
+      swSrc: path.resolve(__dirname, "src/service-worker.js"),
+      swDest: "service-worker.js",
+    }),
+  ],
+};
+```
+
+**src/service-worker.js** (precache 템플릿)
+
+```js
+import { precacheAndRoute } from "workbox-precaching";
+
+// Replaced at build time with webpack's precache manifest (hashed asset URLs).
+precacheAndRoute(globalThis.__WB_MANIFEST);
+```
+
+생성된 `service-worker.js`는 애플리케이션 쪽(예: `src/index.js`)에서 `navigator.serviceWorker.register("/service-worker.js")`로 등록하세요. 이 파일은 올바른 scope로 `dist/`에서 제공되어야 합니다.
+
+### Limitations and future work
+
+출력 파일명과 플러그인 구성이 바뀌면 **`InjectManifest`**도 그에 맞게 계속 동기화해야 합니다. 커스텀 워커가 필요 없다면 여전히 `GenerateSW`가 더 단순한 선택입니다. Webpack은 내장 service worker precache 생성기를 제공하지 않으며, 해시된 에셋과의 더 긴밀한 통합은 앞으로의 릴리스에서 추가될 수 있습니다. 그전까지는 Workbox의 **`InjectManifest`**가 `[contenthash]` 출력과 precaching을 맞추는 가장 안정적인 방법입니다.

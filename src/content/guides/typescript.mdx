@@ -74,7 +74,7 @@ webpack 설정에 대한 자세한 내용은 [설정 콘셉트를](/concepts/con
 
 이제 TypeScript를 처리하도록 webpack을 설정해 보겠습니다.
 
-First, install the required dependencies:
+먼저 필요한 종속성을 설치하세요.
 
 ```bash
 npm install --save-dev ts-node @types/node
@@ -87,7 +87,7 @@ import path from "node:path";
 import { fileURLToPath } from "url";
 import webpack from "webpack";
 
-// in case you run into any TypeScript error when configuring `devServer`
+// `devServer`를 구성하는 동안 TypeScript 오류가 발생하는 경우
 import "webpack-dev-server";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -160,7 +160,7 @@ T> import 부분에서 기본적으로 이 작업을 하도록 하고 TypeScript
 
    Node.js의 내장 [타입 제거](https://nodejs.org/api/typescript.html#type-stripping)를 사용하여 구성을 로드하려고 시도한 다음, `interpret` 및 `rechoir`를 사용하여 구성 파일을 로드하려고 시도합니다(이 경우 `tsx` 또는 `ts-node` 또는 기타 도구를 설치해야 합니다).
 
-2. **Using custom `--import`/`--require` for Node.js:**
+2. **Node.js에서 사용자 지정 `--import`/`--require` 사용:**
 
    ```bash
    NODE_OPTIONS='--import=tsx --no-experimental-strip-types'  webpack -c ./webpack.config.ts
@@ -186,7 +186,7 @@ T> import 부분에서 기본적으로 이 작업을 하도록 하고 TypeScript
 
 `tsconfig.json` 파일에서 `compilerOptions.paths` 또는 `compilerOptions.baseUrl`을 사용하여 임포트 별칭을 생성하는 경우, webpack 5.105 버전부터는 webpack이 `resolve.tsconfig` 파일을 통해 이러한 별칭을 직접 읽을 수 있습니다. 따라서 기존의 `tsconfig-paths-webpack-plugin` 플러그인은 더 이상 사용하지 않아야 합니다.
 
-`resolve.tsconfig` accepts `boolean | string | object`:
+`resolve.tsconfig`는 `boolean | string | object` 값을 허용합니다.
 
 **webpack.config.ts**
 
@@ -208,14 +208,14 @@ export default {
 };
 ```
 
-Pass an object to also resolve [TypeScript project references](https://www.typescriptlang.org/docs/handbook/project-references.html):
+TypeScript 프로젝트 참조를 해결하기 위해 객체를 전달하세요(https://www.typescriptlang.org/docs/handbook/project-references.html).
 
 ```js
 export default {
   resolve: {
     tsconfig: {
       configFile: "./tsconfig.json",
-      references: "auto", // inherit references from tsconfig, or pass an array of paths
+      references: "auto", // tsconfig에서 참조를 상속받거나 경로 배열을 전달합니다.
     },
   },
 };
@@ -234,9 +234,34 @@ export default {
 }
 ```
 
-With the above, `@/components/Button` resolves to `src/components/Button` without any additional plugins or duplicating aliases in `resolve.alias`.
+위와 같이 하면 `@/components/Button`은 추가 플러그인이나 `resolve.alias`에 별칭을 중복 지정할 필요 없이 `src/components/Button`으로 해석됩니다.
 
-W> `resolve.tsconfig` only handles module resolution — it does not transpile TypeScript. You still need `ts-loader`, `babel-loader` with `@babel/preset-typescript`, or another transpilation step.
+### Migrating from `tsconfig-paths-webpack-plugin`
+
+현재 `tsconfig-paths-webpack-plugin`을 사용하고 있다면, 내장된 `resolve.tsconfig` 옵션으로 대체할 수 있습니다.
+
+```diff
+- 'tsconfig-paths-webpack-plugin'에서 TsconfigPathsPlugin을 가져옵니다.
+
+  export default {
+    resolve: {
+-     plugins: [new TsconfigPathsPlugin()],
++     // 프로젝트 루트에서 tsconfig.json 파일을 자동으로 찾습니다.
++     tsconfig: true,
++
++     // 또는 명시적으로 하나를 가리키십시오.
++     // tsconfig: './tsconfig.app.json'
+    },
+  };
+```
+
+그런 다음 프로젝트에서 해당 패키지를 제거할 수 있습니다.
+
+```bash
+npm uninstall tsconfig-paths-webpack-plugin
+```
+
+W> `resolve.tsconfig`는 모듈 해석만 처리하며 TypeScript를 트랜스파일링하지는 않습니다. TypeScript 트랜스파일링을 위해서는 `ts-loader`, `@babel/preset-typescript`를 사용하는 `babel-loader` 또는 다른 트랜스파일링 단계를 사용해야 합니다.
 
 ## Loader
 

@@ -1,5 +1,3 @@
-// eslint-disable-next-line n/prefer-node-protocol
-import Url from "url";
 import PropTypes from "prop-types";
 
 const baseURL = "https://github.com/line/webpack.kr/edit/kr/";
@@ -21,8 +19,7 @@ function _handlePrintClick(event) {
 }
 
 export default function PageLinks({ page = {} }) {
-  // eslint-disable-next-line n/no-deprecated-api
-  const editLink = page.edit || Url.resolve(baseURL, page.path);
+  const editLink = page.edit || new URL(page.path, baseURL).href;
 
   return (
     <div className="print:hidden mt-8">
