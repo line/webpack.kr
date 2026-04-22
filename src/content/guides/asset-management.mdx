@@ -13,6 +13,7 @@ contributors:
   - astonizer
   - snitin315
   - Brennvo
+  - mr-baraiya
 translators:
   - keipark
 ---
@@ -97,15 +98,26 @@ npm install --save-dev style-loader css-loader
  };
 ```
 
-모듈 로더는 체인으로 연결할 수 있습니다. 체인의 각 로더는 리소스에 변형을 적용합니다. 체인은 역순으로 실행됩니다. 첫 번째 로더는 결과(변형이 적용된 리소스)를 다음 로더로 전달합니다. 마지막으로 webpack은 체인의 마지막 로더가 JavaScript를 반환할 것으로 예상합니다.
+모듈 로더는 체인으로 연결할 수 있습니다. 체인의 각 로더는 처리 대상 리소스에 변환을 적용하며, 실행 순서는 역순(오른쪽에서 왼쪽)입니다.
 
-위의 로더 순서는 유지되어야 합니다. [`'style-loader'`](/loaders/style-loader)가 먼저 오고 그 뒤에 [`'css-loader'`](/loaders/css-loader)가 따라오게 됩니다. 이 컨벤션을 따르지 않으면 webpack에서 오류가 발생할 수 있습니다.
+예를 들어 다음과 같은 규칙이 있다고 해보겠습니다.
 
-T> webpack은 정규 표현식을 사용하여 어떤 파일을 찾아 특정 로더에 전달해야 하는지 알아냅니다. 이 경우 `.css`로 끝나는 모든 파일은 `style-loader`와 `css-loader`에 전달됩니다.
+```js
+export default {
+  module: {
+    rules: [
+      {
+        test: /\.scss$/i,
+        use: ["postcss-loader", "sass-loader"],
+      },
+    ],
+  },
+};
+```
 
-이렇게 하면 스타일이 필요한 파일에 `import './style.css'`하여 가져올 수 있습니다. 이제 모듈이 실행될 때 html 파일의 `<head>`에 문자열화 된 CSS가 `<style>`태그로 삽입됩니다.
+`use` 배열에서는 `postcss-loader`가 `sass-loader`보다 앞에 있지만, webpack은 먼저 `sass-loader`를 실행해 Sass를 CSS로 변환하고 그 결과에 다시 `postcss-loader`를 적용합니다.
 
-이제 새로운 `style.css` 파일을 프로젝트에 추가하고 `index.js`로 가져와 볼까요?
+이 순서가 올바르게 유지되지 않으면 webpack에서 오류가 발생할 수 있습니다.
 
 **project**
 
@@ -168,7 +180,7 @@ cacheable modules 539 KiB
   modules by path ./src/ 965 bytes
     ./src/index.js + 1 modules 639 bytes [built] [code generated]
     ./node_modules/css-loader/dist/cjs.js!./src/style.css 326 bytes [built] [code generated]
-webpack 5.4.0 compiled successfully in 2231 ms
+webpack 5.x.x compiled successfully in 2231 ms
 ```
 
 브라우저에서 `dist/index.html`을 다시 열면 이제 `Hello webpack`이 빨간색으로 표시됩니다. webpack이 무엇을 했는지 확인하려면 페이지를 검사하여 head 태그를 살펴보세요. (`<style>`태그는 JavaScript를 통해 동적으로 생성되며 결과를 표시하지 않으므로 페이지 소스를 확인하지 마세요) head 태그에 `index.js`에서 가져온 스타일 블록이 포함되어 있을 것입니다.
@@ -287,7 +299,7 @@ cacheable modules 540 KiB (javascript) 9.88 KiB (asset)
     ./src/index.js + 1 modules 794 bytes [built] [code generated]
     ./src/icon.png 42 bytes (javascript) 9.88 KiB (asset) [built] [code generated]
     ./node_modules/css-loader/dist/cjs.js!./src/style.css 648 bytes [built] [code generated]
-webpack 5.4.0 compiled successfully in 1972 ms
+webpack 5.x.x compiled successfully in 1972 ms
 ```
 
 모든 것이 순조롭게 진행되었다면 이제 아이콘이 반복해서 배경으로 표시되고, `Hello webpack` 텍스트 옆에 `img` 요소가 보이게 됩니다. 이 요소를 살펴보면 실제 파일 이름이 `29822eaa871e8eadeaa4.png`와 같이 변경된 것을 볼 수 있습니다. 이것은 webpack이 `src` 폴더에서 파일을 찾아서 처리했음을 의미합니다!
@@ -398,7 +410,7 @@ cacheable modules 541 KiB (javascript) 43.1 KiB (asset)
     ./src/icon.png 42 bytes (javascript) 9.88 KiB (asset) [built] [code generated]
     ./src/my-font.woff2 42 bytes (javascript) 14.5 KiB (asset) [built] [code generated]
     ./src/my-font.woff 42 bytes (javascript) 18.8 KiB (asset) [built] [code generated]
-webpack 5.4.0 compiled successfully in 2142 ms
+webpack 5.x.x compiled successfully in 2142 ms
 ```
 
 `dist/index.html`을 다시 열고 `Hello webpack` 텍스트가 새 폰트로 변경되었는지 확인합니다. 모든 것이 잘되었다면, 변경된 폰트를 확인할 수 있을 것입니다.

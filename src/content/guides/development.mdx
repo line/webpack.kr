@@ -124,7 +124,7 @@ cacheable modules 530 KiB
   ./src/index.js 406 bytes [built] [code generated]
   ./src/print.js 83 bytes [built] [code generated]
   ./node_modules/lodash/lodash.js 530 KiB [built] [code generated]
-webpack 5.4.0 compiled successfully in 706 ms
+webpack 5.x.x compiled successfully in 706 ms
 ```
 
 이제 브라우저에서 `index.html` 파일을 엽니다. 버튼을 클릭하고, 오류가 표시된 콘솔을 확인합니다. 오류는 다음과 같이 표시되어야 합니다.
@@ -173,12 +173,12 @@ webpack의 watch 모드를 시작하는 npm 스크립트를 추가해 보겠습�
    "author": "",
    "license": "ISC",
    "devDependencies": {
-     "html-webpack-plugin": "^5.0.0",
-     "webpack": "^5.4.0",
-     "webpack-cli": "^6.0.0"
+     "html-webpack-plugin": "^5.6.6",
+     "webpack": "^5.105.0",
+     "webpack-cli": "^7.0.0"
    },
    "dependencies": {
-     "lodash": "^4.17.20"
+     "lodash": "^4.17.21"
    }
  }
 ```
@@ -275,13 +275,13 @@ W> webpack-dev-server는 컴파일 후 출력 파일을 작성하지 않습니�
    "author": "",
    "license": "ISC",
    "devDependencies": {
-     "html-webpack-plugin": "^5.0.0",
-     "webpack": "^5.4.0",
-     "webpack-cli": "^6.0.0",
-     "webpack-dev-server": "^5.0.0"
+     "html-webpack-plugin": "^5.6.6",
+     "webpack": "^5.105.0",
+     "webpack-cli": "^7.0.0",
+     "webpack-dev-server": "^5.2.3"
    },
    "dependencies": {
-     "lodash": "^4.17.20"
+     "lodash": "^4.17.21"
    }
  }
 ```
@@ -401,15 +401,15 @@ app.listen(3000, () => {
    "author": "",
    "license": "ISC",
    "devDependencies": {
-     "express": "^4.17.1",
-     "html-webpack-plugin": "^5.0.0",
-     "webpack": "^5.4.0",
-     "webpack-cli": "^6.0.0",
-     "webpack-dev-middleware": "^4.0.2",
-     "webpack-dev-server": "^5.0.0"
+     "express": "^5.2.1",
+     "html-webpack-plugin": "^5.6.6",
+     "webpack": "^5.105.0",
+     "webpack-cli": "^7.0.0",
+     "webpack-dev-middleware": "^8.0.3",
+     "webpack-dev-server": "^5.2.3"
    },
    "dependencies": {
-     "lodash": "^4.17.20"
+     "lodash": "^4.17.21"
    }
  }
 ```
@@ -427,12 +427,12 @@ Example app listening on port 3000!
 <i>   ./src/index.js 406 bytes [built] [code generated]
 <i>   ./src/print.js 83 bytes [built] [code generated]
 <i>   ./node_modules/lodash/lodash.js 530 KiB [built] [code generated]
-<i> webpack 5.4.0 compiled successfully in 709 ms
+<i> webpack 5.x.x compiled successfully in 709 ms
 <i> [webpack-dev-middleware] Compiled successfully.
 <i> [webpack-dev-middleware] Compiling...
 <i> [webpack-dev-middleware] assets by status 1.38 MiB [cached] 2 assets
 <i> cached modules 530 KiB (javascript) 1.9 KiB (runtime) [cached] 12 modules
-<i> webpack 5.4.0 compiled successfully in 19 ms
+<i> webpack 5.x.x compiled successfully in 19 ms
 <i> [webpack-dev-middleware] Compiled successfully.
 ```
 

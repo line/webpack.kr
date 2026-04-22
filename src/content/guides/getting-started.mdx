@@ -32,15 +32,17 @@ translators:
   - limong
 ---
 
+애플리케이션에 맞춤형 빌드 파이프라인이 필요하다면 webpack은 좋은 선택입니다. JavaScript 모듈 번들링, 애셋 처리, 로더와 플러그인 통합, 환경별 출력 구성까지 세밀하게 제어할 수 있습니다. 스크립트가 한두 개뿐인 아주 작은 페이지라면 처음에는 번들러가 필요 없을 수도 있지만, 공통 의존성, npm 패키지, 애셋, 프로덕션 빌드가 포함된 애플리케이션이라면 webpack이 전체 조립 과정을 명시적으로 제어할 수 있게 해줍니다.
+
 Webpack은 JavaScript 모듈을 효율적으로 컴파일하는 데 사용됩니다. [설치](/guides/installation)가 완료되면 [CLI](/api/cli) 또는 [API](/api/node)를 사용하여 webpack과 상호 작용할 수 있습니다. Webpack을 처음 사용하시는 분이라면 [핵심 개념](/concepts)과 [이 비교](/comparison)를 읽어보시고, 커뮤니티에 나와 있는 다른 도구들보다 webpack을 사용하는 이유를 알아보세요.
 
-W> webpack 5를 실행하기 위한 최소 Node.js 버전은 10.13.0(LTS) 입니다.
+W> 이 가이드의 예제는 `webpack-cli` 7을 사용하며, Node.js 20.9.0 이상이 필요합니다.
 
 <StackBlitzPreview example="getting-started?terminal=" />
 
 ## Quick Start (Minimal Working Example)
 
-Webpack 프로젝트를 빠르게 구축하고 실행하고 싶다면 `create-webpack-app`을 사용하여 스캐폴딩하는 것이 가장 쉬운 방법입니다.
+Webpack 프로젝트를 빠르게 구축하고 실행하고 싶다면 `create-webpack-app`으로 스캐폴딩하는 것이 가장 쉬운 방법입니다.
 
 ```bash
 npx create-webpack-app webpack-demo
@@ -56,6 +58,8 @@ T> 이 명령은 적절한 기본 설정이 포함된 바로 사용할 수 있�
 먼저 디렉터리를 생성합니다. 그 다음 npm을 초기화하고, [webpack을 로컬로 설치](/guides/installation/#local-installation)한 후 [`webpack-cli`](https://github.com/webpack/webpack-cli)(커맨드-라인에서 webpack을 실행할 때 사용되는 도구)를 설치합니다.
 
 ```bash
+# Run the commands for one package manager only.
+
 mkdir webpack-demo
 cd webpack-demo
 
@@ -116,7 +120,7 @@ document.body.appendChild(component());
   <head>
     <meta charset="utf-8" />
     <title>Getting Started</title>
-    <script src="https://unpkg.com/lodash@4.17.20"></script>
+    <script src="https://unpkg.com/lodash@4.17.21"></script>
   </head>
   <body>
     <script src="./src/index.js"></script>
@@ -124,7 +128,9 @@ document.body.appendChild(component());
 </html>
 ```
 
-또한 `package.json` 파일에서 패키지를 `private`으로 표시하고 `main` 항목을 삭제해야 합니다. Node.js가 설정 파일을 ES 모듈로 처리하도록 `type: module`도 추가합니다. 이는 코드가 실수로 공개되는 것을 방지하고 스크립트에서 ES 모듈을 지원하도록 하기 위함입니다.
+또한 `package.json` 파일을 수정해 패키지를 `private`으로 표시하고 `main` 항목을 제거해야 합니다. 이렇게 하면 코드가 실수로 배포되는 일을 방지할 수 있습니다.
+
+그리고 `"type": "module"`도 추가해 Node.js가 이 프로젝트의 `.js` 파일을 ES 모듈로 처리하도록 합니다. 이 설정은 이후의 Node.js 스크립트와 webpack 설정 파일까지 프로젝트 전반에 적용됩니다. Node의 기본 CommonJS 동작을 유지하고 싶다면 `"type": "module"`을 생략하고, 이 가이드 뒤쪽의 설정은 `import`와 `export default` 대신 `require(...)`와 `module.exports`로 작성하면 됩니다.
 
 T> `package.json`의 내부 동작을 더 알고 싶으면 [npm 문서](https://docs.npmjs.com/files/package.json)를 읽어 보시기 바랍니다.
 
@@ -145,13 +151,13 @@ T> `package.json`의 내부 동작을 더 알고 싶으면 [npm 문서](https://
    "author": "",
    "license": "MIT",
    "devDependencies": {
-     "webpack": "^5.38.1",
-     "webpack-cli": "^6.0.0"
+     "webpack": "^5.105.0",
+     "webpack-cli": "^7.0.0"
    }
  }
 ```
 
-예시에서 `<script>` 태그 사이에는 암시적인 의존성이 있습니다. `index.js` 파일은 실행되기 전에 페이지에 포함되는 `lodash`와 연관이 있습니다. 이는 `index.js`가 `lodash`의 필요성을 명시적으로 선언하지 않았기 때문입니다. 단지 전역 변수인 `_`가 존재하는지 추정할 뿐입니다.
+이 예시에서는 `<script>` 태그 사이에 암시적인 의존성이 있습니다. `index.js` 파일은 실행되기 전에 페이지에 `lodash`가 포함되어 있어야 합니다. 즉 전역 변수 `_`에 암묵적으로 의존하게 되므로, 스크립트 실행 순서가 중요해지고 유지보수도 어려워집니다.
 
 이러한 방식으로 JavaScript 프로젝트를 관리하는 것은 문제가 있습니다.
 
@@ -159,7 +165,7 @@ T> `package.json`의 내부 동작을 더 알고 싶으면 [npm 문서](https://
 - 의존성을 잃어버렸거나 잘못된 순서로 포함되었으면 애플리케이션이 제대로 작동하지 않습니다.
 - 의존성이 포함되었지만 사용되지 않는 경우에도 브라우저는 필요 없는 코드를 강제로 다운로드합니다.
 
-대신 webpack을 사용하여 이러한 스크립트를 관리할 수 있습니다.
+Webpack은 의존성을 명시적으로 선언하고 함께 번들링함으로써 이러한 문제를 해결합니다. 덕분에 전역 변수에 의존하지 않아도 되고, 스크립트도 올바른 순서로 실행되도록 보장할 수 있습니다.
 
 ## Creating a Bundle
 
@@ -178,13 +184,15 @@ T> `package.json`의 내부 동작을 더 알고 싶으면 [npm 문서](https://
        └── index.js
 ```
 
-T> 자세히 관찰한 분들은 비록 `index.html`이 `dist` 디렉터리에 있지만, 수동으로 생성되었다는 것을 알아챘을 것입니다. 나중에 [다른 가이드에서](/guides/output-management/#setting-up-htmlwebpackplugin), `index.html`을 수동으로 수정하는 대신 자동으로 생성할 것입니다. 이 작업이 완료되면 `dist` 디렉터리를 비우고 모든 파일을 다시 생성해도 좋습니다.
+`dist` 디렉터리는 빌드 결과물이 놓이는 곳이므로, 실제 프로젝트에서는 보통 그 안의 파일을 직접 수정하지 않습니다. 여기서는 브라우저가 첫 번째 번들을 불러올 수 있도록 임시 발판 역할로 `index.html`을 `dist`로 옮겨 두는 것입니다. 이후 [다른 가이드](/guides/output-management/#setting-up-htmlwebpackplugin)에서는 `index.html`을 수동으로 수정하지 않고 자동 생성하게 됩니다. 그 단계까지 가면 `dist` 디렉터리를 비우고 내부 파일을 모두 다시 생성해도 안전합니다.
 
 `lodash`의 의존성을 `index.js`와 함께 번들링 하려면, 라이브러리를 로컬에서 설치해야 합니다.
 
 ```bash
+# Run the command for one package manager only.
+
 # npm
-npm install --save lodash
+npm install lodash
 
 # yarn
 yarn add lodash
@@ -193,7 +201,7 @@ yarn add lodash
 pnpm add lodash
 ```
 
-T> 프로덕션 번들에 번들로 제공될 패키지를 설치할 때 `npm install --save`를 사용해야 합니다. 개발 목적(e.g. a linter, testing libraries, etc.)으로 패키지를 설치한다면 `npm install --save-dev`를 사용해야 합니다. 자세한 내용은 [npm 문서를](https://docs.npmjs.com/cli/install) 참고하세요.
+T> npm 5 이상에서는 `npm install <package>`로 설치한 패키지가 기본적으로 `dependencies`에 저장됩니다. 린터나 테스트 라이브러리처럼 개발 목적의 패키지를 설치하는 경우에는 `npm install --save-dev`를 사용하세요. 자세한 내용은 [npm 문서](https://docs.npmjs.com/cli/install)를 참고하세요.
 
 지금부터 스크립트로 `lodash`를 가져오겠습니다.
 
@@ -225,7 +233,7 @@ T> 프로덕션 번들에 번들로 제공될 패키지를 설치할 때 `npm in
    <head>
      <meta charset="utf-8" />
      <title>Getting Started</title>
--    <script src="https://unpkg.com/lodash@4.17.20"></script>
+-    <script src="https://unpkg.com/lodash@4.17.21"></script>
    </head>
    <body>
 -    <script src="./src/index.js"></script>
@@ -241,6 +249,8 @@ T> 몇 가지 다른 스크립트 로딩 전략이 있습니다. 지연 로딩�
 자, 그럼 프로젝트 루트 디렉토리에서 `npx webpack` 명령어를 실행해 보겠습니다. webpack이 로컬에 설치되어 있다면 `npx`는 `node_modules/.bin`에 있는 바이너리를 실행하고, 그렇지 않다면 다운로드하여 실행할 수 있습니다. 이 명령어는 `src/index.js`에 있는 스크립트를 [진입점](/concepts/entry-points)으로 사용하여 `dist/main.js`를 [출력](/concepts/output)으로 생성합니다.
 
 ```bash
+# Run the command for one package manager only.
+
 # npm
 npx webpack
 
@@ -256,18 +266,20 @@ runtime modules 1000 bytes 5 modules
 cacheable modules 530 KiB
   ./src/index.js 257 bytes [built] [code generated]
   ./node_modules/lodash/lodash.js 530 KiB [built] [code generated]
-webpack 5.4.0 compiled successfully in 1851 ms
+webpack 5.x.x compiled successfully in 1851 ms
 ```
 
 T> 출력은 약간 다를 수 있지만, 빌드에 성공했다면 계속 진행해도 좋습니다.
 
-브라우저에서 `dist` 디렉터리의 `index.html`을 열어봅니다. 모든 것이 제대로 되었다면 `'Hello webpack'` 글자가 표시될 것입니다.
+T> 별도의 `mode`를 지정하지 않으면 webpack은 기본적으로 production 모드로 실행되므로, 위 출력에는 `[minimized]`가 포함되고 생성된 `dist/main.js` 역시 사람이 읽기 쉽게보다는 브라우저 실행에 맞춰 최적화됩니다. 학습 중이라면 `npx webpack --mode development`, `yarn webpack --mode development`, `pnpm exec webpack --mode development`로 더 읽기 쉬운 번들을 만들 수 있습니다.
+
+브라우저에서 `dist` 디렉터리의 `index.html`을 열어보세요. 모든 것이 제대로 되었다면 `'Hello webpack'` 텍스트가 표시될 것입니다.
 
 ## Modules
 
-[`import 문`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import)과 [`export 문`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/export)은 [ES2015](https://babeljs.io/docs/en/learn/)에서 표준화되었습니다. 현재는 대부분의 브라우저에서 지원되지만, 몇몇 브라우저에서는 새 구문을 인식하지 못합니다. 하지만 webpack은 바로 사용할 수 있도록 지원해주니 걱정하지 마세요.
+[`import` 문](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import)과 [`export` 문](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/export)은 [ES2015](https://babeljs.io/docs/en/learn/)에서 표준화되었습니다. 현재 대부분의 브라우저가 이를 지원하지만, 새 문법을 인식하지 못하는 브라우저도 일부 존재합니다. 그래도 걱정할 필요는 없습니다. webpack이 기본적으로 이를 지원합니다.
 
-보이지않는 곳에서 webpack이 실제로 코드를 "**트랜스파일**" 하여 이전 브라우저에서도 실행 할 수 있도록 합니다. `dist/main.js`을 보면 webpack이 어떻게 트랜스파일 하는지 볼 수 있을 것입니다. 매우 독창적입니다! `import`와 `export` 외에도 webpack은 다양한 모듈 구문을 지원합니다. 자세한 내용은 [Module API에서](/api/module-methods) 볼 수 있습니다.
+내부적으로 webpack은 모듈 그래프를 분석한 뒤, 브라우저가 올바른 순서로 로드할 수 있는 코드로 모듈을 번들링합니다. `import`와 `export` 같은 모듈 문법을 처리하며, 그 외 다양한 모듈 문법도 지원합니다. 자세한 내용은 [Module API](/api/module-methods)를 참고하세요.
 
 webpack은 `import`와 `export` 문 이외는 코드를 변경하지 않습니다. 다른 [ES2015 기능](http://es6-features.org/)을 사용한다면 webpack의 [로더 시스템](/concepts/loaders/)인 [Babel](https://babeljs.io/)을 [트랜스파일러로 사용](/loaders/#transpiling)해야 합니다.
 
@@ -275,7 +287,7 @@ webpack은 `import`와 `export` 문 이외는 코드를 변경하지 않습니�
 
 버전 4부터 webpack은 어떠한 설정도 필요하지 않습니다. 하지만 대부분의 프로젝트는 좀 더 복잡한 설정이 필요하므로 webpack에서 [설정 파일](/concepts/configuration)을 제공합니다. 이것은 터미널에서 많은 명령어를 수동으로 입력하는 것보다 훨씬 효율적입니다. 다음과 같이 생성해 보겠습니다.
 
-Webpack configuration files can be written using either CommonJS or ECMAScript modules. The examples below use modern ESM syntax.
+Webpack 설정 파일은 CommonJS 또는 ECMAScript 모듈 방식으로 작성할 수 있습니다. 아래 예제에서는 최신 ESM 문법을 사용합니다.
 
 **project**
 
@@ -314,6 +326,8 @@ export default {
 이제 새로운 설정 파일을 이용하여 다시 빌드를 실행해 보세요.
 
 ```bash
+# Run the command for one package manager only.
+
 # npm
 npx webpack --config webpack.config.js
 
@@ -329,7 +343,7 @@ runtime modules 1000 bytes 5 modules
 cacheable modules 530 KiB
   ./src/index.js 257 bytes [built] [code generated]
   ./node_modules/lodash/lodash.js 530 KiB [built] [code generated]
-webpack 5.4.0 compiled successfully in 1934 ms
+webpack 5.x.x compiled successfully in 1934 ms
 ```
 
 T> `webpack.config.js`가 있으면 `webpack` 명령은 기본으로 이것을 선택합니다. 여기서는 `--config` 옵션을 사용하여 어떠한 이름의 설정이든 사용할 수 있도록 합니다. 이것은 여러 개의 파일로 분할해야 하는 복잡한 설정에서 유용합니다.
@@ -357,11 +371,11 @@ CLI에서 webpack의 로컬 사본을 실행하기 위해 약간의 단축 명�
    "author": "",
    "license": "ISC",
    "devDependencies": {
-     "webpack": "^5.4.0",
-     "webpack-cli": "^6.0.0"
+     "webpack": "^5.105.0",
+     "webpack-cli": "^7.0.0"
    },
    "dependencies": {
-     "lodash": "^4.17.20"
+     "lodash": "^4.17.21"
    }
  }
 ```
@@ -371,6 +385,8 @@ CLI에서 webpack의 로컬 사본을 실행하기 위해 약간의 단축 명�
 이제 다음 명령을 실행하고 스크립트의 별칭이 작동하는지 확인하세요.
 
 ```bash
+# Run the command for one package manager only.
+
 # npm
 npm run build
 
@@ -387,7 +403,7 @@ runtime modules 1000 bytes 5 modules
 cacheable modules 530 KiB
   ./src/index.js 257 bytes [built] [code generated]
   ./node_modules/lodash/lodash.js 530 KiB [built] [code generated]
-webpack 5.4.0 compiled successfully in 1940 ms
+webpack 5.x.x compiled successfully in 1940 ms
 ```
 
 T> 사용자 지정 파라미터는 `npm run build` 명령과 파라미터 사이에 두 개의 대시(예. `npm run build -- --color`)를 추가하여 webpack에 전달할 수 있습니다.
