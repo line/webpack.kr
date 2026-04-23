@@ -20,6 +20,7 @@ contributors:
   - snitin315
   - vansh5632
   - Brennvo
+  - ThierryRakotomanana
 translators:
   - limong
 related:
@@ -42,22 +43,22 @@ T> 이 가이드의 나머지 부분은 [Getting Started에서](/guides/getting-
 **project**
 
 ```diff
-webpack-demo
-|- package.json
-|- package-lock.json
-|- webpack.config.js
-|- /dist
-  |- bundle.js
-  |- index.html
-|- /src
-  |- index.js
-+ |- math.js
-|- /node_modules
+ webpack-demo
+  ├── package.json
+  ├── package-lock.json
+  ├── webpack.config.js
+  ├── /dist
+  │   ├── bundle.js
+  │   └── index.html
+  ├── /src
+  │   ├── index.js
++ │   └── math.js
+  └── /node_modules
 ```
 
 **src/math.js**
 
-```javascript
+```js
 export function square(x) {
   return x * x;
 }
@@ -188,9 +189,11 @@ T> 가져온 파일은 tree shaking의 대상이 됩니다. 즉, 프로젝트에
 
 `usedExports`는 [terser](https://github.com/terser-js/terser)를 사용하여 문장에서 사이드 이펙트를 감지합니다. 이것은 JavaScript에서 어려운 작업이며 간단한 `sideEffects` 플래그만큼 효과적이지 않습니다. 또한 사이드 이펙트를 확인해야 하는 명세가 있기 때문에 하위트리 및 의존성을 무시할 수 없습니다. export 기능은 잘 동작하지만, React의 Higher Order Components(HOC)는 이와 관련된 문제가 있습니다.
 
+동적 `import()`를 사용하는 경우 `webpackExports` 매직 주석을 사용하여 노출해야 하는 내보내기를 지정할 수 있으며, 이렇게 하면 webpack이 나머지 내보내기를 자동으로 처리합니다. 자세한 내용은 [매직 주석](/api/module-methods/#magic-comments)을 참고하세요.
+
 예를 들어보겠습니다.
 
-```javascript
+```js
 import { Button } from "@shopify/polaris";
 ```
 
@@ -198,7 +201,7 @@ import { Button } from "@shopify/polaris";
 
 {/* eslint-disable @stylistic/spaced-comment, prefer-rest-params */}
 
-```javascript
+```js
 import hoistStatics from "hoist-non-react-statics";
 
 function Button(_ref) {
@@ -255,7 +258,7 @@ Terser는 알아내려고 노력하지만 여러 상황에서 장담할 수는 �
 
 그러나 `/*#__PURE__*/` 어노테이션을 이용하여 terser를 도와줄 수 있습니다. 그 구문은 사이드 이펙트가 없는 것으로 표시합니다. 그래서 간단한 변경만으로 코드를 tree-shake 할 수 있습니다.
 
-```javascript
+```js
 const Button$1 = /* #__PURE__ */ withAppProvider()(Button);
 ```
 
@@ -269,7 +272,7 @@ Shopify's Polaris 예시에서 원래 모듈은 다음과 같습니다.
 
 **index.js**
 
-```javascript
+```js
 import "./configure";
 
 export * from "./types";
@@ -278,7 +281,7 @@ export * from "./components";
 
 **components/index.js**
 
-```javascript
+```js
 // ...
 export { default as Breadcrumbs } from "./Breadcrumbs";
 export { buttonFrom, buttonsFrom, default as Button } from "./Button";
@@ -337,22 +340,22 @@ export { default as ButtonGroup } from "./ButtonGroup";
 ```bash
 awesome-ui/
 ├── package.json
-├── dist/
-│   ├── index.js
-│   ├── components/
-│   │   ├── index.js
-│   │   ├── Button/
-│   │   │   ├── index.js
-│   │   │   └── Button.css
-│   │   ├── Card/
-│   │   │   ├── index.js
-│   │   │   └── Card.css
-│   │   └── Modal/
-│   │       ├── index.js
-│   │       └── Modal.css
-│   └── theme/
-│       ├── index.js
-│       └── defaultTheme.css
+└── dist/
+    ├── index.js
+    ├── components/
+    │   ├── index.js
+    │   ├── Button/
+    │   │   ├── index.js
+    │   │   └── Button.css
+    │   ├── Card/
+    │   │   ├── index.js
+    │   │   └── Card.css
+    │   └── Modal/
+    │       ├── index.js
+    │       └── Modal.css
+    └── theme/
+        ├── index.js
+        └── defaultTheme.css
 ```
 
 ### Package Files Content
@@ -370,14 +373,14 @@ awesome-ui/
 
 **dist/index.js**
 
-```javascript
+```js
 export * from "./components";
 export * from "./theme";
 ```
 
 **dist/components/index.js**
 
-```javascript
+```js
 export { default as Button } from "./Button";
 export { default as Card } from "./Card";
 export { default as Modal } from "./Modal";
@@ -385,7 +388,7 @@ export { default as Modal } from "./Modal";
 
 **dist/components/Button/index.js**
 
-```javascript
+```js
 import "./Button.css"; // 이것은 사이드 이펙트가 있습니다. 가져올 때 스타일이 적용됩니다!
 
 export default function Button(props) {
@@ -414,7 +417,7 @@ export default function Button(props) {
 
 **dist/theme/index.js**
 
-```javascript
+```js
 import "./defaultTheme.css"; // 이것은 사이드 이펙트가 있습니다!
 
 export const themeColors = {
@@ -428,7 +431,7 @@ export const themeColors = {
 
 이제 Button 구성 요소만 사용하려는 컨수머 애플리케이션을 상상해 보세요.
 
-```javascript
+```js
 import { Button } from "awesome-ui";
 
 // 버튼 컴포넌트를 사용하세요
@@ -513,7 +516,7 @@ import { Button } from "awesome-ui";
 
 **file.js**
 
-```javascript
+```js
 /* #__PURE__ */ double(55);
 ```
 
@@ -569,7 +572,7 @@ package.json 파일에서 `sideEffects: false`를 설정하면 최적의 트리 
 
 다음 패턴을 고려해 보세요.
 
-```javascript
+```js
 // 이 파일에는 건너뛸 수 있는 부작용이 있습니다
 import "./polyfill";
 

@@ -32,15 +32,16 @@ import Navigation from "../Navigation/Navigation.jsx";
 import OfflineBanner from "../OfflineBanner/OfflineBanner.jsx";
 import Page from "../Page/Page.jsx";
 import PageNotFound from "../PageNotFound/PageNotFound.jsx";
+import ReadingProgress from "../ReadingProgress/ReadingProgress.jsx";
+import ScrollToTop from "../ScrollToTop/ScrollToTop.jsx";
 import Sidebar from "../Sidebar/Sidebar.jsx";
 import SidebarMobile from "../SidebarMobile/SidebarMobile.jsx";
 import Splash from "../Splash/Splash.jsx";
 import Sponsors from "../Sponsors/Sponsors.jsx";
 
 // Load Styling
-import "../../styles/index.scss";
-import "../../styles/ko.scss"; // kr patch
-import "./Site.scss";
+import "../../styles/index.css";
+import "../../styles/ko.css"; // kr patch
 
 // Load Content Tree
 
@@ -77,15 +78,29 @@ function Site(props) {
     }
 
     return array
-      .map(({ title, name, url, group, sort, anchors, children }) => ({
-        title: title || name,
-        content: title || name,
-        url,
-        group,
-        sort,
-        anchors,
-        children: children ? _strip(children) : [],
-      }))
+      .map(
+        ({
+          title,
+          name,
+          url,
+          group,
+          sort,
+          anchors,
+          children,
+          date,
+          teaser,
+        }) => ({
+          title: title || name,
+          content: title || name,
+          url,
+          group,
+          sort,
+          anchors,
+          date,
+          teaser,
+          children: children ? _strip(children) : [],
+        }),
+      )
       .filter(
         (page) =>
           page.title !== "printable.mdx" && !page.content.includes("Printable"),
@@ -122,6 +137,44 @@ function Site(props) {
         wb.register();
       });
     }
+  }, []);
+
+  useEffect(() => {
+    if (process.env.NODE_ENV === "production") {
+      const GA4_ID = "UA-192982695-2";
+
+      if (!window.gtag) {
+        const script = document.createElement("script");
+        script.async = true;
+        script.src = `https://www.googletagmanager.com/gtag/js?id=${GA4_ID}`;
+        document.head.appendChild(script);
+
+        window.dataLayer ||= [];
+        window.gtag = function gtag() {
+          // eslint-disable-next-line prefer-rest-params
+          window.dataLayer.push(arguments);
+        };
+
+        window.gtag("js", new Date());
+        window.gtag("config", GA4_ID, {
+          // eslint-disable-next-line camelcase
+          send_page_view: false,
+        });
+      }
+
+      window.gtag("event", "page_view", {
+        // eslint-disable-next-line camelcase
+        page_path: location.pathname + location.search,
+        // eslint-disable-next-line camelcase
+        page_title: document.title,
+      });
+    }
+  }, [location.pathname, location.search]);
+
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
   }, []);
 
   const sections = extractSections(Content);
@@ -164,7 +217,7 @@ function Site(props) {
   }, [location, navigate]);
 
   return (
-    <div className="site">
+    <div className="flex flex-col min-h-screen bg-white dark:bg-gray-900">
       <Helmet>
         <html lang="ko" />
         <meta charset="utf-8" />
@@ -218,7 +271,7 @@ function Site(props) {
         <meta name="msapplication-TileImage" content="/icon_150x150.png" />
         <meta name="msapplication-TileColor" content="#465e69" />
       </Helmet>
-      <div className="site__header">
+      <div className="z-[100] fixed w-full">
         <OfflineBanner />
         <Navigation
           pathname={location.pathname}
@@ -247,9 +300,10 @@ function Site(props) {
             { content: "Blog", url: "/blog/", ariaLabel: "webpack blog" },
           ]}
         />
+        {location.pathname !== "/" && <ReadingProgress />}
       </div>
 
-      {isClient ? (
+      {mounted ? (
         <SidebarMobile
           isOpen={mobileSidebarOpen}
           sections={_strip(Content.children)}
@@ -261,9 +315,11 @@ function Site(props) {
         <Route index element={<Splash />} />
         <Route
           element={
-            <Container className="site__content">
-              <Outlet />
-            </Container>
+            <div className="flex-[1_1_auto] relative mt-[110px] print:mt-0">
+              <Container className="flex">
+                <Outlet />
+              </Container>
+            </div>
           }
         >
           <Route path="app-shell" element={<Fragment />} />
@@ -285,7 +341,7 @@ function Site(props) {
                     page={page}
                     next={next}
                     previous={previous}
-                    import={props.import}
+                    loadContent={props.loadContent}
                     path={path}
                   />
                 }
@@ -295,29 +351,36 @@ function Site(props) {
           <Route path="*" element={<PageNotFound />} />
         </Route>
       </Routes>
+      <ScrollToTop />
       <Footer />
     </div>
   );
 }
 
 Site.propTypes = {
-  import: PropTypes.func,
+  loadContent: PropTypes.func,
 };
 
 export default Site;
 
 function PageElement(props) {
   const { currentPage, sidebarPages, page, previous, next } = props;
-  const content = props.import(props.path);
+  const content = props.loadContent(props.path);
   return (
     <Fragment>
       <Sponsors />
       <Sidebar
-        className="site__sidebar"
+        className="flex-[0_0_280px]"
         currentPage={currentPage}
         pages={sidebarPages}
       />
-      <Page {...page} content={content} previous={previous} next={next} />
+      <Page
+        {...page}
+        content={content}
+        previous={previous}
+        next={next}
+        pages={sidebarPages}
+      />
     </Fragment>
   );
 }
@@ -325,9 +388,10 @@ function PageElement(props) {
 PageElement.propTypes = {
   currentPage: PropTypes.string,
   sidebarPages: PropTypes.array,
+  pages: PropTypes.array,
   previous: PropTypes.object,
   next: PropTypes.object,
   page: PropTypes.object,
-  import: PropTypes.func,
+  loadContent: PropTypes.func,
   path: PropTypes.string,
 };

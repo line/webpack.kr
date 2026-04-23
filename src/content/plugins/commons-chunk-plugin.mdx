@@ -21,7 +21,7 @@ W> CommonsChunkPlugin은 webpack v4(legato)에서 제거되었습니다. 최신 
 
 번들에서 공통 모듈을 분리한 결과로 생성된 청크 파일을 처음에 한 번 로드하고 나중에 사용하기 위해 캐시에 저장할 수 있습니다. 이로 인해 브라우저가 새 페이지를 방문할 때마다 더 큰 번들을 로드하지 않고 캐시에서 공유 코드를 빠르게 제공할 수 있으므로 페이지 속도가 최적화됩니다.
 
-```javascript
+```js
 new webpack.optimize.CommonsChunkPlugin(options);
 ```
 
@@ -76,7 +76,7 @@ new webpack.optimize.CommonsChunkPlugin(options);
 
 엔트리 포인트 간에 공유되는 공통 모듈을 포함하는 추가 청크를 생성합니다.
 
-```javascript
+```js
 new webpack.optimize.CommonsChunkPlugin({
   name: "commons",
   // (공통 청크 이름)
@@ -103,7 +103,7 @@ new webpack.optimize.CommonsChunkPlugin({
 
 코드를 vendor와 애플리케이션으로 분할합니다.
 
-```javascript
+```js
 module.exports = {
   // ...
   entry: {
@@ -135,7 +135,7 @@ T> 장기 캐시와 함께 vendor 청크 변경을 방지하기 위해 `ChunkMan
 
 [Code Splitting](/guides/code-splitting)을 사용하면 엔트리 청크의 여러 하위(자식) 청크가 공통 종속성을 가질 수 있습니다. 중복을 방지하기 위해 이들을 부모 청크로 옮길 수 있습니다. 이렇게 하면 전체 크기가 줄어들지만, 초기 로드 시간에 부정적인 영향을 미칩니다. 사용자가 많은 형제 청크(예: 엔트리 청크의 자식)를 다운로드해야 할 것으로 예상되는 경우 전체 로드 시간이 향상됩니다.
 
-```javascript
+```js
 new webpack.optimize.CommonsChunkPlugin({
   // names: ["app", "subPageA"]
   // (청크를 선택하거나 모든 청크를 생략하세요)
@@ -152,7 +152,7 @@ new webpack.optimize.CommonsChunkPlugin({
 
 위의 것과 유사하지만 공통 모듈을 부모로 이동하는 대신(초기 로드 시간을 증가시키게 됩니다) 비동기식으로 로드된 새로운 추가 공통 청크가 사용됩니다. 이는 추가 청크가 다운로드되면 자동으로 병렬로 다운로드됩니다.
 
-```javascript
+```js
 new webpack.optimize.CommonsChunkPlugin({
   name: "app",
   // 또는
@@ -185,7 +185,7 @@ new webpack.optimize.CommonsChunkPlugin({
 
 이 옵션은 CommonsChunk 알고리즘을 통해 모듈을 이동할 위치를 결정하는 방법을 세밀하게 제어하려는 경우에 유용합니다.
 
-```javascript
+```js
 new webpack.optimize.CommonsChunkPlugin({
   name: "my-single-lib-chunk",
   filename: "my-single-lib-chunk.js",
@@ -202,7 +202,7 @@ new webpack.optimize.CommonsChunkPlugin({
 
 이 개념은 암시적 공통 vendor 청크를 얻는데 사용할 수 있습니다.
 
-```javascript
+```js
 new webpack.optimize.CommonsChunkPlugin({
   name: "vendor",
   minChunks(module) {
@@ -216,7 +216,7 @@ new webpack.optimize.CommonsChunkPlugin({
 
 webpack 부트스트랩 로직을 별도의 파일로 추출하려면 `entry`로 정의되어 있지 않은 `name`에 `CommonsChunkPlugin`을 사용하세요. 자세한 내용은 [캐싱 가이드](/guides/caching)를 참조하세요.
 
-```javascript
+```js
 new webpack.optimize.CommonsChunkPlugin({
   name: "manifest",
   minChunks: Infinity,
@@ -227,7 +227,7 @@ new webpack.optimize.CommonsChunkPlugin({
 
 `vendor`와 `manifest` 청크는 `minChunks`에 대해 다른 정의를 사용하므로 플러그인을 두 번 호출해야 합니다.
 
-```javascript
+```js
 [
   new webpack.optimize.CommonsChunkPlugin({
     name: "vendor",

@@ -13,7 +13,6 @@ import Translators from "../Translators/Translators.jsx";
 import AdjacentPages from "./AdjacentPages.jsx";
 
 // Load Styling
-import "./Page.scss";
 
 export default function Page(props) {
   const {
@@ -27,11 +26,15 @@ export default function Page(props) {
   } = props;
 
   const isDynamicContent = props.content instanceof Promise;
-  const [content, setContent] = useState(
-    isDynamicContent
-      ? placeholderString()
-      : () => props.content.default || props.content,
+  const [dynamicContent, setContent] = useState(
+    isDynamicContent ? placeholderString() : null,
   );
+  const content = isDynamicContent
+    ? dynamicContent
+    : props.content && props.content.default !== undefined
+      ? props.content.default
+      : props.content;
+
   const [contentLoaded, setContentLoaded] = useState(!isDynamicContent);
 
   useEffect(() => {
@@ -41,11 +44,18 @@ export default function Page(props) {
           setContent(() => mod.default || mod);
           setContentLoaded(true);
         })
-        .catch(() => setContent("Error loading content."));
+        .catch(() => {
+          setContent({
+            __error: true,
+            message: "Failed to load page content.",
+          });
+          setContentLoaded(true);
+        });
     }
   }, [props.content]);
 
   const { hash, pathname } = useLocation();
+  const isBlogIndex = pathname === "/blog/";
 
   useEffect(() => {
     let observer;
@@ -65,6 +75,7 @@ export default function Page(props) {
             const element = document.getElementById(hash.slice(1));
             if (element) {
               element.scrollIntoView();
+              observer.disconnect();
             }
           });
           observer.observe(target, {
@@ -95,6 +106,10 @@ export default function Page(props) {
 
   if (typeof content === "function") {
     contentRender = content({}).props.children;
+  } else if (content && content.__error) {
+    contentRender = (
+      <div className="text-red-600 font-bold">{content.message}</div>
+    );
   } else {
     contentRender = (
       <div
@@ -105,9 +120,15 @@ export default function Page(props) {
     );
   }
   return (
-    <main id="main-content" className="page">
+    <main
+      id="main-content"
+      className="flex-auto relative overflow-x-hidden py-[1.5em] px-[1em] md:flex-[3] md:p-[1.5em]"
+    >
       <Markdown>
         <h1>{title}</h1>
+        {rest.date && pathname.startsWith("/blog/") && !isBlogIndex && (
+          <div className="blog-post-date">{rest.date}</div>
+        )}
 
         {rest.thirdParty ? (
           <div className="italic my-[20px]">
@@ -119,6 +140,42 @@ export default function Page(props) {
         ) : null}
 
         <div id="md-content">{contentRender}</div>
+
+        {rest.url === "/blog/" && (
+          <div className="mt-8">
+            {(props.pages || [])
+              .filter((post) => post.url !== "/blog/")
+              .map((post) => (
+                <div
+                  key={post.url}
+                  className="mb-[3rem] pb-[2rem] border-b border-gray-100 last:border-b-0 dark:border-gray-800"
+                >
+                  <h2 className="mt-0 mb-[0.5rem] text-[1.8rem] font-bold leading-[1.2]">
+                    <Link
+                      to={post.url}
+                      className="text-blue-800 no-underline hover:text-blue-400 dark:!text-[#9ab3c0] dark:hover:!text-blue-200"
+                    >
+                      {post.title}
+                    </Link>
+                  </h2>
+                  {post.date && (
+                    <div className="text-gray-500 text-[1.2rem] font-semibold mt-[0.25rem] mb-[1rem] italic dark:text-[#bbb]">
+                      {post.date}
+                    </div>
+                  )}
+                  <p className="text-gray-600 leading-[1.4] mb-[1rem] dark:text-gray-200">
+                    {post.teaser}
+                  </p>
+                  <Link
+                    to={post.url}
+                    className="text-blue-400 font-semibold no-underline hover:underline dark:text-blue-200"
+                  >
+                    Read More &rarr;
+                  </Link>
+                </div>
+              ))}
+          </div>
+        )}
 
         {loadRelated && (
           <div className="print:hidden">
@@ -135,7 +192,7 @@ export default function Page(props) {
 
         <PageLinks page={rest} />
 
-        {(previous || next) && (
+        {!isBlogIndex && (previous || next) && (
           <AdjacentPages previous={previous} next={next} />
         )}
 
@@ -168,11 +225,14 @@ Page.propTypes = {
   related: PropTypes.array,
   previous: PropTypes.object,
   next: PropTypes.object,
+  pages: PropTypes.array,
   content: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func,
     PropTypes.shape({
       // eslint-disable-next-line unicorn/no-thenable
       then: PropTypes.func.isRequired,
-      default: PropTypes.string,
+      default: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
     }),
   ]),
 };

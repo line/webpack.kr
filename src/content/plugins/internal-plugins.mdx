@@ -159,7 +159,7 @@ webpack_public_path, webpack_require, webpack_modules 과 webpack_chunk_load에 
 
 Webpack은 조건문을 평가하려고 할 것입니다. 만약 성공한다면 dead branch가 제거됩니다. Webpck은 컴파일러가 알지 못하는 한 상수 폴딩을 할 수 없습니다. 다음 예시를 봅시다.
 
-```javascript
+```js
 import { calculateTax } from "./tax";
 
 const FOO = 1;
@@ -177,7 +177,7 @@ if (FOO === 0) {
 
 `ProvidePlugin(name, request)`
 
-만약에 모듈에서 `name`이 사용되는 경우는 `require(<request>)`에 의해 로드된 모듈에 의해서 채워집니다.
+모듈에서 `name`이 사용되는 경우 `import ... from <request>`/`import(<request>)`/`require(<request>)`를 통해 로드된 모듈의 값으로 채워집니다.
 
 ### NodeStuffPlugin
 

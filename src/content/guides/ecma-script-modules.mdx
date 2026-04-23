@@ -64,6 +64,8 @@ import * as module from "./module.js";
 module.fun();
 ```
 
+When importing a namespace object from an ECMAScript Module, webpack follows the ESM convention of setting `Symbol.toStringTag` to "Module" on the namespace object.
+
 ## Flagging modules as ESM
 
 기본적으로 webpack은 파일이 ESM인지 또는 다른 모듈 시스템인지 자동으로 감지합니다.

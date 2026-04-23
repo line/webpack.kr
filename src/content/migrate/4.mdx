@@ -108,7 +108,7 @@ non-ESM을 불러오기 위해 `import()`을 사용할 때, webpack 4에서 결�
 
 **non-esm.js**
 
-```javascript
+```js
 module.exports = {
   sayHello: () => {
     console.log("hello world");
@@ -118,7 +118,7 @@ module.exports = {
 
 **example.js**
 
-```javascript
+```js
 function sayHello() {
   import("./non-esm.js").then((module) => {
     module.default.sayHello();

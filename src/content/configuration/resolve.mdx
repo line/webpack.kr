@@ -36,7 +36,7 @@ translators:
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   resolve: {
     // 설정 옵션
@@ -53,9 +53,13 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-const path = require("node:path");
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
   // ...
   resolve: {
     alias: {
@@ -83,9 +87,13 @@ import Utility from "Utilities/utility";
 **webpack.config.js**
 
 ```js
-const path = require("node:path");
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
   // ...
   resolve: {
     alias: {
@@ -107,7 +115,13 @@ import Test2 from "xyz/file.js"; // 정확한 매칭이 아니고 일반적인 �
 **webpack.config.js**
 
 ```js
-module.exports = {
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
   // ...
   resolve: {
     alias: {
@@ -153,7 +167,13 @@ W> [`null-loader`](https://github.com/webpack-contrib/null-loader)는 webpack 5�
 W> webpack 5에서부터 `[string]`을 지원합니다.
 
 ```js
-module.exports = {
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
   // ...
   resolve: {
     alias: {
@@ -169,7 +189,7 @@ module.exports = {
 `resolve.alias`를 `false`로 설정하면 webpack은 모듈을 무시합니다.
 
 ```js
-module.exports = {
+export default {
   // ...
   resolve: {
     alias: {
@@ -191,7 +211,7 @@ T> 정규 표현식을 기반으로 모듈을 무시하려면 [IgnorePlugin](htt
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   resolve: {
     aliasFields: ["browser"],
@@ -207,7 +227,7 @@ module.exports = {
 - Example:
 
   ```js
-  module.exports = {
+  export default {
     // ...
     resolve: {
       byDependency: {
@@ -235,7 +255,7 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   resolve: {
     cache: true,
@@ -252,7 +272,7 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   resolve: {
     cachePredicate: (module) =>
@@ -277,7 +297,7 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   resolve: {
     conditionNames: ["require", "node"],
@@ -287,7 +307,45 @@ module.exports = {
 
 Webpack은 `resolve.conditionNames` 배열 내에 나열된 [export 조건](https://nodejs.org/api/packages.html#conditional-exports)과 일치합니다.
 
-`exports` 필드의 키 순서는 중요합니다. 조건 일치 시 이전 항목이 더 높은 우선 순위를 가지며 이후 항목보다 우선합니다.
+#### Default values
+
+기본 `conditionNames`는 [`mode`](/configuration/mode/) 및 [`target`](/configuration/target/) 설정을 기반으로 동적으로 구성됩니다.
+
+기본 조건에는 항상 다음 사항이 포함됩니다.
+
+- `"webpack"`은 항상 존재합니다.
+- 현재 [`모드`](/configuration/mode/)에 따라 `"production"` 또는 `"development"`가 선택됩니다. (`"production"`은 모드가 `"none"` 또는 `"production"`일 때 사용됩니다.)
+
+[`대상`](/configuration/target/)에 따라 추가 조건이 추가됩니다.
+
+| 대상 속성   | 상태         |
+| ----------- | ------------ |
+| `webworker` | `"worker"`   |
+| `node`      | `"node"`     |
+| `web`       | `"browser"`  |
+| `electron`  | `"electron"` |
+| `nwjs`      | `"nwjs"`     |
+
+예를 들어 `target: "web"`(기본값) 및 `mode: "production"`인 경우 기본 `conditionNames`는 `["webpack", "production", "browser"]`로 설정됩니다.
+
+#### Per-dependency type conditions
+
+Webpack은 모듈이 임포트되는 방식에 따라 [`resolve.byDependency`](/configuration/resolve/#resolvebydependency)를 통해 `conditionNames`를 추가로 조정합니다. `"..."` 토큰은 위의 기본 조건을 상속합니다.
+
+| 종속성 유형                                         | `conditionNames`                        | 사용 용도                                 |
+| --------------------------------------------------- | --------------------------------------- | ----------------------------------------- |
+| `esm`, `wasm`, `loaderImport`                       | `["import", "module", "..."]`           | ESM `import` 문, WebAssembly, 로더 임포트 |
+| `commonjs`, `amd`, `loader`, `unknown`, `undefined` | `["require", "module", "..."]`          | `require()` 호출, AMD 및 기타 종속성 유형 |
+| `worker`                                            | `["worker", "import", "module", "..."]` | `new Worker()` 표현식                     |
+| `css-import`                                        | `["webpack", <mode>, "style"]`          | CSS `@import` 문                          |
+
+예를 들어, 프로젝트가 `target: "web"` 및 `mode: "production"`으로 설정되어 있고 파일에서 `import`를 사용하는 경우, 최종적으로 결정되는 조건은 `["import", "module", "webpack", "production", "browser"]`입니다.
+
+T> `resolveLoader` 옵션은 `conditionNames`에 대해 서로 다른 기본값을 사용합니다. `["loader", "require", "node"]`. [resolveLoader](#resolveloader)를 참고하세요.
+
+#### Condition matching
+
+'수출' 필드의 순서는 매우 중요합니다. 조건 일치 과정에서 먼저 입력된 항목일수록 우선순위가 높으며, 나중에 입력된 항목보다 우선적으로 처리됩니다.
 
 예를들면 다음과 같습니다.
 
@@ -317,7 +375,7 @@ Webpack은 `resolve.conditionNames` 배열 내에 나열된 [export 조건](http
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   resolve: {
     conditionNames: ["require", "node"],
@@ -331,12 +389,14 @@ importing
 - `'foo/bar'`는 `"node"` 키가 조건부 export 객체의 `"require"`키보다 앞에 오기 때문에 `'foo/bar-node.js'`로 해석됩니다.
 - `'foo/baz'`는 `'foo/baz-node.js'`로 해석됩니다.
 
-기본 Webpack 값을 그대로 유지하면서 사용자 지정 필드 이름을 추가하려면 `"..."`를 사용할 수 있습니다.
+#### Custom conditions
+
+기본 Webpack 값을 유지하면서 사용자 지정 필드 이름을 추가하려면 `"..."`를 사용할 수 있습니다.
 
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   resolve: {
     conditionNames: ["my-custom-condition", "..."],
@@ -349,7 +409,7 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   resolve: {
     conditionNames: ["...", "my-custom-condition"],
@@ -366,7 +426,7 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   resolve: {
     descriptionFiles: ["package.json"],
@@ -378,12 +438,12 @@ module.exports = {
 
 `boolean = false`
 
-`true`이면, 확장자가 없는 파일을 허용하지 않습니다. 기본적으로 `require('./foo')`는 `./foo`가 `.js` 확장자를 가지고 있으면 동작하지만, 이 기능을 사용하면 `require('./foo.js')`만 동작합니다.
+`true`로 설정하면 확장자가 없는 파일은 허용되지 않습니다. 따라서 기본적으로 `import foo from "./foo";` 또는 `require('./foo')`는 `./foo` 파일의 확장자가 `.js`인 경우에만 작동하지만, 이 옵션을 활성화하면 `import foo from "./foo.js";` 또는 `require('./foo.js')`만 작동합니다.
 
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   resolve: {
     enforceExtension: false,
@@ -400,7 +460,7 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   resolve: {
     exportsFields: ["exports", "myCompanyExports"],
@@ -417,7 +477,7 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   resolve: {
     extensionAlias: {
@@ -437,7 +497,7 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   resolve: {
     extensions: [".js", ".json", ".wasm"],
@@ -454,7 +514,7 @@ import File from "../path/to/file";
 위와 같이 `resolve.extensions`를 사용하면 **기본 배열을 재정의** 할 수 있으며, 이는 webpack이 더 이상 기본 확장자를 사용하여 모듈을 해석하지 않습니다. 하지만 `'...'` 을 이용하여 기본 확장자에 접근 할 수 있습니다.
 
 ```js
-module.exports = {
+export default {
   // ...
   resolve: {
     extensions: [".ts", "..."],
@@ -471,7 +531,13 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-module.exports = {
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
   // ...
   resolve: {
     fallback: {
@@ -485,7 +551,11 @@ module.exports = {
 Webpack 5는 더 이상 Node.js의 핵심 모듈을 자동으로 폴리필하지 않습니다. 즉, 브라우저 등에서 실행되는 코드에서 사용하는 경우 npm에서 호환되는 모듈을 설치하고 직접 포함해야 합니다. 다음은 webpack 5 이전에 사용한 폴리필 목록입니다.
 
 ```js
-module.exports = {
+import { createRequire } from "node:module";
+
+const require = createRequire(import.meta.url);
+
+export default {
   // ...
   resolve: {
     fallback: {
@@ -526,7 +596,7 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   resolve: {
     fullySpecified: true,
@@ -543,7 +613,7 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   resolve: {
     importsFields: ["browser", "module", "main"],
@@ -562,7 +632,7 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   resolve: {
     mainFields: ["browser", "module", "main"],
@@ -575,7 +645,7 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   resolve: {
     mainFields: ["module", "main"],
@@ -603,7 +673,7 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   resolve: {
     mainFiles: ["index"],
@@ -626,7 +696,7 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   resolve: {
     modules: ["node_modules"],
@@ -639,9 +709,13 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-const path = require("node:path");
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
   // ...
   resolve: {
     modules: [path.resolve(__dirname, "src"), "node_modules"],
@@ -665,7 +739,7 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   resolve: {
     plugins: [
@@ -696,7 +770,7 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   resolve: {
     preferAbsolute: true,
@@ -713,7 +787,7 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   resolve: {
     preferRelative: true,
@@ -744,7 +818,7 @@ const a = new URL("./module/path", import.meta.url);
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   resolve: {
     restrictions: [/\.(sass|scss|css)$/],
@@ -761,9 +835,14 @@ module.exports = {
 **webpack.config.js**
 
 ```js
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const fixtures = path.resolve(__dirname, "fixtures");
 
-module.exports = {
+export default {
   // ...
   resolve: {
     roots: [__dirname, fixtures],
@@ -782,7 +861,7 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   resolve: {
     symlinks: true,
@@ -799,7 +878,7 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   resolve: {
     unsafeCache: true,
@@ -832,7 +911,7 @@ const unsafeCacheHandler = {
 };
 const theProxiedCache = new Proxy(realUnsafeCache, unsafeCacheHandler);
 
-module.exports = {
+export default {
   // ...
   resolve: {
     unsafeCache: theProxiedCache,
@@ -851,7 +930,7 @@ W> 캐시된 경로를 변경하는 것은 간혹 실패의 원인이 될 수 �
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   resolve: {
     useSyncFileSystemCalls: true,
@@ -870,7 +949,7 @@ TypeScript 경로 매핑 설정입니다. 이 옵션을 사용하면 `tsconfig-p
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   resolve: {
     tsconfig: true, // 기본 tsconfig.json 사용
@@ -887,7 +966,7 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   resolve: {
     tsconfig: "./tsconfig.app.json", // 사용자 지정 경로
@@ -900,7 +979,7 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   resolve: {
     tsconfig: {
@@ -948,7 +1027,7 @@ T> 이 옵션은 `resolveLoader`에서도 동일한 구성 옵션으로 사용�
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   resolveLoader: {
     modules: ["node_modules"],

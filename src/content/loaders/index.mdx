@@ -15,9 +15,9 @@ translators:
   - choilim
 ---
 
-Webpack의 [loaders](/concepts/loaders)를 사용하면 파일을 전처리 할 수 있습니다. 이렇게 하면 JavaScript를 넘어 모든 정적 리소스를 번들링할 수 있습니다. Node.js를 사용하여 자신만의 로더를 쉽게 작성할 수 있습니다.
-로더는 webpack의 기능을 확장하는 별도의 패키지이며, 더 넓은 생태계 내에서 유지 관리됩니다.
-로더는 `require()` 구문에서 `loadername!` 접두사를 사용하거나, webpack 설정에서 정규식을 통해 자동으로 활성화됩니다. [configuration](/concepts/loaders/#configuration)을 참고하세요.
+Webpack은 [loaders](/concepts/loaders)를 사용하여 파일을 전처리할 수 있도록 지원합니다. 이를 통해 JavaScript뿐만 아니라 거의 모든 정적 리소스를 번들링할 수 있습니다. Node.js를 사용하면 자신만의 로더를 쉽게 작성할 수 있습니다.
+로더는 Webpack의 기능을 확장하는 별도의 패키지이며, Webpack 생태계 내에서 관리됩니다.
+로더는 `import .. from "mod";`/`require()` 문에서 `loadername!` 접두사를 사용하여 활성화하거나, Webpack 설정에서 정규 표현식을 통해 자동으로 적용됩니다. 자세한 내용은 [설정](/concepts/loaders/#configuration)을 참조하세요.
 
 ## Files
 
@@ -54,6 +54,7 @@ Webpack의 [loaders](/concepts/loaders)를 사용하면 파일을 전처리 할 
 
 - [`style-loader`](/loaders/style-loader)는 DOM에 스타일로 모듈 내보내기를 추가합니다.
 - [`css-loader`](/loaders/css-loader)는 리졸브된 가져오기로 CSS 파일을 로드하고 CSS 코드를 반환합니다.
+- [`css-utility-loader`](https://github.com/SahilKhanWDC/css-utility-loader-webpack-.git)는 빌드 시점에 기존 CSS 속성을 자동으로 구문 분석하고 최신 유틸리티 클래스(Tailwind)로 변환합니다.
 - [`less-loader`](/loaders/less-loader)는 LESS 파일을 로드하고 컴파일합니다.
 - [`sass-loader`](/loaders/sass-loader)는 SASS/SCSS 파일을 로드하고 컴파일합니다.
 - [`postcss-loader`](/loaders/postcss-loader)는 [PostCSS](http://postcss.org) 을 사용해 CSS/SSS 파일을 로드하고 변환합니다.

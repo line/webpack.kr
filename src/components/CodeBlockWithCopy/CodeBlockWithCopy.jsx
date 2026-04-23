@@ -1,10 +1,12 @@
 import PropTypes from "prop-types";
-import { useRef, useState } from "react";
-import "./CodeBlockWithCopy.scss";
+import { useEffect, useRef, useState } from "react";
+import { cn } from "../../utilities/cn.mjs";
 
 export default function CodeBlockWithCopy({ children }) {
   const preRef = useRef(null);
+  const resetStatusTimeoutRef = useRef(null);
   const [copyStatus, setCopyStatus] = useState("copy");
+
   const codeClassName =
     typeof children?.props?.className === "string"
       ? children.props.className
@@ -18,14 +20,38 @@ export default function CodeBlockWithCopy({ children }) {
 
     const clonedCodeElement = codeElement.cloneNode(true);
 
-    // Exclude +/-/unchanged tokens and removed lines
+    // Remove entire deleted lines
     for (const element of clonedCodeElement.querySelectorAll(
-      ".token.prefix.inserted, .token.prefix.unchanged, .token.deleted-sign.deleted",
+      ".token.deleted",
     )) {
       element.remove();
     }
 
+    // Remove diff prefix tokens ('+', '-', ' ') — Prism renders these as separate spans
+    for (const element of clonedCodeElement.querySelectorAll(".token.prefix")) {
+      element.remove();
+    }
+
+    // Fallback: if no .token.prefix spans, strip leading '+' directly from inserted spans
+    for (const element of clonedCodeElement.querySelectorAll(
+      ".token.inserted",
+    )) {
+      if (element.textContent.startsWith("+")) {
+        element.textContent = element.textContent.slice(1);
+      }
+    }
+
     return clonedCodeElement.textContent || "";
+  };
+
+  const scheduleResetStatus = () => {
+    if (resetStatusTimeoutRef.current) {
+      clearTimeout(resetStatusTimeoutRef.current);
+    }
+
+    resetStatusTimeoutRef.current = setTimeout(() => {
+      setCopyStatus("copy");
+    }, 2000);
   };
 
   const handleCopy = async () => {
@@ -38,13 +64,13 @@ export default function CodeBlockWithCopy({ children }) {
 
     if (!codeText) {
       setCopyStatus("error");
-      setTimeout(() => setCopyStatus("copy"), 2000);
+      scheduleResetStatus();
       return;
     }
 
     let successfulCopy = false;
 
-    // Try modern API (navigator.clipboard) -> as document.execCommand() deprecated
+    // Try modern API (navigator.clipboard)
     try {
       if (navigator.clipboard && window.isSecureContext) {
         await navigator.clipboard.writeText(codeText);
@@ -76,14 +102,35 @@ export default function CodeBlockWithCopy({ children }) {
     }
 
     setCopyStatus(successfulCopy ? "copied" : "error");
-    setTimeout(() => setCopyStatus("copy"), 2000);
+    scheduleResetStatus();
   };
 
+  useEffect(
+    () => () => {
+      if (resetStatusTimeoutRef.current) {
+        clearTimeout(resetStatusTimeoutRef.current);
+      }
+    },
+    [],
+  );
+
   return (
-    <div className="code-block-wrapper">
+    <div className="code-block-wrapper relative mb-6 group">
       <button
         onClick={handleCopy}
-        className={`copy-button ${copyStatus}`}
+        className={cn(
+          "copy-button",
+          "absolute top-2 right-2 z-10 px-[0.7rem] py-[0.4rem] rounded-[0.35rem] border-none cursor-pointer text-xs font-medium text-slate-200",
+          "opacity-0 group-hover:opacity-100",
+          "transition-[background-color,transform,opacity] duration-200",
+          "active:scale-95",
+          "focus-visible:outline-none focus-visible:opacity-100",
+          copyStatus === "copied"
+            ? "bg-green-600 hover:bg-green-700"
+            : copyStatus === "error"
+              ? "bg-red-500 hover:bg-red-700"
+              : "bg-[#175d96] hover:bg-[#2f85d0]",
+        )}
         aria-label="Copy code to clipboard"
       >
         {copyStatus === "copied"

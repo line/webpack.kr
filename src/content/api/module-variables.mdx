@@ -37,7 +37,7 @@ related:
 
 현재 모듈의 ID입니다.
 
-```javascript
+```js
 console.log(import.meta.url);
 ```
 
@@ -45,7 +45,7 @@ console.log(import.meta.url);
 
 소비자가 모듈에 `import` 호출을 할 때 반환될 값을 정의합니다(기본값은 새 객체).
 
-```javascript
+```js
 export default function doSomething() {
   // Do something...
 }
@@ -57,7 +57,7 @@ W> 이것은 비동기 함수에서 사용할 수 없습니다.
 
 명명된 내보내기를 사용하면 단일 모듈에서 여러 변수, 함수 또는 객체를 내보낼 수 있습니다. 기본 내보내기와 달리 이러한 값을 가져올 때는 정확한 이름을 사용해야 합니다.
 
-```javascript
+```js
 export const someValue = 42;
 export const anObject = {
   x: 123,
@@ -104,7 +104,7 @@ const { url } = import.meta;
 
 **src/index.js**
 
-```javascript
+```js
 console.log(import.meta.url); // `file:///path/to/your/project/src/index.js`와 같은 출력
 ```
 
@@ -114,7 +114,7 @@ webpack 버전을 반환합니다.
 
 **src/index.js**
 
-```javascript
+```js
 console.log(import.meta.webpack); // webpack 5의 경우 `5` 출력
 ```
 
@@ -165,13 +165,13 @@ Webpack 특유의 속성입니다. [`module.hot`](#modulehot-webpack-specific)�
 
 **src/index.js** (엔트리 포인트)
 
-```javascript
+```js
 console.log(import.meta.main); // true
 ```
 
 **src/utils.js** (엔트리 포인트가 아닙니다)
 
-```javascript
+```js
 console.log(import.meta.main); // false
 ```
 
@@ -186,9 +186,9 @@ console.log(import.meta.main); // false
 **webpack.config.js**
 
 ```js
-const webpack = require("webpack");
+import webpack from "webpack";
 
-module.exports = {
+export default {
   mode: "production", // NODE_ENV는 자동으로 "production"으로 설정됩니다.
   dotenv: {
     prefix: "WEBPACK_", // WEBPACK_ 접두사가 붙은 변수만 노출합니다.
@@ -259,13 +259,13 @@ T> 서로 다른 소스의 변수가 병합됩니다. 동일한 변수가 여러
 
 현재 모듈의 리소스 쿼리입니다. 만약 다음과 같은 `import` 호출이 이루어졌다면, 쿼리 문자열은 `file.js` 파일에서 확인할 수 있습니다.
 
-```javascript
+```js
 import "file.js?test";
 ```
 
 **file.js**
 
-```javascript
+```js
 __resourceQuery === "?test";
 ```
 

@@ -23,7 +23,7 @@ T> 이 플러그인은 JavaScript와 CSS 모두와 작동하므로 CSS에서 특
 - `resourceRegExp`: 리소스 테스트를 위한 정규 표현식
 - `contextRegExp`: (선택) 컨텍스트 (디렉터리) 테스트를 위한 정규 표현식
 
-```javascript
+```js
 new webpack.IgnorePlugin({ resourceRegExp, contextRegExp });
 ```
 
@@ -31,7 +31,7 @@ new webpack.IgnorePlugin({ resourceRegExp, contextRegExp });
 
 - `checkResource (resource, context)`는 `resource`와 `context`를 인수로 받는 필터 함수로, 불리언 값을 반환해야 합니다.
 
-```javascript
+```js
 new webpack.IgnorePlugin({
   checkResource(resource) {
     // 리소스를 사용합니다
@@ -53,12 +53,16 @@ new webpack.IgnorePlugin({
 `moment`는 아래의 코드로 가져오기 때문입니다.
 
 ```js
+import(`./locale/${name}`);
+
+// or
+
 require(`./locale/${name}`);
 ```
 
 첫 번째 정규 표현식은 `'./locale/'` 문자열과 일치해야 합니다. 그다음 두 번째 `contextRegExp` 파라미터를 사용하여 가져오기가 수행된 특정 디렉터리를 선택합니다. 다음은 로케일 파일이 무시되는 경우입니다.
 
-```javascript
+```js
 new webpack.IgnorePlugin({
   resourceRegExp: /^\.\/locale$/,
   contextRegExp: /moment$/,

@@ -126,7 +126,9 @@ related:
 })();
 ```
 
-컨테이너는 공유 모듈을 제공하려고 시도하지만, 공유 모듈이 이미 사용된 경우, 경고 및 제공된 공유 모듈이 무시됩니다. 컨테이너는 여전히 대체 수단으로 사용할 수 있습니다.
+T> **컨테이너는** 통합된 빌드에서 노출되는 원격 컨테이너 엔트리 포인트 객체로, 일반적으로 해당 원격의 `remoteEntry.js`를 통해 제공됩니다. 이 객체는 여기에 표시된 `get` 및 `init` 메서드를 제공합니다. `window[scope]` 또는 `globalThis.someContainer`와 같은 예에서 컨테이너는 원격 컨테이너 스크립트가 이미 로드된 후에만 존재해야 합니다.
+
+컨테이너는 공유 모듈을 제공하려고 시도하지만, 공유 모듈이 이미 사용 중인 경우 경고가 표시되고 제공된 공유 모듈은 무시됩니다. 하지만 컨테이너는 필요에 따라 해당 모듈을 대체 모듈로 사용할 수 있습니다.
 
 이렇게 하면 다른 버전의 공유 모듈을 제공하는 A/B 테스트를 동적으로 로드 할 수 있습니다.
 
@@ -141,8 +143,8 @@ function loadComponent(scope, module) {
   return async () => {
     // 공유 범위를 초기화 합니다. 이 빌드와 모든 원격에서 제공된 모듈로 채웁니다
     await __webpack_init_sharing__("default");
-    const container = window[scope]; // 또는 다른 곳에서 컨테이너를 얻으십시오
-    // 컨테이너 초기화, 공유 모듈 제공 가능합니다
+    const container = window[scope]; // 로드된 remoteEntry.js 스크립트에 의해 노출된 원격 컨테이너
+    // 컨테이너를 초기화하면 공유 모듈이 제공될 수 있습니다.
     await container.init(__webpack_share_scopes__.default);
     const factory = await window[scope].get(module);
     const Module = factory();
@@ -160,7 +162,7 @@ loadComponent("abtests", "test123");
 일반적으로, 원격은 다음 예시와 같은 URL을 사용하여 설정합니다.
 
 ```js
-module.exports = {
+export default {
   plugins: [
     new ModuleFederationPlugin({
       name: "host",
@@ -175,7 +177,7 @@ module.exports = {
 하지만 원격에 promise를 전달할 수도 있고, 이는 런타임에 해석됩니다. 위에서 설명한 `get/init` 인터페이스에 맞는 모듈로 이 promise를 해석해야 합니다. 예를 들어 사용할 통합 모듈의 버전을 전달하려는 경우 쿼리 매개 변수를 통해 다음과 같은 작업을 수행할 수 있습니다.
 
 ```js
-module.exports = {
+export default {
   plugins: [
     new ModuleFederationPlugin({
       name: "host",
@@ -233,7 +235,7 @@ module.exports = {
 **webpack.config.js (remote)**
 
 ```js
-module.exports = {
+export default {
   entry: {
     remote: "./public-path",
   },
@@ -273,7 +275,7 @@ publicPath.set("/your-public-path");
 **webpack.config.js (remote)**
 
 ```js
-module.exports = {
+export default {
   entry: {
     remote: "./setup-public-path",
   },
@@ -310,11 +312,11 @@ T> 또한 자동으로 publicPath를 결정하는 [`output.publicPath`](/configu
 **index.js**
 
 ```jsx
-import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import App from "./App";
 
-ReactDOM.render(<App />, document.getElementById("root"));
+const root = createRoot(document.getElementById("root"));
+root.render(<App />);
 ```
 
 `bootstrap.js` 파일을 만들고 엔트리의 콘텐츠을 이 파일로 이동한 다음, 부트스트랩을 엔트리로 가져오겠습니다.
@@ -323,19 +325,20 @@ ReactDOM.render(<App />, document.getElementById("root"));
 
 ```diff
 + import('./bootstrap');
-- import React from 'react';
-- import ReactDOM from 'react-dom';
+- import { createRoot } from 'react-dom/client';
 - import App from './App';
-- ReactDOM.render(<App />, document.getElementById('root'));
+
+- const root = createRoot(document.getElementById('root'));
+- root.render(<App />);
 ```
 
 **bootstrap.js**
 
 ```diff
-+ import React from 'react';
-+ import ReactDOM from 'react-dom';
++ import { createRoot } from 'react-dom/client';
 + import App from './App';
-+ ReactDOM.render(<App />, document.getElementById('root'));
++ const root = createRoot(document.getElementById('root'));
++ root.render(<App />);
 ```
 
 이 메소드는 동작하지만 제약사항이나 단점이 있을 수 있습니다.
@@ -376,6 +379,42 @@ new ModuleFederationPlugin({
 원격 컨테이너가 누락되었을 가능성이 있으므로 추가되었는지 확인하세요.
 사용하려는 원격 컨테이너가 로드되었지만 이 오류가 계속 나타나면 호스트 컨테이너의 원격 컨테이너 파일도 HTML에 추가하세요.
 
-### Collision between modules from different remotes
+### Setting `output.uniqueName`
 
-서로 다른 원격에서 여러 모듈을 로드하는 경우 원격 빌드에 대해 [`output.uniqueName`](/configuration/output/#outputuniquename)을 설정하여 여러 webpack 런타임 간의 충돌을 방지하는 것이 좋습니다.
+모듈 페더레이션 설정에서 호스트와 각 원격 저장소는 전역적으로 고유한 `output.uniqueName` 값을 가져야 합니다. Webpack은 기본적으로 `package.json` 파일의 `name` 필드에서 이 값을 가져옵니다. 즉, 동일한 `package.json` 파일의 `name` 필드를 공유하는 두 빌드(기존 프로젝트에서 원격 저장소를 분리할 때 흔히 발생하는 패턴)는 런타임에 충돌을 일으킬 수 있습니다.
+
+한 가지 해결책은 각 구성마다 고유한 이름을 가진 별도의 `package.json` 파일을 사용하는 것입니다.
+
+또는 각 webpack 설정에서 `output.uniqueName`을 명시적으로 설정할 수도 있습니다.
+
+**webpack.config.js (host)**
+
+```js
+export default {
+  output: {
+    uniqueName: "my-host-app",
+  },
+  plugins: [
+    new ModuleFederationPlugin({
+      // ...
+    }),
+  ],
+};
+```
+
+**webpack.config.js (remote)**
+
+```js
+export default {
+  output: {
+    uniqueName: "my-remote-app", // must differ from host and all other remotes
+  },
+  plugins: [
+    new ModuleFederationPlugin({
+      // ...
+    }),
+  ],
+};
+```
+
+The value can be any string, as long as it is unique across every federated build loaded on a given page.

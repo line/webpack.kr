@@ -31,7 +31,7 @@ new webpack.NormalModuleReplacementPlugin(resourceRegExp, newResource);
 
 프로덕션용으로 빌드할 때 다음 플러그인을 추가합니다.
 
-```javascript
+```js
 new webpack.NormalModuleReplacementPlugin(
   /some\/path\/config\.development\.js/,
   "./config.production.js",
@@ -44,7 +44,7 @@ new webpack.NormalModuleReplacementPlugin(
 
 다른 빌드 대상에 대한 특정 값이 포함된 설정을 원한다고 가정해 보겠습니다.
 
-```javascript
+```js
 export default (env) => {
   const appTarget = env.APP_TARGET || "VERSION_A";
   return {
@@ -68,7 +68,7 @@ export default (env) => {
 
 **app/config-VERSION_A.js**
 
-```javascript
+```js
 export default {
   title: "I am version A",
 };
@@ -76,7 +76,7 @@ export default {
 
 **app/config-VERSION_B.js**
 
-```javascript
+```js
 export default {
   title: "I am version B",
 };
@@ -84,7 +84,7 @@ export default {
 
 그다음 정규 표현식에서 찾고 있는 키워드를 사용하여 해당 설정을 가져옵니다.
 
-```javascript
+```js
 import config from "app/config-APP_TARGET";
 
 console.log(config.title);

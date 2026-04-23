@@ -12,6 +12,7 @@ contributors:
   - adyjs
   - anshumanv
   - ritikbanger
+  - saishankar404
 translators:
   - choilim
 ---
@@ -24,14 +25,21 @@ translators:
 이 과정의 결과는 나중에 `output` 구성에 따라 디스크에 기록됩니다.
 `output` 구성은 번들로 묶인 파일이 어디에 어떻게 저장되는지를 제어합니다.
 
+T> When running webpack without a configuration file, the entry defaults to `'./src/index.js'`. If that file is missing — even if your `src/` directory exists — webpack will throw: <br /> **`ERROR in Entry module not found: Error: Can't resolve './src'`** <br /><br /> The error says `'./src'` rather than `'./src/index.js'` because webpack resolves the directory first, then fails to find `index.js` inside it. To use a different entry filename, configure the `entry` option as shown in the sections below.
+
+T> When running webpack without a configuration file, the entry defaults to `'./src/index.js'`. If that file is missing — even if your `src/` directory exists — webpack will throw: <br /> **`ERROR in Entry module not found: Error: Can't resolve './src'`** <br /><br /> The error says `'./src'` rather than `'./src/index.js'` because webpack resolves the directory first, then fails to find `index.js` inside it. To use a different entry filename, configure the `entry` option as shown in the sections below.
+
 ## Single Entry (Shorthand) Syntax
 
 Usage: `entry: string | [string]`
 
+- `string`: 단일 항목 파일
+- `[string]`: 다중 항목 파일
+
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   entry: "./path/to/my/entry/file.js",
 };
 ```
@@ -40,8 +48,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   entry: {
     main: "./path/to/my/entry/file.js",
   },
@@ -53,7 +61,7 @@ module.exports = {
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   entry: ["./src/file_1.js", "./src/file_2.js"],
 };
 ```
@@ -67,7 +75,7 @@ module.exports = {
 **Example: Injecting a polyfill**
 
 ```js
-module.exports = {
+export default {
   entry: {
     main: ["@babel/polyfill", "./src/index.js"],
   },
@@ -80,10 +88,15 @@ module.exports = {
 
 Usage: `entry: { <entryChunkName> string | [string] } | {}`
 
+- `<entryChunkName>`: name of the entry chunk
+- `string`: 단일 항목 파일
+- `[string]`: 다중 항목 파일
+- `{}`: 빈 객체
+
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   entry: {
     app: "./src/app.js",
     adminApp: "./src/adminApp.js",
@@ -111,8 +124,8 @@ T> 플러그인에 의해 생성된 엔트리 포인트만 있는 경우 빈 객
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   entry: {
     a2: "dependingfile.js",
     b2: {
@@ -127,8 +140,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   entry: {
     a2: "./a",
     b2: {
@@ -142,8 +155,8 @@ module.exports = {
 
 `runtime`이 기존의 엔트리 포인트 이름을 가리키지 않아야 합니다. 예를 들어 아래 설정에서는 오류가 발생합니다.
 
-```javascript
-module.exports = {
+```js
+export default {
   entry: {
     a1: "./a",
     b1: {
@@ -156,8 +169,8 @@ module.exports = {
 
 또한 `dependOn`은 순환이 아니어야 하며, 다음 예제에서는 다시 오류가 발생합니다.
 
-```javascript
-module.exports = {
+```js
+export default {
   entry: {
     a3: {
       import: "./a",
@@ -179,8 +192,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   entry: {
     main: "./src/app.js",
     vendor: "./src/vendor.js",
@@ -188,22 +201,26 @@ module.exports = {
 };
 ```
 
+`production` 모드로 빌드할 때:
+
 **webpack.prod.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   output: {
-    filename: "[name].[contenthash].bundle.js",
+    filename: "[name].[contenthash].bundle.js", // eg: main.abc123.bundle.js, vendor.abc123.bundle.js
   },
 };
 ```
 
+`development` 모드로 빌드할 때:
+
 **webpack.dev.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   output: {
-    filename: "[name].bundle.js",
+    filename: "[name].bundle.js", // 예: main.bundle.js, vendor.bundle.js
   },
 };
 ```
@@ -218,8 +235,8 @@ T> webpack 버전 4 미만에서는 `CommonsChunkPlugin과` 함께 vendor를 개
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   entry: {
     pageOne: "./src/pageOne/index.js",
     pageTwo: "./src/pageTwo/index.js",

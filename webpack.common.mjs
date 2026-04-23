@@ -2,16 +2,17 @@ import { createRequire } from "node:module";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 // eslint-disable-next-line import/no-extraneous-dependencies
-import hastscript from "hastscript";
+import { h as hastscript } from "hastscript";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import autolink from "remark-autolink-headings";
 import remarkEmoji from "remark-emoji";
 import frontmatter from "remark-frontmatter";
 import gfm from "remark-gfm";
-import refractor from "remark-refractor";
 import webpack from "webpack";
 import cleanup from "./src/remark-plugins/remark-cleanup-readme/index.mjs";
 import aside from "./src/remark-plugins/remark-custom-asides/index.mjs";
+import refractor from "./src/remark-plugins/remark-refractor/index.mjs";
+import remarkRemoveDuplicateH1 from "./src/remark-plugins/remark-remove-duplicate-h1/index.mjs";
 import remarkRemoveHeadingId from "./src/remark-plugins/remark-remove-heading-id/index.mjs";
 import remarkResponsiveTable from "./src/remark-plugins/remark-responsive-table/remark-responsive-table.mjs";
 import slug from "./src/remark-plugins/remark-slug/index.mjs";
@@ -52,6 +53,7 @@ const mdPlugins = [
 
 export default ({ ssg = false }) => ({
   context: path.resolve(__dirname, "./src"),
+  performance: false,
   cache: {
     type: "filesystem",
     buildDependencies: {
@@ -60,7 +62,7 @@ export default ({ ssg = false }) => ({
     cacheDirectory: path.resolve(__dirname, "node_modules/.cache/webpack"),
   },
   resolve: {
-    extensions: [".js", ".jsx", ".scss"],
+    extensions: [".js", ".jsx"],
     fallback: {
       path: require.resolve("path-browserify"),
     },
@@ -75,7 +77,11 @@ export default ({ ssg = false }) => ({
             loader: "@mdx-js/loader",
             /** @type {import('@mdx-js/loader').Options} */
             options: {
-              remarkPlugins: [...mdPlugins, [frontmatter]],
+              remarkPlugins: [
+                ...mdPlugins,
+                [frontmatter],
+                remarkRemoveDuplicateH1,
+              ],
               providerImportSource: path.resolve("./src/mdx-components.mjs"),
             },
           },
@@ -89,22 +95,6 @@ export default ({ ssg = false }) => ({
       {
         test: /\.css$/,
         use: [MiniCssExtractPlugin.loader, "css-loader", "postcss-loader"],
-      },
-      {
-        test: /\.scss$/,
-        use: [
-          MiniCssExtractPlugin.loader,
-          "css-loader",
-          "postcss-loader",
-          {
-            loader: "sass-loader",
-            options: {
-              sassOptions: {
-                loadPaths: [path.join("./src/styles/partials")],
-              },
-            },
-          },
-        ],
       },
       {
         test: /\.woff2?$/,

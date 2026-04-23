@@ -91,13 +91,13 @@ export default {
 
 코드에서 `__webpack_public_path__`를 설정한 경우 `asset` 로딩 로직을 깨지지 않도록 설정하려면 함수를 사용하지 않고 앱의 첫 번째 코드로 실행해야 합니다. 예시로는 내용이 포함된 `publicPath.js`라는 파일을 갖는 경우입니다.
 
-```javascript
+```js
 __webpack_public_path__ = "https://cdn.url.com";
 ```
 
 그런 다음 `webpack.config.js`에서 `entry` 필드를 다음과 같이 업데이트합니다.
 
-```javascript
+```js
 export default {
   entry: ["./publicPath.js", "./App.js"],
 };
@@ -105,7 +105,7 @@ export default {
 
 또는 webpack 설정을 수정하지 않고 `App.js`에서 다음을 수행할 수 있습니다. 유일한 단점은 여기에서 순서를 강제해야 하고, 일부 린팅 도구와 충돌할 수 있다는 것입니다.
 
-```javascript
+```js
 import "./publicPath.js";
 ```
 
@@ -381,7 +381,12 @@ new URL(
 );
 ```
 
-webpack 5.38.0부터 `new URL()`에서도 [데이터 URL](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs)이 지원됩니다.
+```js
+// ECMA 모듈 출력이 활성화된 경우 모든 대상
+new URL(`${__webpack_public_path__}logo.svg`, import.meta.url);
+```
+
+webpack 5.38.0 버전부터 `new URL()`에서도 [데이터 URL](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs)이 지원됩니다.
 
 **src/index.js**
 

@@ -4,6 +4,13 @@ import PropTypes from "prop-types";
 import { useEffect, useRef, useState } from "react";
 import { Link as ReactDOMLink, NavLink, useLocation } from "react-router-dom";
 
+// Import Internal Config
+import {
+  DOCSEARCH_API_KEY,
+  DOCSEARCH_APP_ID,
+  DOCSEARCH_INDEX_NAME,
+} from "../../config/docsearch.js";
+
 // Import Components
 import DiscordIcon from "../../styles/icons/discord.svg";
 import GithubIcon from "../../styles/icons/github.svg";
@@ -107,6 +114,7 @@ const navigationIconProps = {
 
 function Navigation({ links, pathname, hash = "", toggleSidebar }) {
   const [locationHash, setLocationHash] = useState(hash);
+  const [mounted, setMounted] = useState(false);
 
   const location = useLocation();
 
@@ -114,9 +122,13 @@ function Navigation({ links, pathname, hash = "", toggleSidebar }) {
     setLocationHash(hash);
   }, [hash]);
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
     <>
-      <header className="bg-blue-800 dark:bg-gray-900">
+      <header className="bg-blue-800 dark:bg-gray-900 print:hidden">
         <div className="flex items-center py-10 px-[16px] justify-between md:px-[24px] md:max-w-[1024px] md:mx-auto md:justify-start">
           <button
             aria-label="Toggle navigation menu"
@@ -132,7 +144,10 @@ function Navigation({ links, pathname, hash = "", toggleSidebar }) {
           <Link to="/" className="md:mr-auto">
             <Logo />
           </Link>
-          <nav className="hidden md:inline-grid md:grid-flow-col md:gap-x-[18px] md:items-center">
+          <nav
+            className="hidden md:inline-grid md:grid-flow-col md:gap-x-[18px] md:items-center"
+            aria-label="Main navigation"
+          >
             {links.map(({ content, url, isActive, ariaLabel }) => (
               <NavigationItem
                 key={url}
@@ -169,11 +184,11 @@ function Navigation({ links, pathname, hash = "", toggleSidebar }) {
                 {children}
               </NavigationIcon>
             ))}
-
             <Dropdown
               className=""
               items={[
                 {
+                  lang: "en",
                   title: "English",
                   url: `https://webpack.js.org${pathname}${locationHash}`,
                 },
@@ -190,41 +205,36 @@ function Navigation({ links, pathname, hash = "", toggleSidebar }) {
               ]}
             />
           </nav>
-          <div className="inline-flex items-center ml-[18px]">
+          <div className="inline-flex items-center gap-x-[18px] ml-[18px]">
             <HelloDarkness />
-            <DocSearch
-              appId="78PIF746H9"
-              apiKey={"0bf212faf8487900d5d5ee6754c1572a"}
-              indexName="webpack_korea"
-              disableUserPersonalization={true}
-              placeholder="Search webpack documentation"
-              transformItems={(items) =>
-                items.map(({ url, ...others }) => {
-                  const { origin } = new URL(url);
-                  return {
-                    ...others,
-                    url: url.replace(new RegExp(`^${origin}`), ""),
-                  };
-                })
-              }
-              hitComponent={({ hit, children }) => (
-                <ReactDOMLink to={hit.url}>{children}</ReactDOMLink>
-              )}
-            />
+            {mounted && (
+              <DocSearch
+                appId={DOCSEARCH_APP_ID}
+                apiKey={DOCSEARCH_API_KEY}
+                indexName={DOCSEARCH_INDEX_NAME}
+                disableUserPersonalization={true}
+                placeholder="webpack 문서를 검색해보세요"
+                transformItems={(items) =>
+                  items.map(({ url, ...others }) => {
+                    const { origin } = new URL(url);
+                    return {
+                      ...others,
+                      url: url.replace(new RegExp(`^${origin}`), ""),
+                    };
+                  })
+                }
+                hitComponent={({ hit, children }) => (
+                  <ReactDOMLink to={hit.url}>{children}</ReactDOMLink>
+                )}
+              />
+            )}
           </div>
         </div>
         {/* sub navigation */}
         {links
-          .filter(
-            (link) =>
-              // only those with children are displayed
-              link.children,
-          )
+          .filter((link) => link.children)
           .map((link) => {
-            if (
-              link.isActive && // hide the children if the link is not active
-              !link.isActive({}, location)
-            ) {
+            if (link.isActive && !link.isActive({}, location)) {
               return null;
             }
             return (
@@ -238,7 +248,7 @@ function Navigation({ links, pathname, hash = "", toggleSidebar }) {
                 >
                   {link.children.map((child) => {
                     const classNames =
-                      "text-blue-400 py-5 text-sm capitalize hover:text-black dark:hover:text-white";
+                      "text-blue-400 dark:text-[#69a8ee] py-5 text-sm capitalize hover:text-black dark:hover:text-white";
                     const isActive = location.pathname.startsWith(child.url);
                     return (
                       <NavLink
@@ -269,7 +279,15 @@ function Navigation({ links, pathname, hash = "", toggleSidebar }) {
 Navigation.propTypes = {
   pathname: PropTypes.string,
   hash: PropTypes.string,
-  links: PropTypes.array,
+  links: PropTypes.arrayOf(
+    PropTypes.shape({
+      content: PropTypes.node.isRequired,
+      url: PropTypes.string.isRequired,
+      isActive: PropTypes.func,
+      ariaLabel: PropTypes.string,
+      children: PropTypes.arrayOf(PropTypes.object),
+    }),
+  ).isRequired,
   toggleSidebar: PropTypes.func,
 };
 

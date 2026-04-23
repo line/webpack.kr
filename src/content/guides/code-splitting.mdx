@@ -36,6 +36,7 @@ contributors:
   - snitin315
   - artem-malko
   - Brennvo
+  - ThierryRakotomanana
 translators:
   - keipark
 related:
@@ -64,15 +65,15 @@ T> 이 가이드는 [Getting Started](/guides/getting-started)에 제공된 예�
 **project**
 
 ```diff
-webpack-demo
-|- package.json
-|- package-lock.json
-|- webpack.config.js
-|- /dist
-|- /src
-  |- index.js
-+ |- another-module.js
-|- /node_modules
+ webpack-demo
+  ├── package.json
+  ├── package-lock.json
+  ├── webpack.config.js
+  ├── /dist
+  ├── /src
+  │   ├── index.js
++ │   └── another-module.js
+  └── /node_modules
 ```
 
 **another-module.js**
@@ -119,7 +120,7 @@ cacheable modules 530 KiB
   ./src/index.js 257 bytes [built] [code generated]
   ./src/another-module.js 84 bytes [built] [code generated]
   ./node_modules/lodash/lodash.js 530 KiB [built] [code generated]
-webpack 5.4.0 compiled successfully in 245 ms
+webpack 5.x.x compiled successfully in 245 ms
 ```
 
 언급했듯이 이 접근 방식에는 몇 가지 함정이 있습니다.
@@ -217,7 +218,7 @@ cacheable modules 530 KiB
   ./node_modules/lodash/lodash.js 530 KiB [built] [code generated]
   ./src/another-module.js 84 bytes [built] [code generated]
   ./src/index.js 257 bytes [built] [code generated]
-webpack 5.4.0 compiled successfully in 249 ms
+webpack 5.x.x compiled successfully in 249 ms
 ```
 
 보시다시피 `shared.bundle.js`, `index.bundle.js` 및 `another.bundle.js` 외에 또 다른 `runtime.bundle.js` 파일이 생성됩니다.
@@ -270,7 +271,7 @@ cacheable modules 530 KiB
   ./src/index.js 257 bytes [built] [code generated]
   ./src/another-module.js 84 bytes [built] [code generated]
   ./node_modules/lodash/lodash.js 530 KiB [built] [code generated]
-webpack 5.4.0 compiled successfully in 241 ms
+webpack 5.x.x compiled successfully in 241 ms
 ```
 
 다음은 코드 스플리팅을 위해 커뮤니티에서 제공하는 다른 유용한 플러그인과 로더입니다.
@@ -317,15 +318,15 @@ W> `import()` 호출은 내부적으로 [promises](https://developer.mozilla.org
 **project**
 
 ```diff
-webpack-demo
-|- package.json
-|- package-lock.json
-|- webpack.config.js
-|- /dist
-|- /src
-  |- index.js
-- |- another-module.js
-|- /node_modules
+ webpack-demo
+  ├── package.json
+  ├── package-lock.json
+  ├── webpack.config.js
+  ├── /dist
+  ├── /src
+  │   ├── index.js
+- │   └── another-module.js
+  └── /node_modules
 ```
 
 이제 정적으로 가져오던 `lodash`를 동적으로 가져와서 청크를 분리해보겠습니다.
@@ -372,10 +373,21 @@ runtime modules 7.37 KiB 11 modules
 cacheable modules 530 KiB
   ./src/index.js 434 bytes [built] [code generated]
   ./node_modules/lodash/lodash.js 530 KiB [built] [code generated]
-webpack 5.4.0 compiled successfully in 268 ms
+webpack 5.x.x compiled successfully in 268 ms
 ```
 
-`import()`는 promise를 반환하므로 [`async` 함수](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function)와 함께 사용할 수 있습니다. 코드를 단순화하는 방법은 다음과 같습니다.
+T> 또한 `import()`와 함께 매직 주석 `webpackExports`를 사용하여 동적으로 가져온 모듈의 특정 내보내기를 노출할 수 있습니다.
+
+```js
+import(
+  /* webpackExports: ["default", "namedExport"] */
+  "./module"
+);
+```
+
+이렇게 하면 웹팩이 사용되지 않는 다른 내보내기를 트리 쉐이킹하는 데 도움이 될 수 있습니다. 자세한 내용은 [매직 주석](/api/module-methods/#magic-comments)을 참고하세요.
+
+`import()`는 프로미스를 반환하므로 `async` 함수와 함께 사용할 수 있습니다. 다음은 이를 사용하여 코드를 간소화하는 방법입니다.
 
 **src/index.js**
 

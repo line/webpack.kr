@@ -41,10 +41,14 @@ W> `webpack-dev-server v5.0.0+`에는 `node >= v18.12.0`, `webpack >= v5.0.0` �
 
 **webpack.config.js**
 
-```javascript
-const path = require("node:path");
+```js
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
   // ...
   devServer: {
     static: {
@@ -104,10 +108,10 @@ CLI를 통해 `webpack-dev-server`를 실행하는 것이 권장되지만, API�
 
 **webpack.config.js**
 
-```javascript
-const connect = require("connect");
+```js
+import connect from "connect";
 
-module.exports = {
+export default {
   // ...
   devServer: {
     app: () => connect(),
@@ -123,8 +127,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     allowedHosts: [
@@ -141,8 +145,8 @@ Django의 `ALLOWED_HOSTS`를 모방하여, `.`로 시작하는 값을 하위 도
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     // 이것은 새 하위 도메인이 개발 서버에 접근해야 하는 경우
@@ -163,8 +167,8 @@ npx webpack serve --allowed-hosts .host.com --allowed-hosts host2.com
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     allowedHosts: "all",
@@ -182,8 +186,8 @@ npx webpack serve --allowed-hosts all
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     allowedHosts: "auto",
@@ -205,8 +209,8 @@ npx webpack serve --allowed-hosts auto
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     bonjour: true,
@@ -230,8 +234,8 @@ npx webpack serve --no-bonjour
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     bonjour: {
@@ -252,8 +256,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     client: {
@@ -277,8 +281,8 @@ npx webpack serve --client-logging info
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     client: {
@@ -314,8 +318,8 @@ npx webpack serve --no-client-overlay
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     client: {
@@ -341,8 +345,8 @@ npx webpack serve --client-overlay-errors --no-client-overlay-warnings --client-
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     client: {
@@ -369,8 +373,8 @@ W> 이 함수는 설정 파일 내의 외부 범위에서 선언된 변수에 �
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     client: {
@@ -402,8 +406,8 @@ npx webpack serve --no-client-progress
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     client: {
@@ -421,8 +425,8 @@ npx webpack serve --client-reconnect
 
 `false`로 설정하면 다시 연결을 시도하지 않습니다.
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     client: {
@@ -440,8 +444,8 @@ npx webpack serve --no-client-reconnect
 
 클라이언트가 다시 연결을 시도해야 하는 정확한 횟수를 지정할 수도 있습니다.
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     client: {
@@ -467,8 +471,8 @@ T> `'ws'` 또는 `'sockjs'`를 [`webSocketServer`](#devserverwebsocketserver)에
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     client: {
@@ -493,12 +497,12 @@ T> 커스텀 클라이언트 및 서버 구현을 제공할 때 성공적으로 
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     client: {
-      webSocketTransport: require.resolve("./CustomClient"),
+      webSocketTransport: import.meta.resolve("./CustomClient.js"),
     },
     webSocketServer: "ws",
   },
@@ -509,14 +513,14 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     client: {
-      webSocketTransport: require.resolve("./CustomClient"),
+      webSocketTransport: import.meta.resolve("./CustomClient.js"),
     },
-    webSocketServer: require.resolve("./CustomServer"),
+    webSocketServer: import.meta.resolve("./CustomServer.js"),
   },
 };
 ```
@@ -529,8 +533,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     client: {
@@ -557,8 +561,8 @@ npx webpack serve --client-web-socket-url ws://0.0.0.0:8080/ws
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     client: {
@@ -585,8 +589,8 @@ T> 브라우저에서 `protocol`/`hostname`/`port`를 가져오려면 `webSocket
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     compress: true,
@@ -614,8 +618,8 @@ Webpack 애셋을 처리하는 [webpack-dev-middleware](https://github.com/webpa
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   devServer: {
     devMiddleware: {
       index: true,
@@ -636,8 +640,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     headers: {
@@ -651,8 +655,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     headers: [
@@ -671,8 +675,8 @@ module.exports = {
 
 함수를 전달할 수도 있습니다.
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     headers: () => ({ "X-Bar": ["key1=value1", "key2=value2"] }),
@@ -688,8 +692,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     historyApiFallback: true,
@@ -713,8 +717,8 @@ npx webpack serve --no-history-api-fallback
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     historyApiFallback: {
@@ -732,8 +736,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     historyApiFallback: {
@@ -753,8 +757,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     host: "0.0.0.0",
@@ -806,8 +810,8 @@ Webpack의 [Hot Module Replacement](/concepts/hot-module-replacement/) 기능을
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     hot: true,
@@ -831,8 +835,8 @@ npx webpack serve --no-hot
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     hot: "only",
@@ -858,8 +862,8 @@ T> Webpack-dev-server v4부터 HMR이 기본적으로 활성화되어 있습니�
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     ipc: true,
@@ -877,10 +881,14 @@ npx webpack serve --ipc
 
 **webpack.config.js**
 
-```javascript
-const path = require("node:path");
+```js
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
   // ...
   devServer: {
     ipc: path.join(__dirname, "my-socket.sock"),
@@ -896,8 +904,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     liveReload: false,
@@ -927,8 +935,8 @@ Webpack-dev-server가 포트에서 연결 수신을 시작할 때 커스텀 함�
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     onListening(devServer) {
@@ -951,8 +959,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     open: true,
@@ -976,8 +984,8 @@ npx webpack serve --no-open
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     open: ["/my-page"],
@@ -995,8 +1003,8 @@ npx webpack serve --open /my-page
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     open: ["/my-page", "/another-page"],
@@ -1014,8 +1022,8 @@ npx webpack serve --open /my-page --open /another-page
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     open: {
@@ -1037,8 +1045,8 @@ npx webpack serve --open-app-name 'google-chrome'
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     open: {
@@ -1062,8 +1070,8 @@ T> 브라우저 애플리케이션 이름은 플랫폼에 따라 다릅니다. �
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     port: 8080,
@@ -1081,8 +1089,8 @@ npx webpack serve --port 8080
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     port: "auto",
@@ -1108,8 +1116,8 @@ dev-server는 강력한 [http-proxy-middleware](https://github.com/chimurai/http
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     proxy: [
@@ -1128,8 +1136,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     proxy: [
@@ -1147,8 +1155,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     proxy: [
@@ -1174,8 +1182,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     proxy: [
@@ -1200,8 +1208,8 @@ W> `bypass` 옵션은 `router` 및 `context` 옵션을 위해 프록시에서 �
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     proxy: [
@@ -1218,8 +1226,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     devMiddleware: {
@@ -1239,8 +1247,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     proxy: [
@@ -1264,8 +1272,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     server: "http",
@@ -1283,8 +1291,8 @@ npx webpack serve --server-type http
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     server: "https",
@@ -1302,8 +1310,8 @@ npx webpack serve --server-type https
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     server: "spdy",
@@ -1323,8 +1331,8 @@ W> Node 15.0.0 이상에서는 [spdy에서 문제가 발생하기 때문에 이 
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     server: {
@@ -1352,11 +1360,15 @@ npx webpack serve --server-type https --server-options-key ./path/to/server.key 
 
 **webpack.config.js**
 
-```javascript
-const fs = require("node:fs");
-const path = require("node:path");
+```js
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
   // ...
   devServer: {
     server: {
@@ -1383,8 +1395,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     setupExitSignals: true,
@@ -1402,8 +1414,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     setupMiddlewares: (middlewares, devServer) => {
@@ -1455,8 +1467,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     static: false,
@@ -1481,7 +1493,7 @@ npx webpack serve --no-static
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   devServer: {
     static: ["assets"],
@@ -1500,7 +1512,7 @@ npx webpack serve --static assets
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   devServer: {
     static: ["assets", "css"],
@@ -1522,10 +1534,14 @@ npx webpack serve --static assets --static css
 
 **webpack.config.js**
 
-```javascript
-const path = require("node:path");
+```js
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
   // ...
   devServer: {
     static: {
@@ -1539,10 +1555,14 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-const path = require("node:path");
+```js
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
   // ...
   devServer: {
     static: [
@@ -1567,8 +1587,8 @@ T> 절대 경로를 사용하는 것이 좋습니다.
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     static: {
@@ -1588,10 +1608,14 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-const path = require("node:path");
+```js
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
   // ...
   devServer: {
     static: {
@@ -1606,10 +1630,14 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-const path = require("node:path");
+```js
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
   // ...
   devServer: {
     static: [
@@ -1636,10 +1664,14 @@ dev-server가 활성화되면 [`serveIndex`](https://github.com/expressjs/serve-
 
 **webpack.config.js**
 
-```javascript
-const path = require("node:path");
+```js
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
   // ...
   devServer: {
     static: {
@@ -1670,10 +1702,14 @@ dev-server에게 [`static.directory`](#directory) 옵션이 제공하는 파일�
 
 **webpack.config.js**
 
-```javascript
-const path = require("node:path");
+```js
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
   // ...
   devServer: {
     static: {
@@ -1700,10 +1736,14 @@ npx webpack serve --no-static-watch
 
 **webpack.config.js**
 
-```javascript
-const path = require("node:path");
+```js
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
   // ...
   devServer: {
     static: {
@@ -1725,8 +1765,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     watchFiles: ["src/**/*.php", "public/**/*"],
@@ -1738,8 +1778,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     watchFiles: {
@@ -1762,8 +1802,8 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     webSocketServer: "ws",
@@ -1777,14 +1817,14 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     client: {
       webSocketTransport: "ws",
     },
-    webSocketServer: require.resolve("./CustomServer"),
+    webSocketServer: import.meta.resolve("./CustomServer"),
   },
 };
 ```
@@ -1793,14 +1833,14 @@ module.exports = {
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   devServer: {
     client: {
-      webSocketTransport: require.resolve("./CustomClient"),
+      webSocketTransport: import.meta.resolve("./CustomClient"),
     },
-    webSocketServer: require.resolve("./CustomServer"),
+    webSocketServer: import.meta.resolve("./CustomServer"),
   },
 };
 ```

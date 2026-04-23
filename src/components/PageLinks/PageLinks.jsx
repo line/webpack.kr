@@ -1,15 +1,17 @@
-// eslint-disable-next-line n/prefer-node-protocol
-import Url from "url";
 import PropTypes from "prop-types";
 
 const baseURL = "https://github.com/line/webpack.kr/edit/kr/";
 
 function Separator() {
-  return <span className="mx-5 text-black font-bold dark:text-white">·</span>;
+  return (
+    <span className="mx-5 text-gray-500 font-semibold dark:text-gray-300">
+      ·
+    </span>
+  );
 }
 
 const classes =
-  "text-gray-500 dark:text-gray-500 text-sm cursor-pointer font-sans hover:underline";
+  "text-gray-500 dark:text-gray-200 text-sm cursor-pointer font-sans hover:underline hover:text-gray-500 dark:hover:text-white transition-colors";
 
 function _handlePrintClick(event) {
   event.preventDefault();
@@ -17,18 +19,17 @@ function _handlePrintClick(event) {
 }
 
 export default function PageLinks({ page = {} }) {
-  // eslint-disable-next-line n/no-deprecated-api
-  const editLink = page.edit || Url.resolve(baseURL, page.path);
+  const editLink = page.edit || new URL(page.path, baseURL).href;
 
   return (
-    <div className="print:hidden mt-20">
+    <div className="print:hidden mt-8">
       <a className={classes} href={editLink}>
         Edit this page
       </a>
       <Separator />
-      <a className={classes} onClick={_handlePrintClick}>
+      <button type="button" className={classes} onClick={_handlePrintClick}>
         Print this page
-      </a>
+      </button>
       {page.repo ? (
         <>
           <Separator />

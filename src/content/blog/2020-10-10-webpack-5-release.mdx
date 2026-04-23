@@ -1,6 +1,6 @@
 ---
-title: Webpack 5 release (2020-10-10)
-sort: -202010100
+title: Webpack 5 release
+sort: 20201010
 contributors:
   - sokra
   - chenxsan
@@ -327,21 +327,21 @@ Webpack은 이제 export의 중첩 속성에 대한 접근을 추적할 수 있�
 
 **inner.js**
 
-```javascript
+```js
 export const a = 1;
 export const b = 2;
 ```
 
 **module.js**
 
-```javascript
+```js
 export * as inner from "./inner";
 // 또는 import * as inner from './inner'; export { inner };
 ```
 
 **user.js**
 
-```javascript
+```js
 import * as module from "./module";
 
 console.log(module.inner.a);

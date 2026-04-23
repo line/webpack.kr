@@ -36,7 +36,7 @@ npm install --save-dev css-loader ts-loader
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   module: {
     rules: [
       { test: /\.css$/, use: "css-loader" },
@@ -45,6 +45,8 @@ module.exports = {
   },
 };
 ```
+
+T> 이전 예제에서는 로더를 사용하여 CSS 파일을 로드했지만, webpack에는 CSS를 처리하고 스타일을 웹페이지에 자동으로 삽입할 수 있는 실험적인 옵션([`experiments.css`](https://webpack.js.org/configuration/experiments/))이 있습니다.
 
 ## Using Loaders
 
@@ -63,7 +65,7 @@ module.exports = {
 로더는 오른쪽에서 왼쪽으로 (또는 아래에서 위로) 평가/실행됩니다. 아래 예제에서는 sass-loader로 실행이 시작되고, css-loader로 이어지며 마지막으로 style-loader로 끝납니다. 로더 순서에 대한 더 자세한 내용은 ["로더 기능"](/concepts/loaders/#loader-features)을 참고하세요.
 
 ```js
-module.exports = {
+export default {
   module: {
     rules: [
       {

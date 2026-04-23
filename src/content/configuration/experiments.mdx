@@ -37,8 +37,8 @@ W> 실험적 기능은 시멘틱 버저닝을 완화하고 주요 변경 사항�
 
 **webpack.config.js**
 
-```javascript
-module.exports = {
+```js
+export default {
   // ...
   experiments: {
     asyncWebAssembly: true,
@@ -58,7 +58,7 @@ module.exports = {
 - Type: `boolean`
 
 ```js
-module.exports = {
+export default {
   // ...
   experiments: {
     backCompat: true,
@@ -90,9 +90,10 @@ module.exports = {
 - 사용 가능: 5.49.0+
 - 예제
 
-  ```javascript
-  // webpack.config.js
-  module.exports = {
+  **webpack.config.js**
+
+  ```js
+  export default {
     // ...
     experiments: {
       buildHttp: true,
@@ -115,9 +116,10 @@ module.exports = {
 - Type: `(string|RegExp|(uri: string) => boolean)[]`
 - Example
 
-  ```javascript
-  // webpack.config.js
-  module.exports = {
+  **webpack.config.js**
+
+  ```js
+  export default {
     // ...
     experiments: {
       buildHttp: {
@@ -139,9 +141,10 @@ module.exports = {
   - `false`
 - Example
 
-  ```javascript
-  // webpack.config.js
-  module.exports = {
+  **webpack.config.js**
+
+  ```js
+  export default {
     // ...
     experiments: {
       buildHttp: {
@@ -301,7 +304,7 @@ Esbuild는 이 기능과 호환되지 않습니다([evanw/esbuild#1439](https://
 **webpack.config.js**
 
 ```js
-module.exports = {
+export default {
   // ...
   experiments: {
     futureDefaults: true,
@@ -361,7 +364,7 @@ module.exports = {
 - Example 1:
 
   ```js
-  module.exports = {
+  export default {
     // …
     experiments: {
       lazyCompilation: true,
@@ -372,7 +375,7 @@ module.exports = {
 - Example 2:
 
   ```js
-  module.exports = {
+  export default {
     // …
     experiments: {
       lazyCompilation: {
@@ -396,7 +399,7 @@ module.exports = {
 활성화되면, webpack은 가능할 때마다 ECMAScript 모듈 구문을 출력합니다. 예를 들어, `import()`를 사용하여 청크를 로드하면, ESM은 청크 데이터를 노출하기 위해 export 합니다.
 
 ```js
-module.exports = {
+export default {
   experiments: {
     outputModule: true,
   },
