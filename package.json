@@ -142,7 +142,7 @@
     "redirect-webpack-plugin": "^1.0.0",
     "refractor": "^5.0.0",
     "remark": "^15.0.1",
-    "remark-autolink-headings": "7.0.1",
+    "remark-autolink-headings": "8.0.0",
     "remark-emoji": "^5.0.2",
     "remark-extract-anchors": "1.1.1",
     "remark-frontmatter": "^5.0.0",
