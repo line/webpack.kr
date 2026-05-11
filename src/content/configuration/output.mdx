@@ -2128,7 +2128,7 @@ MyLibrary(_entry_return_);
 
 모듈 타입으로 JavaScript 파일을 출력합니다. 실험적 기능이므로 기본적으로 비활성화되어 있습니다.
 
-활성화되면 webpack은 내부적으로 [`output.iife`](#outputiife)를 `false`로, [`output.scriptType`](#outputscripttype)을 `'module'`로, `terserOptions.module`을 `true`로 설정합니다.
+활성화되면 webpack은 내부적으로 [`output.iife`](#outputiife)를 `false`로, [`output.scriptType`](#outputscripttype)을 `'module'`로, `minimizerOptions.module`을 `true`로 설정합니다.
 
 다른 사용자가 사용할 라이브러리를 컴파일하기 위해 webpack을 사용하는 경우 `output.module`이 `true` 일 때 [`output.libraryTarget`](#librarytarget-module)을 `'module'`로 설정해야 합니다.
 

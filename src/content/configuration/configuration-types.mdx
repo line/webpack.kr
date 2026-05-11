@@ -33,8 +33,8 @@ translators:
 +    mode: env.production ? 'production' : 'development',
 +    devtool: env.production ? 'source-map' : 'eval',
      plugins: [
-       new TerserPlugin({
-         terserOptions: {
+       new MinimizerPlugin({
+         minimizerOptions: {
 +          compress: argv.mode === 'production' // `--mode production`이 통과 된 경우에만
          }
        })
