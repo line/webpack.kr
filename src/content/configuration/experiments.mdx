@@ -31,9 +31,10 @@ W> 실험적 기능은 시멘틱 버저닝을 완화하고 주요 변경 사항�
 - [`futureDefaults`](#experimentsfuturedefaults)
 - [`lazyCompilation`](#experimentslazycompilation)
 - [`outputModule`](#experimentsoutputmodule)
+- [`sourceImport`](#experimentssourceimport)
 - `syncWebAssembly`: webpack 4에서와 같이 이전 웹 어셈블리를 지원합니다.
-- `layers`: 모듈 및 청크 레이어를 활성화합니다. `5.102.0` 이후로 추가 옵션 없이도 작동합니다.
-- `topLevelAwait`: 최상위 레벨에서 `await`를 사용하면 모듈을 `async` 모듈로 변환합니다. webpack 버전 `5.83.0`부터 적용됩니다. (하지만 이전 버전에서는 `experiments.topLevelAwait`를 `true`로 설정하여 활성화할 수 있습니다.), 이 기능은 기본적으로 활성화되어 있으며, `5.102.0` 이후로 제거되어 추가 옵션 없이 작동합니다.
+- `layers`: 모듈 및 청크 레이어를 활성화합니다. `5.102.0`부터는 제거되어 추가 옵션 없이 동작합니다.
+- `topLevelAwait`: 최상위 레벨에서 `await`를 사용하면 모듈을 `async` 모듈로 변환합니다. webpack `5.83.0`부터는 기본으로 활성화되며, 그 이전 버전에서는 `experiments.topLevelAwait`를 `true`로 설정해 활성화할 수 있습니다. `5.102.0`부터는 제거되어 추가 옵션 없이 동작합니다.
 
 **webpack.config.js**
 
@@ -45,6 +46,7 @@ export default {
     buildHttp: true,
     lazyCompilation: true,
     outputModule: true,
+    sourceImport: true,
     syncWebAssembly: true,
     topLevelAwait: true,
   },
@@ -279,6 +281,43 @@ export function f() {
 매직 주석을 `from` 키워드 뒤에 넣는 것이 좋습니다. 다른 위치에도 작동할 수 있지만 테스트되지 않았습니다.
 
 매직 주석을 `import` 키워드 뒤에 넣는 것은 파일 시스템 캐시와 호환되지 않습니다.
+
+### experiments.sourceImport
+
+<Badge text="5.106.0+" />
+
+[Source Phase Imports](https://github.com/tc39/proposal-source-phase-imports) tc39 제안에 대한 지원을 활성화합니다.
+
+이 제안은 모듈을 즉시 평가하는 대신 _source phase_ 에서 import할 수 있는 방법을 도입합니다. webpack에서 이 실험적 지원은 현재 **WebAssembly modules**에 대해 구현되어 있습니다. 먼저 컴파일된 [`WebAssembly.Module`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Module)을 얻고, 이후 원하는 imports와 함께 직접 instantiate할 수 있습니다. JavaScript source imports 지원은 향후 릴리스에서 추가될 예정입니다.
+
+- Type: `boolean`
+
+`asyncWebAssembly`와 함께 활성화하세요.
+
+```js
+// webpack.config.js
+export default {
+  // ...
+  experiments: {
+    asyncWebAssembly: true,
+    sourceImport: true,
+  },
+};
+```
+
+그런 다음 `.wasm` import와 함께 static 또는 dynamic source-phase 문법을 사용할 수 있습니다.
+
+```text
+// Static form
+import source wasmModule from "./module.wasm";
+
+// Dynamic form
+const wasmModule2 = await import.source("./module.wasm");
+
+const instance = await WebAssembly.instantiate(wasmModule);
+```
+
+전체 예제는 webpack 저장소의 [examples/wasm-simple-source-phase](https://github.com/webpack/webpack/tree/main/examples/wasm-simple-source-phase)에서 확인할 수 있습니다.
 
 {/* eslint-skip */}
 
