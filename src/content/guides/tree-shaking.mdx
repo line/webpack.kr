@@ -392,7 +392,7 @@ export { default as Modal } from "./Modal";
 import "./Button.css"; // 이것은 사이드 이펙트가 있습니다. 가져올 때 스타일이 적용됩니다!
 
 export default function Button(props) {
-  // Button component implementation
+  // Button component 구현
   return {
     type: "button",
     ...props,
@@ -520,6 +520,34 @@ import { Button } from "awesome-ui";
 /* #__PURE__ */ double(55);
 ```
 
+## Mark a function declaration as side-effect-free
+
+<Badge text="5.107.0+" />
+
+Webpack은 함수 선언을 pure로 표시하기 위한 [`#__NO_SIDE_EFFECTS__`](https://github.com/javascript-compiler-hints/compiler-notations-spec/blob/main/no-side-effects-notation-spec.md) annotation도 지원합니다. 이렇게 annotation이 붙은 함수는 반환값이 사용되지 않을 때, 함수 본문이 정적으로 pure하다고 분석될 수 없는 경우에도 해당 호출이 번들에서 제거될 수 있습니다. 이는 원래 각 호출 지점마다 `/*#__PURE__*/` annotation이 필요했을 factory 함수나 builder 함수에 특히 유용합니다.
+
+{/* eslint-disable */}
+
+```js
+// utils.js
+/*#__NO_SIDE_EFFECTS__*/
+export function createLogger(prefix) {
+  return (msg) => console.log(`[${prefix}] ${msg}`);
+}
+```
+
+{/* eslint-enable */}
+
+```js
+// app.js
+import { createLogger } from "./utils";
+
+// `createLogger`에 annotation이 있고 반환값이 사용되지 않으므로 제거됩니다.
+const unused = createLogger("debug");
+```
+
+W> 이 annotation은 현재 선언된 module 내부에서만 효과가 있습니다. module 간 전파는 향후 릴리스에서 지원될 예정입니다.
+
 ## Minify the Output
 
 `import`와 `export` 구문을 통해 "사용하지 않는 코드"를 삭제했습니다. 하지만 번들에서도 삭제해야 합니다. 이렇게 하려면 `mode` 옵션을 [`production`](/configuration/mode/#mode-production)으로 설정해야 합니다.
@@ -576,7 +604,7 @@ package.json 파일에서 `sideEffects: false`를 설정하면 최적의 트리 
 // 이 파일에는 건너뛸 수 있는 부작용이 있습니다
 import "./polyfill";
 
-// Re-export components
+// component를 다시 export합니다.
 export * from "./components";
 ```
 

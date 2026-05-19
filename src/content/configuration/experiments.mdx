@@ -218,12 +218,12 @@ export default {
     background: blue;
   }
 
-  /* Compose from another CSS module */
+  /* 다른 CSS module에서 조합 */
   .composed {
     composes: className from "./other.module.css";
   }
 
-  /* Compose from global classes */
+  /* 전역 class에서 조합 */
   .globalComposed {
     composes: global-class from global;
   }
@@ -239,6 +239,31 @@ export default {
 - CSS 추출: webpack은 CSS를 별도의 파일로 추출합니다. 이 기능은 네이티브 지원을 제공하기 때문에 `mini-css-extract-plugin` 및 `css-loader`의 필요성을 대체합니다.
 - CSS import: webpack은 CSS import를 생성된 CSS 파일로 인라인합니다.
 - Hot Module Reload (HMR): webpack은 CSS 파일용 HMR을 지원합니다. 이는 CSS 파일에 대한 변경 사항이 전체 페이지를 다시 로드하지 않고 브라우저에 반영된다는 것을 의미합니다.
+
+- <Badge text="5.107.0+" /> CSS Modules에 대한 Scope hoisting (module
+  concatenation)을 지원합니다.
+  [`optimization.concatenateModules`](/configuration/optimization/#optimizationconcatenatemodules)
+  가 활성화되면 `exportType`이 `text`, `css-style-sheet`, `style`, `link` 인 CSS
+  Modules는 각각 별도의 runtime 인스턴스로 유지되지 않고 하나의 module
+  인스턴스로 concatenation 됩니다. 이렇게 하면 오버헤드를 줄이고 CSS 비중이 큰
+  번들에서 더 작은 출력물을 만들 수 있습니다.
+
+- <Badge text="5.107.0+" /> `@value` 식별자는 `@import`의 path 인자와 `url()`
+  참조 내부에서 사용할 수 있으므로, 공통 path와 asset을 한 번만 정의하고 여러
+  stylesheet에서 재사용할 수 있습니다. 따옴표가 있는 형식 (`"./x"`, `'./x'`)과
+  없는 형식(`./x`) 모두 허용되며, webpack의 일반적인 asset pipeline을 통해
+  resolve됩니다.
+
+  ```css
+  @value path: "./other.module.css";
+  @import path;
+
+  @value bg: "./image.png";
+
+  .a {
+    background: url(bg);
+  }
+  ```
 
 ### experiments.cacheUnaffected
 
@@ -308,10 +333,10 @@ export default {
 그런 다음 `.wasm` import와 함께 static 또는 dynamic source-phase 문법을 사용할 수 있습니다.
 
 ```text
-// Static form
+// 정적 형식
 import source wasmModule from "./module.wasm";
 
-// Dynamic form
+// 동적 형식
 const wasmModule2 = await import.source("./module.wasm");
 
 const instance = await WebAssembly.instantiate(wasmModule);
