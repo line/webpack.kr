@@ -168,9 +168,9 @@ export default {
         // type: boolean, webpack 5.90.0부터 사용 가능합니다.
         exportsOnly: true,
 
-        // CSS 내보내기 이름을 그대로 유지하거나 카멜 케이스로 변환하는 등 javascript 모듈로 내보내는 방법을 사용자 정의합니다.
-        // type: 'as-is' | 'camel-case' | 'camel-case-only' | 'dashes' | 'dashes-only' | ((name: string) => string)
-        // webpack 5.90.4부터 사용 가능합니다.
+        // css export 이름을 javascript module로 내보내는 방식을 사용자 정의합니다. 예를 들어 현재 형태를 유지하거나 camel case로 변환할 수 있습니다.
+        // type: 'as-is' | 'camel-case' | 'camel-case-only' | 'dashes' | 'dashes-only' | ((name: string) => string | string[])
+        // webpack 5.90.4부터 사용 가능하며, 함수 형식은 webpack 5.107.0부터 string[]를 반환할 수 있습니다.
         exportsConvention: "camel-case-only",
       },
       "css/auto": {
@@ -180,9 +180,9 @@ export default {
         // type: boolean, webpack 5.90.0부터 사용 가능합니다.
         exportsOnly: true,
 
-        // CSS 내보내기 이름을 그대로 유지하거나 카멜 케이스로 변환하는 등 javascript 모듈로 내보내는 방법을 사용자 정의합니다.
-        // type: 'as-is' | 'camel-case' | 'camel-case-only' | 'dashes' | 'dashes-only' | ((name: string) => string)
-        // webpack 5.90.4부터 사용 가능합니다.
+        // css export 이름을 javascript module로 내보내는 방식을 사용자 정의합니다. 예를 들어 현재 형태를 유지하거나 camel case로 변환할 수 있습니다.
+        // type: 'as-is' | 'camel-case' | 'camel-case-only' | 'dashes' | 'dashes-only' | ((name: string) => string | string[])
+        // webpack 5.90.4부터 사용 가능하며, 함수 형식은 webpack 5.107.0부터 string[]를 반환할 수 있습니다.
         exportsConvention: "camel-case-only",
 
         // CSS 모듈에 대해 생성된 로컬 클래스 이름의 형식을 사용자 정의합니다.
@@ -205,6 +205,35 @@ export default {
     },
   },
 };
+```
+
+### Multiple aliases via `exportsConvention`
+
+<Badge text="5.107.0+" />
+
+`exportsConvention`이 함수인 경우 `string` 또는 `string[]`를 반환할 수 있습니다. 배열을 반환하면 배열에 포함된 모든 이름으로 local class를 export하며, 이는 `css-loader`의 동작과 일치합니다. 같은 class를 여러 alias로 노출하고 싶지만 두 개의 rule을 작성하고 싶지 않을 때 유용합니다.
+
+**webpack.config.js**
+
+```js
+export default {
+  experiments: { css: true },
+  module: {
+    generator: {
+      "css/module": {
+        // 각 class를 원래 이름과 대문자 alias 두 가지로 모두 노출합니다.
+        exportsConvention: (name) => [name, name.toUpperCase()],
+      },
+    },
+  },
+};
+```
+
+```js
+import styles from "./button.module.css";
+
+console.log(styles.btn); // 해시된 class
+console.log(styles.BTN); // 같은 해시된 class의 대문자 alias
 ```
 
 ## module.parser
@@ -449,6 +478,56 @@ import { footer, header } from "./styles.module.css";
 
 `namedExports`를 활성화하면 JavaScript 프로젝트에서 CSS를 관리하는 데 더 모듈화되고 유지 관리 가능한 접근 방식을 채택하고 ES 모듈 구문을 활용하여 더 명확하고 명시적인 가져오기를 수행할 수 있습니다.
 
+#### module.parser.css.pure
+
+<Badge text="5.107.0+" />
+
+CSS Modules에 대해 엄격한 pure mode를 활성화합니다. 모든 selector는 최소 하나의 local class 또는 id selector를 포함해야 하며, 그렇지 않으면 webpack이 build error를 발생시킵니다. 이는 [`postcss-modules-local-by-default`](https://github.com/css-modules/postcss-modules-local-by-default)의 pure mode와 동일한 동작이며, 실수로 작성한 global selector를 초기에 발견하는 데 도움이 됩니다.
+
+- Type: `boolean`
+- Default: `false`
+- Available for: `css/module` 및 `css/auto` (`css/global`에는 노출되지 않으며, 여기서는 global-by-default가 의도된 semantic입니다.)
+
+**webpack.config.js**
+
+```js
+export default {
+  experiments: { css: true },
+  module: {
+    parser: {
+      "css/module": {
+        pure: true,
+      },
+    },
+  },
+};
+```
+
+필요할 때는 두 가지 주석으로 이 검사를 비활성화할 수 있습니다.
+
+`/* cssmodules-pure-ignore */`를 rule 바로 앞에 두면 해당 rule 하나에 대해서만 검사가 비활성화됩니다. 이 비활성화는 rule 단위로만 적용되며 하위 항목으로 전파되지 않습니다.
+
+```css
+/* cssmodules-pure-ignore */
+a {
+  /* 이 rule에 대해서만 검사 비활성화 */
+  color: blue;
+}
+```
+
+`/* cssmodules-pure-no-check */`를 파일 선두의 주석 영역(어떤 rule보다도 앞)에 두면 파일 전체에 대한 검사가 비활성화됩니다.
+
+```css
+/* cssmodules-pure-no-check */
+
+a {
+  /* 일반적으로 pure mode에서는 실패합니다 */
+  color: red;
+}
+```
+
+일부 구문은 설계상 검사 예외입니다. local selector를 포함한 상위 selector 내부의 nested rules는 pure-compliant로 간주되고, `&`는 부모 rule의 purity를 따르며, `@keyframes`와 `@counter-style`의 본문은 검사하지 않습니다.
+
 #### module.parser.css.animation
 
 <Badge text="5.104.0+" />
@@ -632,6 +711,33 @@ export default {
 ```
 
 [`Rule.parser`](/configuration/module/#ruleparser)에서 이러한 옵션을 설정하고 특정 모듈을 대상으로 지정할 수 있습니다.
+
+#### module.parser.javascript.anonymousDefaultExportName
+
+<Badge text="5.107.0+" />
+
+anonymous default-export function 및 class에 대해 webpack이 `.name`을 `"default"`로 설정할지 제어하며, 이는 native ESM의 ES spec과 일치합니다. 이 옵션을 활성화하면 webpack은 export에 `Object.defineProperty(...)`를 호출해 `.name` 값을 설정하는 작은 runtime helper(`__webpack_require__.dn`)를 주입합니다.
+
+- Type: `boolean`
+- Default: 애플리케이션에서는 `true`, 라이브러리에서는 `false` ([`output.library`](/configuration/output/#outputlibrary)가 설정된 경우)
+
+애플리케이션은 기본적으로 spec-compliant 상태를 유지합니다. 반면 라이브러리는 `.name === "default"`에 의존하는 경우가 드물기 때문에, 번들 크기를 작게 유지하기 위해 이 helper를 생략합니다.
+
+기본값을 명시적으로 덮어쓰려면 다음과 같이 설정합니다.
+
+**webpack.config.js**
+
+```js
+export default {
+  module: {
+    parser: {
+      javascript: {
+        anonymousDefaultExportName: false,
+      },
+    },
+  },
+};
+```
 
 #### module.parser.javascript.commonjsMagicComments
 
@@ -827,7 +933,7 @@ const x = require(/* webpackIgnore: true */ "x");
   With this configuration, custom properties on `import.meta` set by the build tool or runtime are preserved in the generated output:
 
   ```js
-  // import.meta.customProp is set externally (e.g. by a build tool or runtime)
+  // import.meta.customProp은 외부에서 설정됩니다(예: build tool 또는 runtime).
   if (import.meta.customProp) {
     console.log(import.meta.customProp);
   }
@@ -1036,7 +1142,7 @@ export default {
   module: {
     parser: {
       json: {
-        // Example:
+        // 예시:
         // import { myField } from "./file.json";
         //
         // console.log(myField);

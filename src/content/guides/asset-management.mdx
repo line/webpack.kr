@@ -152,7 +152,7 @@ export default {
  function component() {
    const element = document.createElement('div');
 
-   // Lodash, now imported by this script
+   // 이제 이 스크립트가 Lodash를 import합니다.
    element.innerHTML = _.join(['Hello', 'webpack'], ' ');
 +  element.classList.add('hello');
 
@@ -527,7 +527,7 @@ Autumn,Lindsey,Letter,I miss you
    element.innerHTML = _.join(['Hello', 'webpack'], ' ');
    element.classList.add('hello');
 
-   // Add the image to our existing div.
+   // 기존 div에 이미지를 추가합니다.
    const myIcon = new Image();
    myIcon.src = Icon;
 

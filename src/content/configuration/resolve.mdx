@@ -332,14 +332,19 @@ Webpack은 `resolve.conditionNames` 배열 내에 나열된 [export 조건](http
 
 Webpack은 모듈이 임포트되는 방식에 따라 [`resolve.byDependency`](/configuration/resolve/#resolvebydependency)를 통해 `conditionNames`를 추가로 조정합니다. `"..."` 토큰은 위의 기본 조건을 상속합니다.
 
-| 종속성 유형                                         | `conditionNames`                        | 사용 용도                                 |
-| --------------------------------------------------- | --------------------------------------- | ----------------------------------------- |
-| `esm`, `wasm`, `loaderImport`                       | `["import", "module", "..."]`           | ESM `import` 문, WebAssembly, 로더 임포트 |
-| `commonjs`, `amd`, `loader`, `unknown`, `undefined` | `["require", "module", "..."]`          | `require()` 호출, AMD 및 기타 종속성 유형 |
-| `worker`                                            | `["worker", "import", "module", "..."]` | `new Worker()` 표현식                     |
-| `css-import`                                        | `["webpack", <mode>, "style"]`          | CSS `@import` 문                          |
+| 종속성 유형                                         | `conditionNames`                                       | 사용 용도                                 |
+| --------------------------------------------------- | ------------------------------------------------------ | ----------------------------------------- |
+| `esm`, `wasm`, `loaderImport`                       | `["import", "module-sync", "module", "..."]`           | ESM `import` 문, WebAssembly, 로더 임포트 |
+| `commonjs`, `amd`, `loader`, `unknown`, `undefined` | `["require", "module-sync", "module", "..."]`          | `require()` 호출, AMD 및 기타 종속성 유형 |
+| `worker`                                            | `["worker", "import", "module-sync", "module", "..."]` | `new Worker()` 표현식                     |
+| `css-import`                                        | `["webpack", <mode>, "style"]`                         | CSS `@import` 문                          |
 
-예를 들어, 프로젝트가 `target: "web"` 및 `mode: "production"`으로 설정되어 있고 파일에서 `import`를 사용하는 경우, 최종적으로 결정되는 조건은 `["import", "module", "webpack", "production", "browser"]`입니다.
+<Badge text="5.107.0+" /> Node.js와의 정렬을 위해 기본 조건에 `"module-sync"`가
+포함됩니다. Node.js는 동기적으로 로드 가능한 ESM을 위해 `module-sync` community
+condition을 노출하므로, `package.json`에 `module-sync` export를 게시한 패키지는
+추가 설정 없이 자동으로 선택됩니다.
+
+예를 들어 `target: "web"` 및 `mode: "production"`인 프로젝트에서 파일이 `import`를 사용하는 경우, 최종적으로 resolve되는 조건은 `["import", "module-sync", "module", "webpack", "production", "browser"]`입니다.
 
 T> `resolveLoader` 옵션은 `conditionNames`에 대해 서로 다른 기본값을 사용합니다. `["loader", "require", "node"]`. [resolveLoader](#resolveloader)를 참고하세요.
 
@@ -746,11 +751,11 @@ export default {
       // 객체 스타일 플러그인
       {
         apply(resolver) {
-          // custom logic
+          // 사용자 정의 로직
         },
       },
 
-      // Function-style plugin
+      // 함수형 plugin
       function (resolver) {
         // `this`도 리졸버입니다.
       },

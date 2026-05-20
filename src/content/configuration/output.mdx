@@ -92,19 +92,19 @@ export default {
 
 ```js
 (function webpackUniversalModuleDefinition(root, factory) {
-  // Test Comment
+  // 테스트 주석
   if (typeof exports === "object" && typeof module === "object") {
     module.exports = factory(require("lodash"));
   }
-  // Test Comment
+  // 테스트 주석
   else if (typeof define === "function" && define.amd) {
     define(["lodash"], factory);
   }
-  // Test Comment
+  // 테스트 주석
   else if (typeof exports === "object") {
     exports.someLibName = factory(require("lodash"));
   }
-  // Test Comment
+  // 테스트 주석
   else {
     root.someLibName = factory(root._);
   }
@@ -1660,19 +1660,19 @@ export default {
 
 ```js
 (function webpackUniversalModuleDefinition(root, factory) {
-  // Test Comment
+  // 테스트 주석
   if (typeof exports === "object" && typeof module === "object") {
     module.exports = factory();
   }
-  // Test Comment
+  // 테스트 주석
   else if (typeof define === "function" && define.amd) {
     define([], factory);
   }
-  // Test Comment
+  // 테스트 주석
   else if (typeof exports === "object") {
     exports.MyLibrary = factory();
   }
-  // Test Comment
+  // 테스트 주석
   else {
     root.MyLibrary = factory();
   }
@@ -1785,7 +1785,7 @@ W> [`output.library.type: 'var'`](#type-var)를 사용하는 것이 좋습니다
 ```js
 const MyLibrary = _entry_return_;
 
-// In a separate script...
+// 별도의 script에서...
 MyLibrary.doSomething();
 ```
 
@@ -1852,7 +1852,7 @@ W> [`output.library.type: 'this'`](#type-this)를 사용하는 것이 좋습니�
 ```js
 this.MyLibrary = _entry_return_;
 
-// In a separate script...
+// 별도의 script에서...
 this.MyLibrary.doSomething();
 MyLibrary.doSomething(); // this가 window인 경우
 ```
@@ -1951,7 +1951,7 @@ define("MyLibrary", [], () => _entry_return_);
 
 ```js
 require(["MyLibrary"], (MyLibrary) => {
-  // Do something with the library...
+  // library로 작업을 수행합니다...
 });
 ```
 
@@ -2128,7 +2128,7 @@ MyLibrary(_entry_return_);
 
 모듈 타입으로 JavaScript 파일을 출력합니다. 실험적 기능이므로 기본적으로 비활성화되어 있습니다.
 
-활성화되면 webpack은 내부적으로 [`output.iife`](#outputiife)를 `false`로, [`output.scriptType`](#outputscripttype)을 `'module'`로, `terserOptions.module`을 `true`로 설정합니다.
+활성화되면 webpack은 내부적으로 [`output.iife`](#outputiife)를 `false`로, [`output.scriptType`](#outputscripttype)을 `'module'`로, `minimizerOptions.module`을 `true`로 설정합니다.
 
 다른 사용자가 사용할 라이브러리를 컴파일하기 위해 webpack을 사용하는 경우 `output.module`이 `true` 일 때 [`output.libraryTarget`](#librarytarget-module)을 `'module'`로 설정해야 합니다.
 

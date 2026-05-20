@@ -56,7 +56,7 @@ T> `module` 또는 `columns`를 `false`로 설정하면 소스맵의 정확도�
 
 T> [development mode](/configuration/mode/#mode-development)에서 이 플러그인에 대한 설정을 커스텀 하고 싶다면 기본 설정값을 비활성화해야 합니다. 즉, `devtool: false`로 설정해야 합니다.
 
-W> webpack `minimizer`의 기본값이 재정의된 경우 (`TerserPlugin` 옵션 커스텀 등으로 인해), 소스맵 지원을 활성화하려면 `sourceMap: true`로 설정해야 합니다.
+W> 기본 webpack `minimizer`가 재정의된 경우(예를 들어 `MinimizerPlugin` 옵션을 사용자 지정한 경우), SourceMap 지원을 활성화하려면 대체 항목에 `sourceMap: true`를 설정해야 합니다.
 
 ## Examples
 

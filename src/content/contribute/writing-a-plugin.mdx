@@ -29,7 +29,7 @@ Webpack용 plugin은 다음과 같이 구성됩니다.
 - 기능적으로 완벽해지면 webpack에서 제공하는 callback을 호출합니다.
 
 ```js
-// A JavaScript class.
+// JavaScript class입니다.
 class MyExampleWebpackPlugin {
   // `apply`를 compiler를 인자로 받는 프로토타입 메소드로 정의합니다.
   apply(compiler) {
@@ -37,7 +37,7 @@ class MyExampleWebpackPlugin {
     compiler.hooks.thisCompilation.tap(
       "MyExampleWebpackPlugin",
       (compilation) => {
-        // Specify the asset processing hook
+        // asset processing hook을 지정합니다.
         compilation.hooks.processAssets.tap(
           {
             name: "MyExampleWebpackPlugin",

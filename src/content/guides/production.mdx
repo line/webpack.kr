@@ -115,7 +115,7 @@ npm install --save-dev webpack-merge
 + });
 ```
 
-`webpack.common.js`에서 `entry`와 `output`을 설정했으며, 두 환경에서 필요한 플러그인들을 포함했습니다. `webpack.dev.js`에서 `mode`를 `development`으로 설정했습니다. 또한, 해당 환경에 권장(강력한 소스 매핑)되는 `devtool`과 간단한 `devServer` 설정을 추가했습니다. 마지막으로 `webpack.prod.js`에 `mode`를 [Tree shaking](/guides/tree-shaking/) 가이드에서 처음 언급했던 [`TerserPlugin`](/plugins/terser-webpack-plugin/)을 로드하기 위해 `production`으로 설정 합니다.
+`webpack.common.js`에서는 `entry`와 `output` 설정을 구성하고, 두 환경 모두에 필요한 플러그인을 포함했습니다. `webpack.dev.js`에서는 `mode`를 `development`로 설정했습니다. 또한 해당 환경에 권장되는 `devtool`(강력한 소스 매핑)과 `devServer` 설정도 추가했습니다. 마지막으로 `webpack.prod.js`에서는 `mode`를 `production`으로 설정하여, [Tree shaking](/guides/tree-shaking/) 가이드에서 처음 소개한 [`MinimizerPlugin`](/plugins/minimizer-webpack-plugin/)을 로드합니다.
 
 환경별 설정에서 `merge()`를 사용하여 호출하면 `webpack.dev.js` 및 `webpack.prod.js`에 공통 설정을 포함합니다. `webpack-merge` 툴은 병합을 위한 다양한 고급 기능을 제공하지만, 지금 사례에서는 이런 기능이 필요하지 않습니다.
 
@@ -204,7 +204,7 @@ T> 기술적으로 `NODE_ENV`는 Node.js가 실행 중인 스크립트가 참고
 
 Webpack v4+의 [`production mode`](/configuration/mode/#mode-production)에서는 기본으로 코드를 최소화합니다.
 
-[`TerserPlugin`](/plugins/terser-webpack-plugin/)은 최소화를 시작하고 기본으로 사용하기에 좋지만 다른 옵션도 있습니다.
+[`MinimizerPlugin`](/plugins/minimizer-webpack-plugin/)은 최소화를 시작하기에 좋고 기본으로도 사용되지만, 다른 선택지도 있습니다.
 
 - [`ClosureWebpackPlugin`](https://github.com/webpack-contrib/closure-webpack-plugin)
 

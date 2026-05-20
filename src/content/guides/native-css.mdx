@@ -1,0 +1,271 @@
+---
+title: Native CSS
+sort: 27
+contributors:
+  - phoekerson
+---
+
+이 가이드는 `experiments.css`를 사용해 webpack의 네이티브 CSS 처리를 사용하는 방법을 설명합니다.
+
+T> `experiments.css`는 아직 실험적인 기능입니다. webpack v6에서는 기본값이 될 것으로 예상되지만, 개발이 계속되는 동안 동작이 바뀔 수 있습니다.
+
+## Getting Started
+
+webpack 설정에서 네이티브 CSS 지원을 활성화하세요.
+
+**webpack.config.js**
+
+```js
+export default {
+  experiments: {
+    css: true,
+  },
+};
+```
+
+이 옵션을 활성화하면 webpack은 기본적인 흐름에서 `css-loader`와 `mini-css-extract-plugin`을 추가하지 않고도 CSS를 처리할 수 있습니다.
+
+## Importing CSS
+
+실험 기능을 활성화한 뒤에는 JavaScript에서 `.css` 파일을 직접 import할 수 있습니다.
+
+**src/index.js**
+
+```js
+import "./styles.css";
+
+const element = document.createElement("h1");
+element.textContent = "Hello native CSS";
+document.body.appendChild(element);
+```
+
+**src/styles.css**
+
+```css
+h1 {
+  color: #1f6feb;
+}
+```
+
+Webpack은 이 CSS를 처리해 빌드 결과물에 포함합니다.
+
+## CSS Modules
+
+네이티브 CSS 지원에는 CSS Modules도 포함되어 있습니다. 권장되는 방식은 다음과 같습니다.
+
+- 혼합된 CSS 처리를 위해 `type: "css/auto"`를 유지합니다.
+- CSS Modules 파일에는 `.module.css`(또는 `.modules.css`) 이름 규칙을 사용합니다.
+
+**src/button.module.css**
+
+```css
+.button {
+  background: #0d6efd;
+  color: white;
+  border: 0;
+  border-radius: 4px;
+  padding: 8px 12px;
+}
+```
+
+**src/index.js**
+
+```js
+import * as styles from "./button.module.css";
+
+const button = document.createElement("button");
+button.className = styles.button;
+button.textContent = "Click me";
+document.body.appendChild(button);
+```
+
+T> CSS Modules의 클래스 이름은 export됩니다. 기본적으로 CSS 모듈에서는 named export가 활성화되어 있습니다.
+
+parser와 generator 옵션을 사용하면 CSS Modules의 동작을 사용자 정의할 수 있습니다.
+
+**webpack.config.js**
+
+```js
+export default {
+  experiments: {
+    css: true,
+  },
+  module: {
+    parser: {
+      "css/module": {
+        namedExports: true,
+      },
+    },
+    generator: {
+      "css/module": {
+        exportsConvention: "camel-case-only",
+        localIdentName: "[uniqueName]-[id]-[local]",
+      },
+    },
+  },
+};
+```
+
+## Production Build
+
+`experiments.css: true`를 사용하면 webpack은 프로덕션 빌드에서 CSS 애셋에 대해 네이티브 CSS 추출과 콘텐츠 해싱을 제공합니다.
+
+기존 방식과 비교하면 다음과 같습니다.
+
+- 전통적인 방식: `css-loader` + `mini-css-extract-plugin`
+- 네이티브 방식: 내장 추출 동작을 사용하는 `experiments.css`
+
+이 방식은 설정을 줄이고 CSS 파이프라인을 webpack 코어 기능에 더 가깝게 유지해 줍니다.
+
+## Experimental Status & Known Limitations
+
+`experiments.css`는 명시적으로 실험 단계의 기능이므로, 선택적으로 도입하고 넓게 적용하기 전에 충분히 테스트해야 합니다.
+
+염두에 둘 점은 다음과 같습니다.
+
+- API와 동작은 webpack v6에서 기본값이 되기 전까지 계속 바뀔 수 있습니다.
+- 일부 로더 전용 옵션은 네이티브 CSS 동작에 포함되지 않습니다. 예를 들어 로더 전용 필터가 그렇습니다.
+- 프로젝트가 고급 로더 체인에 의존하고 있다면 완전히 마이그레이션하기 전에 각 부분을 검증하세요.
+
+## Migration Guide
+
+현재 `css-loader`, `mini-css-extract-plugin`, `style-loader`를 사용하고 있다면 작은 단계로 나누어 마이그레이션하세요.
+
+### 1) Start from a classic setup
+
+**webpack.config.js**
+
+```js
+import MiniCssExtractPlugin from "mini-css-extract-plugin";
+
+export default {
+  module: {
+    rules: [
+      {
+        test: /\.css$/i,
+        use: [MiniCssExtractPlugin.loader, "css-loader"],
+      },
+    ],
+  },
+  plugins: [new MiniCssExtractPlugin()],
+};
+```
+
+### 2) Switch to native CSS
+
+**webpack.config.js**
+
+```js
+export default {
+  experiments: {
+    css: true,
+  },
+};
+```
+
+### 3) Migrate `css-loader` options first
+
+대부분의 CSS Modules 관련 옵션은 네이티브 parser/generator 설정으로 옮겨야 합니다.
+
+**webpack.config.js**
+
+```js
+export default {
+  experiments: {
+    css: true,
+  },
+  module: {
+    parser: {
+      css: {
+        import: true,
+        url: true,
+      },
+      "css/module": {
+        namedExports: true,
+      },
+    },
+    generator: {
+      "css/module": {
+        exportsConvention: "camel-case-only",
+        localIdentName: "[local]-[hash:base64:6]",
+      },
+    },
+  },
+};
+```
+
+참고:
+
+- `import`와 `url`은 CSS 처리를 위한 네이티브 parser 스위치입니다.
+- `namedExports`는 CSS Modules의 export 동작을 제어합니다.
+- `exportsConvention`과 `localIdentName`은 클래스 export 방식과 이름 형태를 지정합니다.
+- `localIdentName`은 해시 플레이스홀더(예: `[hash:base64:6]`)를 지원합니다. 해시는 [`output.hashFunction`](/configuration/output/#outputhashfunction), [`output.hashDigest`](/configuration/output/#outputhashdigest), [`output.hashDigestLength`](/configuration/output/#outputhashdigestlength), [`output.hashSalt`](/configuration/output/#outputhashsalt)로 전역 조정할 수 있습니다.
+- `css-loader`의 필터 계열 옵션은 일대일 대응되는 기능이 없으므로, 필요할 때는 `IgnorePlugin` 같은 webpack 메커니즘을 사용하세요.
+
+### 4) Replace `mini-css-extract-plugin`
+
+`experiments.css`를 활성화하면 webpack이 CSS 출력 파일에 대해 네이티브 CSS 추출과 콘텐츠 해시 처리를 제공하므로, 이 기본 설정에서는 `mini-css-extract-plugin`과 `css-loader`를 모두 제거할 수 있습니다.
+
+**webpack.config.js**
+
+```diff
+-import MiniCssExtractPlugin from "mini-css-extract-plugin";
+-
+ export default {
++  experiments: {
++    css: true,
++  },
+-  plugins: [new MiniCssExtractPlugin()],
+ };
+```
+
+다음 항목을 제거할 수 있습니다.
+
+- `module.rules`의 CSS 로더 체인(`css-loader` 포함)
+- `new MiniCssExtractPlugin()` 플러그인 인스턴스
+
+### 5) Replace `style-loader` with `exportType: "style"`
+
+런타임 스타일 주입을 위해 `style-loader`를 사용하고 있었다면 `css/auto`를 유지하고 모듈 이름 규칙(`.module.css` 또는 `.modules.css`)을 사용한 뒤 `exportType: "style"`을 설정하세요.
+
+**webpack.config.js**
+
+```js
+export default {
+  experiments: {
+    css: true,
+  },
+  module: {
+    rules: [
+      {
+        test: /\.css$/i,
+        type: "css/auto",
+        parser: {
+          exportType: "style",
+        },
+      },
+    ],
+  },
+};
+```
+
+이 모드는 webpack 런타임에서 `<style>` 요소를 주입하며, 일반적인 `style-loader` 사용 사례를 대체할 수 있습니다.
+
+파일 이름을 CSS Modules 규칙에 맞게 바꿀 수 없다면, 해당 규칙에 직접 `type: "css/module"`을 사용할 수 있습니다.
+
+### 6) Keep imports unchanged
+
+JavaScript import 구문은 그대로 유지해도 됩니다.
+
+```js
+import "./styles.css";
+import * as styles from "./button.module.css";
+```
+
+### 7) Validate output in development and production
+
+다음을 확인하세요.
+
+- 개발 환경에서 스타일이 올바르게 적용되는지
+- 프로덕션용 생성 CSS 파일이 정상적으로 출력되는지
+- CSS Modules export가 기존 사용 방식과 일치하는지

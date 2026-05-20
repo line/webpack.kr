@@ -3,6 +3,7 @@ title: ECMAScript Modules
 sort: 19
 contributors:
   - sokra
+  - ryzrr
 translators:
   - choilim
 related:
@@ -86,12 +87,131 @@ DataURIs에서 `text/javascript` 또는 `application/javascript` mime 유형을 
 
 모듈 형식뿐 아니라 모듈 플래그를 ESM으로 지정하는 것은 로직 해석, interop 로직 및 모듈에서 사용 가능한 심볼에 영향을 줍니다.
 
-ESM의 import는 더 엄격하게 해석됩니다. 상대적 요청에는 [`fullySpecified=false`](/configuration/module/#resolvefullyspecified)로 동작을 비활성화하지 않는 한 파일 이름과 파일 확장자가 포함되어야 합니다 (예를 들면 `*.js` 또는 `*.mjs`).
+## import.meta in ESM
+
+Webpack은 ESM에서 사용할 수 있는 여러 `import.meta` 속성을 제공합니다.
+
+| 속성                         | 설명                                                                                        |
+| ---------------------------- | ------------------------------------------------------------------------------------------- |
+| `import.meta.url`            | 현재 모듈 파일의 URL로, `new Worker()`나 `new URL()`에 사용할 수 있습니다.                  |
+| `import.meta.webpack`        | webpack 메이저 버전 번호입니다. (예: `5`)                                                   |
+| `import.meta.webpackHot`     | `module.hot`와 동일한 기능으로, ESM에서 HMR에 사용할 수 있습니다.                           |
+| `import.meta.webpackContext` | [`require.context`의 ESM 대응 API](/guides/dependency-management/#importmetawebpackcontext) |
+
+**예시 - 에셋에 `import.meta.url` 사용하기:**
+
+```js
+// 현재 모듈을 기준으로 같은 디렉터리의 파일 경로를 해석합니다.
+const iconUrl = new URL("./icon.png", import.meta.url);
+const img = document.createElement("img");
+img.src = iconUrl.href;
+```
+
+**예시 - ESM에서 HMR 사용하기:**
+
+```js
+if (import.meta.webpackHot) {
+  import.meta.webpackHot.accept("./module.js", () => {
+    // 업데이트를 처리합니다.
+  });
+}
+```
+
+## Top-Level Await
+
+ESM에서는 모듈 최상위 레벨에서 `await`를 사용할 수 있습니다. Webpack은 해당 모듈을 자동으로 비동기 모듈로 처리합니다. 이 기능은 5.83.0부터 기본 활성화되었고, `experiments.topLevelAwait` 옵션 자체는 5.102.0에서 제거되었습니다. 즉, 별도 설정 없이 동작합니다.
+
+W> **브라우저**를 대상으로 할 때는 엔트리 포인트에서 top-level await 사용을 피하세요. 전체 모듈 그래프의 평가가 지연됩니다. 지연 로딩이 필요하다면 `import()`를 사용하는 편이 좋습니다. Node.js, Electron, Web Worker 대상에서는 이 제한이 적용되지 않습니다.
+
+```js
+// user.js (비동기 ESM 모듈)
+const response = await fetch("/api/user");
+
+export const user = await response.json();
+```
+
+```js
+// index.js - 비동기 모듈 import도 기대한 대로 동작합니다.
+import { user } from "./user.js";
+
+console.log(user.name);
+```
+
+## Fully Specified Imports
+
+ESM의 import는 더 엄격하게 해석됩니다. 파일이 ESM으로 지정된 경우, Node.js 규칙에 따라 상대 경로 요청에는 파일 확장자(예: `*.js`, `*.mjs`)를 포함해야 합니다.
+
+```js
+// 실패합니다. 확장자가 없습니다.
+import { helper as missingExt } from "./utils";
+
+// ESM에서 올바른 방식입니다.
+import { helper } from "./utils.js";
+```
 
 T> import "lodash" 같이 패키지에 대한 요청은 여전히 지원됩니다.
 
-ESM이 아닌 경우는 "기본" export만 가져올 수 있습니다. 명명된 export를 사용할 수 없습니다.
+대규모 CJS 코드베이스를 마이그레이션할 때처럼 이 검사를 비활성화해야 한다면 [`fullySpecified=false`](/configuration/module/#resolvefullyspecified)를 사용할 수 있습니다.
 
-`require`, `module`, `exports`, `__filename`, `__dirname` 같은 CommonJs 구문을 사용할 수 없습니다.
+```js
+// webpack.config.js
+export default {
+  module: {
+    rules: [
+      {
+        test: /\.m?js/,
+        resolve: {
+          fullySpecified: false,
+        },
+      },
+    ],
+  },
+};
+```
 
-T> HMR은 [`module.hot`](/api/module-variables/#modulehot-webpack-specific) 대신 [`import.meta.webpackHot`](/api/module-variables/#importmetawebpackhot)과 함께 사용할 수 있습니다.
+## CommonJS Interop
+
+ESM에서는 `require`, `module`, `exports`, `__filename`, `__dirname` 같은 CommonJS 구문을 사용할 수 없습니다.
+
+ESM에서 CommonJS 모듈을 import할 때는 `default` export만 사용할 수 있으며, 이는 `module.exports` 객체 전체를 가리킵니다.
+
+```js
+// esm-consumer.js (ESM)
+import cjs from "./cjs-module.js";
+// CJS에서는 named import가 동작하지 않습니다.
+import { foo } from "./cjs-module.js"; // undefined
+
+// cjs-module.js (CommonJS)
+module.exports = { foo: 1, bar: 2 };
+
+console.log(cjs.foo); // 동작합니다. cjs는 exports 객체 전체입니다.
+```
+
+이 엄격한 동작은 webpack이 **import된** 모듈을 CommonJS로 판단할 때 적용됩니다. 해당 모듈이 자체적으로 ESM `export` 구문을 사용하면 webpack이 이를 자동으로 ESM으로 감지하므로 named import도 정상적으로 동작합니다. 이 문제는 `"type": "module"`이 설정된 프로젝트에서 `.js` 파일을 혼용할 때 자주 나타납니다. 프로젝트 내부 일부 파일은 ESM으로 처리되는 반면, `node_modules`의 서드파티 패키지는 여전히 CommonJS인 경우가 많기 때문입니다.
+
+T> CommonJS 모듈에서 named export가 필요하다면 ESM으로 마이그레이션하거나 [`@babel/plugin-transform-modules-commonjs`](https://babeljs.io/docs/babel-plugin-transform-modules-commonjs)를 사용하는 것을 고려하세요.
+
+## Common Migration Errors
+
+**`ReferenceError: require is not defined`**
+
+파일이 ESM으로 처리되면 CommonJS 전역 객체인 `require`, `module`, `exports`, `__filename`, `__dirname`를 사용할 수 없습니다.
+
+_해결_: `require()`를 `import` 구문으로 바꾸세요. 조건부 또는 동적 로딩이 필요하다면 `import()`를 사용하세요.
+
+---
+
+**`Must use import to load ES Module`** (Node.js) / **`SyntaxError: Cannot use import
+statement in a module`** (browser)
+
+이 오류는 ESM `import`/`export` 구문을 사용하는 파일이 ESM으로 지정되지 않았을 때 발생합니다. `package.json`에 `"type": "module"`이 없거나, 파일 확장자가 `.mjs`가 아니라 `.js`인 경우가 대표적입니다.
+
+_해결_: `package.json`에 `"type": "module"`을 추가하거나 파일 확장자를 `.mjs`로 변경하세요.
+
+---
+
+**`Module not found: Error: Can't resolve './utils'` (missing extension)**
+
+ESM에서는 상대 import에 파일 확장자를 포함해야 합니다. Webpack도 여기서는 Node.js의 ESM 규칙을 따릅니다.
+
+_해결_: `import { helper } from './utils'`를 `import { helper } from './utils.js'`로 바꾸거나, 마이그레이션하는 동안에는 webpack 설정에서 [`fullySpecified: false`](/configuration/module/#resolvefullyspecified)를 지정해 이 검사를 끌 수 있습니다.

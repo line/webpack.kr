@@ -152,9 +152,9 @@ T> 대부분의 경우 `eval-cheap-module-source-map`이 가장 좋은 옵션입
 
 ### Avoid Production Specific Tooling
 
-특정 유틸리티, 플러그인 및 로더는 production으로 빌드할 때만 의미가 있습니다. 예를 들어, 개발 중에 `TerserPlugin`을 사용하여 코드를 축소하고 조작하는 것은 일반적으로 이치에 맞지 않습니다. 이러한 도구는 일반적으로 개발 단계에서 제외되어야 합니다.
+특정 유틸리티, 플러그인, 로더는 production 빌드에서만 의미가 있습니다. 예를 들어 개발 중에 `MinimizerPlugin`으로 코드를 minify하고 mangle하는 것은 일반적으로 적절하지 않습니다. 이런 도구는 보통 개발 단계에서 제외해야 합니다.
 
-- `TerserPlugin`
+- `MinimizerPlugin`
 - `[fullhash]`/`[chunkhash]`/`[contenthash]`
 - `AggressiveSplittingPlugin`
 - `AggressiveMergingPlugin`

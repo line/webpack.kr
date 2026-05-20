@@ -121,7 +121,7 @@ console.log(add(2, 3));
 이전 버전에서 webpack은 `require("./math")`를 전체 exports 객체를 참조하는 것으로 처리했습니다. `add` 함수만 사용되었음에도 불구하고 네 가지 함수가 모두 번들에 포함되었습니다.
 
 ```js
-// Bundled output (5.105 — simplified)
+// 번들 출력(5.105 — 간소화됨)
 const math = {
   add: (a, b) => a + b,
   subtract: (a, b) => a - b,
@@ -135,7 +135,7 @@ Webpack은 5.106 버전부터 구조 분해 할당 패턴을 인식하고 `add`�
 ```js
 // 번들 출력(5.106 — 간소화됨)
 const math_add = (a, b) => a + b;
-// subtract, multiply, divide - 트리쉐이킹
+// subtract, multiply, divide는 트리쉐이킹됩니다.
 ```
 
 이 방법은 `module.require`와 함께 사용해도 작동합니다.
