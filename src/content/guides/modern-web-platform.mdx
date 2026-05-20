@@ -43,7 +43,7 @@ export default {
     splitChunks: {
       chunks: "all",
       cacheGroups: {
-        // Put shared custom element modules in one async chunk.
+        // 공유되는 custom element module을 하나의 async chunk에 넣습니다.
         customElements: {
           test: /[\\/]src[\\/]elements[\\/]/,
           name: "custom-elements",
@@ -188,7 +188,7 @@ export default {
 ```js
 import { precacheAndRoute } from "workbox-precaching";
 
-// Replaced at build time with webpack's precache manifest (hashed asset URLs).
+// build 시 webpack의 precache manifest(해시된 asset URL)로 대체됩니다.
 precacheAndRoute(globalThis.__WB_MANIFEST);
 ```
 

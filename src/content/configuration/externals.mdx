@@ -491,6 +491,24 @@ jq(".my-element").animate(/* ... */);
 
 출력 번들에 `import` 구문이 있다는 점을 유의하세요.
 
+#### Preserving phase keywords
+
+<Badge text="5.107.0+" />
+
+`defer` 및 `source` import phase keyword는 [import attributes](https://github.com/tc39/proposal-import-attributes)와 같은 방식으로 `module` externals에서도 보존됩니다. `module` external에 대한 정적 `import defer * as ns from "mod"`는 native `import defer * as ...` 구문으로 생성되며, `import source v from "mod"`는 `import source ... from "mod"`로 유지됩니다. 같은 external을 두 가지 phase로 import하면 서로 다른 `ExternalModule` 인스턴스가 생성되므로, 어느 phase도 조용히 제거되지 않습니다.
+
+{/* eslint-skip */}
+
+```js
+// 입력
+import defer * as ns from "external-mod";
+import source v from "external-mod";
+
+// 생성된 출력(externalsType: "module" 사용 시)
+import defer * as ns from "external-mod";
+import source v from "external-mod";
+```
+
 ### externalsType.import
 
 <Badge text="5.94.0+" />
@@ -537,6 +555,24 @@ async function foo() {
 ```
 
 출력 번들에는 'import()' 구문이 있습니다.
+
+#### Preserving phase keywords
+
+<Badge text="5.107.0+" />
+
+동적 `import.defer(...)`와 `import.source(...)`도 import 함수 이름이 기본값인 `"import"`일 때 `import` externals에서 보존됩니다. 이 경우 phase keyword는 제거되지 않고 출력에 그대로 생성됩니다.
+
+{/* eslint-skip */}
+
+```js
+// 입력
+const ns = await import.defer("external-mod");
+const src = await import.source("external-mod");
+
+// 생성된 출력(externalsType: "import" 사용 시)
+const ns = await import.defer("external-mod");
+const src = await import.source("external-mod");
+```
 
 ### externalsType.module-import
 

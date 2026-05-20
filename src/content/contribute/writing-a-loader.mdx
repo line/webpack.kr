@@ -113,7 +113,7 @@ export default {
 ```js
 // my-loader.js
 export default function (source) {
-  // Normal phase — runs right to left
+  // 일반 단계 - 오른쪽에서 왼쪽으로 실행됩니다.
   const prefix = this.data.value ?? "";
   return `${prefix}\n${source}`;
 }
@@ -226,7 +226,7 @@ Webpack에서는 로더를 체인화하여 체인의 후속 로더와 데이터�
 ```js
 export default function (source) {
   const options = getOptions(this);
-  // Pass data using the fourth argument of this.callback
+  // this.callback의 네 번째 인수를 사용해 데이터를 전달합니다.
   this.callback(null, `export default ${JSON.stringify(source)}`, null, {
     some: data,
   });

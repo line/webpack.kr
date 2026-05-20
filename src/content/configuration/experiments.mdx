@@ -29,6 +29,7 @@ W> 실험적 기능은 시멘틱 버저닝을 완화하고 주요 변경 사항�
 - [`css`](#experimentscss)
 - [`deferImport`](#experimentsdeferimport)
 - [`futureDefaults`](#experimentsfuturedefaults)
+- [`html`](#experimentshtml)
 - [`lazyCompilation`](#experimentslazycompilation)
 - [`outputModule`](#experimentsoutputmodule)
 - [`sourceImport`](#experimentssourceimport)
@@ -375,6 +376,118 @@ export default {
   },
 };
 ```
+
+### experiments.html
+
+<Badge text="5.107.0+" />
+
+네이티브 HTML module 지원을 활성화합니다. JavaScript에서 `.html` 파일을 import하면 그 안의 tag 참조가 일반 webpack pipeline을 거치며, 오랫동안 `html-loader`가 맡아 왔던 역할을 대체합니다. 이 flag는 `NormalModuleFactory`에 `html` module type을 등록하고 아래에 설명된 HTML 동작을 활성화합니다.
+
+- Type: `boolean`
+- Default: `false`
+
+**webpack.config.js**
+
+```js
+export default {
+  // ...
+  experiments: {
+    html: true,
+  },
+};
+```
+
+그다음 JavaScript에서 HTML 파일을 import합니다. default export는 처리된 HTML 문자열이며, 모든 asset 참조는 webpack을 통해 resolve됩니다.
+
+```js
+// src/index.js
+import page from "./page.html";
+
+document.documentElement.innerHTML = page;
+```
+
+W> **이 기능은 experimental하며 부분적으로만 구현되었습니다.** Webpack 5.107은 현재 `html-loader`에 해당하는 부분만 구현합니다. 즉, JS에서 HTML 파일을 import했을 때 그 안의 tag 참조를 webpack pipeline으로 처리합니다. **HTML entry points**(`.html` 파일 자체를 `entry`로 사용하는 경우, 즉 `html-webpack-plugin`에 해당하는 부분)는 **아직 지원되지 않으며**, 다음 minor release에서 지원될 예정입니다. 전체 진행 상황은 이슈 [#536](https://github.com/webpack/webpack/issues/536)에서 추적할 수 있습니다.
+
+#### Inline `<style>` tags
+
+HTML module 내부의 inline `<style>` block은 `exportType: "text"`를 사용하는 가상 CSS module로서 webpack의 CSS pipeline을 거칩니다. `url()`과 `@import` 참조는 HTML 파일을 기준으로 resolve되며, 처리된 CSS 텍스트는 생성된 HTML 문자열의 원래 `<style>` tag 안에 다시 기록됩니다.
+
+```html
+<!-- src/page.html -->
+<!doctype html>
+<html>
+  <head>
+    <style>
+      @import "./reset.css";
+
+      body {
+        background: url("./bg.png");
+      }
+    </style>
+  </head>
+  <body>
+    ...
+  </body>
+</html>
+```
+
+`<style type="text/css">`와 `type` attribute가 없는 `<style>`은 처리됩니다. CSS가 아닌 `type`을 가진 경우에는 변경 없이 그대로 통과합니다.
+
+#### Inline `<script>` tags
+
+Inline `<script>` 본문은 [`<script src>`](#script-src-and-link-relmodulepreload)에 사용되는 것과 동일한 entry pipeline을 거칩니다. 각 `<script>` 본문은 자체 webpack entry가 됩니다. classic inline script는 CommonJS로 번들되고, `<script type="module">` 본문은 ESM으로 번들됩니다. 생성된 HTML에서 해당 tag는 생성된 chunk를 가리키는 `<script src="…">`로 다시 작성되며, 본문은 비워집니다.
+
+```html
+<!-- src/page.html -->
+<!doctype html>
+<html>
+  <body>
+    <script type="module">
+      import { greet } from "./lib.js";
+      greet("world");
+    </script>
+
+    <script>
+      console.log("classic inline script");
+    </script>
+  </body>
+</html>
+```
+
+외부 `<script src>`에 적용되는 것과 같은 동작이 여기에도 적용됩니다.
+
+- [`output.module`](/configuration/output/#outputmodule)이 활성화되면 classic inline `<script>` tag는 `<script src>`와 동일하게 자동으로 `type="module"`로 업그레이드됩니다.
+- `webpackIgnore`는 inline `<script>` tag에도 동작하며, 이 경우 원래 본문은 변경되지 않습니다.
+- `application/ld+json`, `importmap` 같은 non-JS `type` 값은 변경 없이 그대로 통과합니다.
+
+#### `<script src>` and `<link rel="modulepreload">`
+
+HTML module 내부의 `<script src>` 및 `<link rel="modulepreload">` 참조는 실제 webpack entry가 됩니다. 생성된 chunk URL은 다시 HTML 문자열에 기록되므로, hashed filename도 JavaScript import에서와 동일하게 동작합니다.
+
+```html
+<!-- src/page.html -->
+<!doctype html>
+<html>
+  <head>
+    <link rel="modulepreload" href="./preloaded.js" />
+  </head>
+  <body>
+    <script src="./entry.js"></script>
+    <script src="./second.js"></script>
+  </body>
+</html>
+```
+
+다음 동작을 알아두면 좋습니다.
+
+- 같은 페이지의 여러 `<script src>` tag는 하나의 runtime을 공유합니다. 각 그룹(classic 또는 `type="module"`) 내에서 선두 script가 runtime을 보유하고, 나머지는 여기에 `dependOn`을 선언합니다.
+- `<link rel="modulepreload">` entry는 독립적으로 유지되며 형제 script에서 import되지 않습니다. 따라서 "preload without execute" 의미가 유지됩니다.
+- [`output.module`](/configuration/output/#outputmodule)이 활성화되면 classic `<script src>` tag는 `<script type="module" src>`로 자동 업그레이드되어, 생성된 ES-module chunk가 올바른 mode로 로드됩니다.
+- Non-JS script type(`application/ld+json`, `importmap`, …)과 data URI는 변경 없이 그대로 전달되며 JS로 번들되지 않습니다.
+
+#### `webpackIgnore` magic comment
+
+HTML `<!-- webpackIgnore: true -->` comment를 tag 바로 앞에 두면 webpack은 해당 tag의 `src`, `href`, `srcset` 및 유사한 attribute에 대한 URL resolve를 건너뜁니다. 자세한 설명은 [magic comments](/api/module-methods/#webpackignore)를 참고하세요.
 
 ### experiments.lazyCompilation
 
