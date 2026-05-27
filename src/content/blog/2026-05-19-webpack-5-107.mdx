@@ -3,6 +3,8 @@ title: Webpack 5.107
 sort: 20260519
 contributors:
   - bjohansebas
+translators:
+  - dkstyle
 ---
 
 Webpack 5.107이 출시되었습니다. 이번 릴리스의 핵심은 webpack core에서 `.html` 파일을 네이티브하게 처리하기 위한 첫 단계입니다. 이제 JS에서 HTML 파일을 import하면 그 안의 `<img src>`, `<link href>`, 인라인 `<style>`, `<script src>` 참조가 일반적인 webpack pipeline을 통해 해석되며, 오랫동안 `html-loader`가 맡아오던 역할을 대체하기 시작합니다. HTML entry points(`html-webpack-plugin`이 담당하던 부분)는 아직 5.107에 포함되지 않았고, 다음 마이너 릴리스에서 도입될 예정입니다.
@@ -286,8 +288,8 @@ module.exports = {
 // JS에서 사용
 import styles from "./button.module.css";
 
-console.log(styles.btn); // hashed class
-console.log(styles.BTN); // 같은 hashed class, 대문자 별칭
+console.log(styles.btn); // 해시된 클래스
+console.log(styles.BTN); // 같은 해시된 클래스, 대문자 별칭
 ```
 
 ### `linkInsert` Hook
@@ -367,7 +369,7 @@ Webpack 5.106은 익명 default export에 대해 ES spec에 맞춰 `.name`을 `"
 5.107에서는 이 동작을 제어할 수 있도록 새로운 `module.parser.javascript.anonymousDefaultExportName` 옵션이 추가되었습니다. 기본값은 애플리케이션에서는 `true`, library에서는(`output.library`가 설정된 경우) `false`입니다. 애플리케이션은 기본적으로 spec 호환성을 유지하고, library 작성자는 이를 몰라도 추가 runtime helper 비용을 치르지 않게 됩니다.
 
 ```js
-// input
+// 입력
 export default function () {
   /* ... */
 }
@@ -406,7 +408,7 @@ module.exports = {
 ```
 
 ```text
-// input
+// 입력
 import defer * as ns from "external-mod";
 import source v from "external-mod";
 
@@ -418,7 +420,7 @@ import source v from "external-mod";
 동적 `import` externals의 경우에는 `import.defer("x")`와 `import.source("x")`가 직접 출력됩니다.
 
 ```text
-// input
+// 입력
 const ns = await import.defer("external-mod");
 const src = await import.source("external-mod");
 
@@ -468,11 +470,11 @@ W> 현재 이 annotation은 **선언된 동일 module 내부에서만** 효과�
 구체적으로 말하면, resolver defaults의 condition chain에는 이제 `module` 바로 앞에 `module-sync`가 포함됩니다.
 
 ```js
-// Before (5.106)
-conditionNames: ["require", "module", "..."]; // CJS deps
-conditionNames: ["import", "module", "..."]; // ESM deps
+// 이전 (5.106)
+conditionNames: ["require", "module", "..."]; // CJS 의존성
+conditionNames: ["import", "module", "..."]; // ESM 의존성
 
-// After (5.107)
+// 이후 (5.107)
 conditionNames: ["require", "module-sync", "module", "..."];
 conditionNames: ["import", "module-sync", "module", "..."];
 ```
