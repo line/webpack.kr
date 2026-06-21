@@ -90,7 +90,7 @@ export default {
 
 Webpack은 웹 플랫폼을 위해 런타임 코드를 생성하고 ES5 기능만 사용합니다.
 
-현재로서는 모든 target을 같이 혼용하여 사용하지 못합니다.
+플랫폼 target을 결합하여 여러 환경에서 실행되는 범용 코드를 빌드할 수도 있습니다.
 
 **webpack.config.js**
 
@@ -101,7 +101,7 @@ export default {
 };
 ```
 
-에러의 원인이 됩니다. 현재 webpack은 범용적인 target을 지원하지 않습니다.
+Webpack은 브라우저와 Node.js 환경 모두에서 작동하는 런타임 코드를 생성합니다.
 
 ### false
 
