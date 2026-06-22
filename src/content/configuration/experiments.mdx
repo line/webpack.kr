@@ -32,6 +32,7 @@ W> 실험적 기능은 시멘틱 버저닝을 완화하고 주요 변경 사항�
 - [`html`](#experimentshtml)
 - [`lazyCompilation`](#experimentslazycompilation)
 - [`outputModule`](#experimentsoutputmodule)
+- [`typescript`](#experimentstypescript)
 - [`sourceImport`](#experimentssourceimport)
 - `syncWebAssembly`: webpack 4에서와 같이 이전 웹 어셈블리를 지원합니다.
 - `layers`: 모듈 및 청크 레이어를 활성화합니다. `5.102.0`부터는 제거되어 추가 옵션 없이 동작합니다.
@@ -381,7 +382,7 @@ export default {
 
 <Badge text="5.107.0+" />
 
-네이티브 HTML module 지원을 활성화합니다. JavaScript에서 `.html` 파일을 import하면 그 안의 tag 참조가 일반 webpack pipeline을 거치며, 오랫동안 `html-loader`가 맡아 왔던 역할을 대체합니다. 이 flag는 `NormalModuleFactory`에 `html` module type을 등록하고 아래에 설명된 HTML 동작을 활성화합니다.
+네이티브 HTML module 지원을 활성화합니다. JavaScript에서 `.html` 파일을 import하면 그 안의 태그 참조가 일반 webpack pipeline을 거치며, 오랫동안 `html-loader`가 맡아 왔던 역할을 대체합니다. 이 플래그는 `NormalModuleFactory`에 `html` module type을 등록하고 아래에 설명된 HTML 동작을 활성화합니다.
 
 - Type: `boolean`
 - Default: `false`
@@ -397,7 +398,7 @@ export default {
 };
 ```
 
-그다음 JavaScript에서 HTML 파일을 import합니다. default export는 처리된 HTML 문자열이며, 모든 asset 참조는 webpack을 통해 resolve됩니다.
+그다음 JavaScript에서 HTML 파일을 import합니다. default export는 처리된 HTML 문자열이며, 모든 asset 참조는 webpack을 통해 해석됩니다.
 
 ```js
 // src/index.js
@@ -406,11 +407,11 @@ import page from "./page.html";
 document.documentElement.innerHTML = page;
 ```
 
-W> **이 기능은 experimental하며 부분적으로만 구현되었습니다.** Webpack 5.107은 현재 `html-loader`에 해당하는 부분만 구현합니다. 즉, JS에서 HTML 파일을 import했을 때 그 안의 tag 참조를 webpack pipeline으로 처리합니다. **HTML entry points**(`.html` 파일 자체를 `entry`로 사용하는 경우, 즉 `html-webpack-plugin`에 해당하는 부분)는 **아직 지원되지 않으며**, 다음 minor release에서 지원될 예정입니다. 전체 진행 상황은 이슈 [#536](https://github.com/webpack/webpack/issues/536)에서 추적할 수 있습니다.
+W> **이 기능은 experimental하며 부분적으로만 구현되었습니다.** Webpack 5.107은 현재 `html-loader`에 해당하는 부분만 구현합니다. 즉, JS에서 HTML 파일을 import했을 때 그 안의 태그 참조를 webpack pipeline으로 처리합니다. **HTML entry points**(`.html` 파일 자체를 `entry`로 사용하는 경우, 즉 `html-webpack-plugin`에 해당하는 부분)는 **아직 지원되지 않으며**, 다음 마이너 릴리스에서 지원될 예정입니다. 전체 진행 상황은 이슈 [#536](https://github.com/webpack/webpack/issues/536)에서 추적할 수 있습니다.
 
 #### Inline `<style>` tags
 
-HTML module 내부의 inline `<style>` block은 `exportType: "text"`를 사용하는 가상 CSS module로서 webpack의 CSS pipeline을 거칩니다. `url()`과 `@import` 참조는 HTML 파일을 기준으로 resolve되며, 처리된 CSS 텍스트는 생성된 HTML 문자열의 원래 `<style>` tag 안에 다시 기록됩니다.
+HTML module 내부의 인라인 `<style>` 블록은 `exportType: "text"`를 사용하는 가상 CSS module로서 webpack의 CSS pipeline을 거칩니다. `url()`과 `@import` 참조는 HTML 파일을 기준으로 해석되며, 처리된 CSS 텍스트는 생성된 HTML 문자열의 원래 `<style>` 태그 안에 다시 기록됩니다.
 
 ```html
 <!-- src/page.html -->
@@ -435,7 +436,7 @@ HTML module 내부의 inline `<style>` block은 `exportType: "text"`를 사용�
 
 #### Inline `<script>` tags
 
-Inline `<script>` 본문은 [`<script src>`](#script-src-and-link-relmodulepreload)에 사용되는 것과 동일한 entry pipeline을 거칩니다. 각 `<script>` 본문은 자체 webpack entry가 됩니다. classic inline script는 CommonJS로 번들되고, `<script type="module">` 본문은 ESM으로 번들됩니다. 생성된 HTML에서 해당 tag는 생성된 chunk를 가리키는 `<script src="…">`로 다시 작성되며, 본문은 비워집니다.
+인라인 `<script>` 본문은 [`<script src>`](#script-src-and-link-relmodulepreload)에 사용되는 것과 동일한 entry pipeline을 거칩니다. 각 `<script>` 본문은 자체 webpack entry가 됩니다. 일반적인 인라인 script는 CommonJS로 번들되고, `<script type="module">` 본문은 ESM으로 번들됩니다. 생성된 HTML에서 해당 태그는 생성된 chunk를 가리키는 `<script src="…">`로 다시 작성되며, 본문은 비워집니다.
 
 ```html
 <!-- src/page.html -->
@@ -456,13 +457,13 @@ Inline `<script>` 본문은 [`<script src>`](#script-src-and-link-relmoduleprelo
 
 외부 `<script src>`에 적용되는 것과 같은 동작이 여기에도 적용됩니다.
 
-- [`output.module`](/configuration/output/#outputmodule)이 활성화되면 classic inline `<script>` tag는 `<script src>`와 동일하게 자동으로 `type="module"`로 업그레이드됩니다.
-- `webpackIgnore`는 inline `<script>` tag에도 동작하며, 이 경우 원래 본문은 변경되지 않습니다.
+- [`output.module`](/configuration/output/#outputmodule)이 활성화되면 일반적인 인라인 `<script>` 태그는 `<script src>`와 동일하게 자동으로 `type="module"`로 업그레이드됩니다.
+- `webpackIgnore`는 인라인 `<script>` 태그에도 동작하며, 이 경우 원래 본문은 변경되지 않습니다.
 - `application/ld+json`, `importmap` 같은 non-JS `type` 값은 변경 없이 그대로 통과합니다.
 
 #### `<script src>` and `<link rel="modulepreload">`
 
-HTML module 내부의 `<script src>` 및 `<link rel="modulepreload">` 참조는 실제 webpack entry가 됩니다. 생성된 chunk URL은 다시 HTML 문자열에 기록되므로, hashed filename도 JavaScript import에서와 동일하게 동작합니다.
+HTML module 내부의 `<script src>` 및 `<link rel="modulepreload">` 참조는 실제 webpack entry가 됩니다. 생성된 chunk URL은 다시 HTML 문자열에 기록되므로, 해시된 파일 이름도 JavaScript import에서와 동일하게 동작합니다.
 
 ```html
 <!-- src/page.html -->
@@ -480,14 +481,14 @@ HTML module 내부의 `<script src>` 및 `<link rel="modulepreload">` 참조는 
 
 다음 동작을 알아두면 좋습니다.
 
-- 같은 페이지의 여러 `<script src>` tag는 하나의 runtime을 공유합니다. 각 그룹(classic 또는 `type="module"`) 내에서 선두 script가 runtime을 보유하고, 나머지는 여기에 `dependOn`을 선언합니다.
-- `<link rel="modulepreload">` entry는 독립적으로 유지되며 형제 script에서 import되지 않습니다. 따라서 "preload without execute" 의미가 유지됩니다.
-- [`output.module`](/configuration/output/#outputmodule)이 활성화되면 classic `<script src>` tag는 `<script type="module" src>`로 자동 업그레이드되어, 생성된 ES-module chunk가 올바른 mode로 로드됩니다.
+- 같은 페이지의 여러 `<script src>` 태그는 하나의 runtime을 공유합니다. 각 그룹(일반 script 또는 `type="module"`) 내에서 선두 script가 runtime을 보유하고, 나머지는 여기에 `dependOn`을 선언합니다.
+- `<link rel="modulepreload">` entry는 독립적으로 유지되며 형제 script에서 import되지 않습니다. 따라서 "실행 없이 preload" 의미가 유지됩니다.
+- [`output.module`](/configuration/output/#outputmodule)이 활성화되면 일반적인 `<script src>` 태그는 `<script type="module" src>`로 자동 업그레이드되어, 생성된 ES-module chunk가 올바른 모드로 로드됩니다.
 - Non-JS script type(`application/ld+json`, `importmap`, …)과 data URI는 변경 없이 그대로 전달되며 JS로 번들되지 않습니다.
 
 #### `webpackIgnore` magic comment
 
-HTML `<!-- webpackIgnore: true -->` comment를 tag 바로 앞에 두면 webpack은 해당 tag의 `src`, `href`, `srcset` 및 유사한 attribute에 대한 URL resolve를 건너뜁니다. 자세한 설명은 [magic comments](/api/module-methods/#webpackignore)를 참고하세요.
+HTML `<!-- webpackIgnore: true -->` comment를 태그 바로 앞에 두면 webpack은 해당 태그의 `src`, `href`, `srcset` 및 유사한 attribute에 대한 URL 해석을 건너뜁니다. 자세한 설명은 [magic comments](/api/module-methods/#webpackignore)를 참고하세요.
 
 ### experiments.lazyCompilation
 
@@ -582,3 +583,34 @@ export default {
   },
 };
 ```
+
+### experiments.typescript
+
+<Badge text="5.107.0+" />
+
+네이티브 TypeScript 지원을 활성화합니다. 이 플래그를 켜면 webpack은 `.ts`, `.cts`, `.mts` 파일(그리고 해당하는 `data:text/typescript`, `data:application/typescript` data URI)들을 외부 loader 없이 직접 컴파일합니다. 내부적으로는 Node.js의 내장 [`module.stripTypeScriptTypes`](https://nodejs.org/api/module.html#modulestriptypescripttypescode-options)를 호출합니다.
+
+- Type: `boolean`
+- Default: `false` (auto-enabled by [`experiments.futureDefaults`](#experimentsfuturedefaults))
+
+W> 안정적인 `module.stripTypeScriptTypes` API를 사용하려면 Node.js 22.6 이상이 필요합니다.
+
+```js
+export default {
+  experiments: {
+    typescript: true,
+  },
+  entry: "./src/index.ts",
+};
+```
+
+이 플래그를 활성화하면 몇 가지 합리적인 기본값도 함께 연결됩니다. `.ts` / `.cts` / `.mts`용 기본 rules, `.js`보다 앞서 `.ts`를 extension resolution에 추가하는 동작, `import "./foo.js"`가 `./foo.ts`도 시도하도록 하는 `extensionAlias`(`.cjs` / `.mjs` → `.cts` / `.mts` 포함), [`tsconfig.json` resolution](/configuration/resolve/#resolvetsconfig), 그리고 모노레포 패키지가 `package.json#exports`를 통해 `.ts` 소스를 배포할 수 있게 하는 `"typescript"` conditional-exports key가 포함됩니다.
+
+W> 이 변환은 **타입만 제거**합니다. **type checking은 수행하지 않으며**, JSX / `.tsx` 또는 지워질 수 없는 TypeScript 문법(`enum`, 런타임 멤버를 갖는 `namespace`, parameter-property constructors, `export =`, decorator metadata)은 처리하지 않습니다. 이는 TypeScript가 [`erasableSyntaxOnly`](https://www.typescriptlang.org/tsconfig/#erasableSyntaxOnly) tsconfig 옵션에서 강제하는 것과 동일한 제약입니다.
+
+type checking이 필요하다면 이 플래그를 `tsc --noEmit` 또는 [`fork-ts-checker-webpack-plugin`](https://github.com/TypeStrong/fork-ts-checker-webpack-plugin)과 함께 사용하세요. JSX나 지워질 수 없는 TypeScript 문법을 사용한다면 계속 `ts-loader`나 `swc-loader`를 사용해야 합니다.
+
+webpack 저장소에는 두 가지 참고 예제가 포함되어 있습니다.
+
+- [`examples/typescript`](https://github.com/webpack/webpack/tree/main/examples/typescript): 내장 `experiments.typescript` 설정 예제
+- [`examples/typescript-non-erasable`](https://github.com/webpack/webpack/tree/main/examples/typescript-non-erasable): 지워질 수 없는 문법이 필요할 때의 `ts-loader` fallback 예제

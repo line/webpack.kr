@@ -1,0 +1,503 @@
+---
+title: Webpack 5.107
+sort: 20260519
+contributors:
+  - bjohansebas
+translators:
+  - dkstyle
+---
+
+Webpack 5.107이 출시되었습니다. 이번 릴리스의 핵심은 webpack core에서 `.html` 파일을 네이티브하게 처리하기 위한 첫 단계입니다. 이제 JS에서 HTML 파일을 import하면 그 안의 `<img src>`, `<link href>`, 인라인 `<style>`, `<script src>` 참조가 일반적인 webpack pipeline을 통해 해석되며, 오랫동안 `html-loader`가 맡아오던 역할을 대체하기 시작합니다. HTML entry points(`html-webpack-plugin`이 담당하던 부분)는 아직 5.107에 포함되지 않았고, 다음 마이너 릴리스에서 도입될 예정입니다.
+
+이번 릴리스에는 Node.js의 내장 type-stripping 기능을 활용하는 실험적 TypeScript 지원도 포함되었습니다. 덕분에 단순한 TypeScript 프로젝트라면 `ts-loader`나 `swc-loader` 없이도 컴파일할 수 있습니다.
+
+두 기능 모두 experimental이며 opt-in flag 뒤에 숨겨져 있지만, 방향성은 분명합니다. 결국에는 HTML, CSS, 기본적인 TypeScript를 처리하기 위해 추가 loader나 plugin 없이 완전한 웹 앱을 빌드할 수 있게 하려는 것입니다.
+
+이러한 실험적 작업과 함께, 이번 릴리스에서는 내장 CSS pipeline도 계속 성숙해지고 있으며, tree shaking, deferred imports, module resolution에도 여러 개선 사항이 포함되었습니다.
+
+이번 릴리스의 새로운 기능을 살펴보세요:
+
+- [**HTML Modules (Experimental)**](#html-modules-experimental)
+  - [`experiments.html` 플래그](#experimentshtml-flag)
+  - [인라인 `<style>` 태그](#inline-style-tags)
+  - [인라인 `<script>` 태그](#inline-script-tags)
+  - [`<script src>`와 `<link rel="modulepreload">`](#script-src-and-link-relmodulepreload)
+  - [`webpackIgnore` 매직 코멘트](#webpackignore-magic-comment)
+- [**TypeScript Support (Experimental)**](#typescript-support-experimental)
+- [**CSS Improvements**](#css-improvements)
+  - [CSS Modules를 위한 Scope Hoisting](#scope-hoisting-for-css-modules)
+  - [CSS Modules를 위한 Pure Mode](#pure-mode-for-css-modules)
+  - [`@import`와 URL에서의 `@value`](#value-in-urls-and-import)
+  - [`exportsConvention`을 통한 여러 별칭](#multiple-aliases-via-exportsconvention)
+  - [`linkInsert` hook](#linkinsert-hook)
+  - [`orderModules` hook](#ordermodules-hook)
+- [**JavaScript and ESM**](#javascript-and-esm)
+  - [익명 default export 이름 지정](#anonymous-default-export-naming)
+  - [externals에서 `defer`와 `source` phase 유지](#preserving-defer-and-source-phase-on-externals)
+  - [`#__NO_SIDE_EFFECTS__` annotation](#__no_side_effects__-annotation)
+- [**Resolver Updates**](#resolver-updates)
+- [**Bug Fixes**](#bug-fixes)
+
+## HTML Modules (Experimental)
+
+W> **이 기능은 experimental이며 아직 일부만 구현되어 있습니다.** Webpack 5.107은 현재 `html-loader`가 담당하던 부분만 구현합니다. 즉, JavaScript에서 HTML 파일을 import하면 그 안의 태그 참조가 webpack pipeline을 통해 처리됩니다. **HTML entry points**(`.html` 파일을 `entry`로 직접 사용하는 방식, 즉 `html-webpack-plugin`이 맡던 부분)는 **아직 지원되지 않으며**, 다음 마이너 릴리스에서 도입될 예정입니다. 전체 작업은 이슈 [#536](https://github.com/webpack/webpack/issues/536)에서 추적되고 있습니다.
+
+실제 webpack 설정에서 HTML entry point를 사용하려면 역사적으로 최소 두 개의 추가 의존성이 필요했습니다. 하나는 HTML 파일을 생성하거나 출력하고 여기에 올바른 번들 URL을 주입해 주는 `html-webpack-plugin`입니다. 다른 하나는 `<img src>`, `<link href>`, `<script src>` 등의 참조를 webpack이 순회할 수 있게 해, 이 참조들이 일반적인 resolver 및 asset pipeline을 거치게 해 주는 `html-loader`입니다.
+
+이 두 도구는 오랫동안 커뮤니티에 큰 도움이 되었지만, core 바깥에 존재해 왔습니다. Webpack 5.107은 이제 이 작업 중 `html-loader`가 맡던 부분을 core 안으로 가져오기 시작합니다.
+
+### `experiments.html` Flag
+
+이 섹션의 나머지 기능은 모두 하나의 opt-in flag 뒤에 있습니다. 새로운 `experiments.html` 옵션은 `NormalModuleFactory`에 `html` module type을 등록하고, 아래에서 설명하는 HTML 동작을 활성화합니다.
+
+```js
+// webpack.config.js
+module.exports = {
+  experiments: {
+    html: true,
+  },
+};
+```
+
+그다음 JavaScript에서 HTML 파일을 import합니다. default export는 처리된 HTML 문자열이며, 모든 asset 참조는 webpack을 통해 해석됩니다.
+
+```js
+// src/index.js
+import page from "./page.html";
+
+document.documentElement.innerHTML = page;
+```
+
+이 결과물의 형태는 `html-loader`가 생성하던 것과 동일하므로, HTML을 import하던 기존 코드는 계속 동작해야 합니다. 이제 loader가 하던 일을 pipeline이 직접 수행합니다. 태그 참조는 해석되고, 해시된 파일 이름은 다시 HTML 문자열 안에 반영되며, 최종 결과는 JS 번들에 포함됩니다. `.html` 파일을 webpack `entry`로 직접 사용하는 것은 5.107에서 **지원되지 않습니다**.
+
+### Inline `<style>` Tags
+
+webpack이 HTML module 내부에서 `<style>` 블록을 발견하면, 그 CSS 본문을 `.css` 파일에 사용하는 것과 동일한 CSS pipeline으로 전달합니다. 이 블록은 `exportType: "text"`를 갖는 가상 CSS module로 처리되므로, 스타일 내부의 `url()` 참조와 `@import` 구문은 HTML 파일을 기준으로 해석됩니다. 처리가 끝나면 변환된 CSS가 출력 HTML 문자열의 원래 `<style>` 태그 안에 다시 기록됩니다.
+
+```html
+<!-- src/page.html -->
+<!doctype html>
+<html>
+  <head>
+    <style>
+      @import "./reset.css";
+
+      body {
+        background: url("./bg.png");
+      }
+    </style>
+  </head>
+  <body>
+    ...
+  </body>
+</html>
+```
+
+`<style type="text/css">`와 `type` 속성이 없는 `<style>`은 처리됩니다. CSS가 아닌 `type`을 가진 경우에는 변경 없이 그대로 통과합니다. 이를 통해 pipeline에 `html-loader`를 넣지 않아도 인라인 스타일 관련 동작을 처리할 수 있습니다.
+
+### Inline `<script>` Tags
+
+인라인 `<script>` 본문은 이미 `<script src>`를 처리하는 것과 동일한 entry pipeline으로 전달됩니다. 각 `<script>` 본문은 각각의 webpack entry가 됩니다. 일반적인 인라인 스크립트는 CommonJS로 번들링되고, `<script type="module">` 본문은 ESM으로 번들링됩니다. 출력된 HTML의 태그는 생성된 청크를 가리키는 `<script src="...">` 형태로 다시 작성되며, 본문은 비워집니다.
+
+```html
+<!-- src/page.html -->
+<!doctype html>
+<html>
+  <body>
+    <script type="module">
+      import { greet } from "./lib.js";
+      greet("world");
+    </script>
+
+    <script>
+      console.log("classic inline script");
+    </script>
+  </body>
+</html>
+```
+
+외부 `<script src>`에 적용되는 동작은 여기에도 동일하게 적용됩니다.
+
+- `output.module`이 활성화되어 있으면, 일반적인 인라인 `<script>` 태그는 `<script src>`에서의 동작과 마찬가지로 자동으로 `type="module"`로 승격됩니다.
+- `webpackIgnore`는 인라인 `<script>` 태그에서도 동작하므로, 원래 본문을 그대로 유지할 수 있습니다.
+- `application/ld+json`이나 `importmap`처럼 JavaScript가 아닌 `type` 값은 변경 없이 그대로 통과합니다.
+
+### `<script src>` and `<link rel="modulepreload">`
+
+HTML module 내부의 `<script src>`와 `<link rel="modulepreload">` 참조는 실제 webpack entry가 되며, 출력된 청크 URL이 다시 HTML 문자열에 기록되어 해시된 파일 이름도 올바르게 유지됩니다.
+
+```html
+<!-- src/page.html -->
+<!doctype html>
+<html>
+  <head>
+    <link rel="modulepreload" href="./preloaded.js" />
+  </head>
+  <body>
+    <script src="./entry.js"></script>
+    <script src="./second.js"></script>
+  </body>
+</html>
+```
+
+알아두면 좋은 동작은 다음과 같습니다.
+
+- 같은 페이지의 여러 `<script src>` 태그는 하나의 runtime을 공유합니다. 각 그룹(일반 스크립트 또는 `type="module"`) 안에서 선두 항목이 runtime을 보유하고, 나머지는 여기에 `dependOn`을 선언합니다.
+- `<link rel="modulepreload">` entry는 독립적으로 유지되며 형제 script에서 import되지 않습니다. 따라서 스펙이 요구하는 대로 실행 없이 preload만 수행합니다.
+- `output.module`이 활성화되어 있으면, 일반적인 `<script src>` 태그는 출력되는 ES module 청크가 올바른 모드로 로드되도록 `<script type="module" src>`로 자동 승격됩니다.
+- `application/ld+json`, `importmap` 같은 JavaScript가 아닌 script type이나 data URI는 변경 없이 그대로 통과하며 JS로 번들링되지 않습니다.
+
+### `webpackIgnore` Magic Comment
+
+익숙한 `webpackIgnore: true` 매직 코멘트가 이제 HTML modules 내부에서도 동작합니다. 태그 바로 앞에 해당 지시어가 들어 있는 HTML comment를 두면, webpack은 출력 시 해당 태그의 URL을 건드리지 않습니다. 이는 `html-loader`가 동일한 경우를 처리하던 방식과 같습니다.
+
+```html
+<!-- webpackIgnore: true -->
+<img src="https://cdn.example.com/logo.png" />
+
+<!-- webpackIgnore: true -->
+<script src="/legacy/external.js"></script>
+```
+
+이 comment 값은 JS와 CSS parser가 사용하는 것과 동일한 컨텍스트에서 파싱되므로, boolean이 아닌 값을 사용하면 `UnsupportedFeatureWarning`이 발생합니다.
+
+## TypeScript Support (Experimental)
+
+W> **이 기능은 experimental이며 최신 Node.js에 의존합니다.** 안정적인 `module.stripTypeScriptTypes` API를 사용하려면 Node.js 22.6 이상이 필요합니다. 또한 이 변환은 지워질 수 있는 TypeScript 문법만 처리합니다(아래 제한 사항 참고). 그 외의 경우에는 계속 `ts-loader`나 `swc-loader`를 사용하세요.
+
+Webpack 5.107은 새로운 `experiments.typescript` 플래그 뒤에서 first-class TypeScript 지원을 제공합니다. 이를 활성화하면 webpack은 Node.js의 내장 [`module.stripTypeScriptTypes`](https://nodejs.org/api/module.html#modulestriptypescripttypescode-options)를 통해 `.ts`, `.cts`, `.mts` 파일을 직접 컴파일하며, 외부 loader가 필요하지 않습니다. 이 플래그는 [`experiments.futureDefaults`](/configuration/experiments/#experimentsfuturedefaults)를 사용하면 자동으로 활성화되기도 합니다.
+
+```js
+// webpack.config.js
+export default {
+  experiments: {
+    typescript: true,
+  },
+  entry: "./src/index.ts",
+};
+```
+
+이 플래그를 활성화하면 몇 가지 합리적인 기본값도 함께 설정됩니다. `.ts` / `.cts` / `.mts`용 rules, `.js`보다 앞서 `.ts`를 extension resolution에 추가하는 동작, `import "./foo.js"`가 `./foo.ts`도 시도하게 하는 `extensionAlias`, `tsconfig.json` 해석, 그리고 `.ts` 소스를 배포하는 monorepo를 위한 `"typescript"` conditional exports key 지원이 포함됩니다.
+
+이 변환은 **타입만 제거**합니다. type checking은 하지 않으며, JSX / `.tsx`, 그리고 지워질 수 없는 문법(`enum`, `namespace`, parameter-property constructors, decorator metadata)은 지원하지 않습니다. 이는 TypeScript의 [`erasableSyntaxOnly`](https://www.typescriptlang.org/tsconfig/#erasableSyntaxOnly)와 동일한 제약입니다. type checking이 필요하다면 `tsc --noEmit`이나 [`fork-ts-checker-webpack-plugin`](https://github.com/TypeStrong/fork-ts-checker-webpack-plugin)을 함께 사용하세요. JSX나 지워질 수 없는 문법을 사용한다면 계속 `ts-loader`나 `swc-loader`를 사용해야 합니다.
+
+내장 설정 예제는 [`examples/typescript`](https://github.com/webpack/webpack/tree/main/examples/typescript)에서, `ts-loader` fallback 예제는 [`examples/typescript-non-erasable`](https://github.com/webpack/webpack/tree/main/examples/typescript-non-erasable)에서 확인할 수 있습니다.
+
+## CSS Improvements
+
+### Scope Hoisting for CSS Modules
+
+Module concatenation(일반적으로 scope hoisting이라고도 부름)은 이전까지 JavaScript 전용 최적화였습니다. `experiments.css`를 활성화하더라도, 연결된 번들에 포함된 CSS Modules는 여전히 별도의 runtime 인스턴스를 생성했습니다. 5.107부터는 `text`, `css-style-sheet`, `style`, `link`를 export type으로 사용하는 CSS Modules에도 동일한 최적화가 적용됩니다. 그 결과 CSS 비중이 큰 번들에서 runtime 오버헤드가 줄고 출력 크기도 더 작아집니다.
+
+```js
+module.exports = {
+  experiments: { css: true },
+  optimization: {
+    concatenateModules: true,
+  },
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        type: "css/module",
+        parser: {
+          exportType: "css-style-sheet",
+        },
+      },
+    ],
+  },
+};
+```
+
+### Pure Mode for CSS Modules
+
+`css/module`과 `css/auto`에는 이제 새로운 `pure` parser 옵션이 추가되었습니다. 이는 `postcss-modules-local-by-default`의 엄격한 pure mode와 동일한 개념입니다. 활성화하면 모든 selector는 최소 하나의 local class 또는 id를 포함해야 하며, 그렇지 않으면 webpack이 build error를 발생시킵니다. 목적은 CSS Modules 안에서 의도치 않게 전역 selector를 작성하는 실수를 프로덕션 이전에 잡아내는 것입니다.
+
+```js
+module.exports = {
+  experiments: { css: true },
+  module: {
+    parser: {
+      "css/module": {
+        pure: true,
+      },
+    },
+  },
+};
+```
+
+필요할 때는 두 가지 comment로 예외를 둘 수 있습니다. 첫 번째는 단일 rule에 대해서만 검사를 억제합니다.
+
+```css
+/* cssmodules-pure-ignore */
+a {
+  /* 이 rule에 대해서만 검사 억제 */
+  color: blue;
+}
+```
+
+두 번째는 파일의 어떤 rule보다도 앞에 위치한 선행 comment 중에 배치했을 때, 파일 전체에 대한 검사를 비활성화합니다.
+
+```css
+/* cssmodules-pure-no-check */
+/* 이 파일에 대해 pure mode를 비활성화 */
+
+a {
+  /* pure mode라면 보통 실패했을 selector */
+  color: red;
+}
+```
+
+local selector를 포함하는 상위 규칙 안의 중첩 규칙은 pure를 만족하는 것으로 간주되고, `&`는 부모 규칙의 purity를 따르며, `@keyframes`와 `@counter-style` 본문은 예외로 처리됩니다.
+
+### `@value` in URLs and `@import`
+
+이제 CSS Modules의 `@value` 식별자를 `@import`의 경로 인자나 `url()` 참조 내부에서 사용할 수 있습니다. 덕분에 공통 경로와 asset을 한 번만 정의해 두고 여러 stylesheet에서 재사용하기 쉬워집니다.
+
+```css
+@value path: "./other.module.css";
+@import path;
+
+@value bg: "./image.png";
+
+.a {
+  background: url(bg);
+}
+```
+
+값은 따옴표 형태(`"./x"`, `'./x'`)도, 따옴표 없는 형태(`./x`)도 모두 동작합니다. 어떤 형태로 작성하든 감싸고 있던 문자는 제거된 뒤 module request로 해석되므로, asset은 일반적인 webpack resolver 및 asset pipeline을 거치고 단순한 식별자로 남지 않습니다.
+
+### Multiple Aliases via `exportsConvention`
+
+이제 CSS Modules의 `generator.exportsConvention` 함수형은 `string`뿐 아니라 `string[]`도 반환할 수 있습니다. 배열을 반환하면 배열 안의 모든 이름으로 해당 local class가 export되며, 이는 `css-loader`의 동작과 동일합니다. 예를 들어 원래 이름과 대문자 버전 두 가지를 모두 노출하고 싶을 때 유용합니다.
+
+```js
+module.exports = {
+  experiments: { css: true },
+  module: {
+    generator: {
+      "css/module": {
+        exportsConvention: (name) => [name, name.toUpperCase()],
+      },
+    },
+  },
+};
+```
+
+```js
+// JS에서 사용
+import styles from "./button.module.css";
+
+console.log(styles.btn); // 해시된 클래스
+console.log(styles.BTN); // 같은 해시된 클래스, 대문자 별칭
+```
+
+### `linkInsert` Hook
+
+webpack이 stylesheet `<link>`를 문서 어디에 삽입할지 제어하고 싶었다면, 이제 이를 위한 hook이 생겼습니다. `CssLoadingRuntimeModule.getCompilationHooks(compilation)`은 새로운 `linkInsert` hook을 노출합니다. 이 hook은 기본 삽입 코드(`document.head.appendChild(link);`)와 청크를 전달받고, 링크를 연결할 때 사용할 JS를 반환합니다.
+
+```js
+const webpack = require("webpack");
+
+class MyLinkInsertPlugin {
+  apply(compiler) {
+    compiler.hooks.thisCompilation.tap("MyLinkInsertPlugin", (compilation) => {
+      const hooks =
+        webpack.web.CssLoadingRuntimeModule.getCompilationHooks(compilation);
+
+      // 기본 `document.head.appendChild(link);`를 재정의합니다.
+      hooks.linkInsert.tap(
+        "MyLinkInsertPlugin",
+        (source, chunk) =>
+          'link.setAttribute("data-injected", "true"); document.body.appendChild(link);',
+      );
+    });
+  }
+}
+
+module.exports = {
+  experiments: { css: true },
+  plugins: [new MyLinkInsertPlugin()],
+};
+```
+
+이 hook은 `SyncWaterfallHook<[string, Chunk]>`입니다. 원래 동작을 유지하려면 기본 `source`를 반환하고, 삽입 위치나 방식을 재정의하려면 사용자 정의 JS를 반환하면 됩니다.
+
+### `orderModules` Hook
+
+하나의 chunk가 여러 파일에서 CSS를 가져올 때, webpack의 기본 정렬은 import graph에 대한 위상 정렬(topological sort)입니다. 대부분의 경우에는 적절하지만, 실제 프로젝트에서는 import graph가 모호해서 "Conflicting order between CSS ..." 경고가 발생하고, import 구조를 재편하지 않는 이상 깔끔한 해결책이 없는 경우가 있습니다.
+
+`CssModulesPlugin.getCompilationHooks(compilation)`의 새로운 `orderModules` hook은 plugin 작성자에게 결정적인 우회 수단을 제공합니다. 이 hook은 각 CSS source type(`CSS_IMPORT_TYPE`와 `CSS_TYPE`)마다 한 번씩 실행되며, 해당 chunk의 module 목록은 전체 module 이름 기준으로 미리 정렬된 상태로 전달됩니다. 기본 동작을 재정의하려면 정렬된 `Module[]`을 반환하고, 기존 webpack의 import-order 위상 정렬로 계속 진행하려면 `undefined`를 반환하면 됩니다.
+
+```js
+const webpack = require("webpack");
+
+class CssOrderByPathPlugin {
+  apply(compiler) {
+    compiler.hooks.thisCompilation.tap(
+      "CssOrderByPathPlugin",
+      (compilation) => {
+        const hooks =
+          webpack.css.CssModulesPlugin.getCompilationHooks(compilation);
+
+        // Module은 전체 module 이름 기준으로 미리 정렬되어 들어옵니다.
+        // 그대로 반환하면 파일 경로 기준의 결정적 순서를 사용하게 되어
+        // conflicting order 경고를 피할 수 있습니다.
+        hooks.orderModules.tap(
+          "CssOrderByPathPlugin",
+          (_chunk, modules) => modules,
+        );
+      },
+    );
+  }
+}
+
+module.exports = {
+  experiments: { css: true },
+  plugins: [new CssOrderByPathPlugin()],
+};
+```
+
+이 hook은 `SyncBailHook<[Chunk, Module[], Compilation], Module[] | undefined>`입니다. `undefined`가 아닌 값을 처음 반환한 tap의 결과가 사용됩니다.
+
+## JavaScript and ESM
+
+### Anonymous Default Export Naming
+
+Webpack 5.106은 익명 default export에 대해 ES spec에 맞춰 `.name`을 `"default"`로 설정하는 수정 사항을 도입했습니다. 동작 자체는 올바르지만, 이 과정에서 난독화할 수 없는 `Object.defineProperty` 호출이 주입되어 번들이 커지는 문제가 있었습니다. `.name === "default"`에 거의 의존하지 않는 library 소비자 입장에서는 이 추가 runtime helper가 순수한 오버헤드였습니다.
+
+5.107에서는 이 동작을 제어할 수 있도록 새로운 `module.parser.javascript.anonymousDefaultExportName` 옵션이 추가되었습니다. 기본값은 애플리케이션에서는 `true`, library에서는(`output.library`가 설정된 경우) `false`입니다. 애플리케이션은 기본적으로 spec 호환성을 유지하고, library 작성자는 이를 몰라도 추가 runtime helper 비용을 치르지 않게 됩니다.
+
+```js
+// 입력
+export default function () {
+  /* ... */
+}
+
+// `anonymousDefaultExportName: true`를 사용할 때(앱의 기본값)
+// runtime은 네이티브 ESM 동작에 맞춰 .name = "default"를 설정합니다.
+```
+
+기본값은 명시적으로 덮어쓸 수도 있습니다.
+
+```js
+module.exports = {
+  module: {
+    parser: {
+      javascript: {
+        anonymousDefaultExportName: false,
+      },
+    },
+  },
+};
+```
+
+### Preserving `defer` and `source` Phase on Externals
+
+이제 webpack은 ESM 출력에서 import attributes를 유지하는 것과 같은 방식으로, external dependency에 대한 `defer`와 `source` import phase 키워드도 유지합니다. 이전에는 이 phase 키워드가 출력문에서 제거되었기 때문에, external에 대한 `import defer * as ns from "x"`는 결과물에서 deferred semantics를 잃었습니다.
+
+정적 `module` externals의 경우, namespace defer import와 단일 default source import는 이제 번들 상단에 네이티브 phase 구문으로 그대로 출력됩니다.
+
+```js
+// webpack.config.js
+module.exports = {
+  output: { module: true },
+  externalsType: "module",
+  externals: { "external-mod": "external-mod" },
+};
+```
+
+```text
+// 입력
+import defer * as ns from "external-mod";
+import source v from "external-mod";
+
+// 출력 결과
+import defer * as ns from "external-mod";
+import source v from "external-mod";
+```
+
+동적 `import` externals의 경우에는 `import.defer("x")`와 `import.source("x")`가 직접 출력됩니다.
+
+```text
+// 입력
+const ns = await import.defer("external-mod");
+const src = await import.source("external-mod");
+
+// 출력 결과
+const ns = await import.defer("external-mod");
+const src = await import.source("external-mod");
+```
+
+관련된 또 하나의 개선 사항도 있습니다. 동일한 external을 서로 다른 두 phase(또는 attribute 집합)로 import해도 더 이상 하나의 `ExternalModule`로 합쳐지지 않습니다. 각 조합이 별도의 emit을 생성하므로, 어느 한쪽 phase가 조용히 누락되지 않습니다.
+
+### `#__NO_SIDE_EFFECTS__` Annotation
+
+이제 webpack은 더 나은 tree shaking을 위해 함수를 pure하다고 표시하는 [`#__NO_SIDE_EFFECTS__`](https://github.com/javascript-compiler-hints/compiler-notations-spec/blob/main/no-side-effects-notation-spec.md#2-const-variable-declaration) annotation을 지원합니다. 이렇게 표시된 함수는 함수 본문을 정적으로 pure하다고 분석할 수 없더라도, 반환값이 사용되지 않으면 호출이 번들에서 제거될 수 있습니다.
+
+{/* eslint-disable */}
+
+```js
+// utils.js
+/*#__NO_SIDE_EFFECTS__*/
+export function createLogger(prefix) {
+  return (msg) => console.log(`[${prefix}] ${msg}`);
+}
+
+export function realWork() {
+  // ...
+}
+```
+
+{/* eslint-enable */}
+
+```js
+// app.js
+import { createLogger, realWork } from "./utils";
+
+// `createLogger`에 annotation이 있고 결과가 사용되지 않으므로 제거됩니다.
+const unused = createLogger("debug");
+
+realWork();
+```
+
+W> 현재 이 annotation은 **선언된 동일 module 내부에서만** 효과가 있습니다. module 간 전파는 향후 PR에서 지원될 예정입니다.
+
+## Resolver Updates
+
+이제 webpack은 resolver defaults의 기본 `conditionNames`에 `"module-sync"`를 추가하여 Node.js와 동작을 맞춥니다. Node.js는 동기적으로 로드 가능한 ESM을 위해 `module-sync` community condition을 제공하며, 이번 변경은 ESM, CJS, AMD, worker, wasm, build-dependency resolver에 영향을 줍니다.
+
+구체적으로 말하면, resolver defaults의 condition chain에는 이제 `module` 바로 앞에 `module-sync`가 포함됩니다.
+
+```js
+// 이전 (5.106)
+conditionNames: ["require", "module", "..."]; // CJS 의존성
+conditionNames: ["import", "module", "..."]; // ESM 의존성
+
+// 이후 (5.107)
+conditionNames: ["require", "module-sync", "module", "..."];
+conditionNames: ["import", "module-sync", "module", "..."];
+```
+
+즉, `package.json`에 `module-sync` export condition을 게시하는 패키지는 추가 설정 없이 자동으로 선택됩니다.
+
+```json
+{
+  "name": "my-package",
+  "exports": {
+    ".": {
+      "module-sync": "./esm/index.js",
+      "default": "./cjs/index.js"
+    }
+  }
+}
+```
+
+## Bug Fixes
+
+버전 [5.106](https://github.com/webpack/webpack/releases/tag/v5.106.0) 이후 여러 버그가 수정되었습니다. 자세한 내용은 [changelog](https://github.com/webpack/webpack/blob/main/CHANGELOG.md)를 확인하세요.
+
+## Thanks
+
+Webpack 5.107을 가능하게 해주신 모든 기여자와 [스폰서](https://github.com/webpack/webpack?tab=readme-ov-file#sponsoring)께 진심으로 감사드립니다.
+코드 기여, 문서 작성, 재정적 후원 등 어떤 형태의 지원이든 Webpack이 모두를 위해 계속 발전하고 개선될 수 있도록 도와줍니다.
