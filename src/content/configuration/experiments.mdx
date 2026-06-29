@@ -407,7 +407,9 @@ import page from "./page.html";
 document.documentElement.innerHTML = page;
 ```
 
-W> **이 기능은 experimental하며 부분적으로만 구현되었습니다.** Webpack 5.107은 현재 `html-loader`에 해당하는 부분만 구현합니다. 즉, JS에서 HTML 파일을 import했을 때 그 안의 태그 참조를 webpack pipeline으로 처리합니다. **HTML entry points**(`.html` 파일 자체를 `entry`로 사용하는 경우, 즉 `html-webpack-plugin`에 해당하는 부분)는 **아직 지원되지 않으며**, 다음 마이너 릴리스에서 지원될 예정입니다. 전체 진행 상황은 이슈 [#536](https://github.com/webpack/webpack/issues/536)에서 추적할 수 있습니다.
+W> **이 기능은 실험적이며 부분적으로만 구현되었습니다.** Webpack 5.107은 `html-loader` 역할을 구현했습니다: JS에서 HTML 파일을 import하면 그 안의 태그 참조가 webpack 파이프라인을 거칩니다. 5.108부터 `.html` 파일을 엔트리로도 사용할 수 있으며, 이 실험이 활성화되면 기본 `./src` 엔트리가 `index.html`로 해석됩니다(아래 [HTML을 기본 엔트리로 사용](#html-as-the-default-entry) 참조). `html-webpack-plugin`과의 완전한 동등성은 여전히 진행 중이며, 전체 작업은 이슈 [#536](https://github.com/webpack/webpack/issues/536)에서 추적됩니다.
+
+T> HTML 파서는 [`module.parser.html`](/configuration/module/#moduleparserhtml)을 통해 조정할 수 있습니다: [`sources`](/configuration/module/#moduleparserhtmlsources)를 사용하여 URL-속성 추출을 비활성화하거나 커스터마이즈하고, [`template`](/configuration/module/#moduleparserhtmltemplate)을 사용하여 파싱 전에 HTML 소스를 변환할 수 있습니다.
 
 #### Inline `<style>` tags
 
@@ -489,6 +491,31 @@ HTML module 내부의 `<script src>` 및 `<link rel="modulepreload">` 참조는 
 #### `webpackIgnore` magic comment
 
 HTML `<!-- webpackIgnore: true -->` comment를 태그 바로 앞에 두면 webpack은 해당 태그의 `src`, `href`, `srcset` 및 유사한 attribute에 대한 URL 해석을 건너뜁니다. 자세한 설명은 [magic comments](/api/module-methods/#webpackignore)를 참고하세요.
+
+#### HTML as the Default Entry
+
+<Badge text="5.108.0+" />
+
+`experiments.html`이 활성화되면, `.html`이 JavaScript 확장자보다 앞서 기본 `resolve.extensions`에 추가됩니다. 따라서 `entry: "./src"`와 같은 디렉토리 엔트리는 `./src/index.js`가 존재하더라도 `./src/index.html`로 해석됩니다. 이는 Vite 또는 Parcel과 유사하게 빌드를 HTML 우선으로 만듭니다.
+
+```js
+export default {
+  experiments: { html: true },
+  entry: "./src", // ./src/index.html로 해석됩니다
+};
+```
+
+[`experiments.css`](#experimentscss)가 활성화되면, `.css`도 마찬가지로 기본 확장자에 추가되므로, HTML 또는 JS 매치가 없을 때 기본 엔트리가 `./src/index.css`로 폴백할 수 있습니다. 이러한 확장자는 해당 실험이 활성화된 경우에만 추가되므로 기본 빌드는 변경되지 않습니다.
+
+#### Hot Module Replacement
+
+<Badge text="5.108.0+" />
+
+HTML 모듈은 [Hot Module Replacement](/concepts/hot-module-replacement/)를 지원합니다. 추가 설정이 필요하지 않습니다. HMR이 활성화되면 자동으로 활성화됩니다(예: [`devServer.hot`](/configuration/dev-server/#devserverhot)을 통해).
+
+실제 `.html` 파일로 추출된 페이지의 경우, 각 핫 업데이트는 전체 리로드를 트리거하는 대신 `document.body.innerHTML`과 `document.title`을 제자리에서 패치합니다. `<title>` 이외의 `<head>` 변경(새로운 `<meta>`, 교체된 `<link rel="icon">` 등)은 안전하게 DOM 패치할 수 없으므로 shim은 전체 페이지 리로드로 폴백합니다.
+
+T> HMR이 활성화된 동안 HTML 모듈에 대해 [모듈 연결](/configuration/optimization/#optimizationconcatenatemodules)이 비활성화됩니다. 각 모듈이 업데이트를 자체 수락하기 위해 자체 `module.hot` 스코프가 필요하기 때문입니다.
 
 ### experiments.lazyCompilation
 

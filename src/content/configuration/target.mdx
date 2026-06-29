@@ -42,6 +42,9 @@ browserslist 설정이 없으면 `'browserslist'` 혹은 `'web'`으로 설정됩
 | `nwjs[[X].Y]`              | `node-webkit`과 동일합니다.                                                                                                                                                                                                                                                                   |
 | `web`                      | 브라우저와 동일한 환경에서 사용하기 위하여 컴파일합니다. **(기본값)**                                                                                                                                                                                                                         |
 | `webworker`                | 웹 워커로 컴파일합니다.                                                                                                                                                                                                                                                                       |
+| `universal`                | 런타임에 브라우저, 웹 워커, Node.js, Electron 및 NW.js에 적응하는 단일 번들을 컴파일합니다. 항상 ECMAScript 모듈을 출력합니다. webpack 5.108.0부터 사용 가능합니다.                                                                                                                         |
+| `bun`                      | [Bun](https://bun.sh/)을 위해 컴파일합니다. ECMAScript 모듈을 출력하고 `bun:*` 및 Node.js 내장 모듈을 외부화합니다. webpack 5.108.0부터 사용 가능합니다.                                                                                                                                     |
+| `deno[[X].Y]`              | [Deno](https://deno.com/)를 위해 컴파일합니다. ECMAScript 모듈을 출력하고, 필수 `node:` 지정자를 통해 Node.js 내장 모듈을 해석하며, Deno 자체 import 프로토콜(`npm:`, `jsr:`, `node:`, `http(s)://`)을 외부로 유지합니다. webpack 5.108.0부터 사용 가능합니다.                             |
 | `esX`                      | 지정된 ECMAScript 버전으로 컴파일합니다. 예: es5, es2020                                                                                                                                                                                                                                      |
 | `browserslist`             | browserslist-config에서 **(browserslist config를 사용할 수 있는 경우 기본값)** 플랫폼과 ES 기능을 추론합니다.                                                                                                                                                                                 |
 
@@ -74,6 +77,57 @@ export default {
 - `browserslist:last 2 versions` - 명시적으로 browserslist 쿼리 사용(설정은 무시됨)
 - `browserslist:/path/to/config` - browserslist 설정을 지정할 수 있음
 - `browserslist:/path/to/config:modern` - browserslist 설정 및 환경을 명시적으로 지정
+
+#### universal
+
+<Badge text="5.108.0+" />
+
+`web`, `web worker`, `node`, `electron` 및 `nwjs` 플랫폼을 결합한 단일 프리셋으로, 각 플랫폼 플래그를 중립으로 유지하여 번들이 하나의 환경에 고정되는 대신 런타임에 적응합니다. 수동으로 `target: ["web", "node"]`를 작성하는 것을 편리하게 대체하며, 항상 ECMAScript 모듈을 출력합니다. 이 타겟에 대해 [`experiments.outputModule`](/configuration/experiments/#experimentsoutputmodule)은 기본적으로 `true`입니다.
+
+**webpack.config.js**
+
+```js
+export default {
+  // ...
+  target: "universal",
+};
+```
+
+범용 빌드에 대한 참고사항:
+
+- `new Worker(new URL(...))`는 Node에서는 `worker_threads`에서 `Worker` 생성자를 해석하고, 웹에서는 전역 `Worker`에서 해석합니다.
+- ESM 출력에서 `commonjs` 및 `node-commonjs` externals가 지원되며(`process.getBuiltinModule`의 `createRequire`를 통해 로드됨), `global` externals는 전역 객체로 `globalThis`를 사용합니다.
+- CSS는 서버 사이드 렌더링을 위해 Node에서 실행됩니다: `style` 주입 및 `link`로 로드된 청크의 스타일은 SSR 호스트가 읽을 수 있도록 `globalThis["__webpack_css__" + output.uniqueName]`에 수집됩니다.
+
+#### bun
+
+<Badge text="5.108.0+" />
+
+[Bun](https://bun.sh/)을 위해 컴파일합니다. 번들은 ECMAScript 모듈로 생성되며([`experiments.outputModule`](/configuration/experiments/#experimentsoutputmodule)은 기본적으로 `true`), Bun 자체의 `bun:*` 모듈과 Bun이 제공하는 Node.js 내장 모듈은 번들에 포함되지 않고 외부화됩니다.
+
+**webpack.config.js**
+
+```js
+export default {
+  // ...
+  target: "bun",
+};
+```
+
+#### deno
+
+<Badge text="5.108.0+" />
+
+[Deno](https://deno.com/)를 위해 컴파일합니다. 번들은 ECMAScript 모듈로 생성됩니다([`experiments.outputModule`](/configuration/experiments/#experimentsoutputmodule)은 기본적으로 `true`). Node.js 내장 모듈은 Deno가 요구하는 `node:` 지정자를 통해 해석되며, Deno 자체의 import 프로토콜(`npm:`, `jsr:`, `node:` 및 `http(s)://` URL)은 런타임이 로드하도록 외부로 유지됩니다. 버전을 지정할 수 있습니다. 예: `deno2` 또는 `deno1.40`.
+
+**webpack.config.js**
+
+```js
+export default {
+  // ...
+  target: "deno", // "deno2", "deno1.40" 등도 가능
+};
+```
 
 ### [string]
 

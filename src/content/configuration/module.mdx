@@ -188,6 +188,7 @@ export default {
         // CSS 모듈에 대해 생성된 로컬 클래스 이름의 형식을 사용자 정의합니다.
         // type: string, https://webpack.js.org/configuration/output/#template-strings의 파일 수준 및 모듈 수준 대체 외에도 [uniqueName] 및 [local]도 포함됩니다.
         // webpack 5.90.4부터 사용 가능합니다.
+        // webpack 5.108.0부터 여기서 [hash]는 로컬 식별자 해시(css-loader와 일치)로 해석됩니다. 모듈 해시를 위해서는 [modulehash]를 사용하세요. 인라인 다이제스트/길이 형식도 지원됩니다. 예: [hash:base64:8].
         localIdentName: "[uniqueName]-[id]-[local]",
       },
       "css/global": {
@@ -200,6 +201,13 @@ export default {
         // JSON 모듈에 대한 생성기 옵션
         // JSON 문자열이 20자를 넘는 경우 `JSON.parse`를 사용합니다.
         parse: JSONParse,
+      },
+      html: {
+        // html 모듈에 대한 생성기 옵션, `experiments.html` 필요, webpack 5.107.0부터 사용 가능
+
+        // 파싱되고 URL이 재작성된 HTML을 독립 실행형 .html 출력 파일로 생성합니다.
+        // type: boolean | 'inline'
+        extract: true,
       },
       // 그외 다른 옵션들…
     },
@@ -234,6 +242,35 @@ import styles from "./button.module.css";
 
 console.log(styles.btn); // 해시된 class
 console.log(styles.BTN); // 같은 해시된 class의 대문자 alias
+```
+
+### module.generator.html.extract
+
+<Badge text="5.107.0+" />
+
+`boolean = true` `'inline'`
+
+[HTML 모듈](/configuration/experiments/#experimentshtml)이 파싱되고 URL이 재작성된 HTML을 모듈의 JavaScript export와 함께 독립 실행형 `.html` 출력 파일로 생성할지 여부를 제어합니다. CSS 추출 파이프라인을 미러링합니다. [`experiments.html`](/configuration/experiments/#experimentshtml)이 필요합니다.
+
+- `true` - 항상 `.html` 파일을 생성합니다.
+- `false` - 생성하지 않습니다.
+- `'inline'` - 독립 파일을 생성하지 않고 인라인 쓰기(예: `<iframe srcdoc>`)를 위해 처리된 HTML을 노출합니다.
+
+설정하지 않으면, 컴파일 엔트리로 사용되는 HTML 모듈(HTML 엔트리 포인트)에 대해서는 기본적으로 `true`이고, JavaScript에서 import된 HTML 모듈에 대해서는 `false`입니다. 생성되는 파일명은 [`output.htmlFilename`](/configuration/output/#outputhtmlfilename) 및 [`output.htmlChunkFilename`](/configuration/output/#outputhtmlchunkfilename)을 따릅니다.
+
+**webpack.config.js**
+
+```js
+export default {
+  experiments: { html: true },
+  module: {
+    generator: {
+      html: {
+        extract: true,
+      },
+    },
+  },
+};
 ```
 
 ## module.parser
@@ -295,6 +332,9 @@ export default {
         requireEnsure: true,
         // 모듈을 '엄격' 또는 '비엄격' 모드로 설정합니다. 엄격 모드와 비엄격 모드 간에 일부 동작이 다르기 때문에 이는 모듈의 동작에 영향을 미칠 수 있습니다.
         overrideStrict: "non-strict",
+        // 트리 셰이킹을 위해 최상위 함수 이름을 사이드 이펙트 없음으로 표시, webpack 5.108.0부터 사용 가능
+        // type: string[]
+        pureFunctions: ["myPureFn"],
       },
       "javascript/auto": {
         // 위와 동일
@@ -320,6 +360,9 @@ export default {
         // CSS 콘텐츠가 내보내지는 방식을 설정합니다.
         // type: string
         exportType: "link",
+        // 파싱할 최상위 CSS 프로덕션 선택, webpack 5.108.0부터 사용 가능
+        // type: 'stylesheet' | 'block-contents'
+        as: "stylesheet",
       },
       "css/auto": {
         // 위와 동일
@@ -329,6 +372,16 @@ export default {
       },
       "css/module": {
         // 위와 동일
+      },
+      html: {
+        // html 모듈에 대한 파서 옵션, `experiments.html` 필요, webpack 5.108.0부터 사용 가능
+
+        // URL-속성 추출을 비활성화하거나 커스터마이즈
+        // type: boolean | Array<'...' | { tag?: string, attribute: string, type: string, filter?: Function }>
+        sources: true,
+        // 파싱 전에 HTML 소스 변환
+        // type: (source: string, context: HtmlTemplateContext) => string
+        template: undefined,
       },
       // 그외 다른 옵션들…
     },
@@ -693,6 +746,34 @@ CSS 콘텐츠를 내보내는 방법을 설정합니다.
 - `text` - CSS를 JS 파일에 저장하고 기본 내보내기를 사용하여 반환합니다.
 - `css-style-sheet` - 기본 내보내기는 생성 가능한 스타일시트(예: CSSStyleSheet)입니다. 사용자 정의 요소와 Shadow DOM에 유용합니다.
 
+### module.parser.css.as
+
+파싱할 최상위 CSS 프로덕션을 선택합니다.
+
+- Type: `'stylesheet' | 'block-contents'`
+- Available: 5.108.0+
+- Example:
+
+  ```js
+  export default {
+    experiments: { css: true },
+    module: {
+      parser: {
+        css: {
+          as: "block-contents",
+        },
+      },
+    },
+  };
+  ```
+
+가능한 값:
+
+- `stylesheet` (기본값) - 소스를 전체 스타일시트로 파싱합니다.
+- `block-contents` - 소스를 CSS 블록의 내용(선언 목록)으로 파싱합니다. 즉, HTML `style="..."` 속성의 내부입니다.
+
+T> 이 옵션은 webpack이 HTML 인라인 `style="..."` 속성을 CSS 파이프라인을 통해 라우팅할 수 있도록 존재합니다(HTML 파일을 기준으로 `url()`, `image-set()` 및 `@import` 해석). 일반적인 HTML `style=` 케이스의 경우 수동으로 설정할 필요가 없습니다. `experiments: { html: true, css: true }`를 활성화하면 `style` 속성 내부의 `url()`이 자동으로 해석됩니다.
+
 ### module.parser.javascript
 
 JavaScript 파서를 위한 옵션을 설정할 수 있습니다.
@@ -979,6 +1060,31 @@ const x = require(/* webpackIgnore: true */ "x");
   };
   ```
 
+#### module.parser.javascript.pureFunctions
+
+나열된 최상위 함수 이름을 사이드 이펙트 없음으로 표시하여, 결과가 사용되지 않는 해당 함수 호출이 트리 셰이킹될 수 있습니다. 이는 [`/*#__NO_SIDE_EFFECTS__*/`](/guides/tree-shaking/#mark-a-function-declaration-as-side-effect-free) annotation의 명시적 설정 대응물입니다: 소스에 annotation을 달지 않고 이름을 나열합니다. 기본 export된 함수를 타겟팅하려면 `"default"`를 사용하세요.
+
+- Type: `string[]`
+- Available: 5.108.0+
+- Example:
+
+  ```js
+  export default {
+    module: {
+      rules: [
+        {
+          test: /pure-source\.js$/,
+          parser: {
+            pureFunctions: ["createSelector", "styled", "default"],
+          },
+        },
+      ],
+    },
+  };
+  ```
+
+T> 의도된 모듈에서만 이름이 사이드 이펙트 없음으로 표시되도록 `test`와 함께 규칙별로 적용하는 것이 가장 좋습니다. 전역 형식(`module.parser.javascript.pureFunctions`)도 지원됩니다.
+
 #### module.parser.javascript.reexportExportsPresence
 
 `\"export ... from ...\"`에서 내보내기 이름이 잘못된 경우의 동작을 지정합니다. 이것은 TypeScript에서 타입을 다시 내보낼때 `\"export ... from ...\"`에서 `\"export type ... from ...\"`으로 마이그레이션하는 동안 비활성화하는 데 유용합니다.
@@ -1168,6 +1274,99 @@ export default {
     parser: {
       json: {
         parse: json5.parse,
+      },
+    },
+  },
+};
+```
+
+### module.parser.html
+
+<Badge text="5.108.0+" />
+
+HTML 파서에 대한 옵션을 설정합니다. 이러한 옵션은 [`experiments.html`](/configuration/experiments/#experimentshtml) 플래그를 활성화해야 합니다.
+
+```js
+export default {
+  experiments: { html: true },
+  module: {
+    parser: {
+      html: {
+        // ...
+        sources: true,
+      },
+    },
+  },
+};
+```
+
+#### module.parser.html.sources
+
+URL과 유사한 속성 값(`<img src>`, `<link href>`, `<script src>` 등)을 webpack 의존성으로 추출하는 것을 제어합니다.
+
+- Type: `boolean | Array<'...' | { tag?: string, attribute: string, type: string, filter?: (attributes: Map<string, string>) => boolean }>`
+- Available: 5.108.0+
+
+가능한 값:
+
+- `true` (기본값) - 내장된 소스 목록을 사용하여 URL과 유사한 속성을 추출합니다.
+- `false` - 추출을 완전히 비활성화합니다. URL과 유사한 속성은 그대로 유지되며 `<script src>`, `<link rel="modulepreload">` 및 `<link rel="stylesheet">`는 더 이상 컴파일 엔트리가 되지 않습니다. 인라인 `<script>` 및 `<style>` 본문은 여전히 처리됩니다. 개별 URL을 건너뛰려면 [`webpackIgnore`](/api/module-methods/#magic-comments) 주석 또는 [`IgnorePlugin`](/plugins/ignore-plugin/)을 사용하세요.
+- **배열** - URL로 처리할 `tag`/`attribute` 쌍을 커스터마이즈합니다. 내장 기본값을 유지하려면 리터럴 문자열 `"..."`를 포함하세요. `"..."`가 없는 배열은 기본값을 완전히 제외합니다.
+
+각 배열 항목 객체는 다음을 허용합니다:
+
+- `attribute` (필수) - 값이 URL인 속성 이름입니다.
+- `type` (필수) - 값이 파싱되고 번들되는 방식. 다음 중 하나:
+  - `src` - 일반 애셋으로 번들되는 단일 URL.
+  - `srcset` - 일반 애셋의 `srcset` 스타일 후보 목록.
+  - `script` - `<script src>`와 같은 클래식 청크 엔트리.
+  - `script-module` - `<script type="module" src>`와 같은 ES 모듈 청크 엔트리.
+  - `stylesheet` - `<link rel="stylesheet">`와 같은 CSS 청크 엔트리.
+  - `stylesheet-style` - 속성 값이 전체 인라인 스타일시트(`<style>` 본문과 같음)로 처리되고 CSS 파이프라인을 통해 라우팅됩니다.
+  - `stylesheet-style-attribute` - 속성 값이 CSS 블록의 내용(`style` 속성과 같음)으로 처리되고 CSS 파이프라인을 통해 라우팅됩니다.
+  - `css-url` - CSS 값 속성(예: SVG `style` 표현 속성)에서 `url()` 참조를 추출합니다. webpack 5.108.0부터 사용 가능합니다.
+- `tag` (선택) - 매치할 태그 이름. 모든 요소를 매치하려면 생략하세요.
+- `filter` (선택) - `(attributes: Map<string, string>) => boolean`; 주어진 요소에 대해 이 항목을 건너뛰려면 `false`를 반환합니다.
+
+```js
+export default {
+  experiments: { html: true },
+  module: {
+    parser: {
+      html: {
+        sources: [
+          "...", // 내장 기본값 유지
+          { tag: "img", attribute: "data-src", type: "src" },
+          { tag: "img", attribute: "data-srcset", type: "srcset" },
+          { attribute: "data-href", type: "src" }, // 모든 태그
+        ],
+      },
+    },
+  },
+};
+```
+
+#### module.parser.html.template
+
+파서가 의존성을 추출하기 **전에** 원시 HTML 소스를 변환하여, 템플릿 언어(Handlebars, EJS, Eta 등)에서 생성된 URL이 여전히 발견되고 번들됩니다. 함수는 동기적으로 실행되며 파싱할 HTML 문자열을 반환해야 합니다.
+
+- Type: `(source: string, context: HtmlTemplateContext) => string`
+- Available: 5.108.0+
+
+`context` 객체는 현재 `module`, 해당 `resource` 경로, 빌드 의존성 등록 헬퍼(`addDependency`, `addContextDependency`, `addMissingDependency`, `addBuildDependency`), 그리고 `emitWarning` / `emitError`를 제공합니다.
+
+```js
+export default {
+  experiments: { html: true },
+  module: {
+    parser: {
+      html: {
+        template: (source, { resource, addDependency }) => {
+          addDependency(resource);
+          return source
+            .replaceAll("{{title}}", "Hello world")
+            .replaceAll("{{image}}", "./image.png");
+        },
       },
     },
   },

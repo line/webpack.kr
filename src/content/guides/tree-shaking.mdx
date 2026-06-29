@@ -546,7 +546,9 @@ import { createLogger } from "./utils";
 const unused = createLogger("debug");
 ```
 
-W> 이 annotation은 현재 선언된 module 내부에서만 효과가 있습니다. module 간 전파는 향후 릴리스에서 지원될 예정입니다.
+T> webpack 5.108.0부터 annotation이 모듈 경계를 넘어 전파되므로, import하는 모듈에서 사용되지 않는 호출도 트리 셰이킹됩니다. (5.108.0 이전에는 선언된 모듈 내에서만 효과가 있었습니다.)
+
+T> 소스를 편집하여 annotation을 추가할 수 없는 경우(예: 의존성에서 가져온 함수), 설정에서 [`module.parser.javascript.pureFunctions`](/configuration/module/#moduleparserjavascriptpurefunctions)를 사용하여 이름을 사이드 이펙트 없음으로 표시할 수 있습니다(5.108.0+).
 
 ## Minify the Output
 

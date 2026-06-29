@@ -1,0 +1,403 @@
+---
+title: Webpack 5.108
+sort: 20260618
+contributors:
+  - bjohansebas
+translators:
+  - dkstyle
+---
+
+import banner from "../../assets/blog/webpack-5-108.png";
+
+<img src={banner} alt="webpack 5.108 release" />
+
+Webpack 5.108이 출시되었으며, 두 가지 큰 이야기를 앞으로 나아가게 합니다. 헤드라인은 완전히 새로운 `universal` 타겟입니다: 브라우저, 웹 워커, Node.js, Electron 및 NW.js에 런타임에 적응하는 하나의 번들을 컴파일하는 단일 프리셋으로, 사람들이 수년간 유지해온 수동으로 작성된 `target: ["web", "node"]` 설정을 대체합니다. 이번 릴리스는 5.107에서 시작된 네이티브 HTML 작업도 계속합니다: `.html` 파일을 `entry`로 직접 사용할 수 있고, webpack이 일반 JavaScript 엔트리에 대한 HTML 파일을 생성할 수 있으며, HTML 모듈이 이제 Hot Module Replacement를 지원합니다.
+
+이러한 헤드라인 외에도, 이번 릴리스는 트리 셰이킹 개선 사항(새로운 `optimization.inlineExports`, 모듈 간 순수성 및 CommonJS 재내보내기 분석)을 상당히 포함하고, 유능한 타겟을 위해 webpack이 생성하는 코드를 현대화하며, 타입이 지정된 `defineConfig` 헬퍼를 추가합니다.
+
+HTML 및 `universal` 기능은 모두 실험적이며 옵트인 플래그 뒤에 있지만, 방향은 5.107과 동일합니다: HTML, CSS 및 TypeScript를 위한 추가 로더나 플러그인 없이 완전한 웹 앱을 빌드할 수 있어야 합니다.
+
+새로운 기능 살펴보기:
+
+- [**`universal` 타겟**](#the-universal-target)
+- [**Bun 및 Deno 타겟**](#bun-and-deno-targets)
+- [**HTML 모듈: 엔트리 포인트 및 HMR**](#html-modules-entry-points-and-hmr)
+  - [엔트리 포인트로서의 HTML](#html-as-an-entry-point)
+  - [JavaScript 엔트리를 위한 HTML 출력](#html-output-for-javascript-entries)
+  - [Hot Module Replacement](#hot-module-replacement)
+  - [HTML 파서 커스터마이징](#customizing-the-html-parser)
+- [**CSS 개선사항**](#css-improvements)
+  - [HTML `style` 속성 내부의 `url()`](#url-inside-html-style-attributes)
+  - [범용 빌드를 위한 Node의 CSS](#css-in-node-for-universal-builds)
+- [**트리 셰이킹**](#tree-shaking)
+  - [`optimization.inlineExports`](#optimizationinlineexports)
+  - [모듈 간 데드 브랜치 스킵](#cross-module-dead-branch-skipping)
+  - [모듈 간 순수성](#cross-module-purity)
+  - [`Object.defineProperty`를 통한 CommonJS 재내보내기](#commonjs-re-exports-via-objectdefineproperty)
+- [**자동 ES 모듈 감지**](#automatic-es-module-detection)
+- [**출력 및 런타임**](#output-and-runtime)
+  - [생성된 코드의 최신 구문](#modern-syntax-in-generated-code)
+  - [`output.strictModuleResolution`](#outputstrictmoduleresolution)
+  - [`[uniqueName]` 템플릿 플레이스홀더](#uniquename-template-placeholder)
+  - [Worker 청크 파일명](#worker-chunk-filenames)
+- [**`defineConfig`로 타입 지정된 설정**](#typed-configuration-with-defineconfig)
+- [**버그 수정**](#bug-fixes)
+
+## The Universal Target
+
+여러 환경에서 실행되는 코드를 빌드하려면 예전에는 `target: ["web", "node"]`를 직접 작성하고, 거친 부분들을 직접 처리해야 했습니다. 모든 곳에서 로드되는 청크 포맷을 선택하고, 전역 객체를 연결하며, 모든 플랫폼별 API를 직접 보호해야 했죠. Webpack 5.108은 이를 하나의 프리셋으로 바꿔줍니다.
+
+```js
+// webpack.config.js
+module.exports = {
+  target: "universal",
+};
+```
+
+[`target: "universal"`](/configuration/target/#universal)은 `web`, `web worker`, `node`, `electron`, `nwjs` 플랫폼을 하나의 타겟으로 결합하고, 번들을 단일 환경에 고정하는 대신 각 플랫폼 플래그를 _중립_으로 남겨둡니다. 별도의 web과 node 번들을 컴파일하는 대신, 런타임에 주변 환경을 파악하고 현재 플랫폼이 제공하는 것을 사용하는 하나의 번들을 제공합니다.
+
+브라우저와 Node에서 동일하게 잘 로드되어야 하는 번들에는 이식 가능한 모듈 포맷이 필요하므로, universal 빌드는 항상 ECMAScript 모듈을 출력합니다. [`experiments.outputModule`](/configuration/experiments/#experimentsoutputmodule)이 기본적으로 `true`가 되고, 동기 `require`는 비활성화되며, Node의 내장 모듈은 사용 가능한 상태로 유지됩니다(런타임에 ESM을 통해 해석됨). [`output.globalObject`](/configuration/output/#outputglobalobject)도 `globalThis`가 기본값이 되어 런타임 코드가 모든 플랫폼에서 하나의 전역을 참조할 수 있습니다.
+
+하나의 번들이 모든 곳에서 올바르게 동작하도록 하기 위해, 여러 부분이 플랫폼을 인식하도록 만들어졌으며 이제 빌드 타임에 고정되는 대신 런타임에 기능 감지를 통해 분기합니다:
+
+- **Workers**: `new Worker(new URL(...))`는 Node에서는 `worker_threads`에서, 웹에서는 전역 `Worker`에서 `Worker` 생성자를 해석하므로, 동일한 worker entry가 양쪽에서 실행됩니다.
+- **Externals**: `commonjs`와 `node-commonjs` external은 ESM 출력에서 작동하며(`process.getBuiltinModule`에서 얻은 `createRequire`를 통해 방어적으로 로드되고, 브라우저에서 절대 깨지지 않도록 보호됨), `global` external은 `globalThis`에 대해 해석됩니다. Electron external은 타겟이 ESM을 지원할 때 `module-import`를 사용합니다.
+- **SSR을 위한 CSS**: 서버에서는 주입할 DOM이 없으므로, 스타일이 SSR 호스트가 읽을 수 있는 레지스트리에 수집됩니다([범용 빌드를 위한 Node의 CSS](#css-in-node-for-universal-builds) 참조).
+
+플러그인과 로더는 컴파일 타임에 `compiler.platform.universal`을 통해 universal 빌드를 감지할 수 있으며, 이는 동등한 `target: ["web", "node"]`에 대해서도 `true`입니다.
+
+완전하고 실행 가능한 설정은 webpack 저장소의 [`universal` 예제](https://github.com/webpack/webpack/tree/main/examples/universal)를 참조하세요.
+
+## Bun and Deno Targets
+
+`universal`과 함께 webpack 5.108은 두 개의 최신 JavaScript 런타임을 위한 전용 프리셋을 추가합니다. 각각은 ESM 출력을 구성하고 런타임의 자체 내장 모듈을 external로 표시하여(번들링되는 대신 런타임이 제공하도록 남겨둠), 이전에는 직접 설정해야 했던 작업을 자동화합니다.
+
+[`target: "bun"`](/configuration/target/#string)은 Bun용으로 빌드하며, Bun의 자체 `bun:*` 모듈과 제공하는 Node.js 내장 모듈을 번들링하는 대신 external화합니다.
+
+```js
+// webpack.config.js
+module.exports = {
+  target: "bun",
+};
+```
+
+[`target: "deno"`](/configuration/target/#string)는 Deno용으로 빌드합니다. Deno가 요구하는 `node:` 지정자를 통해 Node.js 내장 모듈을 해석하고, Deno의 자체 import 프로토콜(`npm:`, `jsr:`, `node:`, `http(s)://` URL)을 external로 유지하여 런타임이 로드하도록 합니다. webpack의 다른 버전 인식 타겟처럼, `deno2` 또는 `deno1.40`과 같은 버전을 허용합니다.
+
+```js
+// webpack.config.js
+module.exports = {
+  target: "deno", // "deno2", "deno1.40" 등도 가능
+};
+```
+
+## HTML Modules: Entry Points and HMR
+
+W> **이 기능은 실험적이며 부분적으로만 구현되어 있습니다.** Webpack 5.107은 `html-loader` 측면을 구현했습니다. JavaScript에서 HTML 파일을 import하면 그 안의 태그 참조가 webpack pipeline을 통해 처리됩니다. Webpack 5.108은 `.html` 파일을 `entry`로 사용하는 기능을 추가합니다. `html-webpack-plugin`과의 완전한 동등성은 아직 진행 중이며, 전체 작업은 이슈 [#536](https://github.com/webpack/webpack/issues/536)에서 추적되고 있습니다.
+
+### HTML as an Entry Point
+
+[`experiments.html`](/configuration/experiments/#experimentshtml)이 활성화되면, 이제 `entry`를 HTML 파일에 직접 지정할 수 있습니다. `<script src>`와 `<link rel="stylesheet">` 참조는 webpack의 pipeline을 거치고, 생성된 HTML은 생성된 JS 및 CSS 청크를 가리키도록 다시 작성됩니다.
+
+```js
+// webpack.config.js
+module.exports = {
+  experiments: {
+    html: true,
+    css: true,
+  },
+  entry: {
+    page: "./page.html",
+  },
+};
+```
+
+Vite나 Parcel처럼 느껴지도록 하기 위해, webpack 5.108은 `.html`(그리고 [`experiments.css`](/configuration/experiments/#experimentscss)가 활성화되면 `.css`)을 기본 `resolve.extensions`에 JavaScript 확장자보다 앞에 추가합니다. HTML 실험이 활성화되면, 기본 `./src` entry는 `./src/index.js`보다 `./src/index.html`을 해석합니다:
+
+```js
+// webpack.config.js
+module.exports = {
+  experiments: { html: true },
+  entry: "./src", // ./src/index.html로 해석됨
+};
+```
+
+이러한 확장자는 해당 실험이 활성화된 경우에만 추가되므로, 기본 빌드는 변경되지 않습니다.
+
+### HTML Output for JavaScript Entries
+
+이전 섹션은 HTML 파일에서 시작합니다. [`output.html`](/configuration/output/#outputhtml)은 반대의 경우를 다룹니다. 엔트리가 일반 JavaScript인 경우, webpack은 모든 비HTML 엔트리포인트에 대해 HTML 파일을 생성하고 해당 엔트리포인트의 초기 JS(deferred, 또는 ESM 출력의 경우 `type="module"`) 및 CSS 청크를 주입합니다. 이는 번들 주위에 문서를 구성하는 `html-webpack-plugin`의 역할이 이제 내장된 것입니다.
+
+```js
+// webpack.config.js
+module.exports = {
+  experiments: { html: true },
+  entry: {
+    main: "./src/main.js",
+  },
+  output: {
+    html: true,
+  },
+};
+```
+
+[`dependOn`](/configuration/entry-context/#dependencies)을 통해 가져온 공유 청크는 올바르게 처리됩니다. 종속 엔트리의 페이지는 공유 모듈을 종속 자체 청크에 인라인하는 대신 `dependOn` 대상의 청크를 먼저 로드합니다(다이아몬드 그래프는 중복 제거되어 전이적으로 처리됨). 내부적으로 각 엔트리포인트는 실제 `entry: "./index.html"`과 동일한 pipeline을 통과하는 합성 HTML 모듈로 래핑되므로, 청크 주입, `publicPath`, `template` 옵션이 동일하게 동작합니다. 엔트리별 제어를 위해, entry descriptor도 `html` 필드를 허용합니다.
+
+### Hot Module Replacement
+
+HTML 모듈은 이제 [Hot Module Replacement](/concepts/hot-module-replacement/)를 지원합니다. 별도로 구성할 것이 없습니다. 예를 들어 [`devServer.hot`](/configuration/dev-server/#devserverhot)를 통해 HMR이 활성화되면 자동으로 활성화됩니다.
+
+실제 `.html` 파일로 추출된 페이지의 경우, 각 hot update는 전체 리로드를 트리거하는 대신 `document.body.innerHTML`과 `document.title`을 제자리에서 패치합니다. `<title>` 이외의 `<head>` 변경사항(새로운 `<meta>`, 교체된 `<link rel="icon">` 등)은 안전하게 DOM 패치할 수 없으므로, shim은 전체 페이지 리로드로 폴백합니다.
+
+### Customizing the HTML Parser
+
+[`module.parser.html`](/configuration/module/#moduleparserhtml) 아래의 두 가지 새 옵션을 사용하면 HTML 모듈이 처리되는 방식을 제어할 수 있습니다.
+
+[`sources`](/configuration/module/#moduleparserhtmlsources)는 어떤 URL과 유사한 속성이 webpack 의존성이 되는지 제어합니다. 추출을 완전히 비활성화하려면 `false`로 설정하거나, 배열을 전달하여 어떤 `tag`/`attribute` 쌍이 URL로 처리될지 커스터마이즈합니다. 리터럴 문자열 `"..."`를 사용하여 내장 기본값을 유지할 수 있습니다:
+
+```js
+// webpack.config.js
+module.exports = {
+  experiments: { html: true },
+  module: {
+    parser: {
+      html: {
+        sources: [
+          "...", // 내장 기본값 유지
+          { tag: "img", attribute: "data-src", type: "src" },
+          { attribute: "data-href", type: "src" }, // 모든 태그
+        ],
+      },
+    },
+  },
+};
+```
+
+5.108에서 내장 기본값도 더 광범위해졌습니다. 파서는 이제 더 많은 URL을 기본적으로 추출하며(SVG 참조 및 다양한 레거시 또는 사용되지 않는 속성 포함), HTML 문자 참조를 디코딩하고, CSS 값 속성에서 `url()` 참조를 추출하는 새로운 `css-url` source type을 지원합니다.
+
+[`template`](/configuration/module/#moduleparserhtmltemplate)는 파서가 의존성을 추출하기 **전에** 원시 HTML 소스를 변환하므로, 템플릿 언어(Handlebars, EJS, Eta 등)에서 생성된 URL도 여전히 발견되고 번들링됩니다. 동기적으로 실행되며 파싱할 HTML 문자열을 반환해야 합니다:
+
+```js
+// webpack.config.js
+module.exports = {
+  experiments: { html: true },
+  module: {
+    parser: {
+      html: {
+        template: (source, { resource, addDependency }) => {
+          addDependency(resource);
+          return source
+            .replaceAll("{{title}}", "Hello world")
+            .replaceAll("{{image}}", "./image.png");
+        },
+      },
+    },
+  },
+};
+```
+
+## CSS Improvements
+
+### `url()` Inside HTML `style` Attributes
+
+Webpack은 이제 HTML 인라인 `style="..."` 속성을 CSS pipeline을 통해 라우팅하여, 그 안의 `url()`과 `image-set()`을 HTML 파일을 기준으로 해석할 수 있습니다. 이는 파싱할 내용을 선택하는 새로운 [`module.parser.css.as`](/configuration/module/#moduleparsercssas) 옵션으로 구동됩니다. `"stylesheet"`(기본값) 또는 `"block-contents"`(`style` 속성 내부와 같은 선언 목록)를 선택할 수 있습니다.
+
+일반적인 HTML의 경우 수동으로 설정할 필요가 없습니다. 두 실험을 모두 활성화하기만 하면 `style` 속성 내부의 `url()`이 자동으로 해석됩니다:
+
+```js
+// webpack.config.js
+module.exports = {
+  experiments: { html: true, css: true },
+};
+```
+
+### CSS in Node for Universal Builds
+
+새로운 [`universal` 타겟](#the-universal-target)의 경우, CSS는 이제 Node에서 충돌 없이 실행되며 서버 사이드 렌더링을 위한 스타일을 노출합니다. `style` 주입 및 `link`로 로드된 청크의 스타일은 SSR 호스트가 `globalThis["__webpack_css__" + output.uniqueName]`에서 읽을 수 있는 레지스트리에 수집됩니다. 단일 플랫폼(웹 전용 또는 노드 전용) 빌드는 추가 런타임을 생성하지 않으므로, 이는 전적으로 universal 출력에만 적용됩니다.
+
+## Tree Shaking
+
+### `optimization.inlineExports`
+
+새로운 [`optimization.inlineExports`](/configuration/optimization/#optimizationinlineexports) 옵션(`production`에서 기본적으로 활성화)은 작은 원시 상수(`null`, `undefined`, `boolean`, `number` 또는 최대 6바이트의 `string`)에 바인딩된 ESM export를 모든 import 위치에서 인라인하여, import된 바인딩을 리터럴 값으로 대체합니다.
+
+```js
+// flags.js
+export const DEBUG = false;
+```
+
+```js
+// app.js
+import { DEBUG } from "./flags.js";
+
+if (DEBUG) doSomething();
+```
+
+`DEBUG`에 대한 모든 참조가 `false`로 대체됩니다. 더 이상 import가 참조하지 않으면 export는 사용되지 않은 상태로 남고 dead-code elimination이 이를 제거합니다. `flags.js`에 부작용이 없다면 전체 모듈도 제거되고, 이를 사용하는 코드는 이제 상수가 된 분기를 축소할 수 있습니다.
+
+### Cross-Module Dead Branch Skipping
+
+인라인 export를 기반으로, webpack은 이제 인라인된 import 상수로 보호되는 명백히 죽은 분기에만 존재하는 의존성을 스킵할 수 있습니다. 보호 조건이 빌드 타임에 평가될 수 있으면, 죽은 분기의 import 지정자, `require()` 호출, 동적 `import()` 호출이 스킵되므로, 도달할 수 없는 모듈은 절대 번들링되지 않습니다.
+
+{/* eslint-disable */}
+
+```js
+// app.js
+import { devOnly } from "./dev-tools";
+import { isDEV } from "./env"; // export const isDEV = false
+import { prodOnly } from "./prod-tools";
+
+export const tools = isDEV ? devOnly : prodOnly;
+```
+
+{/* eslint-enable */}
+
+`isDEV`가 `false`로 인라인되기 때문에, `devOnly` 분기는 죽고 `./dev-tools`는 절대 번들링되지 않습니다. 지원되는 보호 형태에는 삼항 연산자, `if` 문, `&&`, `||`, `??`, `!` 연산자가 포함되며, 중첩된 조합도 가능합니다.
+
+### Cross-Module Purity
+
+5.107에서는 [`#__NO_SIDE_EFFECTS__`](/guides/tree-shaking/#mark-a-function-declaration-as-side-effect-free) 주석이 선언된 모듈 내에서만 효과가 있었습니다. Webpack 5.108은 이를 모듈 경계를 넘어 전파하므로, import하는 모듈에서 사용되지 않는 호출도 트리 셰이킹됩니다.
+
+{/* eslint-disable */}
+
+```js
+// pure.js
+/*#__NO_SIDE_EFFECTS__*/
+export function createThing(x) {
+  return { x };
+}
+```
+
+{/* eslint-enable */}
+
+```js
+// app.js
+import { createThing } from "./pure";
+
+const unused = createThing(1); // 제거됨: 결과가 사용되지 않음
+```
+
+소스를 편집할 수 없는 경우(예: 의존성에서 오는 함수), 새로운 [`module.parser.javascript.pureFunctions`](/configuration/module/#moduleparserjavascriptpurefunctions) 옵션을 사용하여 config에서 이름을 부작용이 없는 것으로 표시할 수 있습니다:
+
+```js
+// webpack.config.js
+module.exports = {
+  module: {
+    rules: [
+      {
+        test: /pure-source\.js$/,
+        parser: {
+          pureFunctions: ["createSelector", "styled"],
+        },
+      },
+    ],
+  },
+};
+```
+
+### CommonJS Re-exports via `Object.defineProperty`
+
+Webpack은 이미 트리 셰이킹을 위해 `exports.foo = require("./foo")`와 같은 CommonJS 재내보내기를 분석합니다. Webpack 5.108은 해당 분석을 `Object.defineProperty` descriptor로 정의된 재내보내기로 확장하며, barrel 파일에서 사용하는 lazy getter 형태도 포함합니다:
+
+```js
+// barrel.js
+Object.defineProperty(exports, "foo", {
+  enumerable: true,
+  get: () => require("./foo"),
+});
+```
+
+이러한 재내보내기는 이제 구조화된 재내보내기로 처리되므로, export 분석 및 트리 셰이킹에 참여합니다. Lazy getter는 생성된 코드에서 지연된 의미를 유지하고, `{ get, set }` descriptor는 setter를 유지합니다.
+
+## Automatic ES Module Detection
+
+Webpack은 이제 최상위 `await` 또는 `import.meta`에 대한 참조를 `.js` 파일이 ES 모듈임을 나타내는 마커로 처리하며, Node.js가 사용하는 구문 감지와 일치합니다. 이러한 기능 중 하나를 사용하는 모듈은 `.mjs` 확장자, `package.json`의 `"type": "module"` 또는 명시적인 [`module.rules` type](/configuration/module/#ruletype) 없이도 ESM으로 인식됩니다:
+
+```js
+// config.js: `import`/`export` 없지만 ES 모듈로 처리됨
+// (최상위 `await` 및 `import.meta`는 모듈 내에서만 파싱됨)
+const res = await fetch(new URL("./config.json", import.meta.url));
+
+globalThis.appConfig = await res.json();
+```
+
+이를 통해 혼합된 CommonJS/ESM 코드베이스가 더 적은 구성으로 작동할 수 있습니다. 이러한 명백한 ESM 전용 구문 기능은 더 이상 수동 `type` 선언과 짝을 이룰 필요가 없기 때문입니다.
+
+## Output and Runtime
+
+### Modern Syntax in Generated Code
+
+Webpack은 `target`에서 추론된 [`output.environment`](/configuration/output/#outputenvironment) 기능에 맞게 생성된 런타임 코드의 구문을 조정합니다. 이번 릴리스는 여러 기능 플래그를 추가하여 최신 타겟이 더 작고 깔끔한 런타임 코드를 얻는 반면, 이전 타겟은 정확히 이전 출력을 유지합니다:
+
+- `let` — 안전한 경우 `var` 대신 `let`/`const`를 생성합니다.
+- `logicalAssignment` — 동등한 `x = x || y` 형태 대신 `||=`를 생성합니다.
+- `spread` — `Object.assign` / `concat` 대신 `{ ...obj }`와 `fn(...args)`를 사용합니다.
+- `hasOwn` — `Object.prototype.hasOwnProperty.call` 대신 `Object.hasOwn`을 사용합니다.
+- `symbol` — namespace helper에서 `typeof Symbol !== "undefined"` 가드를 제거합니다.
+- `nodeBuiltinModuleGetter` — Node.js 코어 모듈을 로드하기 위해 `process.getBuiltinModule()`을 사용합니다(universal 빌드에서 사용).
+
+이들은 일반적으로 `target`에서 파생되며, 해당 감지를 재정의하려는 경우에만 직접 설정합니다.
+
+### `output.strictModuleResolution`
+
+필수 모듈 id가 번들에 없을 때 `MODULE_NOT_FOUND`를 throw하는 런타임 가드는 이제 자체 전용 옵션인 [`output.strictModuleResolution`](/configuration/output/#outputstrictmoduleresolution)을 가지고 있습니다. 개발 환경에서는 기본적으로 `true`이고 프로덕션에서는 `false`입니다. 이전에는 이 가드가 `output.pathinfo`에 연결되어 있었습니다. 이를 분리하면 예를 들어 디버깅하는 동안 프로덕션 빌드에서 검사를 다시 활성화할 수 있습니다.
+
+```js
+// webpack.config.js
+module.exports = {
+  mode: "production",
+  output: {
+    strictModuleResolution: true,
+  },
+};
+```
+
+### `[uniqueName]` Template Placeholder
+
+새로운 `[uniquename]` 플레이스홀더(`[uniqueName]` 철자도 허용됨)는 템플릿 경로에서 사용할 수 있으며 [`output.uniqueName`](/configuration/output/#outputuniquename)으로 해석됩니다. `output.filename`, `output.chunkFilename`, CSS `localIdentName` 및 기타 asset 경로 템플릿에서 작동합니다:
+
+```js
+// webpack.config.js
+module.exports = {
+  output: {
+    uniqueName: "my-app",
+    filename: "[uniquename].[name].js", // -> my-app.main.js
+  },
+};
+```
+
+### Worker Chunk Filenames
+
+이제 [`output.workerChunkFilename`](/configuration/output/#outputworkerchunkfilename)을 사용하여 일반 청크와 독립적으로 worker 청크의 이름을 지정할 수 있습니다. 이는 `output.chunkFilename`과 동일한 문자열 템플릿 및 함수 형태를 허용하며 기본값은 해당 값입니다. webpack이 `new Worker(new URL(...))`에서 생성하는 엔트리는 worker로 표시되므로(새로운 entry 레벨 `worker` 플래그를 통해), 출력 파일이 이를 사용합니다.
+
+```js
+// webpack.config.js
+module.exports = {
+  output: {
+    chunkFilename: "[name].chunk.js",
+    workerChunkFilename: "workers/[name].[contenthash].worker.js",
+  },
+};
+```
+
+## Typed Configuration with `defineConfig`
+
+Webpack은 이제 추가 타입 주석 없이도 편집기가 설정에 대한 타입 체크 및 자동 완성을 제공하는 `defineConfig` 헬퍼를 export합니다. 이는 identity 함수(런타임에는 전달한 config를 반환하는 no-op)이므로, Vite, Rollup, Rspack을 반영하여 일반 JavaScript config에서도 작동합니다.
+
+```js
+// webpack.config.js
+const { defineConfig } = require("webpack");
+
+module.exports = defineConfig({
+  mode: "none",
+});
+```
+
+webpack-cli가 로드할 수 있는 모든 형태를 허용합니다. 단일 구성 객체, 구성 배열, 둘 중 하나를 반환하는 함수, 그러한 함수의 배열 또는 이들 중 하나로 해석되는 `Promise`를 허용합니다.
+
+## Bug Fixes
+
+버전 [5.107](https://github.com/webpack/webpack/releases/tag/v5.107.0) 이후로 여러 버그 수정이 해결되었으며, CSS pipeline, 실험적 HTML 파서, 모듈 연결 및 영구 캐시 전반에 걸친 대규모 성능 개선 사항도 포함되었습니다. 모든 세부 정보는 [변경 로그](https://github.com/webpack/webpack/blob/main/CHANGELOG.md)를 확인하세요.
+
+## Acknowledgements
+
+Webpack 5.108을 가능하게 해준 모든 기여자와 [스폰서](https://github.com/webpack/webpack?tab=readme-ov-file#sponsoring)에게 큰 감사를 드립니다. 코드 기여, 문서화, 재정적 후원 등 여러분의 지원은 Webpack이 모든 사람을 위해 발전하고 개선되도록 돕습니다.

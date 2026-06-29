@@ -90,12 +90,15 @@ export default {
       chunkLoading: "jsonp",
       asyncChunks: true, // 요청 시 로드되는 비동기 청크 생성
       layer: "name of layer", // 엔트리 포인트에 대한 레이어 설정
+      worker: true, // worker 엔트리로 표시, webpack 5.108.0부터 사용 가능
     },
   },
 };
 ```
 
 디스크립터를 사용하여 추가 옵션을 엔트리 포인트에 전달할 수 있습니다.
+
+T> `worker` 플래그(webpack 5.108.0에 추가됨)는 엔트리를 worker로 표시하여, 출력 파일이 일반 청크 파일명 대신 [`output.workerChunkFilename`](/configuration/output/#outputworkerchunkfilename)을 사용하도록 합니다. webpack은 `new Worker(new URL(...))`에서 생성하는 엔트리에 대해 자동으로 설정하므로, 수동으로 설정하는 경우는 드뭅니다.
 
 ### Output filename
 

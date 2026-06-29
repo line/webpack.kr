@@ -498,12 +498,18 @@ export default {
       asyncFunction: true,
       // BigInt를 문자 그대로 지원합니다(예를 들어, 123n).
       bigIntLiteral: false,
-      // const 및 let 변수 선언을 지원합니다.
+      // 해당 환경은 변수 선언에 const를 지원합니다.
       const: true,
+      // 해당 환경은 변수 선언에 let을 지원합니다.
+      let: true,
+      // 해당 환경은 논리 할당 연산자('a ||= b', 'a &&= b', 'a ??= b')를 지원합니다.
+      logicalAssignment: true,
       // destructuring을 지원합니다('{ a, b } = obj' 처럼 사용합니다).
       destructuring: true,
       // 'document' 변수를 지원합니다.
       document: true,
+      // 해당 환경은 'Object.hasOwn'을 지원합니다.
+      hasOwn: true,
       // EcmaScript 모듈을 가져오는 비동기 import() 함수를 지원합니다.
       dynamicImport: false,
       // 현재 웹 타켓에 대해서만 worker를 생성할 때 비동기 import()를 지원합니다.
@@ -516,11 +522,17 @@ export default {
       module: false,
       // 이 환경은 객체 메서드 단축형('{ module() {} }')을 지원합니다.
       methodShorthand: true,
+      // 해당 환경은 Node.js 코어 모듈을 동기적으로 로드하기 위한 `process.getBuiltinModule()`을 지원합니다.
+      nodeBuiltinModuleGetter: false,
       // node 환경이라면 접두사는 코어 모듈 가져오기에 대해 생성됩니다.
       // 이는 Webpack 런타임 코드에만 적용됩니다.
       nodePrefixForCoreModules: false,
       // 옵셔널 체이닝('obj?.a' 또는 'obj?.()')을 지원합니다.
       optionalChaining: true,
+      // 해당 환경은 배열/객체 리터럴 및 호출에서 spread 및 rest('{ ...obj }', 'fn(...args)')를 지원합니다.
+      spread: true,
+      // 해당 환경은 'Symbol'(및 'Symbol.toStringTag'와 같은 잘 알려진 심볼)을 지원합니다.
+      symbol: true,
       // 템플릿 리터럴을 지원합니다.
       templateLiteral: true,
       // 이 환경은 `import.meta.dirname`과 `import.meta.filename`을 지원합니다.
@@ -529,6 +541,10 @@ export default {
   },
 };
 ```
+
+이러한 기능 플래그는 일반적으로 [`target`](/configuration/target/)에서 추론됩니다. 해당 감지를 재정의하기 위해서만 수동으로 설정합니다. 플래그가 활성화되면 webpack은 생성된 런타임 코드에서 해당하는 최신 구문을 생성하고, 그렇지 않으면 동등한 레거시 출력으로 대체합니다.
+
+T> `let`, `spread`, `hasOwn`, `symbol` 및 `nodeBuiltinModuleGetter`는 webpack 5.108.0에 추가되었습니다. `let`은 타겟이 별도로 보고하지 않을 때 `const`의 값으로 폴백하고, `spread`와 `symbol`은 낙관적(타겟이 지원 부족을 보고하지 않는 한 활성화됨)이며, `hasOwn`은 타겟이 `Object.hasOwn` 지원을 명시적으로 보고할 때만 활성화됩니다. `nodeBuiltinModuleGetter`는 `process.getBuiltinModule()`에 대한 지원을 반영하며, 범용 빌드에서 브라우저를 손상시키지 않고 Node.js 코어 모듈을 로드하는 데 사용됩니다.
 
 ## output.filename
 
@@ -629,10 +645,11 @@ T> 이 옵션은 온 디맨드 로드되는 청크의 출력 파일에는 영향
 
 컴파일 수준에서 사용할 수 있는 substitution입니다.
 
-| Template   | Description           |
-| ---------- | --------------------- |
-| [fullhash] | 컴파일 전체 해시      |
-| [hash]     | 더 이상 지원되지 않음 |
+| Template     | Description                                                                    |
+| ------------ | ------------------------------------------------------------------------------ |
+| [fullhash]   | 컴파일 전체 해시                                                               |
+| [hash]       | 동일하지만, 더 이상 지원되지 않음                                              |
+| [uniqueName] | [`output.uniqueName`](#outputuniquename)의 값 (별칭 `[uniquename]`, 5.108.0+) |
 
 청크 수준에서 사용할 수 있는 substitution입니다.
 
@@ -676,7 +693,9 @@ T> `[file]`은 `[path][base]`와 같습니다. `[base]`는 `[name][ext]`와 같�
 
 해시 길이(`[hash]`, `[contenthash]` 또는 `[chunkhash]`)는 `[hash:16]`(기본값 20)을 사용하여 지정할 수 있습니다. 또는 [`output.hashDigestLength`](#outputhashdigestlength)를 지정하여 길이를 전역적으로 설정합니다.
 
-실제 파일 이름에 자리 표시자 중 하나를 사용하려는 경우 자리 표시자를 필터링 할 수 있습니다. 예를 들어 `[name].js` 파일을 출력하려면 대괄호 사이에 백 슬래시를 추가하여 `[name]` 자리 표시자를 이스케이프해야합니다. 따라서 `[\name\]`은 애셋의 `name`으로 대체되는 대신 `[name]`을 생성합니다.
+webpack 5.108.0부터 해시 다이제스트 인코딩을 `[<hash>:<digest>:<length>]` 형식으로 인라인 설정할 수도 있습니다. 예: `[contenthash:base64:8]`. 다이제스트는 기본적으로 [`output.hashDigest`](#outputhashdigest)(`hex`)로 설정되며, CSS 모듈 [`localIdentName`](/loaders/css-loader/#localidentname) 자리 표시자에서도 동일한 형식이 작동합니다.
+
+실제 파일 이름에 자리 표시자 중 하나를 사용하려는 경우 자리 표시자 대체를 필터링할 수 있습니다. 예를 들어 `[name].js` 파일을 출력하려면 대괄호 사이에 백슬래시를 추가하여 `[name]` 자리 표시자를 이스케이프해야 합니다. 따라서 `[\name\]`은 애셋의 `name`으로 대체되는 대신 `[name]`을 생성합니다.
 
 예제: `[\id\]`는 `id`로 교체되지 않고 `[id]`를 생성합니다.
 
@@ -842,6 +861,89 @@ T> 일반적으로 `output.hotUpdateChunkFilename`을 변경할 필요가 없습
 
 T> 일반적으로 `output.hotUpdateMainFilename`을 변경할 필요가 없습니다.
 
+## output.html
+
+<Badge text="5.108.0+" />
+
+`boolean = false` `object`
+
+HTML이 아닌 각 [엔트리포인트](/concepts/entry-points/)에 대해 HTML 파일을 생성하고, 해당 엔트리포인트의 초기 JS 및 CSS 출력 청크([`dependOn`](/configuration/entry-context/#dependencies)을 통해 공유된 청크 포함)를 주입합니다. 이는 webpack 코어에 내장된 `html-webpack-plugin`의 일부로, 번들 주변에 문서를 스캐폴딩하는 부분입니다. 실험적 HTML 지원에 의존하므로 [`experiments.html`](/configuration/experiments/#experimentshtml)을 활성화하세요.
+
+```js
+// webpack.config.js
+export default {
+  experiments: { html: true },
+  entry: {
+    main: "./src/main.js",
+  },
+  output: {
+    html: true,
+  },
+};
+```
+
+주입된 `<script>` 태그가 로드되는 방식을 설정하려면 객체로 설정하세요:
+
+| Option          | Description                                                           |
+| --------------- | --------------------------------------------------------------------- |
+| `scriptLoading` | `'auto'` (기본값), `'defer'`, 또는 `'blocking'`. 아래 값을 참조하세요. |
+
+- `'auto'`: ES 모듈 출력에 대해서는 모듈 스크립트(`type="module"`)를 생성하고, 그렇지 않으면 지연된 스크립트를 생성합니다.
+- `'defer'`: 지연된 `<script defer>`를 강제합니다.
+- `'blocking'`: 일반 블로킹 `<script>`를 생성합니다.
+
+```js
+// webpack.config.js
+export default {
+  experiments: { html: true },
+  output: {
+    html: {
+      scriptLoading: "defer",
+    },
+  },
+};
+```
+
+[엔트리 디스크립터](/configuration/entry-context/#entry-descriptor) `html` 옵션을 통해 엔트리별로 재정의할 수 있습니다.
+
+## output.htmlFilename
+
+<Badge text="5.107.0+" />
+
+`string = output.filename with '.js' replaced by '.html'` `function (pathData, assetInfo) => string`
+
+[추출된 HTML 모듈](/configuration/module/#modulegeneratorhtmlextract)(초기 청크)에 의해 생성되는 HTML 파일의 파일명 템플릿입니다. [`output.filename`](#outputfilename)과 같은 방식으로 작동하며 동일한 [템플릿 문자열](#template-strings)을 지원합니다. 설정하지 않으면 `output.filename`에서 `.js` 확장자를 `.html`로 교체하여 파생됩니다(`output.filename`이 함수인 경우 `[name].html`로 폴백). 이는 `cssFilename`이 `filename`에서 파생되는 방식을 미러링합니다.
+
+```js
+// webpack.config.js
+export default {
+  experiments: { html: true },
+  output: {
+    htmlFilename: "[name].html",
+  },
+};
+```
+
+W> 여기서 절대 경로를 지정해서는 **안 됩니다**. 경로에는 `/`로 구분된 폴더가 포함될 수 있으며, 디스크 상의 위치를 결정하기 위해 [`output.path`](#outputpath)와 결합됩니다.
+
+## output.htmlChunkFilename
+
+<Badge text="5.107.0+" />
+
+`string = output.chunkFilename with '.js' replaced by '.html'` `function (pathData, assetInfo) => string`
+
+비초기(온디맨드) 청크에 대해 [추출된 HTML 모듈](/configuration/module/#modulegeneratorhtmlextract)에 의해 생성되는 HTML 파일의 파일명 템플릿입니다. `htmlFilename`이 `filename`에서 기본값을 가져오는 것과 같은 방식으로 [`output.chunkFilename`](#outputchunkfilename)에서 기본값을 가져옵니다.
+
+```js
+// webpack.config.js
+export default {
+  experiments: { html: true },
+  output: {
+    htmlChunkFilename: "[name].chunk.html",
+  },
+};
+```
+
 ## output.iife
 
 `boolean = true`
@@ -972,7 +1074,7 @@ export function hello(name) {
      },
      output: {
        filename: "[name].js",
-       library: ["MyLibrary", "[name]"], // name is a placeholder here
+       library: ["MyLibrary", "[name]"], // 여기서 name은 자리 표시자입니다
      },
    };
    ```
@@ -2410,6 +2512,27 @@ export default {
 };
 ```
 
+## output.strictModuleResolution
+
+필요한 모듈 ID가 번들에서 누락되었을 때 `MODULE_NOT_FOUND` 오류를 발생시키는 런타임 검사를 생성합니다.
+
+- Type: `boolean`
+- Available: 5.108.0+
+
+[`development`](/configuration/mode/#mode-development) 모드에서는 기본적으로 `true`이고 [`production`](/configuration/mode/#mode-production) 모드에서는 `false`입니다. 프로덕션에서 가드를 다시 활성화하거나(디버깅에 유용) 개발에서 제거하려면 명시적으로 설정하세요.
+
+```js
+export default {
+  mode: "production",
+  output: {
+    // 프로덕션에서 MODULE_NOT_FOUND 런타임 가드를 다시 활성화
+    strictModuleResolution: true,
+  },
+};
+```
+
+T> 5.108.0 이전에는 이 런타임 가드가 [`output.pathinfo`](#outputpathinfo)와 연결되어 있었습니다. 이제는 자체 전용 옵션으로 제어됩니다.
+
 ## output.strictModuleExceptionHandling
 
 W> 지원이 중단되었습니다.
@@ -2566,6 +2689,30 @@ export default {
   },
 };
 ```
+
+## output.workerChunkFilename
+
+`string` `function (pathData, assetInfo) => string`
+
+- Available: 5.108.0+
+
+이 옵션은 비초기 worker 청크 파일의 이름을 결정합니다. [`output.chunkFilename`](#outputchunkfilename)과 동일한 문자열 템플릿 및 함수 형식을 허용하며, 기본값은 `output.chunkFilename`의 값입니다. 이를 설정하면 worker 청크에 일반 청크와 독립적으로 자체 명명 체계를 제공할 수 있습니다.
+
+여기서 절대 경로를 지정해서는 안 되지만, 경로에는 `/`로 구분된 폴더가 포함될 수 있습니다. 지정된 경로는 [`output.path`](#outputpath) 옵션의 값과 결합되어 디스크 상의 위치를 결정합니다.
+
+**webpack.config.js**
+
+```js
+export default {
+  // ...
+  output: {
+    chunkFilename: "[name].chunk.js",
+    workerChunkFilename: "workers/[name].[contenthash].worker.js",
+  },
+};
+```
+
+T> webpack이 `new Worker(new URL(...))`에서 자동으로 생성하는 엔트리는 worker로 표시되므로, 해당 출력 파일은 `workerChunkFilename`을 사용합니다. 엔트리 수준의 [`worker`](/configuration/entry-context/#entry-descriptor) 플래그도 참조하세요. 특정 worker 엔트리에 설정된 `filename`은 여전히 이 옵션보다 우선합니다.
 
 ## output.workerChunkLoading
 

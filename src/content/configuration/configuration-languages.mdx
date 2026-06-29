@@ -19,7 +19,34 @@ translators:
   - dkstyle
 ---
 
-Webpack은 여러 프로그래밍과 데이터 언어로 작성된 설정 파일을 사용할 수 있습니다. 지원되는 파일 확장자 목록은 [node-interpret](https://github.com/gulpjs/interpret) 패키지에서 확인할 수 있습니다. Webpack은 [node-interpret](https://github.com/gulpjs/interpret)를 사용하여, 다양한 유형의 설정 파일을 처리할 수 있습니다.
+Webpack은 여러 프로그래밍 및 데이터 언어로 작성된 설정 파일을 허용하므로, 프로젝트에 적합한 형식(JavaScript, TypeScript, CoffeeScript 또는 JSON5, YAML, TOML과 같은 일반 데이터 파일)으로 설정을 작성할 수 있습니다.
+
+## defineConfig
+
+<Badge text="5.108.0+" />
+
+`defineConfig`는 `webpack`에서 내보내는 헬퍼로, 추가적인 타입 어노테이션 없이 편집기에서 설정에 대한 타입 체킹 및 자동 완성을 제공합니다. 이는 항등 함수(런타임에 전달된 설정을 단순히 반환하는 no-op)이므로 순수 JavaScript 설정에서도 작동합니다.
+
+**webpack.config.js**
+
+```js
+const { defineConfig } = require("webpack");
+
+module.exports = defineConfig({
+  mode: "none",
+});
+```
+
+webpack-cli가 로드할 수 있는 모든 형태를 허용합니다: 단일 설정 객체, 설정 배열(멀티 컴파일러), 이들 중 하나를 반환하는 함수, 그러한 함수들의 배열, 또는 이들 중 하나를 해석하는 `Promise`.
+
+```js
+const { defineConfig } = require("webpack");
+
+module.exports = defineConfig((env, argv) => ({
+  mode: argv.mode ?? "development",
+  // ...
+}));
+```
 
 ## TypeScript
 
@@ -71,7 +98,7 @@ export default config;
     "resolveJsonModule": true,
     "isolatedModules": true,
 
-    // Allows you to write `import ... from './file.ts';`
+    // `import ... from './file.ts';` 작성을 허용합니다
     "rewriteRelativeImportExtensions": true
   }
 }
@@ -237,3 +264,65 @@ export default (
 ```
 
 W> 다른 곳에서 Babel을 사용하고 `modules`를 `false`로 설정 한 경우, 두개의 별도 `.babelrc`파일을 유지하거나 새로운 `import` 와 `export` 구문 대신 `const jsxobj = require('jsxobj');` 와 `module.exports`를 반드시 사용해야 합니다. 이는 Node가 새로운 ES6 기능을 다양하게 지원하지만, 아직 ES6 모듈 구문은 지원하지 않기 때문입니다.
+
+## 데이터 포맷 (JSON5, YAML 및 TOML)
+
+<Badge text="webpack-cli v7.1.0+" />
+
+설정이 순수한 정적 데이터(함수, `process.env` 읽기, 계산된 값이 없음)인 경우 JavaScript 대신 데이터 파일로 작성할 수 있습니다. webpack-cli는 다음 확장자를 직접 파싱합니다:
+
+| Extension       | Parser package |
+| --------------- | -------------- |
+| `.json5`        | `json5`        |
+| `.yaml`, `.yml` | `js-yaml`      |
+| `.toml`         | `toml`         |
+
+파서는 webpack-cli와 **번들되지 않습니다** — 사용하는 형식에 필요한 파서를 개발 의존성으로 설치하세요. 누락된 경우 webpack-cli가 중지되고 설치해야 할 정확한 패키지를 알려줍니다.
+
+```bash
+npm install --save-dev json5
+# or
+npm install --save-dev js-yaml
+# or
+npm install --save-dev toml
+```
+
+파일을 `--config`로 지정하거나, [기본 설정](/api/cli/#default-configurations)으로 선택되도록 이름을 지정하세요(예: `webpack.config.json5`):
+
+```bash
+npx webpack --config webpack.config.toml
+```
+
+**webpack.config.json5**
+
+```json5
+{
+  // JSON5는 주석, 따옴표 없는 키 및 후행 쉼표를 허용합니다
+  mode: "production",
+  entry: "./src/index.js",
+  output: {
+    filename: "bundle.js",
+  },
+}
+```
+
+**webpack.config.yaml**
+
+```yaml
+mode: production
+entry: ./src/index.js
+output:
+  filename: bundle.js
+```
+
+**webpack.config.toml**
+
+```toml
+mode = "production"
+entry = "./src/index.js"
+
+[output]
+filename = "bundle.js"
+```
+
+T> 이러한 형식은 순수 데이터만 설명합니다. 동적 설정(환경 기반 분기, 플러그인 인스턴스 또는 함수 형식)이 필요한 경우 JavaScript 또는 TypeScript 설정을 대신 사용하세요.

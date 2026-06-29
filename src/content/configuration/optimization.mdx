@@ -247,6 +247,80 @@ export default {
 };
 ```
 
+## optimization.inlineExports
+
+`boolean`
+
+<Badge text="5.108.0+" />
+
+작은 원시 상수(`null`, `undefined`, `boolean`, `number` 또는 최대 6바이트의 `string`)에 바인딩된 ESM export를 모든 import 지점에서 인라인하여, import된 바인딩을 리터럴 값으로 대체합니다. 모든 import가 대체되면 import 의존성이 비활성화되고, export는 사용되지 않게 되며, 데드 코드 제거가 해당 export를 제거하고, 모듈에 사이드 이펙트가 없다면 모듈 전체가 제거됩니다.
+
+`optimization.inlineExports`의 기본값은 [`mode`](/configuration/mode/)에 따라 다릅니다.
+
+| 모드            | 기본값  |
+| --------------- | ------- |
+| `"production"`  | `true`  |
+| `"development"` | `false` |
+| `"none"`        | `false` |
+
+**webpack.config.js**
+
+```js
+export default {
+  // ...
+  optimization: {
+    inlineExports: true,
+  },
+};
+```
+
+이 과정은 두 단계로 진행됩니다. 다음 모듈이 주어졌을 때:
+
+```js
+// flags.js
+export const DEBUG = false; // 6바이트 이하의 boolean
+```
+
+```js
+// app.js
+import { DEBUG } from "./flags.js";
+
+if (DEBUG) doSomething();
+```
+
+먼저, import된 바인딩에 대한 모든 참조가 리터럴 값으로 대체됩니다(인라이닝):
+
+{/* eslint-skip */}
+
+```js
+// app.js (개념적 결과)
+if (false) doSomething();
+```
+
+그런 다음, `DEBUG`를 참조하는 import가 더 이상 없으므로, `export const DEBUG`는 사용되지 않게 되고 데드 코드 제거가 이를 제거합니다. `flags.js`에 사이드 이펙트가 없다면 모듈 전체가 제거됩니다. 소비하는 코드는 이제 상수가 된 분기(`if (false) ...`)를 추가로 축소할 수 있습니다.
+
+T> 작은 원시 상수만 인라인됩니다: `null`, `undefined`, `boolean`, `number` 또는 최대 6바이트의 `string`. 객체, 배열 및 더 긴 문자열은 일반 export로 남아있습니다.
+
+인라이닝은 **모듈 간 데드 브랜치 스킵**도 가능하게 합니다. import된 상수가 정적으로 인라인 가능할 때, webpack은 분기를 보호하는 조건을 평가하고 입증 가능한 데드 브랜치에만 존재하는 의존성(ESM import 지정자, `require()` 호출, 동적 `import()` 호출)을 건너뛰므로, 도달할 수 없는 모듈은 번들에 추가되지 않습니다.
+
+```js
+// env.js
+export const isDEV = false;
+```
+
+```js
+// app.js
+import { devOnly } from "./dev-tools";
+import { isDEV } from "./env";
+import { prodOnly } from "./prod-tools";
+
+export const tools = isDEV ? devOnly : prodOnly;
+```
+
+`isDEV`가 `false`로 인라인되므로 `devOnly` 분기는 데드 코드이고, 따라서 `./dev-tools`는 번들되지 않습니다. 데드 브랜치에만 있는 `require()` 및 동적 `import()` 호출에도 동일하게 적용됩니다.
+
+T> 지원되는 가드 형식에는 삼항 연산자(`isDEV ? A : B`), `if` 문, `&&`, `||`, `??` 및 `!` 연산자가 포함되며, 중첩된 조합도 지원됩니다.
+
 ## optimization.mangleExports
 
 `boolean` `string: 'deterministic' | 'size'`
