@@ -47,6 +47,9 @@ new webpack.ProgressPlugin(handler);
 - `dependencies` (`boolean = true`): 종속성 수를 진행 메세지로 보여줍니다.
 - `dependenciesCount` (`number = 10000`): 시작할 종속성 수의 최솟값이며 `dependencies` 속성이 활성화되면 적용됩니다.
 - `percentBy` (`string = null: 'entries' | 'dependencies' | 'modules' | null`): 진행률을 계산할 방법을 `ProgressPlugin`에게 알려줍니다.
+- `progressBar` (`boolean | object = false`) <Badge text="5.107.0+" />: 단순한 percentage 메세지 대신 터미널에 progress bar를 렌더링합니다. 기본 handler를 사용할 때만 적용되며, 즉 사용자 지정 `handler`를 제공하지 않았을 때만 동작합니다. 기본값으로 활성화하려면 `true`를 전달하고, 아래 속성을 가진 object를 전달할 수도 있습니다.
+  - `name` (`string = 'Build'`): progress bar 앞에 표시되는 이름입니다.
+  - `color` (`string = 'green'`): bar가 채워진 부분에 사용할 색상입니다. 지정한 색상을 지원하지 않으면 `'green'`을 사용합니다.
 
 ```js
 new webpack.ProgressPlugin({
@@ -64,6 +67,17 @@ new webpack.ProgressPlugin({
 });
 ```
 
+progress bar 렌더링:
+
+```js
+new webpack.ProgressPlugin({
+  progressBar: {
+    name: "Build",
+    color: "green",
+  },
+});
+```
+
 ### webpack.ProgressPlugin.createDefaultHandler
 
 `ProgressPlugin`의 기본 핸들러가 요구 사항을 충족하지 않는 경우 정적 `ProgressPlugin.createDefaultHandler` 메서드를 사용하여 사용자 지정할 수 있습니다.
@@ -71,7 +85,8 @@ new webpack.ProgressPlugin({
 ```ts
 static createDefaultHandler: (
   profile: undefined | null | boolean,
-  logger: WebpackLogger
+  logger: WebpackLogger,
+  progressBar?: { name: string, color: string } | false
 ) => (percentage: number, msg: string, ...args: string[]) => void;
 ```
 
