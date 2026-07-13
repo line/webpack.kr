@@ -7,7 +7,7 @@ translators:
   - dkstyle
 ---
 
-이 가이드는 `experiments.css`를 사용해 webpack의 네이티브 CSS 처리를 사용하는 방법을 설명합니다.
+이 가이드는 `experiments.css`를 사용해 webpack의 네이티브 CSS 처리를 사용하는 방법과, 기존 설정에서 `css-loader`, `style-loader`, `mini-css-extract-plugin`을 제거하며 마이그레이션하는 방법을 설명합니다.
 
 T> `experiments.css`는 아직 실험적인 기능입니다. webpack v6에서는 기본값이 될 것으로 예상되지만, 개발이 계속되는 동안 동작이 바뀔 수 있습니다.
 
@@ -25,7 +25,7 @@ export default {
 };
 ```
 
-이 옵션을 활성화하면 webpack은 기본적인 흐름에서 `css-loader`와 `mini-css-extract-plugin`을 추가하지 않고도 CSS를 처리할 수 있습니다.
+이 옵션을 활성화하면 webpack은 `.css` 파일을 일급 모듈로 이해하여 `@import`와 `url()`을 파싱하고, 스타일시트를 추출하며, content hash를 생성하고, `css-loader`, `style-loader`, `mini-css-extract-plugin` 없이도 CSS Modules를 지원합니다.
 
 ## Importing CSS
 
@@ -51,12 +51,22 @@ h1 {
 
 Webpack은 이 CSS를 처리해 빌드 결과물에 포함합니다.
 
+## CSS module types
+
+Native CSS는 네 가지 [`Rule.type`](/configuration/module/#ruletype) 값을 도입합니다. 어떤 값이 적용되는지 이해하는 것이 마이그레이션의 핵심인데, 각각이 서로 다른 `css-loader` `modules.mode`에 대응하기 때문입니다.
+
+| Type         | Scoping                                                                       | `css-loader` equivalent  |
+| ------------ | ----------------------------------------------------------------------------- | ------------------------ |
+| `css`        | 전역, CSS Modules 파싱 없음                                                   | `modules: false`         |
+| `css/global` | 전역 selector, 하지만 `:local()`은 적용됨                                     | `modules.mode: 'global'` |
+| `css/module` | 기본적으로 local, `:global()`로 전역으로 빠져나갈 수 있음                     | `modules.mode: 'local'`  |
+| `css/auto`   | `*.module.css` / `*.modules.css`에는 `css/module`, 그 외에는 `css/global` 선택 | `modules.auto: true`     |
+
+webpack이 `/\.css$/i`에 대해 기본으로 추가하는 rule은 `css/auto`이므로, `*.module.css` 파일은 CSS Modules가 되고 나머지는 모두 전역으로 유지됩니다. 이는 가장 일반적인 `css-loader` 설정과 기본적으로 동일합니다.
+
 ## CSS Modules
 
-네이티브 CSS 지원에는 CSS Modules도 포함되어 있습니다. 권장되는 방식은 다음과 같습니다.
-
-- 혼합된 CSS 처리를 위해 `type: "css/auto"`를 유지합니다.
-- CSS Modules 파일에는 `.module.css`(또는 `.modules.css`) 이름 규칙을 사용합니다.
+`css/auto`를 사용할 때는 파일 이름을 `*.module.css`(또는 `*.modules.css`)로 지정하면 CSS Modules로 처리할 수 있습니다.
 
 **src/button.module.css**
 
@@ -81,9 +91,9 @@ button.textContent = "Click me";
 document.body.appendChild(button);
 ```
 
-T> CSS Modules의 클래스 이름은 export됩니다. 기본적으로 CSS 모듈에서는 named export가 활성화되어 있습니다.
+T> 기본적으로 [`namedExports`](/configuration/module/#moduleparsercssnamedexports)가 활성화되어 있으므로, local 값은 namespace(`import * as styles`)나 이름(`import { button } from "./button.module.css"`)으로 import하세요. 기존의 default-import object 방식을 유지하려면 이를 `false`로 설정하세요.
 
-parser와 generator 옵션을 사용하면 CSS Modules의 동작을 사용자 정의할 수 있습니다.
+`parser`와 `generator` 옵션으로 CSS Modules 동작을 사용자 정의할 수 있습니다. 아래의 [All options with examples](#all-options-with-examples)를 참고하세요.
 
 **webpack.config.js**
 
@@ -94,12 +104,12 @@ export default {
   },
   module: {
     parser: {
-      "css/module": {
+      "css/auto": {
         namedExports: true,
       },
     },
     generator: {
-      "css/module": {
+      "css/auto": {
         exportsConvention: "camel-case-only",
         localIdentName: "[uniqueName]-[id]-[local]",
       },
@@ -108,32 +118,97 @@ export default {
 };
 ```
 
-## Production Build
+### Supported CSS Modules features
 
-`experiments.css: true`를 사용하면 webpack은 프로덕션 빌드에서 CSS 애셋에 대해 네이티브 CSS 추출과 콘텐츠 해싱을 제공합니다.
+Native CSS Modules는 `css-loader`와 같은 authoring 기능을 이해하므로, 대부분의 stylesheet는 수정 없이 그대로 마이그레이션할 수 있습니다.
 
-기존 방식과 비교하면 다음과 같습니다.
+- **`composes`**: 하나의 local class를 다른 local class로 합성합니다(`composes: foo from "./other.module.css"` 포함). export 결과는 공백으로 구분된 class name 목록으로 해석됩니다.
+- **`@value`**: 재사용 가능한 값을 선언하고 import합니다(`@value primary: #1f6feb;`, `@value primary from "./vars.module.css"`).
+- **`:export`**: 임의의 key/value 쌍을 JavaScript에 노출합니다.
+- **`:local()` / `:global()`**: 어떤 module type에서든 인라인으로 scope를 전환합니다.
 
-- 전통적인 방식: `css-loader` + `mini-css-extract-plugin`
-- 네이티브 방식: 내장 추출 동작을 사용하는 `experiments.css`
+```css
+/* button.module.css */
+@value brand: #1f6feb;
 
-이 방식은 설정을 줄이고 CSS 파이프라인을 webpack 코어 기능에 더 가깝게 유지해 줍니다.
+.base {
+  padding: 8px 12px;
+}
+.primary {
+  composes: base;
+  background: brand;
+}
+:export {
+  brandColor: brand;
+}
+```
 
-## Experimental Status & Known Limitations
+## Output modes (`exportType`)
 
-`experiments.css`는 명시적으로 실험 단계의 기능이므로, 선택적으로 도입하고 넓게 적용하기 전에 충분히 테스트해야 합니다.
+하나의 CSS module은 네 가지 방식으로 출력할 수 있습니다. [`exportType`](/configuration/module/#moduleparsercssexporttype) parser 옵션으로 이를 선택하며, 각각은 기존 툴체인의 다른 부분을 대체합니다.
 
-염두에 둘 점은 다음과 같습니다.
+| `exportType`         | Behavior                                                                                                  | Replaces                                     |
+| -------------------- | --------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
+| `"link"` _(default)_ | `.css` 파일로 추출하고 `<link>`로 로드                                                                    | `mini-css-extract-plugin`                    |
+| `"style"`            | 런타임에서 `<style>` element를 주입                                                                       | `style-loader`                               |
+| `"text"`             | CSS를 string으로 export                                                                                   | `css-loader` `exportType: 'string'`          |
+| `"css-style-sheet"`  | 생성 가능한 [`CSSStyleSheet`](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleSheet)를 export | `css-loader` `exportType: 'css-style-sheet'` |
 
-- API와 동작은 webpack v6에서 기본값이 되기 전까지 계속 바뀔 수 있습니다.
-- 일부 로더 전용 옵션은 네이티브 CSS 동작에 포함되지 않습니다. 예를 들어 로더 전용 필터가 그렇습니다.
-- 프로젝트가 고급 로더 체인에 의존하고 있다면 완전히 마이그레이션하기 전에 각 부분을 검증하세요.
+module type별로 전역 설정할 수 있습니다.
+
+```js
+export default {
+  experiments: { css: true },
+  module: {
+    parser: {
+      "css/auto": {
+        exportType: "style",
+      },
+    },
+  },
+};
+```
+
+또는 일부 파일에만 rule별로 설정할 수 있습니다.
+
+```js
+export default {
+  experiments: { css: true },
+  module: {
+    rules: [
+      {
+        test: /\.css$/i,
+        type: "css/auto",
+        parser: { exportType: "style" },
+      },
+    ],
+  },
+};
+```
 
 ## Migration Guide
 
-현재 `css-loader`, `mini-css-extract-plugin`, `style-loader`를 사용하고 있다면 작은 단계로 나누어 마이그레이션하세요.
+### At a glance
 
-### 1) Start from a classic setup
+| Legacy setup                                              | Native equivalent                                                                                                                                     |
+| --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `mini-css-extract-plugin` (`MiniCssExtractPlugin.loader`) | built-in extraction (default `exportType: "link"`)                                                                                                    |
+| `MiniCssExtractPlugin` `filename` / `chunkFilename`       | [`output.cssFilename`](/configuration/output/#outputcssfilename) / [`output.cssChunkFilename`](/configuration/output/#outputcsschunkfilename)         |
+| `style-loader`                                            | [`exportType: "style"`](#output-modes-exporttype)                                                                                                     |
+| `css-loader`                                              | built-in CSS parsing (no loader needed)                                                                                                               |
+| `css-loader` `url` / `import`                             | [`module.parser.css.url`](/configuration/module/#moduleparsercssurl) / [`import`](/configuration/module/#moduleparsercssimport) (both default `true`) |
+| `css-loader` `modules` (`.module.css` auto-detect)        | `css/auto` module type                                                                                                                                |
+| `css-loader` `modules.mode`                               | `css/module` / `css/global` type + [`pure`](/configuration/module/#moduleparsercsspure)                                                               |
+| `css-loader` `modules.localIdentName`                     | [generator `localIdentName`](/configuration/module/#modulegenerator)                                                                                  |
+| `css-loader` `modules.exportLocalsConvention`             | [generator `exportsConvention`](/configuration/module/#modulegenerator)                                                                               |
+| `css-loader` `modules.namedExport`                        | [`module.parser.css.namedExports`](/configuration/module/#moduleparsercssnamedexports) (default `true`)                                               |
+| `css-loader` `modules.exportOnlyLocals`                   | generator `exportsOnly`                                                                                                                               |
+| `css-loader` `esModule`                                   | generator `esModule` (default `true`)                                                                                                                 |
+| `css-loader` `exportType: 'string'` / `'css-style-sheet'` | [`exportType: "text"` / `"css-style-sheet"`](#output-modes-exporttype)                                                                                |
+
+한 번에 loader 하나씩 마이그레이션하세요. 아래 섹션은 각 단계에서 빌드가 깨지지 않도록 하는 순서로 구성되어 있습니다.
+
+### 1. Start from a classic setup
 
 **webpack.config.js**
 
@@ -153,7 +228,7 @@ export default {
 };
 ```
 
-### 2) Switch to native CSS
+### 2. Enable native CSS
 
 **webpack.config.js**
 
@@ -165,48 +240,11 @@ export default {
 };
 ```
 
-### 3) Migrate `css-loader` options first
+이제 내장된 `/\.css$/i` → `css/auto` rule이 `.css` import를 처리합니다. 아래 섹션에서 각 옵션에 대응되는 기능을 확인한 뒤, 기존의 custom rule과 plugin을 제거하세요.
 
-대부분의 CSS Modules 관련 옵션은 네이티브 parser/generator 설정으로 옮겨야 합니다.
+### 3. Replace `mini-css-extract-plugin`
 
-**webpack.config.js**
-
-```js
-export default {
-  experiments: {
-    css: true,
-  },
-  module: {
-    parser: {
-      css: {
-        import: true,
-        url: true,
-      },
-      "css/module": {
-        namedExports: true,
-      },
-    },
-    generator: {
-      "css/module": {
-        exportsConvention: "camel-case-only",
-        localIdentName: "[local]-[hash:base64:6]",
-      },
-    },
-  },
-};
-```
-
-참고:
-
-- `import`와 `url`은 CSS 처리를 위한 네이티브 parser 스위치입니다.
-- `namedExports`는 CSS Modules의 export 동작을 제어합니다.
-- `exportsConvention`과 `localIdentName`은 클래스 export 방식과 이름 형태를 지정합니다.
-- `localIdentName`은 해시 플레이스홀더(예: `[hash:base64:6]`)를 지원합니다. 해시는 [`output.hashFunction`](/configuration/output/#outputhashfunction), [`output.hashDigest`](/configuration/output/#outputhashdigest), [`output.hashDigestLength`](/configuration/output/#outputhashdigestlength), [`output.hashSalt`](/configuration/output/#outputhashsalt)로 전역 조정할 수 있습니다.
-- `css-loader`의 필터 계열 옵션은 일대일 대응되는 기능이 없으므로, 필요할 때는 `IgnorePlugin` 같은 webpack 메커니즘을 사용하세요.
-
-### 4) Replace `mini-css-extract-plugin`
-
-`experiments.css`를 활성화하면 webpack이 CSS 출력 파일에 대해 네이티브 CSS 추출과 콘텐츠 해시 처리를 제공하므로, 이 기본 설정에서는 `mini-css-extract-plugin`과 `css-loader`를 모두 제거할 수 있습니다.
+Native CSS는 기본적으로 stylesheet를 추출하고(`exportType: "link"`), 여기에 content hash까지 추가하므로 plugin과 그 loader가 더 이상 필요하지 않습니다.
 
 **webpack.config.js**
 
@@ -217,57 +255,433 @@ export default {
 +  experiments: {
 +    css: true,
 +  },
+-  module: {
+-    rules: [
+-      {
+-        test: /\.css$/i,
+-        use: [MiniCssExtractPlugin.loader, "css-loader"],
+-      },
+-    ],
+-  },
 -  plugins: [new MiniCssExtractPlugin()],
  };
 ```
 
-다음 항목을 제거할 수 있습니다.
+남은 plugin 옵션은 다음과 같이 대응됩니다.
 
-- `module.rules`의 CSS 로더 체인(`css-loader` 포함)
-- `new MiniCssExtractPlugin()` 플러그인 인스턴스
-
-### 5) Replace `style-loader` with `exportType: "style"`
-
-런타임 스타일 주입을 위해 `style-loader`를 사용하고 있었다면 `css/auto`를 유지하고 모듈 이름 규칙(`.module.css` 또는 `.modules.css`)을 사용한 뒤 `exportType: "style"`을 설정하세요.
+| `mini-css-extract-plugin` | Native equivalent                                                               |
+| ------------------------- | ------------------------------------------------------------------------------- |
+| `filename`                | [`output.cssFilename`](/configuration/output/#outputcssfilename)                |
+| `chunkFilename`           | [`output.cssChunkFilename`](/configuration/output/#outputcsschunkfilename)      |
+| loader `publicPath`       | [`output.publicPath`](/configuration/output/#outputpublicpath)                  |
+| loader `esModule`         | generator [`esModule`](/configuration/module/#modulegenerator) (default `true`) |
+| `ignoreOrder`             | n/a, Native CSS는 order-conflict warning을 발생시키지 않음                      |
 
 **webpack.config.js**
 
 ```js
 export default {
-  experiments: {
-    css: true,
+  experiments: { css: true },
+  output: {
+    cssFilename: "[name].[contenthash].css",
+    cssChunkFilename: "[id].[contenthash].css",
   },
+};
+```
+
+### 4. Replace `css-loader`
+
+대부분의 `css-loader` 옵션은 [`module.parser.css`](/configuration/module/#moduleparsercss)와 [`module.generator.css`](/configuration/module/#modulegenerator) 아래에 네이티브 대응 기능이 있습니다. 일반적인 기본값(`url`, `import`, `namedExports` 모두 활성화)은 보통의 `css-loader` 설정과 이미 일치하므로, 많은 프로젝트에서는 `parser` 설정이 아예 필요하지 않습니다.
+
+| `css-loader` option              | Native equivalent                                                   |
+| -------------------------------- | ------------------------------------------------------------------- |
+| `url`                            | `module.parser.css.url`, 기본값 `true`                              |
+| `import`                         | `module.parser.css.import`, 기본값 `true`                           |
+| `importLoaders`                  | n/a, 체인에 있는 loader가 `@import`된 파일에도 자동으로 적용됨      |
+| `sourceMap`                      | [`devtool`](/configuration/devtool/)로 제어됨(`css`별 설정 지원)    |
+| `esModule`                       | `module.generator.css.esModule`, 기본값 `true`                      |
+| `exportType: 'string'`           | parser `exportType: "text"`                                         |
+| `exportType: 'css-style-sheet'`  | parser `exportType: "css-style-sheet"`                              |
+| `modules` (auto-detect)          | `css/auto` module type(내장)                                        |
+| `modules.mode: 'local'`          | `css/module` type                                                   |
+| `modules.mode: 'global'`         | `css/global` type                                                   |
+| `modules.mode: 'pure'`           | parser `pure: true`                                                 |
+| `modules.localIdentName`         | generator `localIdentName`                                          |
+| `modules.exportLocalsConvention` | generator `exportsConvention`                                       |
+| `modules.namedExport`            | parser `namedExports`, 기본값 `true`                                |
+| `modules.exportOnlyLocals`       | generator `exportsOnly`                                             |
+| `modules.localIdentHashSalt`     | generator `localIdentHashSalt`                                      |
+| `modules.localIdentHashFunction` | generator `localIdentHashFunction`                                  |
+
+예를 들어, 아래와 같은 `css-loader` CSS Modules 설정은
+
+```js
+export default {
   module: {
     rules: [
       {
-        test: /\.css$/i,
-        type: "css/auto",
-        parser: {
-          exportType: "style",
-        },
+        test: /\.module\.css$/i,
+        use: [
+          {
+            loader: "css-loader",
+            options: {
+              modules: {
+                localIdentName: "[local]-[hash:base64:6]",
+                exportLocalsConvention: "camel-case-only",
+                namedExport: true,
+              },
+            },
+          },
+        ],
       },
     ],
   },
 };
 ```
 
-이 모드는 webpack 런타임에서 `<style>` 요소를 주입하며, 일반적인 `style-loader` 사용 사례를 대체할 수 있습니다.
+다음과 같이 바뀝니다.
 
-파일 이름을 CSS Modules 규칙에 맞게 바꿀 수 없다면, 해당 규칙에 직접 `type: "css/module"`을 사용할 수 있습니다.
+**webpack.config.js**
 
-### 6) Keep imports unchanged
+```js
+export default {
+  experiments: { css: true },
+  module: {
+    parser: {
+      "css/auto": {
+        namedExports: true,
+      },
+    },
+    generator: {
+      "css/auto": {
+        localIdentName: "[local]-[hash:base64:6]",
+        exportsConvention: "camel-case-only",
+      },
+    },
+  },
+};
+```
 
-JavaScript import 구문은 그대로 유지해도 됩니다.
+T> `localIdentName`은 `[hash:base64:6]` 같은 hash placeholder를 지원합니다. hashing은 [`output.hashFunction`](/configuration/output/#outputhashfunction), [`output.hashDigest`](/configuration/output/#outputhashdigest), [`output.hashDigestLength`](/configuration/output/#outputhashdigestlength), [`output.hashSalt`](/configuration/output/#outputhashsalt)로 전역 조정하거나, `localIdentHash*` generator 옵션으로 module type별 조정할 수 있습니다.
+
+일부 `css-loader` 옵션은 동작 방식이 다릅니다.
+
+- `getLocalIdent`: custom function 대신 Native CSS는 [`localIdentName`](/configuration/module/#modulegenerator) 템플릿을 사용하며, 이 값도 function을 받을 수 있습니다.
+- `getJSON`: class-name mapping은 CSS module 자체에서 export되며 compilation의 module graph에서도 읽을 수 있으므로, framework가 디스크의 JSON 파일을 필요로 할 때는 작은 plugin으로 직렬화할 수 있습니다. server-side rendering에서는 보통 아예 필요하지 않습니다. 자세한 내용은 [Server-side rendering](#7-server-side-rendering-node--web)을 참고하세요.
+- `localIdentRegExp`와 filter 스타일의 `url`/`import` callback은 네이티브 대응 기능이 없습니다. 해당 파일에는 계속 `css-loader`를 사용하거나, [`IgnorePlugin`](/plugins/ignore-plugin/)으로 특정 request를 제외하세요.
+
+### 5. Replace `style-loader`
+
+파일을 추출하는 대신 런타임에 style을 주입하기 위해 `style-loader`를 사용했다면 [`exportType: "style"`](#output-modes-exporttype)을 설정하세요.
+
+**webpack.config.js**
+
+```js
+export default {
+  experiments: { css: true },
+  module: {
+    parser: {
+      "css/auto": {
+        exportType: "style",
+      },
+    },
+  },
+};
+```
+
+이 설정은 webpack runtime에서 `<style>` element를 주입하므로, 기본 `style-loader`(`injectType: "styleTag"`) 사용 사례를 대체할 수 있습니다. 일부 파일만 주입하고 나머지는 추출하려면 하나의 rule에만 범위를 제한하세요.
+
+```js
+export default {
+  experiments: { css: true },
+  module: {
+    rules: [
+      {
+        test: /\.inline\.css$/i,
+        type: "css/auto",
+        parser: { exportType: "style" },
+      },
+    ],
+  },
+};
+```
+
+`style-loader` 옵션에 대한 메모: `injectType: "linkTag"`는 기본 `exportType: "link"`(추출)에 대응합니다. `attributes`, `insert`, `styleTagTransform`에는 네이티브 대응 기능이 없으므로, 이 기능에 의존한다면 계속 `style-loader`를 사용하세요.
+
+### 6. Keep using preprocessors (Sass, Less, PostCSS)
+
+Native CSS는 CSS loader를 대체하는 것이지 preprocessor loader를 대체하는 것은 아닙니다. `use`에는 preprocessor loader를 유지하고, webpack이 loader의 출력을 CSS로 취급하도록 rule의 `type`을 `css/auto`로 설정하세요.
+
+**webpack.config.js**
+
+```js
+export default {
+  experiments: { css: true },
+  module: {
+    rules: [
+      {
+        test: /\.s[ac]ss$/i,
+        use: ["postcss-loader", "sass-loader"],
+        type: "css/auto",
+      },
+    ],
+  },
+};
+```
+
+`sass-loader`는 CSS로 컴파일하고, `postcss-loader`는 이를 후처리하며, 그 이후에는 Native CSS가 추출, `url()`, CSS Modules를 담당합니다. 같은 패턴을 `less-loader`, `stylus-loader` 등에도 적용할 수 있습니다.
+
+### 7. Server-side rendering (node + web)
+
+SSR에서는 보통 두 번 빌드합니다. 브라우저용 `web` bundle 하나와 서버용 `node` bundle 하나입니다. 이때 CSS Modules의 class name이 서로 일치해야 서버에서 렌더링한 마크업이 클라이언트에서 정상적으로 hydrate됩니다. `css-loader`의 `getJSON`은 이런 정보를 왕복하기 위해 자주 사용되었지만, Native CSS에서는 target 간에 `localIdentName`을 결정론적으로 맞춰 이 왕복 자체를 피할 수 있습니다.
+
+모든 target에서 같은 class name이 생성되도록 **path 기반** 템플릿(컴파일 전체 hash 없음)을 사용하세요.
+
+**webpack.config.js**
+
+```js
+const common = {
+  experiments: { css: true },
+  module: {
+    rules: [
+      {
+        test: /\.module\.css$/i,
+        type: "css/module",
+        generator: {
+          // `[file]__[local]`은 target 간에 안정적이므로 `getJSON` 동기화가 필요 없습니다.
+          localIdentName: "[file]__[local]",
+        },
+      },
+    ],
+  },
+};
+
+export default [
+  { ...common, name: "web", target: "web" },
+  { ...common, name: "node", target: "node" },
+];
+```
+
+`node` target에서는 CSS generator의 기본값이 `exportsOnly: true`이므로, 서버 빌드는 class-name mapping만 export하고 stylesheet는 생성하지 않습니다. 이는 SSR renderer에 정확히 필요한 동작입니다. 브라우저 빌드는 여전히 실제 CSS를 추출합니다. 단일 config를 선호한다면 `target: ["web", "node"]`로 두 환경 모두에서 동작하는 universal bundle을 만들 수도 있습니다.
+
+T> SSR에서는 프로덕션 기본값인 `localIdentName: "[fullhash]"`를 피하세요. 전체 compilation hash는 `web` 빌드와 `node` 빌드 사이에서 다르므로 class name이 맞지 않게 됩니다. 두 config 모두에서 path 기반 또는 `[local]` 기반의 결정론적 템플릿을 고정하세요. 필요하다면 파일별 `[hash]`를 추가할 수 있습니다.
+
+### 8. Keep imports unchanged and validate
+
+JavaScript import는 그대로 유지됩니다.
 
 ```js
 import "./styles.css";
 import * as styles from "./button.module.css";
 ```
 
-### 7) Validate output in development and production
+그다음 아래 항목을 확인하세요.
 
-다음을 확인하세요.
-
-- 개발 환경에서 스타일이 올바르게 적용되는지
-- 프로덕션용 생성 CSS 파일이 정상적으로 출력되는지
+- 개발 환경에서 style이 올바르게 적용되는지
+- 프로덕션에서 추출된 `.css` 파일이 생성되는지
 - CSS Modules export가 기존 사용 방식과 일치하는지
+
+## All options with examples
+
+옵션은 [`module.parser`](/configuration/module/#moduleparser)와 [`module.generator`](/configuration/module/#modulegenerator) 아래에서 module type별로 설정합니다. key는 `css`, `css/auto`, `css/global`, `css/module`이며, 아래 예제는 기본 rule에 사용되는 `css/auto`를 기준으로 합니다.
+
+### Parser options
+
+아래의 boolean parser 옵션은 모두 기본값이 `true`입니다.
+
+| Option                                                               | Type                                               | Default        | Description                                                     |
+| -------------------------------------------------------------------- | -------------------------------------------------- | -------------- | --------------------------------------------------------------- |
+| [`import`](/configuration/module/#moduleparsercssimport)             | `boolean`                                          | `true`         | `@import` at-rule을 처리합니다.                                |
+| [`url`](/configuration/module/#moduleparsercssurl)                   | `boolean`                                          | `true`         | `url()` / `image-set()` / `src()` / `image()`를 처리합니다.    |
+| [`namedExports`](/configuration/module/#moduleparsercssnamedexports) | `boolean`                                          | `true`         | CSS Modules local 값을 ES module named export로 내보냅니다.     |
+| [`exportType`](/configuration/module/#moduleparsercssexporttype)     | `"link" \| "style" \| "text" \| "css-style-sheet"` | `"link"`       | CSS를 어떤 방식으로 출력할지 지정합니다([Output modes](#output-modes-exporttype) 참고). |
+| [`pure`](/configuration/module/#moduleparsercsspure)                 | `boolean`                                          | `false`        | strict pure mode. 모든 selector에 local class/id가 포함되어야 합니다. `css/module`, `css/auto`에서만 사용됩니다. |
+| [`as`](/configuration/module/#moduleparsercssas)                     | `"stylesheet" \| "block-contents"`                 | `"stylesheet"` | 소스를 전체 stylesheet로 파싱할지, block 내부 내용으로 파싱할지 지정합니다. |
+| `animation`                                                          | `boolean`                                          | `true`         | local `@keyframes` 이름을 변경합니다.                          |
+| `container`                                                          | `boolean`                                          | `true`         | local `@container` 이름을 변경합니다.                          |
+| `customIdents`                                                       | `boolean`                                          | `true`         | custom identifier를 변경합니다.                                |
+| `dashedIdents`                                                       | `boolean`                                          | `true`         | dashed identifier(custom property)를 변경합니다.                |
+| `function`                                                           | `boolean`                                          | `true`         | local `@function` 이름을 변경합니다.                           |
+| `grid`                                                               | `boolean`                                          | `true`         | grid line/area identifier를 변경합니다.                        |
+
+```js
+export default {
+  experiments: { css: true },
+  module: {
+    parser: {
+      "css/auto": {
+        import: true,
+        url: true,
+        namedExports: true,
+        exportType: "link",
+        pure: false,
+        // `@keyframes`만 이름을 바꾸고, `@container` / grid identifier는 그대로 둡니다.
+        animation: true,
+        container: false,
+        grid: false,
+      },
+    },
+  },
+};
+```
+
+T> 특정 `@import`나 `url()` 하나만 건드리지 않고 그대로 두려면(webpack이 해석하지 않고 출력에 그대로 남기려면), 그 앞에 `/* webpackIgnore: true */` 주석을 추가하세요. `import`/`url`은 전역으로 활성화한 채, CDN URL이나 런타임에 결정되는 asset을 다룰 때 유용합니다.
+
+### Generator options
+
+| Option                                                        | Type                                                                                    | Default                                                            | Description                                           |
+| ------------------------------------------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------ | ----------------------------------------------------- |
+| [`localIdentName`](/configuration/module/#modulegenerator)    | `string \| function`                                                                    | `"[uniqueName]-[id]-[local]"` (dev) / `"[fullhash]"` (prod)        | 생성할 local class name의 템플릿입니다.              |
+| [`exportsConvention`](/configuration/module/#modulegenerator) | `"as-is" \| "camel-case" \| "camel-case-only" \| "dashes" \| "dashes-only" \| function` | `"as-is"`                                                          | export되는 local 값의 naming convention입니다.       |
+| `exportsOnly`                                                 | `boolean`                                                                               | `document`가 없는 target(예: `node`)에서는 `true`, 그 외에는 `false` | local 값만 export하고 stylesheet 생성은 건너뜁니다(SSR). |
+| `esModule`                                                    | `boolean`                                                                               | `true`                                                             | 생성되는 JS에 ES module 문법을 사용합니다.           |
+| `localIdentHashFunction`                                      | `string`                                                                                | [`output.hashFunction`](/configuration/output/#outputhashfunction) | `localIdentName` hash에 사용할 hash function입니다.  |
+| `localIdentHashDigest`                                        | `string`                                                                                | `"base64url"`                                                      | local ident의 hash digest 인코딩입니다.              |
+| `localIdentHashDigestLength`                                  | `number`                                                                                | `6`                                                                | local ident의 hash digest 길이입니다.                |
+| `localIdentHashSalt`                                          | `string`                                                                                | [`output.hashSalt`](/configuration/output/#outputhashsalt)         | local ident에 사용할 hash salt입니다.                |
+
+```js
+export default {
+  experiments: { css: true },
+  module: {
+    generator: {
+      "css/auto": {
+        localIdentName: "[uniqueName]-[id]-[local]",
+        exportsConvention: "camel-case-only",
+        esModule: true,
+        exportsOnly: false,
+        localIdentHashDigest: "base64url",
+        localIdentHashDigestLength: 6,
+      },
+    },
+  },
+};
+```
+
+`exportsConvention`도 `string` 또는 `string[]`를 반환하는 function을 받을 수 있습니다. 배열을 반환하면 local 값을 [여러 alias](/configuration/module/#multiple-aliases-via-exportsconvention)로 export하게 되며, 이는 `css-loader`와 동일한 동작입니다.
+
+## Popular examples
+
+### CSS Modules with named exports
+
+**src/app.module.css**
+
+```css
+.primary {
+  color: #1f6feb;
+}
+.large-text {
+  font-size: 2rem;
+}
+```
+
+**src/index.js**
+
+```js
+import { largeText, primary } from "./app.module.css";
+
+document.body.classList.add(primary, largeText);
+```
+
+**webpack.config.js**
+
+```js
+export default {
+  experiments: { css: true },
+  module: {
+    generator: {
+      "css/auto": {
+        exportsConvention: "camel-case-only",
+      },
+    },
+  },
+};
+```
+
+### Extract hashed CSS files for production
+
+**webpack.config.js**
+
+```js
+export default {
+  mode: "production",
+  experiments: { css: true },
+  output: {
+    cssFilename: "css/[name].[contenthash].css",
+    cssChunkFilename: "css/[id].[contenthash].css",
+  },
+};
+```
+
+### Inject `<style>` tags at runtime (style-loader style)
+
+**webpack.config.js**
+
+```js
+export default {
+  experiments: { css: true },
+  module: {
+    parser: {
+      "css/auto": {
+        exportType: "style",
+      },
+    },
+  },
+};
+```
+
+### Import a constructable stylesheet
+
+**src/index.js**
+
+```js
+import sheet from "./theme.css" with { type: "css" };
+
+document.adoptedStyleSheets = [sheet];
+```
+
+Webpack은 `with { type: "css" }` import assertion을 자동으로 `exportType: "css-style-sheet"`에 연결하므로, [`CSSStyleSheet`](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleSheet) instance를 바로 얻을 수 있습니다.
+
+### Import CSS as a string
+
+**webpack.config.js**
+
+```js
+export default {
+  experiments: { css: true },
+  module: {
+    parser: {
+      "css/auto": {
+        exportType: "text",
+      },
+    },
+  },
+};
+```
+
+**src/index.js**
+
+```js
+import css from "./styles.css";
+
+const style = new CSSStyleSheet();
+style.replaceSync(css);
+```
+
+### Global styles + scoped modules side by side
+
+기본 `css/auto` rule에서는 `*.module.css`는 scoped로, 나머지는 전역으로 처리되므로 추가 설정이 필요 없습니다.
+
+```js
+import "./reset.css"; // 전역
+import * as card from "./card.module.css"; // 범위 지정됨
+```
+
+## Experimental status & known limitations
+
+`experiments.css`는 명시적으로 실험 단계의 기능이므로, 선택적으로 도입하고 넓게 적용하기 전에 충분히 테스트해야 합니다.
+
+- API와 동작은 webpack v6에서 기본값이 되기 전까지 계속 바뀔 수 있습니다.
+- 일부 loader 옵션에는 바로 대응되는 기능이 없습니다. `css-loader`의 `localIdentRegExp`와 filter callback, `style-loader`의 `attributes` / `insert` / `styleTagTransform`이 여기에 해당합니다. 이런 기능이 필요한 파일에는 해당 loader를 계속 사용하세요. (`getLocalIdent`는 `localIdentName`의 function 형태로 대응할 수 있고, `getJSON`/SSR은 [target 간 class name 일치](#7-server-side-rendering-node--web)로 다룰 수 있습니다.)
+- `importLoaders`에 해당하는 기능은 없습니다. 체인에 있는 loader는 `@import`된 파일에도 자동으로 적용됩니다.
+- 프로젝트가 고급 loader chain에 의존하고 있다면 완전히 마이그레이션하기 전에 각 부분을 검증하세요.
