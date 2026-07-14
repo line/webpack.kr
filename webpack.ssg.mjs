@@ -133,6 +133,10 @@ export default (env) =>
             to: "./",
           },
           "CNAME",
+          {
+            from: ".well-known/atproto-did",
+            to: ".well-known/",
+          },
         ],
       }),
       new WebpackPwaManifest({
