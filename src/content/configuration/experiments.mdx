@@ -22,7 +22,7 @@ W> 실험적 기능은 시멘틱 버저닝을 완화하고 주요 변경 사항�
 
 사용 가능한 옵션은 다음과 같습니다.
 
-- `asyncWebAssembly`: [업데이트된 사양](https://github.com/WebAssembly/esm-integration)에 따라 새로운 웹 어셈블리를 지원하여, 웹 어셈블리 모듈을 비동기 모듈로 만듭니다. 그리고 [`experiments.futureDefaults`](#experimentsfuturedefaults)가 `true`로 설정되면 기본적으로 활성화됩니다.
+- `asyncWebAssembly`: [업데이트된 사양](https://github.com/WebAssembly/esm-integration)에 따라 새로운 WebAssembly를 지원하여 WebAssembly module을 async module로 만듭니다. webpack 5.109.0부터 기본값은 `'auto'`이며, WebAssembly 파일에 loader가 등록되어 있지 않으면 내장 지원을 활성화합니다.
 - [`backCompat`](#experimentsbackcompat)
 - [`buildHttp`](#experimentsbuildhttp)
 - [`cacheUnaffected`](#experimentscacheunaffected)
@@ -194,7 +194,10 @@ export default {
 
 네이티브 CSS 지원을 활성화합니다. 아직 개발 중인 실험적인 기능이고 webpack v6에서 기본적으로 활성화될 예정이지만, [GitHub](https://github.com/webpack/webpack/issues/14893)에서 진행 상황을 확인할 수 있습니다.
 
-- Type: `boolean`
+- Type: `boolean | 'auto'`
+- Default: `'auto'` <Badge text="5.109.0+" />
+
+webpack 5.109.0부터 이 옵션의 기본값은 `'auto'`입니다. loader(또는 명시적인 module type)가 있는 `module.rules` 항목이 이미 `.css` 또는 `.module.css` 파일과 일치하지 않는 한 내장 CSS 지원이 활성화되므로, 기존 `css-loader`/`mini-css-extract-plugin` 설정은 변경 없이 계속 동작합니다. 네이티브 지원을 강제로 사용하려면 `true`로 설정하고, 완전히 비활성화하려면 `false`로 설정하세요. [`experiments.futureDefaults`](#experimentsfuturedefaults)는 이 값을 `true`로 해석합니다.
 
 실험적 기능:
 
@@ -384,8 +387,10 @@ export default {
 
 네이티브 HTML module 지원을 활성화합니다. JavaScript에서 `.html` 파일을 import하면 그 안의 태그 참조가 일반 webpack pipeline을 거치며, 오랫동안 `html-loader`가 맡아 왔던 역할을 대체합니다. 이 플래그는 `NormalModuleFactory`에 `html` module type을 등록하고 아래에 설명된 HTML 동작을 활성화합니다.
 
-- Type: `boolean`
-- Default: `false`
+- Type: `boolean | 'auto'`
+- Default: `false`, `'auto'` since webpack 5.109.0
+
+webpack 5.109.0부터 이 옵션의 기본값은 `'auto'`입니다. loader(또는 명시적인 module type)가 있는 `module.rules` 항목이 이미 `.html` 파일과 일치하지 않는 한 내장 HTML 지원이 활성화되므로, 기존 `html-loader` 설정은 변경 없이 계속 동작합니다. [`experiments.futureDefaults`](#experimentsfuturedefaults)는 이 값을 `true`로 해석합니다.
 
 **webpack.config.js**
 
@@ -517,6 +522,12 @@ HTML 모듈은 [Hot Module Replacement](/concepts/hot-module-replacement/)를 �
 
 T> HMR이 활성화된 동안 HTML 모듈에 대해 [모듈 연결](/configuration/optimization/#optimizationconcatenatemodules)이 비활성화됩니다. 각 모듈이 업데이트를 자체 수락하기 위해 자체 `module.hot` 스코프가 필요하기 때문입니다.
 
+#### HtmlModulesPlugin hooks
+
+<Badge text="5.109.0+" />
+
+Plugin은 `injectTags`, `transformTags`, `transformHtml`, `htmlEmitted` compilation hook을 노출하는 `webpack.html.HtmlModulesPlugin`을 통해 emit된 HTML을 주입하고 변환할 수 있습니다. API 문서의 [`HtmlModulesPlugin.getCompilationHooks`](/api/compilation-hooks/#htmlmodulesplugingetcompilationhookscompilation)를 참고하세요.
+
 ### experiments.lazyCompilation
 
 엔트리 포인트와 동적 `import`는 사용 중일 때만 컴파일하세요. Web 또는 Node.js에 사용할 수 있습니다.
@@ -617,8 +628,10 @@ export default {
 
 네이티브 TypeScript 지원을 활성화합니다. 이 플래그를 켜면 webpack은 `.ts`, `.cts`, `.mts` 파일(그리고 해당하는 `data:text/typescript`, `data:application/typescript` data URI)들을 외부 loader 없이 직접 컴파일합니다. 내부적으로는 Node.js의 내장 [`module.stripTypeScriptTypes`](https://nodejs.org/api/module.html#modulestriptypescripttypescode-options)를 호출합니다.
 
-- Type: `boolean`
-- Default: `false` (auto-enabled by [`experiments.futureDefaults`](#experimentsfuturedefaults))
+- Type: `boolean | 'auto'`
+- Default: `false`, `'auto'` since webpack 5.109.0
+
+webpack 5.109.0부터 이 옵션의 기본값은 `'auto'`입니다. 실행 중인 Node.js가 `module.stripTypeScriptTypes`(22.6 이상)를 제공하고, loader(예: `ts-loader`, `swc-loader`)가 있는 `module.rules` 항목이 `.ts`/`.mts`/`.cts` 파일과 일치하지 않으면 내장 TypeScript 지원이 활성화됩니다. [`experiments.futureDefaults`](#experimentsfuturedefaults)는 이 값을 `true`로 해석합니다.
 
 W> 안정적인 `module.stripTypeScriptTypes` API를 사용하려면 Node.js 22.6 이상이 필요합니다.
 

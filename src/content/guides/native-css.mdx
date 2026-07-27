@@ -55,11 +55,11 @@ Webpack은 이 CSS를 처리해 빌드 결과물에 포함합니다.
 
 Native CSS는 네 가지 [`Rule.type`](/configuration/module/#ruletype) 값을 도입합니다. 어떤 값이 적용되는지 이해하는 것이 마이그레이션의 핵심인데, 각각이 서로 다른 `css-loader` `modules.mode`에 대응하기 때문입니다.
 
-| Type         | Scoping                                                                       | `css-loader` equivalent  |
-| ------------ | ----------------------------------------------------------------------------- | ------------------------ |
-| `css`        | 전역, CSS Modules 파싱 없음                                                   | `modules: false`         |
-| `css/global` | 전역 selector, 하지만 `:local()`은 적용됨                                     | `modules.mode: 'global'` |
-| `css/module` | 기본적으로 local, `:global()`로 전역으로 빠져나갈 수 있음                     | `modules.mode: 'local'`  |
+| Type         | Scoping                                                                        | `css-loader` equivalent  |
+| ------------ | ------------------------------------------------------------------------------ | ------------------------ |
+| `css`        | 전역, CSS Modules 파싱 없음                                                    | `modules: false`         |
+| `css/global` | 전역 selector, 하지만 `:local()`은 적용됨                                      | `modules.mode: 'global'` |
+| `css/module` | 기본적으로 local, `:global()`로 전역으로 빠져나갈 수 있음                      | `modules.mode: 'local'`  |
 | `css/auto`   | `*.module.css` / `*.modules.css`에는 `css/module`, 그 외에는 `css/global` 선택 | `modules.auto: true`     |
 
 webpack이 `/\.css$/i`에 대해 기본으로 추가하는 rule은 `css/auto`이므로, `*.module.css` 파일은 CSS Modules가 되고 나머지는 모두 전역으로 유지됩니다. 이는 가장 일반적인 `css-loader` 설정과 기본적으로 동일합니다.
@@ -147,11 +147,11 @@ Native CSS Modules는 `css-loader`와 같은 authoring 기능을 이해하므로
 
 하나의 CSS module은 네 가지 방식으로 출력할 수 있습니다. [`exportType`](/configuration/module/#moduleparsercssexporttype) parser 옵션으로 이를 선택하며, 각각은 기존 툴체인의 다른 부분을 대체합니다.
 
-| `exportType`         | Behavior                                                                                                  | Replaces                                     |
-| -------------------- | --------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
-| `"link"` _(default)_ | `.css` 파일로 추출하고 `<link>`로 로드                                                                    | `mini-css-extract-plugin`                    |
-| `"style"`            | 런타임에서 `<style>` element를 주입                                                                       | `style-loader`                               |
-| `"text"`             | CSS를 string으로 export                                                                                   | `css-loader` `exportType: 'string'`          |
+| `exportType`         | Behavior                                                                                               | Replaces                                     |
+| -------------------- | ------------------------------------------------------------------------------------------------------ | -------------------------------------------- |
+| `"link"` _(default)_ | `.css` 파일로 추출하고 `<link>`로 로드                                                                 | `mini-css-extract-plugin`                    |
+| `"style"`            | 런타임에서 `<style>` element를 주입                                                                    | `style-loader`                               |
+| `"text"`             | CSS를 string으로 export                                                                                | `css-loader` `exportType: 'string'`          |
 | `"css-style-sheet"`  | 생성 가능한 [`CSSStyleSheet`](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleSheet)를 export | `css-loader` `exportType: 'css-style-sheet'` |
 
 module type별로 전역 설정할 수 있습니다.
@@ -293,25 +293,25 @@ export default {
 
 대부분의 `css-loader` 옵션은 [`module.parser.css`](/configuration/module/#moduleparsercss)와 [`module.generator.css`](/configuration/module/#modulegenerator) 아래에 네이티브 대응 기능이 있습니다. 일반적인 기본값(`url`, `import`, `namedExports` 모두 활성화)은 보통의 `css-loader` 설정과 이미 일치하므로, 많은 프로젝트에서는 `parser` 설정이 아예 필요하지 않습니다.
 
-| `css-loader` option              | Native equivalent                                                   |
-| -------------------------------- | ------------------------------------------------------------------- |
-| `url`                            | `module.parser.css.url`, 기본값 `true`                              |
-| `import`                         | `module.parser.css.import`, 기본값 `true`                           |
-| `importLoaders`                  | n/a, 체인에 있는 loader가 `@import`된 파일에도 자동으로 적용됨      |
-| `sourceMap`                      | [`devtool`](/configuration/devtool/)로 제어됨(`css`별 설정 지원)    |
-| `esModule`                       | `module.generator.css.esModule`, 기본값 `true`                      |
-| `exportType: 'string'`           | parser `exportType: "text"`                                         |
-| `exportType: 'css-style-sheet'`  | parser `exportType: "css-style-sheet"`                              |
-| `modules` (auto-detect)          | `css/auto` module type(내장)                                        |
-| `modules.mode: 'local'`          | `css/module` type                                                   |
-| `modules.mode: 'global'`         | `css/global` type                                                   |
-| `modules.mode: 'pure'`           | parser `pure: true`                                                 |
-| `modules.localIdentName`         | generator `localIdentName`                                          |
-| `modules.exportLocalsConvention` | generator `exportsConvention`                                       |
-| `modules.namedExport`            | parser `namedExports`, 기본값 `true`                                |
-| `modules.exportOnlyLocals`       | generator `exportsOnly`                                             |
-| `modules.localIdentHashSalt`     | generator `localIdentHashSalt`                                      |
-| `modules.localIdentHashFunction` | generator `localIdentHashFunction`                                  |
+| `css-loader` option              | Native equivalent                                                |
+| -------------------------------- | ---------------------------------------------------------------- |
+| `url`                            | `module.parser.css.url`, 기본값 `true`                           |
+| `import`                         | `module.parser.css.import`, 기본값 `true`                        |
+| `importLoaders`                  | n/a, 체인에 있는 loader가 `@import`된 파일에도 자동으로 적용됨   |
+| `sourceMap`                      | [`devtool`](/configuration/devtool/)로 제어됨(`css`별 설정 지원) |
+| `esModule`                       | `module.generator.css.esModule`, 기본값 `true`                   |
+| `exportType: 'string'`           | parser `exportType: "text"`                                      |
+| `exportType: 'css-style-sheet'`  | parser `exportType: "css-style-sheet"`                           |
+| `modules` (auto-detect)          | `css/auto` module type(내장)                                     |
+| `modules.mode: 'local'`          | `css/module` type                                                |
+| `modules.mode: 'global'`         | `css/global` type                                                |
+| `modules.mode: 'pure'`           | parser `pure: true`                                              |
+| `modules.localIdentName`         | generator `localIdentName`                                       |
+| `modules.exportLocalsConvention` | generator `exportsConvention`                                    |
+| `modules.namedExport`            | parser `namedExports`, 기본값 `true`                             |
+| `modules.exportOnlyLocals`       | generator `exportsOnly`                                          |
+| `modules.localIdentHashSalt`     | generator `localIdentHashSalt`                                   |
+| `modules.localIdentHashFunction` | generator `localIdentHashFunction`                               |
 
 예를 들어, 아래와 같은 `css-loader` CSS Modules 설정은
 
@@ -489,20 +489,20 @@ import * as styles from "./button.module.css";
 
 아래의 boolean parser 옵션은 모두 기본값이 `true`입니다.
 
-| Option                                                               | Type                                               | Default        | Description                                                     |
-| -------------------------------------------------------------------- | -------------------------------------------------- | -------------- | --------------------------------------------------------------- |
-| [`import`](/configuration/module/#moduleparsercssimport)             | `boolean`                                          | `true`         | `@import` at-rule을 처리합니다.                                |
-| [`url`](/configuration/module/#moduleparsercssurl)                   | `boolean`                                          | `true`         | `url()` / `image-set()` / `src()` / `image()`를 처리합니다.    |
-| [`namedExports`](/configuration/module/#moduleparsercssnamedexports) | `boolean`                                          | `true`         | CSS Modules local 값을 ES module named export로 내보냅니다.     |
-| [`exportType`](/configuration/module/#moduleparsercssexporttype)     | `"link" \| "style" \| "text" \| "css-style-sheet"` | `"link"`       | CSS를 어떤 방식으로 출력할지 지정합니다([Output modes](#output-modes-exporttype) 참고). |
+| Option                                                               | Type                                               | Default        | Description                                                                                                      |
+| -------------------------------------------------------------------- | -------------------------------------------------- | -------------- | ---------------------------------------------------------------------------------------------------------------- |
+| [`import`](/configuration/module/#moduleparsercssimport)             | `boolean`                                          | `true`         | `@import` at-rule을 처리합니다.                                                                                  |
+| [`url`](/configuration/module/#moduleparsercssurl)                   | `boolean`                                          | `true`         | `url()` / `image-set()` / `src()` / `image()`를 처리합니다.                                                      |
+| [`namedExports`](/configuration/module/#moduleparsercssnamedexports) | `boolean`                                          | `true`         | CSS Modules local 값을 ES module named export로 내보냅니다.                                                      |
+| [`exportType`](/configuration/module/#moduleparsercssexporttype)     | `"link" \| "style" \| "text" \| "css-style-sheet"` | `"link"`       | CSS를 어떤 방식으로 출력할지 지정합니다([Output modes](#output-modes-exporttype) 참고).                          |
 | [`pure`](/configuration/module/#moduleparsercsspure)                 | `boolean`                                          | `false`        | strict pure mode. 모든 selector에 local class/id가 포함되어야 합니다. `css/module`, `css/auto`에서만 사용됩니다. |
-| [`as`](/configuration/module/#moduleparsercssas)                     | `"stylesheet" \| "block-contents"`                 | `"stylesheet"` | 소스를 전체 stylesheet로 파싱할지, block 내부 내용으로 파싱할지 지정합니다. |
-| `animation`                                                          | `boolean`                                          | `true`         | local `@keyframes` 이름을 변경합니다.                          |
-| `container`                                                          | `boolean`                                          | `true`         | local `@container` 이름을 변경합니다.                          |
-| `customIdents`                                                       | `boolean`                                          | `true`         | custom identifier를 변경합니다.                                |
-| `dashedIdents`                                                       | `boolean`                                          | `true`         | dashed identifier(custom property)를 변경합니다.                |
-| `function`                                                           | `boolean`                                          | `true`         | local `@function` 이름을 변경합니다.                           |
-| `grid`                                                               | `boolean`                                          | `true`         | grid line/area identifier를 변경합니다.                        |
+| [`as`](/configuration/module/#moduleparsercssas)                     | `"stylesheet" \| "block-contents"`                 | `"stylesheet"` | 소스를 전체 stylesheet로 파싱할지, block 내부 내용으로 파싱할지 지정합니다.                                      |
+| `animation`                                                          | `boolean`                                          | `true`         | local `@keyframes` 이름을 변경합니다.                                                                            |
+| `container`                                                          | `boolean`                                          | `true`         | local `@container` 이름을 변경합니다.                                                                            |
+| `customIdents`                                                       | `boolean`                                          | `true`         | custom identifier를 변경합니다.                                                                                  |
+| `dashedIdents`                                                       | `boolean`                                          | `true`         | dashed identifier(custom property)를 변경합니다.                                                                 |
+| `function`                                                           | `boolean`                                          | `true`         | local `@function` 이름을 변경합니다.                                                                             |
+| `grid`                                                               | `boolean`                                          | `true`         | grid line/area identifier를 변경합니다.                                                                          |
 
 ```js
 export default {
@@ -529,16 +529,16 @@ T> 특정 `@import`나 `url()` 하나만 건드리지 않고 그대로 두려면
 
 ### Generator options
 
-| Option                                                        | Type                                                                                    | Default                                                            | Description                                           |
-| ------------------------------------------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------ | ----------------------------------------------------- |
-| [`localIdentName`](/configuration/module/#modulegenerator)    | `string \| function`                                                                    | `"[uniqueName]-[id]-[local]"` (dev) / `"[fullhash]"` (prod)        | 생성할 local class name의 템플릿입니다.              |
-| [`exportsConvention`](/configuration/module/#modulegenerator) | `"as-is" \| "camel-case" \| "camel-case-only" \| "dashes" \| "dashes-only" \| function` | `"as-is"`                                                          | export되는 local 값의 naming convention입니다.       |
+| Option                                                        | Type                                                                                    | Default                                                              | Description                                              |
+| ------------------------------------------------------------- | --------------------------------------------------------------------------------------- | -------------------------------------------------------------------- | -------------------------------------------------------- |
+| [`localIdentName`](/configuration/module/#modulegenerator)    | `string \| function`                                                                    | `"[uniqueName]-[id]-[local]"` (dev) / `"[fullhash]"` (prod)          | 생성할 local class name의 템플릿입니다.                  |
+| [`exportsConvention`](/configuration/module/#modulegenerator) | `"as-is" \| "camel-case" \| "camel-case-only" \| "dashes" \| "dashes-only" \| function` | `"as-is"`                                                            | export되는 local 값의 naming convention입니다.           |
 | `exportsOnly`                                                 | `boolean`                                                                               | `document`가 없는 target(예: `node`)에서는 `true`, 그 외에는 `false` | local 값만 export하고 stylesheet 생성은 건너뜁니다(SSR). |
-| `esModule`                                                    | `boolean`                                                                               | `true`                                                             | 생성되는 JS에 ES module 문법을 사용합니다.           |
-| `localIdentHashFunction`                                      | `string`                                                                                | [`output.hashFunction`](/configuration/output/#outputhashfunction) | `localIdentName` hash에 사용할 hash function입니다.  |
-| `localIdentHashDigest`                                        | `string`                                                                                | `"base64url"`                                                      | local ident의 hash digest 인코딩입니다.              |
-| `localIdentHashDigestLength`                                  | `number`                                                                                | `6`                                                                | local ident의 hash digest 길이입니다.                |
-| `localIdentHashSalt`                                          | `string`                                                                                | [`output.hashSalt`](/configuration/output/#outputhashsalt)         | local ident에 사용할 hash salt입니다.                |
+| `esModule`                                                    | `boolean`                                                                               | `true`                                                               | 생성되는 JS에 ES module 문법을 사용합니다.               |
+| `localIdentHashFunction`                                      | `string`                                                                                | [`output.hashFunction`](/configuration/output/#outputhashfunction)   | `localIdentName` hash에 사용할 hash function입니다.      |
+| `localIdentHashDigest`                                        | `string`                                                                                | `"base64url"`                                                        | local ident의 hash digest 인코딩입니다.                  |
+| `localIdentHashDigestLength`                                  | `number`                                                                                | `6`                                                                  | local ident의 hash digest 길이입니다.                    |
+| `localIdentHashSalt`                                          | `string`                                                                                | [`output.hashSalt`](/configuration/output/#outputhashsalt)           | local ident에 사용할 hash salt입니다.                    |
 
 ```js
 export default {

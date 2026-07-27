@@ -1,0 +1,313 @@
+---
+title: Webpack 5.109
+sort: 20260724
+contributors:
+  - bjohansebas
+---
+
+import banner from "../../assets/blog/webpack-5-109.png";
+
+<img src={banner} alt="webpack 5.109 릴리스" />
+
+Webpack 5.109가 릴리스되었습니다. 최근 기억에 남는 minor release 중 가장 큰 릴리스 중 하나입니다. 핵심은 내장 CSS, HTML, TypeScript, async WebAssembly 지원의 기본값이 이제 `"auto"`라는 점입니다. 해당 파일에 대해 loader가 이미 등록되어 있지 않으면 별도 설정 없이 활성화되므로, 기존 설정은 변경 없이 계속 동작하고 새 프로젝트는 zero-config 경험을 얻을 수 있습니다.
+
+그 밖에도 native HTML 지원은 `html-webpack-plugin`과의 동등성에 크게 가까워졌고, 완전한 resource-hints 시스템이 추가되었으며, Vite 호환 module API(`import.meta.glob`, `import.meta.env` 기본값, `import.meta.resolve`, asset query suffix)가 도입되었습니다. 여기에 CommonJS scope hoisting, 내장 progress bar, 그리고 또 한 번의 큰 performance 개선 작업이 포함됩니다.
+
+새로운 내용을 살펴보세요.
+
+- [**Built-in Support Goes `"auto"`**](#built-in-support-goes-auto)
+- [**Closing the Gap with `html-webpack-plugin`**](#closing-the-gap-with-html-webpack-plugin)
+  - [Head Generation: `title`, `meta`, and `base`](#head-generation-title-meta-and-base)
+  - [Controlling Tag Injection](#controlling-tag-injection)
+  - [Inlining Chunks into HTML](#inlining-chunks-into-html)
+  - [Favicons and Web App Manifest](#favicons-and-web-app-manifest)
+  - [Content-Security-Policy and Subresource Integrity](#content-security-policy-and-subresource-integrity)
+  - [Hooks for Plugins](#hooks-for-plugins)
+  - [A Smarter HTML Parser](#a-smarter-html-parser)
+- [**Resource Hints**](#resource-hints)
+- [**Vite-Compatible Module APIs**](#vite-compatible-module-apis)
+  - [`import.meta.glob`](#importmetaglob)
+  - [`import.meta.env` Defaults](#importmetaenv-defaults)
+  - [`import.meta.resolve`](#importmetaresolve)
+  - [Asset Query Suffixes](#asset-query-suffixes)
+  - [Fine-Grained `import.meta` Options](#fine-grained-importmeta-options)
+- [**CommonJS Module Concatenation**](#commonjs-module-concatenation)
+- [**Built-in Build Progress**](#built-in-build-progress)
+- [**Bundling Worklets**](#bundling-worklets)
+- [**CSS Improvements**](#css-improvements)
+- [**Externals**](#externals)
+- [**Other Improvements**](#other-improvements)
+- [**webpack-dev-server 6**](#webpack-dev-server-6)
+- [**Bug Fixes and Performance**](#bug-fixes-and-performance)
+
+## Built-in Support Goes `"auto"`
+
+지난 몇 번의 릴리스에서는 CSS, HTML, TypeScript, WebAssembly에 대한 native 지원이 webpack core에 추가되었고, 모두 opt-in flag 뒤에 있었습니다. Webpack 5.109는 이 flag들의 기본값을 새 `"auto"`로 바꿔, **해당 파일에 loader가 이미 등록되어 있지 않은 경우** 각 기능을 활성화합니다.
+
+- [`experiments.css`](/configuration/experiments/#experimentscss)는 loader가 있는 rule이 `.css` 또는 `.module.css`와 매치되면 꺼진 상태를 유지합니다(`css-loader` / `mini-css-extract-plugin` 설정이 우선).
+- [`experiments.html`](/configuration/experiments/#experimentshtml)은 rule이 `.html`과 매치되면 꺼진 상태를 유지합니다(`html-loader` 설정이 우선).
+- [`experiments.typescript`](/configuration/experiments/#experimentstypescript)는 Node.js가 이를 지원하고(22.6 이상), `.ts` / `.mts` / `.cts`와 매치되는 rule이 없을 때 내장 type-stripping을 활성화합니다(`ts-loader`와 `swc-loader`가 우선).
+- `experiments.asyncWebAssembly`는 `.wasm`이 rule 또는 `syncWebAssembly`에 의해 처리되지 않는 한 async Wasm 지원을 활성화합니다.
+
+결과적으로 기존 configuration은 이전과 정확히 동일하게 동작하고, 새 프로젝트는 CSS, HTML, TypeScript, Wasm을 **loader 없이, configuration 없이** import할 수 있습니다. 여전히 각 값을 `true` 또는 `false`로 명시적으로 고정할 수 있으며, [`experiments.futureDefaults`](/configuration/experiments/#experimentsfuturedefaults)는 이 값들을 모두 `true`로 해석합니다.
+
+## Closing the Gap with `html-webpack-plugin`
+
+Webpack 5.107은 HTML을 import 가능하게 만들었고, 5.108은 HTML을 entry point로 사용할 수 있게 했습니다. 이번 릴리스는 `html-webpack-plugin`에 더 가까워지는 데 초점을 둡니다. head 생성부터 CSP까지, plugin이 일상적으로 사용되던 대부분의 기능이 이제 webpack core에 내장되었습니다.
+
+W> **이 기능은 experimental입니다.** 전체 작업은 issue [#536](https://github.com/webpack/webpack/issues/536)에서 추적됩니다.
+
+### Head Generation: `title`, `meta`, and `base`
+
+[`output.html`](/configuration/output/#outputhtml)은 이제 document head를 스캐폴딩할 수 있습니다. [`title`](/configuration/output/#outputhtmltitle)은 page `<title>`을 설정하고, [`meta`](/configuration/output/#outputhtmlmeta)는 `<meta>` tag를 주입하며(`og:`로 시작하는 key는 `property` attribute가 됨), [`base`](/configuration/output/#outputhtmlbase)는 `<base>` element를 주입합니다. page가 이미 선언한 내용은 그대로 둡니다.
+
+```js
+// webpack.config.js
+module.exports = {
+  entry: { main: "./src/main.js" },
+  output: {
+    html: {
+      title: "My App",
+      meta: {
+        viewport: "width=device-width, initial-scale=1",
+        "og:title": "My App",
+      },
+      base: "https://example.com/",
+    },
+  },
+};
+```
+
+### Controlling Tag Injection
+
+[`output.html.inject`](/configuration/output/#outputhtmlinject)는 chunk `<script>` / `<link>` tag가 배치될 위치를 결정합니다. `'body'`(classic output의 기본값), `'head'`(ESM output의 기본값), 또는 sibling-chunk 주입을 완전히 억제하는 `false`를 사용할 수 있습니다. `<head>`에 주입할 때 stylesheet는 `defer` / module script 뒤, blocking script 앞에 배치되며, 이는 Vite가 emit하는 순서와 같습니다.
+
+### Inlining Chunks into HTML
+
+[`output.html.inline`](/configuration/output/#outputhtmlinline)은 일치하는 chunk의 content를 별도 tag로 emit하지 않고 HTML에 직접 inline합니다. critical CSS나 작은 runtime chunk에 유용합니다. `true`는 모든 것을 inline하고, `'script'`는 JavaScript만, `'style'`은 CSS만 inline하며, regular expression 배열은 chunk name과 매치됩니다.
+
+```js
+// webpack.config.js
+module.exports = {
+  output: {
+    html: {
+      inline: [/^runtime/, /critical/],
+    },
+  },
+};
+```
+
+작성된 page의 개별 참조는 `webpackInline` magic comment(tag 앞의 `<!-- webpackInline: true -->`)로 inline 여부를 선택할 수 있으며, page의 `[contenthash]`는 inline된 content를 반영합니다.
+
+### Favicons and Web App Manifest
+
+[`output.html.favicon`](/configuration/output/#outputhtmlfavicon)은 생성된 page에 favicon을 연결하고, 모든 icon을 hash된 asset으로 emit합니다. `favicon: "./favicon.svg"`부터 icon별 attribute(`sizes`, `media`, `color`, `type`, `crossorigin`)를 가진 `rel`별 여러 icon까지 지원합니다. 예를 들어 light/dark variant나 여러 size를 지정할 수 있습니다.
+
+[`output.html.manifest`](/configuration/output/#outputhtmlmanifest)는 web app manifest를 생성하고 연결합니다. 기존 `.webmanifest` 경로를 전달하거나, 직렬화되어 hash된 파일로 emit되고 `<link rel="manifest">`로 연결될 object를 전달할 수 있습니다. `icons` / `screenshots` path도 resolve되어 hash된 asset으로 emit됩니다.
+
+### Content-Security-Policy and Subresource Integrity
+
+[`output.html.csp`](/configuration/output/#outputhtmlcsp)는 생성된 모든 page에 `<meta http-equiv="Content-Security-Policy">`를 주입합니다. `true`는 엄격한 baseline을 적용하고 모든 inline `<script>` / `<style>`의 hash를 `script-src` / `style-src`에 추가합니다. object 형식은 custom directive를 merge하고 server-side `nonce` placeholder를 지원합니다.
+
+[`output.html.integrity`](/configuration/output/#outputhtmlintegrity)는 주입된 `<script>` / `<link>` tag에 SRI `integrity` attribute를 추가하며, hash algorithm을 구성할 수 있습니다.
+
+```js
+// webpack.config.js
+module.exports = {
+  output: {
+    html: {
+      csp: true,
+      integrity: true,
+    },
+  },
+};
+```
+
+### Hooks for Plugins
+
+HTML pipeline은 이제 확장 가능합니다. `webpack.html.HtmlModulesPlugin`은 emit된 page를 다룰 수 있는 [compilation hooks](/api/compilation-hooks/#htmlmodulesplugingetcompilationhookscompilation)를 노출합니다.
+
+#### Tag Hooks: `injectTags` and `transformTags`
+
+`injectTags`는 `injectTo` 배치 정보를 가진 structured tag descriptor를 추가하고, `transformTags`는 page의 기존 `<script>` / `<link>` / `<style>` / `<meta>` tag를 변경, 제거, 이동합니다. `injectTags`를 통해 주입된 tag는 page 자체 inline content처럼 CSP 지원에 의해 hash됩니다.
+
+#### Page Hooks: `transformHtml` and `htmlEmitted`
+
+`transformHtml`은 최종 HTML string이 작성되기 직전에 이를 변환하며(예: minify), `htmlEmitted`는 각 page가 finalized된 뒤 실행됩니다.
+
+### A Smarter HTML Parser
+
+parser 쪽도 확장되었습니다.
+
+- 새로운 `html` source type은 URL을 자체 emit page로 번들되는 다른 HTML 파일에 대한 link로 처리합니다. Parcel의 `<a href="page.html">`와 유사합니다. 또한 script와 style을 참조하는 `<link rel="preload">` / `<link rel="prefetch">`는 chunk로 번들되고 빌드된 URL로 다시 작성됩니다.
+- built-in source는 이제 `twitter:player:stream` meta content, legacy SVG 참조(`font-face-uri`, `cursor`, `altGlyph`, `tref`, `glyphRef`), 그리고 `<link rel="manifest">` Web App Manifest 내부의 icon / screenshot / shortcut URL을 포함합니다.
+- [`module.parser.html.as`](/configuration/module/#moduleparserhtmlas)는 source를 전체 document 또는 element fragment로 parse합니다(예: `as: "tbody"`는 document parse에서 제거될 bare `<tr>`을 유지).
+- built-in source는 `sources`에서 [`type: false`](/configuration/module/#moduleparserhtmlsources)를 사용해 `tag` / `attribute`별로 비활성화할 수 있습니다.
+
+## Resource Hints
+
+webpack은 이제 [`output.resourceHints`](/configuration/output/#outputresourcehints)를 통해 resource hint(`<link rel="preload">`, `prefetch`, `modulepreload`, `preconnect`)를 native로 emit할 수 있습니다. ES module output에서는 **기본으로 켜져** 있으며, native `import()`가 waterfall되지 않도록 각 entry의 initial chunk에 대해 `<link rel="modulepreload">`를 자동 emit합니다. 이는 Vite가 제공하는 동작과 같습니다. Classic output은 opt-in 상태를 유지합니다.
+
+HTML entry의 경우 hint는 추출된 HTML `<head>`에 배치되고, 그 외에는 chunk-startup runtime을 통해 연결됩니다. 이 옵션은 shorthand(`true`, `'prefetch'`, `'preload'`, `'none'`, custom descriptor 배열, 또는 자동 hint를 받는 함수)나 다음을 가진 object 형식을 받습니다.
+
+- [`urlHints`](/configuration/output/#outputresourcehintsurlhints): magic comment 없이 URL 참조 asset(JavaScript `new URL(...)`, CSS `url(...)`, HTML attribute)에 hint를 적용하는 project-wide rule입니다. 예: 모든 `.woff2` preload.
+- [`preconnect`](/configuration/output/#outputresourcehintspreconnect): cross-origin `output.publicPath`(CDN)의 origin을 미리 연결합니다.
+- [`modulePreloadPolyfill`](/configuration/output/#outputresourcehintsmodulepreloadpolyfill): native 지원이 없는 target을 위한 inline `modulepreload` polyfill입니다.
+- [`manifest`](/configuration/output/#outputresourcehintsmanifest): SSR server를 위해 entrypoint별 resolve된 hint를 담은 JSON manifest입니다. Vite의 `build.ssrManifest`에 대응하는 webpack 기능입니다.
+
+```js
+// webpack.config.js
+module.exports = {
+  output: {
+    resourceHints: {
+      initial: true,
+      urlHints: [{ test: /\.woff2$/, preload: true, as: "font" }],
+    },
+  },
+};
+```
+
+parser 쪽도 이에 맞춰 동작합니다. [`module.parser.<type>.urlHints`](/configuration/module/#moduleparserjavascripturlhints)는 hint rule의 범위를 하나의 parser로 제한하고, [`module.parser.css.fontPreload`](/configuration/module/#moduleparsercssfontpreload)는 HTML entry의 initial CSS에서 도달 가능한 각 `@font-face`의 primary URL을 자동 preload하며, [`module.parser.javascript.dynamicImportCssPreload`](/configuration/module/#moduleparserjavascriptdynamicimportcsspreload)는 동적으로 import된 chunk의 CSS를 preload하여 stylesheet가 chunk의 JavaScript와 병렬로 fetch되게 합니다.
+
+resolve된 hint는 `stats.entrypoints[name].resourceHints`에 노출됩니다.
+
+## Vite-Compatible Module APIs
+
+### `import.meta.glob`
+
+webpack은 이제 Vite의 glob import와 호환되는 [`import.meta.glob`](/api/module-variables/#importmetaglob)를 지원합니다. 일치하는 각 파일을 dynamic import 함수(on-demand chunk로 분리됨)에 매핑하거나, `eager: true`를 사용하면 module 자체에 매핑합니다.
+
+```js
+const modules = import.meta.glob("./pages/*.js");
+// {
+//   "./pages/about.js": () => import("./pages/about.js"),
+//   "./pages/home.js": () => import("./pages/home.js"),
+// }
+```
+
+지원되는 옵션은 `eager`, `import`(더 나은 tree shaking을 위해 단일 export 선택), `query`, `base`, `exhaustive`, webpack 전용 `caseSensitive`입니다.
+
+### `import.meta.env` Defaults
+
+[`import.meta.env`](/api/module-variables/#importmetaenv)는 이제 Vite의 표준 상수 `MODE`, `DEV`, `PROD`, `SSR`, `BASE_URL`을 기본으로 제공합니다(`mode`, target platform, `output.publicPath`에서 파생). Vite convention에 맞춰 작성된 코드와 `import.meta.env.DEV`로 분기하는 library가 별도 설정 없이 동작합니다.
+
+### `import.meta.resolve`
+
+[`import.meta.resolve("./asset")`](/api/module-variables/#importmetaresolve)는 build time에 emit된 asset URL로 resolve됩니다. native semantics와 일치하면서 asset pipeline을 통과합니다. 이는 `importMeta.resolve` parser 옵션으로 제어됩니다.
+
+### Asset Query Suffixes
+
+[`experiments.futureDefaults`](/configuration/experiments/#experimentsfuturedefaults) 아래에서는 [asset query suffixes](/guides/asset-modules/#built-in-query-suffixes) `?raw`, `?url`, `?inline`, `?no-inline`이 별도 설정 없이 동작하며, `asset/source`, `asset/resource`, `asset/inline`에 매핑됩니다.
+
+```js
+import source from "./file.txt?raw";
+import dataUri from "./icon.svg?inline";
+import url from "./image.png?url";
+```
+
+이들은 일반 default rule이므로 직접 작성한 `module.rules`가 여전히 override할 수 있습니다.
+
+### Fine-Grained `import.meta` Options
+
+[`importMeta`](/configuration/module/#moduleparserjavascriptimportmeta) parser 옵션은 이제 개별 field(`url`, `env`, `resolve`, `webpackContext`, custom field 등)의 평가를 활성화하거나 비활성화하는 object를 받습니다. 이에 따라 standalone `importMetaContext` 옵션은 deprecated되었고 `importMeta.webpackContext` 사용이 권장됩니다.
+
+## CommonJS Module Concatenation
+
+Module concatenation(scope hoisting)은 webpack 3 이후 ESM 전용 optimization이었습니다. Webpack 5.109는 이를 CommonJS로 확장합니다. 정적으로 분석 가능한 export를 가진 module은 consumer에 concatenation되고, 이전에는 전체 group을 bailout시키던 "특이한" CommonJS module은 이제 concatenation 안에 래핑됩니다. CommonJS 비중이 큰 대규모 dependency tree는 module boundary overhead가 줄어든 더 평평한 bundle을 얻게 됩니다.
+
+이는 concatenation이 이미 적용되는 곳에서 켜집니다(production mode에서는 기본). edge case를 만난 경우 concatenation을 다시 ES module로 제한할 수 있습니다.
+
+```js
+// webpack.config.js
+module.exports = {
+  optimization: {
+    concatenateModules: { commonjs: false },
+  },
+};
+```
+
+## Built-in Build Progress
+
+progress bar가 이제 [`infrastructureLogging.progress`](/configuration/infrastructureLogging/#infrastructureloggingprogress)를 통해 webpack 자체에 내장되었습니다. `'auto'`로 설정하면 실제 터미널에서만 interactive bar를 표시하고(CI log에서는 조용히 유지), `experiments.futureDefaults`에서는 이것이 기본값입니다. 이는 [WebpackBar](https://www.npmjs.com/package/webpackbar) 같은 타사 progress plugin을 대체합니다.
+
+```js
+// webpack.config.js
+module.exports = {
+  infrastructureLogging: {
+    progress: "auto",
+  },
+};
+```
+
+[`ProgressPlugin`](/plugins/progress-plugin/) 자체도 `progressBar: "auto"`, 구성 가능한 bar `width`, `estimatedTime` 표시, build 완료 시 출력되는 `phaseTimings` breakdown을 지원합니다.
+
+## Bundling Worklets
+
+새 [`module.parser.javascript.worklet`](/configuration/module/#moduleparserjavascriptworklet) 옵션은 Worker와 같은 방식으로 Worklet entry를 번들합니다.
+
+```js
+await audioContext.audioWorklet.addModule(
+  new URL("./processor.js", import.meta.url),
+);
+```
+
+audio, paint, layout, animation worklet은 기본으로 인식됩니다(custom syntax list도 지원). Worklet은 Worker와 달리 runtime에 추가 chunk를 로드할 수 없으므로, ESM output은 worklet의 split chunk를 native `import`로 연결하고 classic script output은 호출 scope의 `addModule`을 통해 미리 추가합니다.
+
+## CSS Improvements
+
+Native CSS는 [`@custom-media`](/configuration/module/#moduleparsercsscustommedia)(media-type 값 포함)와 [`@custom-selector`](/configuration/module/#moduleparsercsscustomselectors) at-rule을 build time에 resolve하므로, 이러한 draft-spec 기능이 PostCSS 없이 동작합니다.
+
+```css
+@custom-media --narrow-window (max-width: 30em);
+@custom-selector :--heading h1, h2, h3;
+
+@media (--narrow-window) {
+  :--heading {
+    font-size: 1.1em;
+  }
+}
+```
+
+CSS Modules는 이제 기존 `customIdents` 동작 아래에서 `view-transition-name`, `view-transition-group`, `view-transition-class` 이름과 `::view-transition-*()` pseudo-element 참조에도 scope를 적용합니다. 따라서 View Transitions도 class와 동일하게 충돌 없는 이름을 얻습니다.
+
+## Externals
+
+- 새로운 [`amd-async`](/configuration/externals/#externalstypeamd-async) externals type은 비동기 `require([...])` API를 통해 AMD-only external을 runtime에 async module로 로드하므로, bundle 자체에 더 이상 AMD library wrapper가 필요하지 않습니다.
+- external의 object 형식은 [`interop`](/configuration/externals/#interop) hint(`'esModule'` 또는 `'default'`)를 받습니다. 이는 importer의 strictness와 무관하게 non-ESM external의 `default` import 동작을 고정하며, Rollup의 `output.interop`을 미러링합니다.
+- 사용된 externals type에 대한 entry가 없는 object external은 이제 runtime에 조용히 `undefined`로 resolve되는 대신 실행 가능한 error로 build를 실패시킵니다.
+
+## Other Improvements
+
+- [`cache.compression: 'zstd'`](/configuration/cache/#cachecompression)는 Node.js 22.15 이상에서 filesystem cache를 Zstandard로 압축합니다.
+- [`output.wasmStreamingFallback`](/configuration/output/#outputwasmstreamingfallback)은 server가 잘못된 MIME type으로 `.wasm`을 제공할 때 non-streaming WebAssembly instantiation으로 fallback합니다.
+- 새로운 [`strictModeViolations`](/configuration/module/#moduleparserjavascriptstrictmodeviolations) parser 옵션은 ES module output으로 emit될 때 strict mode에서 runtime에 깨지는 구문에 대해 warning(또는 error)을 표시합니다. 예: `with`, 8진 literal, `arguments.callee`, 읽기 전용 global에 할당 등.
+- ESM output은 이제 `new URL(..., import.meta.url)`, worker/worklet URL, literal specifier를 가진 `import()`를 emit하므로 downstream bundler와 runtime이 webpack output을 정적으로 분석할 수 있습니다.
+- Async module은 native `async` / `await` 지원이 없는 target에서 generator 기반 코드로 compile됩니다.
+- Dynamic `import(specifier, options)`는 두 번째 인자를 평가하고 검증합니다.
+- Custom parser(`module.parser.javascript.parse`를 통해 사용)는 더 이상 `loc` data를 제공하거나 삽입된 semicolon을 수집할 필요가 없습니다. webpack이 node offset과 source text에서 둘 다 파생합니다.
+- Stats output은 이제 module이 cacheable하지 않다고 표시된 **이유**를 설명합니다.
+- `ChunkLoadError`와 `ScriptExternalLoadError`는 더 쉬운 debugging을 위해 원본 DOM event를 `error.event`로 포함합니다.
+- `MultiCompiler`는 활성 `MultiWatching`을 `multiCompiler.watching`에 노출합니다.
+
+## webpack-dev-server 6
+
+이번 릴리스와 함께 [`webpack-dev-server@6.0.0`](https://github.com/webpack/webpack-dev-server/releases/tag/v6.0.0)도 릴리스되었습니다. 주요 내용은 다음과 같습니다.
+
+- source가 이제 native ES module이며, ESM과 CommonJS build가 모두 `exports`를 통해 노출됩니다.
+- **webpack plugin**으로 사용할 수 있어 compiler lifecycle과 통합됩니다(명시적인 compiler 전달 없음, clean shutdown, `MultiCompiler` 지원).
+- Express 5, `http-proxy-middleware` v4, `webpack-dev-middleware` v8, `chokidar` v5(`watchFiles.options.ignored`의 glob 지원 포함).
+- Node.js 22.15.0 이상과 webpack 5.101.0 이상이 필요합니다. SockJS, `spdy`(`server` 옵션을 통해 `node:http2` 사용), proxy `bypass` 옵션, standalone CLI flag는 제거되었습니다.
+
+breaking change 전체 목록과 migration path는 [release notes](https://github.com/webpack/webpack-dev-server/releases/tag/v6.0.0)를 확인하세요.
+
+## Bug Fixes and Performance
+
+기능 외에도 [5.108](https://github.com/webpack/webpack/releases/tag/v5.108.0) 이후 많은 bug가 수정되었습니다.
+
+이번 릴리스는 parser performance 개선 작업도 이어갑니다. JavaScript, CSS, HTML parsing은 측정 가능할 정도로 더 빨라지고 더 적은 memory를 할당하며, 대규모 build에서 snapshot 생성과 stats generation이 빨라졌고, 업데이트된 [`webpack-sources`](https://github.com/webpack/webpack-sources/pull/251) / [`enhanced-resolve`](https://github.com/webpack/enhanced-resolve/pull/623) dependency가 peak memory를 줄였습니다. 자세한 내용은 [changelog](https://github.com/webpack/webpack/blob/main/CHANGELOG.md)를 확인하세요. 이 performance 작업을 자세히 다루는 별도 blog post도 곧 올라올 예정입니다.
+
+다음 작업을 먼저 살펴보면, 앞으로의 버전은 performance에 더 집중하여 JavaScript syntax parser를 custom Structure-of-Arrays AST(CSS와 HTML parser가 이미 사용하는 것과 같은 설계)로 이동할 예정입니다. 초기 측정에서는 build 종료 시점의 heap을 크게 줄였습니다.
+
+## Thanks
+
+Webpack 5.109를 가능하게 해 준 모든 contributor와 [sponsor](https://github.com/webpack/webpack?tab=readme-ov-file#sponsoring)에게 깊이 감사드립니다. code contribution, documentation, financial sponsorship 등 어떤 형태이든 여러분의 지원은 Webpack이 모두를 위해 계속 발전하고 개선되는 데 도움이 됩니다.

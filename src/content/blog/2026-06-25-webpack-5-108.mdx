@@ -54,7 +54,7 @@ module.exports = {
 };
 ```
 
-[`target: "universal"`](/configuration/target/#universal)은 `web`, `web worker`, `node`, `electron`, `nwjs` 플랫폼을 하나의 타겟으로 결합하고, 번들을 단일 환경에 고정하는 대신 각 플랫폼 플래그를 _중립_으로 남겨둡니다. 별도의 web과 node 번들을 컴파일하는 대신, 런타임에 주변 환경을 파악하고 현재 플랫폼이 제공하는 것을 사용하는 하나의 번들을 제공합니다.
+[`target: "universal"`](/configuration/target/#universal)은 `web`, `web worker`, `node`, `electron`, `nwjs` 플랫폼을 하나의 타겟으로 결합하고, 번들을 단일 환경에 고정하는 대신 각 플랫폼 플래그를 *중립*으로 남겨둡니다. 별도의 web과 node 번들을 컴파일하는 대신, 런타임에 주변 환경을 파악하고 현재 플랫폼이 제공하는 것을 사용하는 하나의 번들을 제공합니다.
 
 브라우저와 Node에서 동일하게 잘 로드되어야 하는 번들에는 이식 가능한 모듈 포맷이 필요하므로, universal 빌드는 항상 ECMAScript 모듈을 출력합니다. [`experiments.outputModule`](/configuration/experiments/#experimentsoutputmodule)이 기본적으로 `true`가 되고, 동기 `require`는 비활성화되며, Node의 내장 모듈은 사용 가능한 상태로 유지됩니다(런타임에 ESM을 통해 해석됨). [`output.globalObject`](/configuration/output/#outputglobalobject)도 `globalThis`가 기본값이 되어 런타임 코드가 모든 플랫폼에서 하나의 전역을 참조할 수 있습니다.
 

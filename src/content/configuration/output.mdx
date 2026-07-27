@@ -645,10 +645,10 @@ T> 이 옵션은 온 디맨드 로드되는 청크의 출력 파일에는 영향
 
 컴파일 수준에서 사용할 수 있는 substitution입니다.
 
-| Template     | Description                                                                    |
-| ------------ | ------------------------------------------------------------------------------ |
-| [fullhash]   | 컴파일 전체 해시                                                               |
-| [hash]       | 동일하지만, 더 이상 지원되지 않음                                              |
+| Template     | Description                                                                   |
+| ------------ | ----------------------------------------------------------------------------- |
+| [fullhash]   | 컴파일 전체 해시                                                              |
+| [hash]       | 동일하지만, 더 이상 지원되지 않음                                             |
 | [uniqueName] | [`output.uniqueName`](#outputuniquename)의 값 (별칭 `[uniquename]`, 5.108.0+) |
 
 청크 수준에서 사용할 수 있는 substitution입니다.
@@ -882,15 +882,17 @@ export default {
 };
 ```
 
-주입된 `<script>` 태그가 로드되는 방식을 설정하려면 객체로 설정하세요:
+아래 옵션을 사용하려면 object로 설정하세요. [entry descriptor](/configuration/entry-context/#entry-descriptor)의 `html` 옵션을 통해 entry별로 재정의할 수 있습니다.
 
-| Option          | Description                                                           |
-| --------------- | --------------------------------------------------------------------- |
-| `scriptLoading` | `'auto'` (기본값), `'defer'`, 또는 `'blocking'`. 아래 값을 참조하세요. |
+### output.html.scriptLoading
 
-- `'auto'`: ES 모듈 출력에 대해서는 모듈 스크립트(`type="module"`)를 생성하고, 그렇지 않으면 지연된 스크립트를 생성합니다.
-- `'defer'`: 지연된 `<script defer>`를 강제합니다.
-- `'blocking'`: 일반 블로킹 `<script>`를 생성합니다.
+`'auto' | 'defer' | 'blocking'`
+
+주입된 `<script>` tag가 로드되는 방식을 구성합니다.
+
+- `'auto'` (기본값): ES module output에서는 module script(`type="module"`)를 emit하고, 그렇지 않으면 deferred script를 emit합니다.
+- `'defer'`: deferred `<script defer>`를 강제합니다.
+- `'blocking'`: 일반 blocking `<script>`를 emit합니다.
 
 ```js
 // webpack.config.js
@@ -904,7 +906,235 @@ export default {
 };
 ```
 
-[엔트리 디스크립터](/configuration/entry-context/#entry-descriptor) `html` 옵션을 통해 엔트리별로 재정의할 수 있습니다.
+### output.html.title
+
+<Badge text="5.109.0+" />
+
+`string`
+
+생성된 HTML page의 `<title>`을 설정합니다. HTML에 이미 `<title>` element가 있으면 건너뜁니다.
+
+```js
+// webpack.config.js
+export default {
+  experiments: { html: true },
+  output: {
+    html: {
+      title: "My App",
+    },
+  },
+};
+```
+
+### output.html.meta
+
+<Badge text="5.109.0+" />
+
+`object`
+
+page `<head>`에 `<meta>` tag를 주입합니다. 각 key는 `name` attribute(또는 charset 선언의 경우 `'charset'`)이고, value는 `content` string입니다. `og:`로 시작하는 key는 `name` 대신 `property` attribute를 사용합니다. HTML에 같은 name의 meta가 이미 있으면 해당 tag는 건너뜁니다.
+
+```js
+// webpack.config.js
+export default {
+  experiments: { html: true },
+  output: {
+    html: {
+      meta: {
+        viewport: "width=device-width, initial-scale=1",
+        "og:title": "My App",
+      },
+    },
+  },
+};
+```
+
+### output.html.base
+
+<Badge text="5.109.0+" />
+
+`string` `object`
+
+page `<head>`에 `<base>` element를 주입합니다. string은 `href`를 설정하고, object는 `href`와 선택적으로 `target`을 설정합니다. HTML에 이미 `<base>` element가 있으면 건너뜁니다.
+
+```js
+// webpack.config.js
+export default {
+  experiments: { html: true },
+  output: {
+    html: {
+      base: { href: "https://example.com/", target: "_blank" },
+    },
+  },
+};
+```
+
+### output.html.inject
+
+<Badge text="5.109.0+" />
+
+`'body' | 'head' | false`
+
+주입된 chunk `<script>` tag(및 `<link rel="modulepreload">` clone)를 배치할 위치입니다.
+
+- `'body'` (기본값, [`output.module`](#outputmodule)에서는 `'head'`): 생성된 page에서 entry tag 옆, `<body>` 끝에 유지합니다.
+- `'head'`: `<head>` 안으로 이동합니다.
+- `false`: sibling-chunk 주입을 억제합니다. entry tag와 resource hint는 유지됩니다.
+
+CSS chunk의 stylesheet `<link>` tag는 영향을 받지 않습니다. page에 `<head>`가 있으면 항상 `<head>`에 배치되고, 첫 blocking script보다 앞에 놓입니다. `<head>`가 없으면 `defer` / module script tag 뒤에 배치됩니다(`html-webpack-plugin`이 emit하는 순서).
+
+```js
+// webpack.config.js
+export default {
+  experiments: { html: true },
+  output: {
+    html: {
+      inject: "head",
+    },
+  },
+};
+```
+
+### output.html.inline
+
+<Badge text="5.109.0+" />
+
+`boolean` `'script' | 'style'` `RegExp[]`
+
+일치하는 chunk의 content를 별도의 `<script>` / `<link>` tag로 emit하지 않고 HTML에 직접 inline합니다.
+
+- `true`: 모든 chunk를 inline합니다.
+- `'script'`: JavaScript chunk만 inline합니다.
+- `'style'`: CSS chunk만 inline합니다.
+- `RegExp` pattern 배열: 이름이 일치하는 chunk를 inline합니다.
+
+```js
+// webpack.config.js
+export default {
+  experiments: { html: true },
+  output: {
+    html: {
+      inline: [/^runtime/, /critical/],
+    },
+  },
+};
+```
+
+작성된 HTML page 내부의 개별 참조도 `webpackInline` magic comment로 inline 여부를 선택할 수 있습니다. 예: `<!-- webpackInline: true --><script src="./critical.js"></script>`. HTML page의 `[contenthash]`는 inline된 chunk content를 반영합니다.
+
+### output.html.favicon
+
+<Badge text="5.109.0+" />
+
+`boolean = false` `string` `object` `function`
+
+webpack이 생성한 HTML page의 favicon입니다(작성된 page는 그대로 둠). 모든 icon은 일반 asset pipeline을 통해 hash된 asset으로 emit됩니다.
+
+- `false` (기본값): 아무것도 주입하지 않습니다.
+- `true`: webpack logo를 주입합니다.
+- `string`: icon 파일 경로이며, `<link rel="icon">`으로 연결됩니다.
+- `object`: 각 `<link rel>`을 icon에 매핑합니다. 각 icon은 path string, icon `href`와 추가 link attribute(`sizes`, `media`, `color`, `type`, `crossorigin`)를 가진 object, 또는 같은 `rel` 아래 여러 icon(예: 여러 `sizes`, light/dark `media` variant)을 위한 이들의 배열입니다.
+- `function`: page 이름을 받아 위 값 중 하나를 반환합니다.
+
+```js
+// webpack.config.js
+export default {
+  experiments: { html: true },
+  output: {
+    html: {
+      favicon: {
+        icon: [
+          { href: "./favicon.svg", type: "image/svg+xml" },
+          { href: "./favicon-32.png", sizes: "32x32" },
+        ],
+        "apple-touch-icon": "./apple-touch-icon.png",
+      },
+    },
+  },
+};
+```
+
+### output.html.integrity
+
+<Badge text="5.109.0+" />
+
+`boolean` `string[]` `function`
+
+주입된 `<script>` / `<link>` tag에 Subresource Integrity(SRI) `integrity` attribute를 추가합니다. `true`는 `['sha384']`를 사용합니다. 배열은 hash algorithm을 설정합니다(Node.js `crypto.createHash`에 전달됨, 예: `['sha256', 'sha384']`). 함수는 참조된 각 asset(`{ chunk, filename }`)을 받아 사용할 algorithm을 반환하거나, 해당 asset을 건너뛰려면 `false`를 반환합니다.
+
+```js
+// webpack.config.js
+export default {
+  experiments: { html: true },
+  output: {
+    html: {
+      integrity: true,
+    },
+  },
+};
+```
+
+T> SRI는 CORS가 활성화된 fetch를 요구하므로, asset이 다른 origin에서 제공되는 경우 [`output.crossOriginLoading`](#outputcrossoriginloading)과 함께 사용하세요.
+
+### output.html.csp
+
+<Badge text="5.109.0+" />
+
+`boolean = false` `object`
+
+webpack이 emit한 모든 HTML page에 `<meta http-equiv="Content-Security-Policy">`를 주입합니다. `true`는 엄격한 baseline(`script-src 'self'`, `style-src 'self'`, `object-src 'none'`, `base-uri 'self'`)을 사용하고, 모든 inline `<script>` / `<style>`의 `sha256` hash를 `script-src` / `style-src`에 추가합니다. page가 이미 CSP를 선언한 경우 건너뜁니다.
+
+object로 custom할 수 있습니다.
+
+- `policy` (`object`): baseline 위에 merge되는 CSP directive입니다. 각 key는 directive(예: `'script-src'`)이고, value는 source string 또는 list입니다. inline hash와 모든 `nonce`는 여전히 `script-src` / `style-src`에 추가됩니다.
+- `hashFunction` (`'sha256' | 'sha384' | 'sha512'`): inline `<script>` / `<style>` source에 사용되는 hash algorithm입니다.
+- `nonce` (`string`): 주입된 `<script>` / `<style>` tag와 `'nonce-…'` source로 추가되는 placeholder nonce입니다. server-side에서 request별로 다시 작성하세요.
+
+```js
+// webpack.config.js
+export default {
+  experiments: { html: true },
+  output: {
+    html: {
+      csp: {
+        policy: {
+          "img-src": ["'self'", "data:"],
+          "connect-src": "https://api.example.com",
+        },
+      },
+    },
+  },
+};
+```
+
+### output.html.manifest
+
+<Badge text="5.109.0+" />
+
+`false` `string` `object` `function`
+
+webpack이 생성한 HTML page의 Web app manifest입니다(작성된 page는 그대로 둠).
+
+- `false` (기본값): 아무것도 주입하지 않습니다.
+- `string`: 연결할 기존 `.webmanifest` 파일의 경로입니다.
+- `object`: manifest content입니다. 직렬화되어 hash된 `.webmanifest`로 emit되고 `<link rel="manifest">`로 연결됩니다. `icons` / `screenshots`의 `src` path는 다른 request처럼 resolve되며 hash된 asset으로 emit됩니다.
+- `function`: page 이름을 받아 위 값 중 하나를 반환합니다.
+
+```js
+// webpack.config.js
+export default {
+  experiments: { html: true },
+  output: {
+    html: {
+      manifest: {
+        name: "My App",
+        short_name: "App",
+        icons: [{ src: "./icon-512.png", sizes: "512x512" }],
+      },
+    },
+  },
+};
+```
 
 ## output.htmlFilename
 
@@ -2450,6 +2680,154 @@ __webpack_public_path__ = myRuntimePublicPath;
 
 T> `web`과 `web-worker`가 target인 경우 `output.publicPath`의 기본값은 `'auto'`입니다.
 
+## output.resourceHints
+
+<Badge text="5.109.0+" />
+
+`boolean` `'prefetch' | 'preload' | 'none'` `HtmlResourceHint[]` `function` `object`
+
+추출된 HTML entry와 URL 참조 asset에 대한 resource-hint emit(`<link rel="prefetch">` / `<link rel="preload">` / `<link rel="modulepreload">` / `<link rel="preconnect">`)을 제어합니다. HTML entry의 경우 hint는 추출된 HTML `<head>`에 emit되고, 그 외에는 chunk-startup JS runtime을 통해 emit됩니다. `stats.entrypoints[name].resourceHints`는 resolve된 목록을 노출합니다.
+
+이 옵션은 [initial dependency-graph shorthand](#outputresourcehintsinitial)를 직접 받을 수 있습니다(`{ initial: <value> }`와 동일).
+
+```js
+// webpack.config.js
+export default {
+  // ...
+  output: {
+    resourceHints: true, // { initial: true }와 동일
+  },
+};
+```
+
+또는 아래에 문서화된 속성을 가진 object 형식을 사용할 수 있습니다.
+
+```js
+// webpack.config.js
+export default {
+  // ...
+  output: {
+    resourceHints: {
+      initial: true,
+      preconnect: true,
+      manifest: "resource-hints.json",
+      urlHints: [{ test: /\.woff2$/, preload: true, as: "font" }],
+    },
+  },
+};
+```
+
+T> 관련 parser 옵션: [`module.parser.<type>.urlHints`](/configuration/module/#moduleparserjavascripturlhints), [`module.parser.css.fontPreload`](/configuration/module/#moduleparsercssfontpreload), [`module.parser.javascript.dynamicImportCssPreload`](/configuration/module/#moduleparserjavascriptdynamicimportcsspreload).
+
+### output.resourceHints.initial
+
+`boolean` `'prefetch' | 'preload' | 'none'` `HtmlResourceHint[]` `function`
+
+entry의 initial dependency-graph chunk에 대한 hint입니다.
+
+- `true`: entry의 각 initial dependency chunk에 대해 `<link rel="modulepreload">`(ES module output) 또는 `<link rel="preload" as="script">`(classic output)를 자동 emit합니다. `'preload'`는 alias입니다.
+- `'prefetch'`: 대신 `<link rel="prefetch">`를 사용합니다.
+- `false`: chunk hint를 비활성화합니다. magic comment / `urlHints`에서 온 URL-asset hint는 여전히 동작합니다.
+- `'none'`: 강한 off switch입니다. 어디에도 `<link>`를 emit하지 않고 stats/manifest도 비어 있습니다.
+- `HtmlResourceHint[]`: 자동 집합을 custom descriptor로 대체합니다.
+- `function`: `{ entryName, entrypoint, hostType: 'html' | 'js', compilation, defaultHints }`를 받습니다. 여기서 `defaultHints`는 자동 hint이며(각각 `hostChunks`를 포함), 최종 descriptor 목록을 반환합니다.
+
+native `import()`가 그렇지 않으면 waterfall이 되는 ES module output([`output.module`](#outputmodule))에서는 기본적으로 **켜져** 있고, classic output에서는 **꺼져** 있습니다.
+
+각 `HtmlResourceHint` descriptor에는 `rel`(`'preload' | 'prefetch' | 'modulepreload' | 'preconnect' | 'dns-prefetch'`)과 정확히 하나의 target이 필요합니다. target은 `href`(literal URL), `chunk`(emit된 URL로 resolve되는 chunk 이름), 또는 `entry`(initial chunk마다 하나의 hint로 확장되는 entrypoint 이름)입니다. 선택 attribute는 `as`, `type`, `media`, `crossorigin`, `fetchPriority`, `integrity`입니다.
+
+```js
+// webpack.config.js
+export default {
+  // ...
+  output: {
+    resourceHints: {
+      // 자동 hint를 custom hint로 확장
+      initial: ({ defaultHints }) => [
+        ...defaultHints,
+        { rel: "preconnect", href: "https://fonts.example.com" },
+      ],
+    },
+  },
+};
+```
+
+### output.resourceHints.urlHints
+
+`UrlHintRule[]`
+
+project-wide URL 참조 asset hint rule입니다. 모든 parser(JavaScript `new URL(...)`, CSS `url(...)`, HTML `<img src>` / `<link href>`)의 기본 [`urlHints`](/configuration/module/#moduleparserjavascripturlhints)로 적용됩니다. parser 범위의 `module.parser.<type>.urlHints` rule과 URL별 magic comment는 여전히 이를 override합니다.
+
+```js
+// webpack.config.js
+export default {
+  // ...
+  output: {
+    resourceHints: {
+      urlHints: [
+        { test: /\.woff2$/, preload: true, as: "font" },
+        { test: /hero\./, preload: true, as: "image", fetchPriority: "high" },
+      ],
+    },
+  },
+};
+```
+
+### output.resourceHints.preconnect
+
+`boolean`
+
+cross-origin [`output.publicPath`](#outputpublicpath)의 origin(bundle과 asset이 제공되는 origin)에 대해 `<link rel="preconnect">`를 추출된 HTML entry와 resource-hint stats/manifest에 자동 emit합니다. 이는 [`output.crossOriginLoading`](#outputcrossoriginloading)을 미러링합니다. `publicPath`가 상대 경로이거나 `'auto'`이면 동작하지 않습니다.
+
+```js
+// webpack.config.js
+export default {
+  // ...
+  output: {
+    publicPath: "https://cdn.example.com/assets/",
+    resourceHints: {
+      preconnect: true, // <link rel="preconnect" href="https://cdn.example.com">
+    },
+  },
+};
+```
+
+### output.resourceHints.modulePreloadPolyfill
+
+`boolean`
+
+추출된 HTML page에 `<link rel="modulepreload">`를 위한 작은 inline `<script>` polyfill을 주입합니다. 기본값은 target의 modulepreload 지원([`output.environment.modulePreload`](#outputenvironment))에서 파생됩니다. 환경에 native 지원이 없으면 `true`, 있으면 `false`입니다. 예를 들어 inline script를 금지하는 엄격한 CSP 아래에서 polyfill을 절대 주입하지 않으려면 `false`로 설정하세요(`<link>` tag는 여전히 emit되지만 지원하지 않는 browser에서는 동작하지 않음).
+
+```js
+// webpack.config.js
+export default {
+  // ...
+  output: {
+    resourceHints: {
+      modulePreloadPolyfill: false,
+    },
+  },
+};
+```
+
+### output.resourceHints.manifest
+
+`string`
+
+각 entrypoint의 resolve된 resource hint(`stats.entrypoints[].resourceHints`와 같은 descriptor)를 JSON manifest로 지정한 경로의 output asset에 emit합니다. 이를 통해 SSR server는 chunk graph를 순회하지 않고도 `<link>` tag를 직접 주입할 수 있습니다. [`initial`](#outputresourcehintsinitial)이 `'none'`이면 manifest는 비어 있습니다.
+
+```js
+// webpack.config.js
+export default {
+  // ...
+  output: {
+    resourceHints: {
+      manifest: "resource-hints.json",
+    },
+  },
+};
+```
+
 ## output.scriptType
 
 `string: 'module' | 'text/javascript'` `boolean = false`
@@ -2671,6 +3049,23 @@ export default {
   // ...
   output: {
     wasmLoading: "fetch",
+  },
+};
+```
+
+## output.wasmStreamingFallback
+
+<Badge text="5.109.0+" />
+
+`boolean`
+
+Fall back to non-streaming WebAssembly instantiation when streaming compilation fails because the server does not serve `.wasm` files with the `application/wasm` MIME type.
+
+```js
+export default {
+  // ...
+  output: {
+    wasmStreamingFallback: true,
   },
 };
 ```

@@ -636,6 +636,8 @@ CSS 모듈에서 사용자 지정 식별자의 이름 변경을 활성화 또는
 - Type: `boolean`
 - Default: `true`
 
+T> webpack 5.109.0부터는 `view-transition-name` / `view-transition-group` / `view-transition-class` 이름과 `::view-transition-*()` pseudo-element 참조에도 scope를 적용합니다.
+
 **webpack.config.js**
 
 ```js
@@ -644,6 +646,68 @@ export default {
     parser: {
       css: {
         customIdents: true, // 사용자 지정 식별자 이름 변경 활성화
+      },
+    },
+  },
+};
+```
+
+#### module.parser.css.customMedia
+
+<Badge text="5.109.0+" />
+
+native CSS에서 [`@custom-media`](https://drafts.csswg.org/mediaqueries-5/#custom-mq) at-rule의 resolution을 활성화하거나 비활성화합니다. 이는 file-local build-time substitution입니다. media-type 값도 지원됩니다.
+
+- Type: `boolean`
+- Default: `true`
+
+```css
+@custom-media --narrow-window (max-width: 30em);
+
+@media (--narrow-window) {
+  /* ... */
+}
+```
+
+**webpack.config.js**
+
+```js
+export default {
+  module: {
+    parser: {
+      css: {
+        customMedia: false, // @custom-media resolution 비활성화
+      },
+    },
+  },
+};
+```
+
+#### module.parser.css.customSelectors
+
+<Badge text="5.109.0+" />
+
+native CSS에서 [`@custom-selector`](https://drafts.csswg.org/css-extensions/#custom-selectors) at-rule의 resolution을 활성화하거나 비활성화합니다. 이는 `:is(...)`로 확장되는 file-local build-time expansion입니다.
+
+- Type: `boolean`
+- Default: `true`
+
+```css
+@custom-selector :--heading h1, h2, h3;
+
+:--heading {
+  margin-top: 0;
+}
+```
+
+**webpack.config.js**
+
+```js
+export default {
+  module: {
+    parser: {
+      css: {
+        customSelectors: false, // @custom-selector resolution 비활성화
       },
     },
   },
@@ -695,6 +759,39 @@ export default {
   },
 };
 ```
+
+#### module.parser.css.fontPreload
+
+<Badge text="5.109.0+" />
+
+HTML entry의 initial CSS에서 도달할 수 있는 각 `@font-face`의 primary `src` URL에 대해 `<link rel="preload" as="font">`를 자동 emit합니다. 모든 format을 preload하면 중복 다운로드가 발생하므로 `@font-face`마다 첫 번째 URL만 preload됩니다. [`module.parser.css.urlHints`](#moduleparsercssurlhints) rule과 URL별 magic comment는 여전히 seed된 기본값을 override합니다.
+
+- Type: `boolean`
+- Default: `false`
+
+**webpack.config.js**
+
+```js
+export default {
+  module: {
+    parser: {
+      css: {
+        fontPreload: true,
+      },
+    },
+  },
+};
+```
+
+W> font의 preload link는 font의 CORS fetch와 일치해야 하므로 [`output.crossOriginLoading`](/configuration/output/#outputcrossoriginloading)을 그에 맞게 설정하세요.
+
+#### module.parser.css.urlHints
+
+<Badge text="5.109.0+" />
+
+CSS의 `url(...)`을 통해 참조되는 asset에 대한 기본 resource-hint rule입니다. [`module.parser.javascript.urlHints`](#moduleparserjavascripturlhints)와 같은 rule 형식을 사용합니다.
+
+- Type: `UrlHintRule[]`
 
 #### module.parser.css.grid
 
@@ -846,6 +943,26 @@ CommonJS를 위해 [magic comments](/api/module-methods/#magic-comments) 지원�
 const x = require(/* webpackIgnore: true */ "x");
 ```
 
+#### module.parser.javascript.dynamicImportCssPreload
+
+동적으로 import된(`import()`) 모든 chunk의 CSS에 대해 `<link rel="preload" as="style">`을 자동으로 emit하여, stylesheet가 chunk의 JavaScript가 parse된 뒤가 아니라 JavaScript와 병렬로 fetch되게 합니다. [`dynamicImportPreload`](#moduleparserjavascriptdynamicimportpreload)와 달리 JavaScript 자체는 preload되지 않습니다. `true`는 기본 순서를 사용하고, 숫자는 preload 순서를 설정합니다.
+
+- 타입: `number | boolean`
+- 가능한 버전: 5.109.0+
+- 예제:
+
+  ```js
+  export default {
+    module: {
+      parser: {
+        javascript: {
+          dynamicImportCssPreload: true,
+        },
+      },
+    },
+  };
+  ```
+
 #### module.parser.javascript.dynamicImportFetchPriority
 
 동적 import를 위해 전역 [fetchPriority](https://developer.mozilla.org/en-US/docs/Web/API/HTMLScriptElement/fetchPriority)를 지정합니다.
@@ -973,6 +1090,9 @@ const x = require(/* webpackIgnore: true */ "x");
 - 타입: `boolean | 'preserve-unknown'`
 - 기본값: `true`
 - 가능한 버전: 5.68.0+
+- 타입: `boolean | 'preserve-unknown' | object`
+- 기본값: `true`
+- 가능한 버전: 5.68.0+
 
 허용되는 값:
 
@@ -981,6 +1101,26 @@ const x = require(/* webpackIgnore: true */ "x");
 - `'preserve-unknown'` <Badge text="5.105.0+" /> - 알려진 속성은 평소와 같이 평가하지만, 비표준 속성은 제거하는 대신 출력에 그대로 유지합니다.
 
   W> `output.module`이 `true`인 경우, 이 옵션을 사용하지 않아도 알 수 없는 `import.meta` 속성이 자동으로 보존됩니다.
+
+- 예시 - `import.meta` 평가를 완전히 비활성화합니다.
+- `object` <Badge text="5.109.0+" /> - 개별 `import.meta` field의 평가를 활성화하거나 비활성화합니다. 생략된 field는 계속 활성화되고, 알려지지 않은 field는 보존됩니다. 알려진 key는 `dirname`, `env`, `filename`, `main`, `resolve`, `url`, `webpack`, `webpackContext`, `webpackHot`입니다. custom key도 허용되며 해당 custom field의 평가 여부를 제어합니다.
+
+  ```js
+  export default {
+    module: {
+      parser: {
+        javascript: {
+          importMeta: {
+            url: true,
+            env: false, // `import.meta.env`를 그대로 둡니다.
+            resolve: true, // `import.meta.resolve("./asset")`를 emit된 asset URL로 resolve합니다.
+            webpackContext: true,
+          },
+        },
+      },
+    },
+  };
+  ```
 
 - 예시 - `import.meta` 평가를 완전히 비활성화합니다.
 
@@ -1023,6 +1163,11 @@ const x = require(/* webpackIgnore: true */ "x");
 #### module.parser.javascript.importMetaContext
 
 [`import.meta.webpackContext`](/api/module-variables/#importmetawebpackcontext) 평가를 사용하거나 사용하지 않도록 설정합니다.
+
+- 타입: `boolean`
+- 가능한 버전: 5.70.0+
+- 예제:
+  W> webpack 5.109.0부터 deprecated되었습니다. 대신 [`importMeta.webpackContext`](#moduleparserjavascriptimportmeta) object 옵션을 사용하세요. 둘 다 설정된 경우 `importMeta.webpackContext`가 우선합니다.
 
 - 타입: `boolean`
 - 가능한 버전: 5.70.0+
@@ -1105,6 +1250,27 @@ T> 의도된 모듈에서만 이름이 사이드 이펙트 없음으로 표시�
   };
   ```
 
+#### module.parser.javascript.strictModeViolations
+
+module이 ES module output([`output.module`](/configuration/output/#outputmodule))으로 emit될 때 strict mode에서 runtime에 깨지는 구문의 동작을 지정합니다. strict-mode-only syntax(변수의 `delete`, `with`, 8진 literal 및 escape, 중복 parameter, `eval`/`arguments`에 할당)와 semantic hazard(`arguments.callee`/`arguments.caller`, 읽기 전용 global에 할당)를 포함합니다.
+
+- 타입: `'error' | 'warn' | false`
+- 기본값: `'warn'` ([`experiments.futureDefaults`](/configuration/experiments/#experimentsfuturedefaults)가 활성화되면 `'error'`)
+- 가능한 버전: 5.109.0+
+- 예제:
+
+  ```js
+  export default {
+    module: {
+      parser: {
+        javascript: {
+          strictModeViolations: "error",
+        },
+      },
+    },
+  };
+  ```
+
 #### module.parser.javascript.url
 
 `new URL()` 구문 파싱을 활성화합니다.
@@ -1137,6 +1303,77 @@ T> 의도된 모듈에서만 이름이 사이드 이펙트 없음으로 표시�
 1. 이것은 기준 URL이 서버에의 알려지지 않을 때 SSR(서버 사이드 렌더링)에 유용하며 몇 바이트를 절약할 수 있습니다. 동일하게 유지하기 위해서 클라이언트 빌드에서도 사용해야 합니다.
 2. 또한 서버 측 렌더링이 일반적으로 필요한 정적 사이트 생성기, mini-css-plugin 및 html-plugin 등을 위해서도 필요합니다.
 
+#### module.parser.javascript.urlHints
+
+이 parser가 찾은 URL 참조 asset(`new URL("./asset", import.meta.url)`)에 대한 기본 resource-hint rule입니다. 일치하는 rule은 `webpackPrefetch` / `webpackPreload` / `webpackAs` / `webpackType` / `webpackMedia` / `webpackFetchPriority` magic comment와 같은 field를 설정합니다. 같은 URL에 명시적인 magic comment가 있으면 여전히 그것이 우선합니다. emit된 hint는 [`output.resourceHints`](/configuration/output/#outputresourcehints) pipeline의 일부입니다.
+
+각 rule은 다음을 지원합니다.
+
+- `test` / `include` / `exclude`: asset의 request와 매칭되는 [Rule conditions](#rule-conditions)입니다. 세 항목을 모두 생략하면 모든 asset에 rule을 적용합니다.
+- `prefetch` (`boolean`): 일치하는 asset에 대해 `<link rel="prefetch">`를 emit합니다.
+- `preload` (`boolean`): 일치하는 asset에 대해 `<link rel="preload">`를 emit합니다.
+- `as` (`string`): 기본 `as` attribute입니다(`script` / `style` / `font` / `image` / ...).
+- `type` (`string`): 기본 `type` attribute입니다(예: `"font/woff2"`).
+- `media` (`string`): 기본 `media` attribute입니다(예: `"(min-width: 800px)"`).
+- `fetchPriority` (`'low' | 'high' | 'auto' | false`): emit된 link의 기본 `fetchpriority`입니다.
+
+같은 옵션은 CSS parser(`url(...)` 참조)와 HTML parser(`<img src>` / `<link href>` / `<script src>` 참조)에도 있으며, [`output.resourceHints.urlHints`](/configuration/output/#outputresourcehints)는 세 parser 모두에 적용되는 project-wide shorthand입니다.
+
+- 타입: `UrlHintRule[]`
+- 가능한 버전: 5.109.0+
+- 예제:
+
+  ```js
+  export default {
+    module: {
+      parser: {
+        javascript: {
+          urlHints: [{ test: /\.woff2$/, preload: true, as: "font" }],
+        },
+      },
+    },
+  };
+  ```
+
+#### module.parser.javascript.worklet
+
+`context.audioWorklet.addModule()` 또는 `CSS.paintWorklet.addModule()` 같은 Worklet syntax의 parsing을 비활성화하거나 구성합니다. 활성화하면 `addModule(new URL("./worklet.js", import.meta.url))` entry가 Worker처럼 번들됩니다. ES module output에서는 worklet의 split chunk가 native `import`를 통해 연결되고, script output에서는 script worklet이 runtime에 chunk를 로드할 수 없으므로 `addModule`을 통해 미리 추가됩니다.
+
+- 타입: `boolean | string[]`
+- 기본값: 비활성화. [`experiments.futureDefaults`](/configuration/experiments/#experimentsfuturedefaults)가 켜져 있으면 기본 syntax 목록으로 활성화됩니다.
+- 가능한 버전: 5.109.0+
+
+기본 syntax 목록은 다음과 같습니다.
+
+```js
+[
+  "*context.audioWorklet.addModule()",
+  "*audioWorklet.addModule()",
+  "CSS.paintWorklet.addModule()",
+  "CSS.layoutWorklet.addModule()",
+  "CSS.animationWorklet.addModule()",
+];
+```
+
+배열을 사용하면 어떤 syntax를 Worklet 참조로 parse할지 custom할 수 있습니다. 예를 들어 `'*context.audioWorklet.addModule()'`은 `context.audioWorklet.addModule()`을 처리하고, `'abc()'`는 `abc()`를 처리합니다. 조합도 가능합니다.
+
+- 예제:
+
+  ```js
+  export default {
+    module: {
+      parser: {
+        javascript: {
+          worklet: [
+            "*audioWorklet.addModule()",
+            "CSS.paintWorklet.addModule()",
+          ],
+        },
+      },
+    },
+  };
+  ```
+
 #### module.parser.javascript.parse
 
 <Badge text="5.103.0+" />
@@ -1148,6 +1385,8 @@ Webpack의 AST 분석이 올바르게 작동하도록 `ast`, `comments`, `semico
 - `ast`는 ESTree와 호환되어야 합니다.
 - `comments`는 ESTree 주석 노드의 배열입니다.
 - `semicolons`는 파서가 세미콜론을 삽입한 위치의 집합입니다.
+
+T> webpack 5.109.0부터 custom parser는 더 이상 `semicolons`를 수집할 필요가 없습니다(ASI 위치는 source text에서 파생됨). 또한 location API가 없는 parser도 지원됩니다. location은 node offset에서 파생되므로 AST node가 `loc`를 포함할 필요가 없습니다.
 
 - Type: `(code: string, options: ParseOptions) => ParseResult`
 - 예시:
@@ -1190,7 +1429,7 @@ export default {
   module: {
     parser: {
       json: {
-        // options
+        // 옵션
       },
     },
   },
@@ -1327,6 +1566,11 @@ URL과 유사한 속성 값(`<img src>`, `<link href>`, `<script src>` 등)을 w
   - `css-url` - CSS 값 속성(예: SVG `style` 표현 속성)에서 `url()` 참조를 추출합니다. webpack 5.108.0부터 사용 가능합니다.
 - `tag` (선택) - 매치할 태그 이름. 모든 요소를 매치하려면 생략하세요.
 - `filter` (선택) - `(attributes: Map<string, string>) => boolean`; 주어진 요소에 대해 이 항목을 건너뛰려면 `false`를 반환합니다.
+  - `srcdoc` - attribute 값을 entity-encoded HTML document(`<iframe srcdoc>`와 같음)로 처리하고 HTML pipeline을 통해 번들합니다. webpack 5.108.0부터 사용할 수 있습니다.
+  - `html` <Badge text="5.109.0+" /> - URL은 자체 emit page로 번들되는 다른 HTML 파일에 대한 link이며(asset 추출 포함), attribute는 page의 output filename으로 다시 작성됩니다(Parcel의 `<a href="page.html">`와 유사).
+  - `false` <Badge text="5.109.0+" /> - 이 `tag`/`attribute`의 내장 source를 비활성화합니다. `"..."`와 함께 사용해 기본값 하나를 제거할 수 있습니다. 예를 들어 `<img src>`를 URL로 처리하지 않게 할 수 있습니다.
+- `tag` (선택) - 매치할 tag 이름입니다. 모든 element를 매치하려면 생략하세요.
+- `filter` (선택) - `(attributes: Map<string, string>, value: string) => boolean`; 주어진 element에 대해 이 항목을 건너뛰려면 `false`를 반환합니다.
 
 ```js
 export default {
@@ -1339,12 +1583,46 @@ export default {
           { tag: "img", attribute: "data-src", type: "src" },
           { tag: "img", attribute: "data-srcset", type: "srcset" },
           { attribute: "data-href", type: "src" }, // 모든 태그
+          { tag: "img", attribute: "src", type: false }, // 내장 기본값 제거
         ],
       },
     },
   },
 };
 ```
+
+webpack 5.109.0부터 내장 source 목록은 asset을 포함하는 HTML을 더 많이 인식합니다. script와 style이 chunk로 번들되고 빌드된 chunk URL로 다시 작성되는 `<link rel="preload">` / `<link rel="prefetch">` link, `twitter:player:stream` meta content, legacy SVG `font-face-uri`, `cursor`, `altGlyph`, `tref`, `glyphRef` element 참조, 그리고 `<link rel="manifest">` Web App Manifest 내부의 `icons` / `screenshots` / `shortcuts` URL이 여기에 포함됩니다.
+
+#### module.parser.html.as
+
+<Badge text="5.109.0+" />
+
+HTML source가 parse되는 방식을 구성합니다.
+
+- Type: `'document' | string`
+- Default: `'document'`
+
+`'document'`는 전체 page를 parse합니다. 다른 값은 context element의 tag 이름입니다. source는 해당 element의 inner HTML(fragment)로 parse됩니다. 예를 들어 중립적인 fragment에는 `'template'`을 사용하고, bare `<tr>` / `<td>` 같은 context-sensitive tag가 제거되지 않고 유지되도록 하려면 `'tbody'`를 사용합니다.
+
+```js
+export default {
+  module: {
+    parser: {
+      html: {
+        as: "template",
+      },
+    },
+  },
+};
+```
+
+#### module.parser.html.urlHints
+
+<Badge text="5.109.0+" />
+
+HTML attribute(`<img src>`, `<link href>`, `<script src>`)에서 참조되는 asset에 대한 기본 resource-hint rule입니다. [`module.parser.javascript.urlHints`](#moduleparserjavascripturlhints)와 같은 rule 형식을 사용합니다.
+
+- Type: `UrlHintRule[]`
 
 #### module.parser.html.template
 

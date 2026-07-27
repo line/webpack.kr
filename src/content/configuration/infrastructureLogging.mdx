@@ -123,6 +123,29 @@ export default {
 };
 ```
 
+## infrastructureLogging.progress
+
+<Badge text="5.109.0+" />
+
+`boolean | 'auto' = false`
+
+[`ProgressPlugin`](/plugins/progress-plugin/)을 수동으로 추가하지 않고 내장 build progress를 표시합니다. `'auto'`는 대화형 터미널(TTY)에서만 progress bar를 표시합니다. [`experiments.futureDefaults`](/configuration/experiments/#experimentsfuturedefaults)가 활성화되면 기본값은 `'auto'`입니다.
+
+progress bar는 기본 logging [`stream`](#infrastructureloggingstream)을 통해 렌더링되므로, custom [`console`](#infrastructureloggingconsole)이 제공된 경우에는 효과가 없습니다.
+
+이는 [WebpackBar](https://www.npmjs.com/package/webpackbar) 같은 타사 progress plugin을 대체합니다.
+
+**webpack.config.js**
+
+```js
+export default {
+  // ...
+  infrastructureLogging: {
+    progress: "auto",
+  },
+};
+```
+
 ## infrastructureLogging.stream
 
 <Badge text="5.31.0+" />
