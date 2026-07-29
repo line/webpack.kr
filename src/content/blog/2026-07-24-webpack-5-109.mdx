@@ -3,6 +3,8 @@ title: Webpack 5.109
 sort: 20260724
 contributors:
   - bjohansebas
+translators:
+  - dkstyle
 ---
 
 import banner from "../../assets/blog/webpack-5-109.png";
@@ -15,30 +17,30 @@ Webpack 5.109가 릴리스되었습니다. 최근 기억에 남는 minor release
 
 새로운 내용을 살펴보세요.
 
-- [**Built-in Support Goes `"auto"`**](#built-in-support-goes-auto)
-- [**Closing the Gap with `html-webpack-plugin`**](#closing-the-gap-with-html-webpack-plugin)
-  - [Head Generation: `title`, `meta`, and `base`](#head-generation-title-meta-and-base)
-  - [Controlling Tag Injection](#controlling-tag-injection)
-  - [Inlining Chunks into HTML](#inlining-chunks-into-html)
-  - [Favicons and Web App Manifest](#favicons-and-web-app-manifest)
-  - [Content-Security-Policy and Subresource Integrity](#content-security-policy-and-subresource-integrity)
-  - [Hooks for Plugins](#hooks-for-plugins)
-  - [A Smarter HTML Parser](#a-smarter-html-parser)
-- [**Resource Hints**](#resource-hints)
-- [**Vite-Compatible Module APIs**](#vite-compatible-module-apis)
+- [**내장 지원의 기본값이 `"auto"`로 변경**](#built-in-support-goes-auto)
+- [**`html-webpack-plugin`과의 격차 줄이기**](#closing-the-gap-with-html-webpack-plugin)
+  - [Head 생성: `title`, `meta`, `base`](#head-generation-title-meta-and-base)
+  - [태그 주입 제어](#controlling-tag-injection)
+  - [청크를 HTML에 인라인하기](#inlining-chunks-into-html)
+  - [파비콘과 웹 앱 매니페스트](#favicons-and-web-app-manifest)
+  - [Content-Security-Policy와 Subresource Integrity](#content-security-policy-and-subresource-integrity)
+  - [플러그인을 위한 훅](#hooks-for-plugins)
+  - [더 똑똑해진 HTML 파서](#a-smarter-html-parser)
+- [**Resource Hint**](#resource-hints)
+- [**Vite 호환 Module API**](#vite-compatible-module-apis)
   - [`import.meta.glob`](#importmetaglob)
-  - [`import.meta.env` Defaults](#importmetaenv-defaults)
+  - [`import.meta.env` 기본값](#importmetaenv-defaults)
   - [`import.meta.resolve`](#importmetaresolve)
-  - [Asset Query Suffixes](#asset-query-suffixes)
-  - [Fine-Grained `import.meta` Options](#fine-grained-importmeta-options)
+  - [Asset Query Suffix](#asset-query-suffixes)
+  - [세분화된 `import.meta` 옵션](#fine-grained-importmeta-options)
 - [**CommonJS Module Concatenation**](#commonjs-module-concatenation)
-- [**Built-in Build Progress**](#built-in-build-progress)
-- [**Bundling Worklets**](#bundling-worklets)
-- [**CSS Improvements**](#css-improvements)
+- [**내장 빌드 진행률 표시**](#built-in-build-progress)
+- [**Worklet 번들링**](#bundling-worklets)
+- [**CSS 개선사항**](#css-improvements)
 - [**Externals**](#externals)
-- [**Other Improvements**](#other-improvements)
+- [**기타 개선사항**](#other-improvements)
 - [**webpack-dev-server 6**](#webpack-dev-server-6)
-- [**Bug Fixes and Performance**](#bug-fixes-and-performance)
+- [**버그 수정과 성능 개선**](#bug-fixes-and-performance)
 
 ## Built-in Support Goes `"auto"`
 
