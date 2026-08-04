@@ -6,6 +6,7 @@ import SplashContent from "../../content/index.mdx";
 import Container from "../Container/Container.jsx";
 import Markdown from "../Markdown/Markdown.jsx";
 import { PlaceholderComponent } from "../Placeholder/Placeholder.jsx";
+import { RenderATLPromo } from "../RenderATL/RenderATL.jsx";
 import SplashViz from "../SplashViz/SplashViz.jsx";
 
 const Support = lazy(() => import("../Support/Support.jsx"));
@@ -56,6 +57,7 @@ const Splash = () => {
         </Container>
       </div>
 
+      <RenderATLPromo />
       {/* Prevent to display Support team / Sponsor in webpack-kr site */}
       {/* <div className="relative text-center page__content [&_p]:my-[1em]! [&_p]:mx-auto! [&_p]:max-w-200 [&_pre]:text-left [&_.icon-link]:hidden">
         <Container className="py-[5em] px-[1em] md:px-[1.5em]">
