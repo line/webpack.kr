@@ -33,7 +33,6 @@ import OfflineBanner from "../OfflineBanner/OfflineBanner.jsx";
 import Page from "../Page/Page.jsx";
 import PageNotFound from "../PageNotFound/PageNotFound.jsx";
 import ReadingProgress from "../ReadingProgress/ReadingProgress.jsx";
-import { RenderATLBanner } from "../RenderATL/RenderATL.jsx";
 import ScrollToTop from "../ScrollToTop/ScrollToTop.jsx";
 import Sidebar from "../Sidebar/Sidebar.jsx";
 import SidebarMobile from "../SidebarMobile/SidebarMobile.jsx";
@@ -303,8 +302,6 @@ function Site(props) {
         />
         {location.pathname !== "/" && <ReadingProgress />}
       </div>
-
-      <RenderATLBanner />
 
       {mounted ? (
         <SidebarMobile
