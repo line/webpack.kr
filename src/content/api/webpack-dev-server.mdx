@@ -3,7 +3,8 @@ title: webpack-dev-server API
 sort: 3
 contributors:
   - snitin315
-translator:
+  - bjohansebas
+translators:
   - dkstyle
 ---
 
@@ -23,6 +24,10 @@ npm install --save-dev webpack webpack-dev-server
 import webpack from "webpack";
 import WebpackDevServer from "webpack-dev-server";
 ```
+
+W> `webpack-dev-server@6`에는 Node.js `22.15.0` 이상과 webpack `5.101.0` 이상이 필요합니다.
+
+T> 버전 6부터 패키지 소스는 native ESM입니다. `import` 문법 사용을 권장하며, CommonJS 사용자는 `exports` 필드로 노출된 CommonJS build를 통해 계속 `require("webpack-dev-server")`를 사용할 수 있습니다.
 
 ## start
 
@@ -148,38 +153,60 @@ setTimeout(stopServer, 5000);
 node server.js
 ```
 
-## internalIP(family: "v4" | "v6")
+## apply(compiler)
 
-내부 `IPv4`/`IPv6` 주소를 비동기적으로 반환합니다.
+<Badge text="v6.0.0+" />
+
+`webpack-dev-server`는 constructor에 compiler를 명시적으로 전달하지 않고도 webpack plugin으로 사용할 수 있습니다. 서버는 compiler lifecycle과 통합되어 watch mode에서 첫 번째 compilation이 완료되면 시작되고, 다시 compilation될 때 여러 번 시작되지 않으며, compiler가 닫히면 깔끔하게 종료됩니다. `MultiCompiler` 구성도 지원하므로 각 설정이 자체 plugin server를 실행할 수 있습니다.
 
 **server.js**
 
 ```js
+import webpack from "webpack";
 import WebpackDevServer from "webpack-dev-server";
 
-const logInternalIPs = async () => {
-  const localIPv4 = await WebpackDevServer.internalIP("v4");
-  const localIPv6 = await WebpackDevServer.internalIP("v6");
+const compiler = webpack({
+  // ...
+  mode: "development",
+  plugins: [new WebpackDevServer({ port: 8080 })],
+});
 
-  console.log("Local IPv4 address:", localIPv4);
-  console.log("Local IPv6 address:", localIPv6);
-};
-
-logInternalIPs();
+compiler.watch({}, (error) => {
+  if (error) {
+    console.error(error);
+  }
+});
 ```
 
-## internalIPSync(family: "v4" | "v6")
+기존 compiler에 `apply`를 직접 호출할 수도 있습니다.
 
-내부 `IPv4`/`IPv6` 주소를 동기적으로 반환합니다.
+```js
+const server = new WebpackDevServer({ port: 8080 });
+
+server.apply(compiler);
+```
+
+T> plugin mode에서 서버는 watch mode일 때만 시작됩니다. 한 번만 실행되는 `compiler.run()` build는 서버를 시작하지 않고 종료됩니다.
+
+## findIp(gatewayOrFamily, isInternal)
+
+<Badge text="v5.1.0+" />
+
+해석된 로컬 IP 주소를 동기적으로 반환하며, 일치하는 주소를 찾지 못하면 `undefined`를 반환합니다.
+
+- `gatewayOrFamily`: IP family (`"v4"` | `"v6"`) 또는 gateway IP 주소입니다. gateway 주소를 전달하면 같은 subnet에 속한 로컬 interface의 주소를 반환합니다.
+- `isInternal`: 선택 사항입니다. `false`로 설정하면 외부에서 접근 가능한(LAN) 주소만 고려하고, `true`로 설정하면 내부 주소(예: loopback)만 고려합니다. 생략하면 둘 다 고려합니다.
 
 **server.js**
 
 ```js
 import WebpackDevServer from "webpack-dev-server";
 
-const localIPv4 = WebpackDevServer.internalIPSync("v4");
-const localIPv6 = WebpackDevServer.internalIPSync("v6");
+const localIPv4 = WebpackDevServer.findIp("v4", false);
+const localIPv6 = WebpackDevServer.findIp("v6", false);
 
 console.log("Local IPv4 address:", localIPv4);
 console.log("Local IPv6 address:", localIPv6);
 ```
+
+W> `internalIP(family)`와 `internalIPSync(family)` static 메서드는 `webpack-dev-server@6`에서 제거되었습니다. 같은 결과가 필요하면 `findIp(family, false)`를 사용하세요.

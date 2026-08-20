@@ -590,6 +590,21 @@ module: {
   },
 ```
 
+## Built-in query suffixes
+
+<Badge text="5.109.0+" />
+
+[`experiments.futureDefaults`](/configuration/experiments/#experimentsfuturedefaults)가 활성화되면 webpack이 위 rule을 대신 등록합니다. Vite의 asset query와 유사하게 `?raw`, `?url`, `?inline`, `?no-inline` query suffix가 모든 import에서 별도 설정 없이 동작합니다.
+
+```js
+import source from "./file.txt?raw"; // asset/source - 원시 파일 content를 string으로 가져옵니다.
+import dataUri from "./icon.svg?inline"; // asset/inline - data: URI
+import url from "./image.png?url"; // asset/resource - emit된 파일 URL
+import fileUrl from "./small.png?no-inline"; // asset/resource - rule이 inline하더라도 절대 inline하지 않습니다.
+```
+
+suffix는 query string 어디에서든 매치됩니다(`?foo&raw`도 동작). `oneOf` 목록으로 처리되므로 처음 일치한 suffix만 우선합니다. 일반 default rule이기 때문에 직접 작성한 `module.rules`가 우선하며 이를 override할 수 있습니다.
+
 ## Disable emitting assets
 
 서버 사이드 랜더링과 같은 사용 사례의 경우 애셋 방출을 비활성화할 수 있습니다. 이는 `Rule.generator` 하위의 [`emit`](/configuration/module/#rulegeneratoremit) 옵션을 통해 설정 가능합니다.

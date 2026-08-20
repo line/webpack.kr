@@ -173,7 +173,7 @@ class HelloAsyncPlugin {
     compiler.hooks.emit.tapAsync(
       "HelloAsyncPlugin",
       (compilation, callback) => {
-        // Do something async...
+        // 비동기 작업을 수행합니다...
         setTimeout(() => {
           console.log("Done with async work...");
           callback();
@@ -502,3 +502,41 @@ main.js
 vendor.js
 styles.css
 ```
+
+## Testing your plugin
+
+플러그인 테스트는 다른 빌드 도구를 테스트하는 것과 비슷합니다. 플러그인을 활성화한 상태로 webpack compilation을 실행하고 compilation에서 예상한 결과가 생성되는지 확인하는 방식을 권장합니다.
+
+일반적인 플러그인 테스트에서는 다음을 수행해야 합니다.
+
+- 플러그인이 포함된 webpack configuration을 생성합니다.
+- Node.js API를 사용하여 compilation을 실행합니다.
+- 플러그인의 동작에 따라 예상한 compilation output, 생성된 asset, warning 또는 error를 assertion으로 검증합니다.
+
+Jest를 사용하는 예시는 다음과 같습니다.
+
+```js
+import webpack from "webpack";
+import MyPlugin from "../src/MyPlugin.js";
+
+test("runs the plugin successfully", (done) => {
+  const compiler = webpack({
+    mode: "development",
+    entry: "./fixtures/index.js",
+    plugins: [new MyPlugin()],
+  });
+
+  compiler.run((err, stats) => {
+    expect(err).toBeNull();
+    expect(stats.hasErrors()).toBe(false);
+
+    // 플러그인의 동작을 검증하는 assertion을 추가합니다.
+
+    done();
+  });
+});
+```
+
+정확한 assertion은 플러그인이 수행하는 작업에 따라 달라집니다. 예를 들어 emitted asset, 변환된 source code, warning, error 또는 compilation에 적용된 변경사항을 검증할 수 있습니다.
+
+실제 플러그인 테스트 예시는 webpack 저장소와 webpack ecosystem plugin을 살펴보세요. fixture를 compile하고 그 결과로 생성된 output을 assertion으로 검증하는 방법을 확인할 수 있습니다.

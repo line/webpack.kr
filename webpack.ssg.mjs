@@ -129,10 +129,14 @@ export default (env) =>
             to: "./",
           },
           {
-            from: "./assets/google2f228e794f2592f2.html",
+            from: "./googlef7893965f8fb4e95.html",
             to: "./",
           },
           "CNAME",
+          {
+            from: ".well-known/atproto-did",
+            to: ".well-known/",
+          },
         ],
       }),
       new WebpackPwaManifest({

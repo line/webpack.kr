@@ -47,7 +47,7 @@ console.log(import.meta.url);
 
 ```js
 export default function doSomething() {
-  // Do something...
+  // 작업을 수행합니다...
 }
 ```
 
@@ -63,7 +63,7 @@ export const anObject = {
   x: 123,
 };
 export function doSomething() {
-  // Do something
+  // 작업을 수행합니다
 }
 ```
 
@@ -245,6 +245,63 @@ T> 서로 다른 소스의 변수가 병합됩니다. 동일한 변수가 여러
 
 `import.meta.env`는 `process.env`와 유사하게 동작합니다. 객체이며 `typeof` 검사를 지원하고, 존재하지 않는 속성에 접근하면 `undefined`를 반환합니다.
 
+webpack 5.109.0부터 다음 상수들이 기본으로 정의됩니다([`optimization.nodeEnv`](/configuration/optimization/#optimizationnodeenv)에서 파생되므로 `optimization.nodeEnv: false`가 아닌 한 사용할 수 있습니다).
+
+- `import.meta.env.MODE`: [`mode`](/configuration/mode/)의 값입니다(`import.meta.env.NODE_ENV`와 동일).
+- `import.meta.env.DEV`: `development` mode에서는 `true`, 그 외에는 `false`입니다.
+- `import.meta.env.PROD`: `DEV`의 부정값입니다.
+- `import.meta.env.SSR`: server-only build(browser target이 아닌 Node.js [target](/configuration/target/))에서는 `true`입니다.
+- `import.meta.env.BASE_URL`: [`output.publicPath`](/configuration/output/#outputpublicpath)의 값이며, `publicPath`가 비어 있거나 `'auto'`이면 `'/'`로 fallback합니다.
+
+`import.meta.env` 평가는 [`importMeta`](/configuration/module/#moduleparserjavascriptimportmeta) parser 옵션(`importMeta: { env: false }`)으로 끌 수 있습니다.
+
+### import.meta.resolve
+
+<Badge text="5.109.0+" />
+
+[native `import.meta.resolve`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import.meta/resolve)처럼 module specifier를 URL로 resolve합니다. specifier가 번들된 asset을 가리키면 webpack은 build time에 호출을 emit된 asset URL로 대체합니다.
+
+```js
+const assetUrl = import.meta.resolve("./logo.png");
+```
+
+평가는 [`importMeta.resolve`](/configuration/module/#moduleparserjavascriptimportmeta) parser 옵션으로 제어합니다.
+
+### import.meta.glob
+
+<Badge text="5.109.0+" />
+
+glob pattern으로 여러 module을 한 번에 import합니다. 일치하는 각 file path를 dynamic import 함수에 매핑하는 object를 반환하며, 일치한 module은 기본적으로 on-demand chunk로 분리됩니다.
+
+```js
+const modules = import.meta.glob("./pages/*.js");
+// {
+//   "./pages/about.js": () => import("./pages/about.js"),
+//   "./pages/home.js": () => import("./pages/home.js"),
+// }
+
+for (const path in modules) {
+  modules[path]().then((mod) => console.log(path, mod));
+}
+```
+
+pattern(string 또는 string 배열, `!` 접두사가 붙은 negative pattern 지원)과 options object는 모두 literal이어야 합니다. 지원되는 옵션:
+
+- `eager` (`boolean = false`): dynamic import 함수를 반환하는 대신 module을 정적으로 import합니다. 값은 module namespace 자체입니다.
+- `import` (`string`): 각 module에서 단일 export(예: `'default'`)를 선택하여 더 나은 tree shaking을 가능하게 합니다.
+- `query` (`string | object`): 각 request에 query를 추가합니다. 예: `{ query: '?raw' }`.
+- `base` (`string`): pattern을 다른 base directory를 기준으로 resolve합니다. 결과 object의 key는 이 directory에 상대적입니다.
+- `exhaustive` (`boolean = false`): `node_modules`와 hidden directory 안의 파일도 매치합니다.
+- `caseSensitive` (`boolean = true`): 비활성화하면 path를 대소문자 구분 없이 매치합니다.
+
+```js
+const icons = import.meta.glob("./icons/*.svg", {
+  eager: true,
+  import: "default",
+  query: "?url",
+});
+```
+
 ## \_\_filename (NodeJS)
 
 `node.__filename`의 설정 옵션은 다음과 같습니다.
@@ -394,7 +451,7 @@ __webpack_global__.myProperty = "value";
 
 ```js
 if (__webpack_is_included__("./module-a.js")) {
-  // do something
+  // 작업을 수행합니다
 }
 ```
 

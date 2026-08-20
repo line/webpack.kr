@@ -13,6 +13,8 @@ translators:
 
 `ProgressPlugin`은 컴파일 도중에 진행 상황을 보고받을 방법을 자신이 원하는대로 정하는 방법을 제공합니다.
 
+T> webpack 5.109.0부터는 plugin을 수동으로 추가하지 않아도 [`infrastructureLogging.progress`](/configuration/infrastructureLogging/#infrastructureloggingprogress)를 통해 build progress를 표시할 수 있습니다. 이는 [WebpackBar](https://www.npmjs.com/package/webpackbar) 같은 타사 progress plugin을 대체하는 권장 방법입니다.
+
 ## Usage
 
 `ProgressPlugin`의 인스턴스를 만들고, 허용되는 여러 매개변수 중 하나를 제공하며, 기본 핸들러를 사용자 지정하는 데 사용할 수 있는 정적 메서드 `createDefaultHandler`도 있습니다.
@@ -47,6 +49,12 @@ new webpack.ProgressPlugin(handler);
 - `dependencies` (`boolean = true`): 종속성 수를 진행 메세지로 보여줍니다.
 - `dependenciesCount` (`number = 10000`): 시작할 종속성 수의 최솟값이며 `dependencies` 속성이 활성화되면 적용됩니다.
 - `percentBy` (`string = null: 'entries' | 'dependencies' | 'modules' | null`): 진행률을 계산할 방법을 `ProgressPlugin`에게 알려줍니다.
+- `progressBar` (`boolean | 'auto' | object = false`) <Badge text="5.107.0+" />: 단순한 percentage 메세지 대신 터미널에 progress bar를 렌더링합니다. 기본 handler를 사용할 때만 적용됩니다. 즉 사용자 지정 `handler`를 제공하지 않았을 때만 동작합니다. 기본값으로 활성화하려면 `true`를 전달하고, 대화형 터미널(TTY)에서만 활성화하려면 `'auto'` <Badge text="5.109.0+" />를 전달하거나, 아래 속성을 가진 object를 전달할 수 있습니다.
+  - `name` (`string = 'Build'`): progress bar 앞에 표시되는 이름입니다.
+  - `color` (`string = 'green'`): bar가 채워진 부분에 사용할 색상입니다. 지정한 색상을 지원하지 않으면 `'green'`을 사용합니다.
+  - `width` (`number = 25`) <Badge text="5.109.0+" />: progress bar의 문자 단위 너비입니다.
+- `estimatedTime` (`boolean = false`) <Badge text="5.109.0+" />: build progress를 기준으로 남은 예상 시간을 보여줍니다.
+- `phaseTimings` (`boolean = false`) <Badge text="5.109.0+" />: build가 완료되면 각 build phase의 timing breakdown을 보여줍니다.
 
 ```js
 new webpack.ProgressPlugin({
@@ -64,6 +72,17 @@ new webpack.ProgressPlugin({
 });
 ```
 
+progress bar 렌더링:
+
+```js
+new webpack.ProgressPlugin({
+  progressBar: {
+    name: "Build",
+    color: "green",
+  },
+});
+```
+
 ### webpack.ProgressPlugin.createDefaultHandler
 
 `ProgressPlugin`의 기본 핸들러가 요구 사항을 충족하지 않는 경우 정적 `ProgressPlugin.createDefaultHandler` 메서드를 사용하여 사용자 지정할 수 있습니다.
@@ -71,7 +90,8 @@ new webpack.ProgressPlugin({
 ```ts
 static createDefaultHandler: (
   profile: undefined | null | boolean,
-  logger: WebpackLogger
+  logger: WebpackLogger,
+  progressBar?: { name: string, color: string } | false
 ) => (percentage: number, msg: string, ...args: string[]) => void;
 ```
 

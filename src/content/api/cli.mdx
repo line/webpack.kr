@@ -415,6 +415,8 @@ CLI는 프로젝트 경로에서 일부 기본 설정을 찾습니다. 아래는
 '.webpack/webpackfile',
 ```
 
+각 기본 이름은 지원되는 확장자(JavaScript 및 TypeScript 변형(`.js`, `.mjs`, `.cjs`, `.ts`, `.cts`, `.mts`), `.coffee`와 같은 기타 지원 언어, 그리고 webpack-cli 7.1.0부터는 [데이터 포맷](/configuration/configuration-languages/#data-formats-json5-yaml-and-toml) `.json5`, `.yaml`/`.yml` 및 `.toml`)에 대해 해석됩니다.
+
 ## Common Options
 
 W> 커맨드 라인 인터페이스에서 사용하는 인수는 설정 파일보다 더 높은 우선순위를 가집니다. 예를 들어 설정 파일은 `development`를 사용하지만, webpack CLI에 [`--mode="production"`](/configuration/mode/#usage)을 전달한 경우 `production`이 사용됩니다.

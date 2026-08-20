@@ -164,13 +164,15 @@ export default {
 
 ### cache.compression
 
-`false | 'gzip' | 'brotli'`
+`false | 'gzip' | 'brotli' | 'zstd'`
 
 <Badge text="5.42.0+" />
 
 캐시 파일에 사용되는 압축 유형입니다. 기본적으로 이 값은 `false` 입니다.
 
-`cache.compression`은 [`cache.type`](#cachetype)이 `'filesystem'`으로 설정된 경우에만 사용할 수 있습니다..
+T> `'zstd'`(Zstandard)는 webpack 5.109.0부터 사용할 수 있으며, 내장 `node:zlib` zstd 바인딩을 제공하는 Node.js 22.15.0 이상이 필요합니다.
+
+`cache.compression` 옵션은 [`cache.type`](#cachetype)이 `'filesystem'`으로 설정된 경우에만 사용할 수 있습니다.
 
 **webpack.config.js**
 

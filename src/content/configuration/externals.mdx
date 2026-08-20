@@ -134,6 +134,8 @@ export default {
 
 W> `{ root, amd, commonjs, ... }`가 있는 객체는 [`libraryTarget: 'umd'`](/configuration/output/#outputlibrarytarget)에만 허용됩니다. 다른 라이브러리 타켓에는 허용되지 않습니다.
 
+W> webpack 5.109.0부터 사용된 externals type에 대한 entry가 없는 object external은 runtime에 조용히 `undefined`로 resolve되는 대신 build error를 emit합니다.
+
 ```js
 export default {
   // ...
@@ -147,7 +149,7 @@ export default {
 ```js
 export default {
   // ...
-  // or
+  // 또는
   externals: {
     lodash: {
       commonjs: "lodash",
@@ -171,6 +173,27 @@ export default {
 ```
 
 이 구문은 외부 라이브러리를 사용할 수 있는 모든 가능한 방법을 설명하는 데 사용됩니다. 여기서 `lodash`는 AMD 및 CommonJS 모듈 시스템에서 `lodash`로 사용할 수 있지만 전역 변수 형식에서는 `_`로 사용할 수 있습니다. 여기서 `subtract`는 전역 `math` 객체 아래의 `subtract` 속성을 통해 사용할 수 있습니다. (예. `window['math']['subtract']`)
+
+#### interop
+
+<Badge text="5.109.0+" />
+
+Non-ESM externals(`commonjs`, `amd`, `umd` 등)는 dynamic module입니다. strict ES module(`"type": "module"`을 가진 package)에서 `default`를 import하면 전체 exports object가 반환되고, non-strict importer는 runtime `__esModule` 검사를 통해 이를 unbox합니다. object external의 선택적 `interop` hint는 importer와 무관하게 이 동작을 고정하며, Rollup의 [`output.interop`](https://rollupjs.org/configuration-options/#output-interop)을 미러링합니다.
+
+- `'esModule'` - external을 ES module namespace로 처리하여 `default` import가 `.default` export로 resolve되게 합니다.
+- `'default'` - external을 CommonJS module로 처리하여 `default` import가 전체 exports object로 resolve되게 합니다(Node.js semantics).
+
+```js
+export default {
+  // ...
+  externals: {
+    dep: {
+      amd: "dep",
+      interop: "esModule",
+    },
+  },
+};
+```
 
 ### function
 
@@ -300,9 +323,9 @@ export default {
   // ...
   externals: [
     {
-      // String
+      // 문자열
       react: "react",
-      // Object
+      // 객체
       lodash: {
         commonjs: "lodash",
         amd: "lodash",
@@ -311,14 +334,14 @@ export default {
       // [string]
       subtract: ["./math", "subtract"],
     },
-    // Function
+    // 함수
     function ({ context, request }, callback) {
       if (/^yourregex$/.test(request)) {
         return callback(null, `commonjs ${request}`);
       }
       callback();
     },
-    // Regex
+    // 정규식
     /^(jquery|\$)$/i,
   ],
 };
@@ -357,6 +380,7 @@ export default {
 지원 유형:
 
 - `'amd'`
+- [`'amd-async'`](#externalstypeamd-async) - 비동기 AMD `require([...])` API를 통해 external을 로드합니다(async module). <Badge text="5.109.0+" />
 - `'amd-require'`
 - `'assign'` - same as `'var'`
 - [`'commonjs'`](#externalstypecommonjs)
@@ -386,6 +410,48 @@ export default {
   externalsType: "promise",
 };
 ```
+
+### externalsType.amd-async
+
+<Badge text="5.109.0+" />
+
+externals의 기본 type을 `'amd-async'`로 지정합니다. `'amd'`와 마찬가지로 external은 AMD loader를 통해 resolve되지만, runtime에는 비동기 `require([...])` API를 통해 로드되고 async module로 노출됩니다. 즉 output bundle 자체가 AMD library로 래핑될 필요가 없으므로(일치하는 [`output.library.type`](/configuration/output/#outputlibrarytype)이 필요 없음), AMD-only external을 어떤 chunk format에서도 사용할 수 있습니다.
+
+#### Example
+
+```js
+import _ from "lodash";
+```
+
+**webpack.config.js**
+
+```js
+export default {
+  // ...
+  externalsType: "amd-async",
+  externals: {
+    lodash: "lodash",
+  },
+};
+```
+
+external module은 webpack의 async module runtime을 통해 노출되며, 다음과 같은 표현식으로 resolve됩니다.
+
+```js
+new Promise((resolve, reject) => {
+  if (typeof require !== "function") {
+    reject(
+      new Error(
+        "AMD 'require' is not available to load external module lodash",
+      ),
+    );
+    return;
+  }
+  require(["lodash"], (module) => resolve(module), reject);
+});
+```
+
+T> [`output.library.amdContainer`](/configuration/output/#outputlibraryamdcontainer)가 설정되면 비동기 `require` 호출은 global AMD `require` 대신 해당 container object에서 실행됩니다.
 
 ### externalsType.commonjs
 
