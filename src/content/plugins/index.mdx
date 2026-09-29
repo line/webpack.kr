@@ -39,14 +39,13 @@ T> 이들 중 일부는 [설정 옵션](/configuration/)이 해당 경우를 항
 
 ## Output and assets
 
-| 이름                                                              | 설명                                                                          |
-| ----------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| [`BannerPlugin`](/plugins/banner-plugin)                          | 생성된 각 청크 상단에 banner를 추가합니다                                     |
-| [`CopyPlugin`](/plugins/copy-plugin)                              | 파일과 디렉터리를 출력 디렉터리로 복사합니다                                  |
-| [`ManifestPlugin`](/plugins/manifest-plugin)                      | 소스 파일명을 방출된 출력 파일로 매핑하는 애셋 매니페스트를 생성합니다        |
-| [`CompressionWebpackPlugin`](/plugins/compression-webpack-plugin) | Content-Encoding으로 제공할 애셋의 압축 버전을 준비합니다                     |
-| [`ChunksWebpackPlugin`](/plugins/chunks-webpack-plugin/)          | 번들 제공을 위해 엔트리 포인트와 청크 관계가 포함된 HTML 파일을 생성합니다    |
-| [`SvgChunkWebpackPlugin`](/plugins/svg-chunk-webpack-plugin/)     | 엔트리 포인트 디펜던시를 기반으로 SVGO가 최적화한 SVG 스프라이트를 생성합니다 |
+| 이름                                                          | 설명                                                                          |
+| ------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| [`BannerPlugin`](/plugins/banner-plugin)                      | 생성된 각 청크 상단에 banner를 추가합니다                                     |
+| [`CopyPlugin`](/plugins/copy-plugin)                          | 파일과 디렉터리를 출력 디렉터리로 복사합니다                                  |
+| [`ManifestPlugin`](/plugins/manifest-plugin)                  | 소스 파일명을 방출된 출력 파일로 매핑하는 애셋 매니페스트를 생성합니다        |
+| [`ChunksWebpackPlugin`](/plugins/chunks-webpack-plugin/)      | 번들 제공을 위해 엔트리 포인트와 청크 관계가 포함된 HTML 파일을 생성합니다    |
+| [`SvgChunkWebpackPlugin`](/plugins/svg-chunk-webpack-plugin/) | 엔트리 포인트 디펜던시를 기반으로 SVGO가 최적화한 SVG 스프라이트를 생성합니다 |
 
 ## Chunks and optimization
 
@@ -57,7 +56,7 @@ T> 이들 중 일부는 [설정 옵션](/configuration/)이 해당 경우를 항
 | [`MergeDuplicateChunksPlugin`](/plugins/merge-duplicate-chunks-plugin)          | 동일한 모듈을 포함하는 청크를 병합합니다                                                                                                                                |
 | [`LimitChunkCountPlugin`](/plugins/limit-chunk-count-plugin)                    | 청크를 병합하여 최대 청크 수를 제한합니다                                                                                                                               |
 | [`MinChunkSizePlugin`](/plugins/min-chunk-size-plugin)                          | 청크 크기를 지정한 제한 이상으로 유지합니다                                                                                                                             |
-| [`MinimizerPlugin`](/plugins/minimizer-webpack-plugin/)                         | Terser 또는 다른 도구로 프로젝트의 JS/CSS/HTML/JSON 등을 minify합니다                                                                                                   |
+| [`MinimizerPlugin`](/plugins/minimizer-webpack-plugin/)                         | 프로젝트의 JS/CSS/HTML/JSON 등을 minify하고, [방출 결과를 압축합니다](/plugins/minimizer-webpack-plugin/#compressing-with-minifying-and-without)                        |
 | [`HashedModuleIdsPlugin`](/plugins/hashed-module-ids-plugin)                    | 해시 기반 모듈 ID — `production` 기본값인 [`optimization.moduleIds: 'deterministic'`](/configuration/optimization/#optimizationmoduleids)을 대신 사용하세요             |
 | [`NoEmitOnErrorsPlugin`](/configuration/optimization/#optimizationemitonerrors) | 컴파일 오류가 있을 때 emit 단계를 건너뜁니다                                                                                                                            |
 | [`AutomaticPrefetchPlugin`](/plugins/automatic-prefetch-plugin)                 | 이전 컴파일의 모든 모듈을 미리 해결하여 워치 재빌드 속도를 높입니다                                                                                                     |

@@ -184,6 +184,8 @@ export default {
         // type: string, https://webpack.js.org/configuration/output/#template-strings의 파일 수준 및 모듈 수준 대체 외에도 [uniqueName] 및 [local]도 포함됩니다.
         // webpack 5.91.0부터 사용 가능합니다.
         // webpack 5.108.0부터 여기서 [hash]는 로컬 식별자 해시로 해석됩니다. 모듈 해시를 위해서는 [modulehash]를 사용하세요. 인라인 다이제스트/길이 형식도 지원됩니다. 예: [hash:base64:8].
+        // 여기서 [hash]와 [fullhash]는 compilation hash가 아니라 로컬 식별자 해시입니다. 즉, `localIdentHashSalt`, `output.uniqueName`, `context`에 대한 상대 리소스 경로 및 로컬 이름의 해시입니다.
+        // 이는 결정론적이므로, 해당 값들을 공유하고 다른 모든 placeholder(예: [id])를 같은 방식으로 해석하는 빌드는 동일한 class name을 생성합니다(예: SSR용 web 및 node 빌드).
         localIdentName: "[uniqueName]-[id]-[local]",
       },
       "css/global": {
