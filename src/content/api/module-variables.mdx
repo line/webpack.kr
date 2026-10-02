@@ -1,5 +1,6 @@
 ---
 title: Module Variables
+description: Module Variables API의 기능과 사용 방법을 설명합니다.
 group: Modules
 sort: 8
 contributors:
@@ -75,11 +76,16 @@ export function doSomething() {
 
 ## \_\_dirname (NodeJS)
 
-`node.__dirname`의 설정 옵션은 다음과 같습니다.
+설정 옵션 [`node.__dirname`](/configuration/node/)에 따라 다릅니다.
 
 - `false`: 정의되지 않음
-- `mock`: `'/'`와 같음
-- `true`: [node.js \_\_dirname](https://nodejs.org/api/globals.html#globals_dirname)
+- `true`: 컴파일러 [`context`](/configuration/entry-context/#context)에 상대적인 모듈의 디렉터리
+- `'mock'`: `'/'`와 같음
+- `'warn-mock'`: `'/'`와 같음, 경고와 함께
+- `'node-module'`: ES 모듈 출력에서 `import.meta.url` (또는 지원되는 경우 `import.meta.dirname`)에서 파생
+- `'eval-only'`: Node.js가 런타임에 평가하도록 남겨둠
+
+Node.js와 유사한 타겟의 경우 기본값은 `'eval-only'`이며, 그 외에는 `'mock'`입니다.
 
 파서에 의해 파싱되는 표현식 내부에서 사용되는 경우, 설정 옵션은 `true`로 처리됩니다.
 
@@ -87,13 +93,11 @@ export function doSomething() {
 
 `import.meta`는 모듈의 URL과 같은 컨텍스트별 메타데이터를 JavaScript 모듈에 노출합니다. [ESM](/guides/ecma-script-modules/)에서만 사용할 수 있습니다.
 
-Webpack은 `import.meta`에 대한 직접 액세스를 지원하지 않습니다. 대신 해당 속성에 액세스하거나 디스트럭처링 할당을 사용해야 합니다. 예를 들면,
+`import.meta`에 대한 직접 접근이 지원됩니다. webpack은 이를 알려진 속성(`url`, `webpack`, `main`, `env` 등)의 객체로 대체합니다. [`module.parser.javascript.importMeta`](/configuration/module/#moduleparserjavascriptimportmeta)가 `'preserve-unknown'` 또는 객체로 설정되지 않은 경우, 알 수 없는 속성은 `undefined`입니다.
 
 ```js
-// webpack은 이에 대해 경고할 것입니다.
-Object.keys(import.meta);
+Object.keys(import.meta); // e.g. ['url', 'webpack', 'main', 'env']
 
-// 사용해도 괜찮습니다.
 console.log(import.meta.url);
 const { url } = import.meta;
 ```
@@ -304,11 +308,16 @@ const icons = import.meta.glob("./icons/*.svg", {
 
 ## \_\_filename (NodeJS)
 
-`node.__filename`의 설정 옵션은 다음과 같습니다.
+설정 옵션 [`node.__filename`](/configuration/node/)에 따라 다릅니다.
 
 - `false`: 정의되지 않음
-- `mock`: `'/index.js'`와 같음
-- `true`: [node.js \_\_filename](https://nodejs.org/api/globals.html#globals_filename)
+- `true`: 컴파일러 [`context`](/configuration/entry-context/#context)에 상대적인 모듈의 경로
+- `'mock'`: `'/index.js'`와 같음
+- `'warn-mock'`: `'/index.js'`와 같음, 경고와 함께
+- `'node-module'`: ES 모듈 출력에서 `import.meta.url` (또는 지원되는 경우 `import.meta.filename`)에서 파생
+- `'eval-only'`: Node.js가 런타임에 평가하도록 남겨둠
+
+Node.js와 유사한 타겟의 경우 기본값은 `'eval-only'`이며, 그 외에는 `'mock'`입니다.
 
 파서에 의해 파싱되는 표현식 내부에서 사용되는 경우, 설정 옵션은 `true`로 처리됩니다.
 
@@ -384,9 +393,82 @@ import("./module-a").then((moduleA) => {
 
 컴파일의 해시에 대한 접근을 제공합니다.
 
+## \_\_webpack_layer\_\_ (webpack-specific)
+
+`string | null`
+
+현재 모듈이 배치된 [레이어](/configuration/module/#rulelayer), 또는 레이어가 없는 경우 `null`입니다. webpack은 빌드 시 이를 리터럴로 대체하므로 런타임 비용 없이 비교하거나 분기할 수 있으며, `typeof __webpack_layer__`도 정적으로 평가됩니다.
+
+```js
+if (__webpack_layer__ === "server") {
+  // only kept in modules built in the "server" layer
+}
+```
+
+## \_\_webpack_nonce\_\_ (webpack-specific)
+
+`string`
+
+Content Security Policy 하에 서비스되는 페이지를 위해 webpack이 주입하는 모든 스크립트 태그에 설정하는 [nonce](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/script-src#nonce-base64-value)입니다. 청크가 로드되기 전에 한 번 할당하세요.
+
+```js
+__webpack_nonce__ = "2726c7f26c";
+```
+
+## \_\_webpack_chunkname\_\_ (webpack-specific)
+
+`string`
+
+현재 런타임이 속한 청크의 이름입니다.
+
+## \_\_webpack_init_sharing\_\_ (webpack-specific)
+
+`function`
+
+[공유 스코프](/concepts/module-federation/)를 초기화하고 이 빌드가 제공하는 공유 모듈로 채웁니다. 프로미스를 반환하며 스코프 이름을 인수로 받습니다.
+
+```js
+await __webpack_init_sharing__("default");
+```
+
+## \_\_webpack_share_scopes\_\_ (webpack-specific)
+
+`object`
+
+이 빌드가 알고 있는 공유 스코프로, 스코프 이름으로 키가 지정됩니다. 스코프를 초기화한 후 원격 컨테이너의 `init()`에 전달하는 것입니다 — [동적 원격 컨테이너](/concepts/module-federation/#dynamic-remote-containers)를 참고하세요.
+
+## \_\_system_context\_\_ (webpack-specific)
+
+`object`
+
+`output.libraryTarget: 'system'`으로 빌드할 때 사용할 수 있는 [System.register](https://github.com/systemjs/systemjs/blob/main/docs/system-register.md) 컨텍스트입니다.
+
+## \_\_webpack_css_server_styles\_\_ (webpack-specific)
+
+<Badge text="5.110.0+" />
+
+`string`
+
+DOM 없이 렌더링하는 동안 수집한 CSS를 하나의 문자열로 반환합니다. 내장 CSS 지원([`experiments.css`](/configuration/experiments/#experimentscss))이 server-side rendering처럼 `<style>`을 삽입할 `document`가 없는 환경에서 실행되면 webpack은 style을 전역 registry에 기록합니다. 이 변수는 style이 적용된 순서대로 registry를 읽어 서버가 전송하는 HTML에 인라인으로 삽입할 수 있게 합니다.
+
+```js
+import { renderToString } from "react-dom/server";
+import App from "./App.js";
+
+export function render() {
+  const html = renderToString(<App />);
+  // render가 가져온 모든 스타일시트를 적용 순서대로 반환
+  const css = __webpack_css_server_styles__;
+
+  return `<!doctype html><html><head><style>${css}</style></head><body>${html}</body></html>`;
+}
+```
+
+registry는 style 식별자를 key로 사용하고 [`output.uniqueName`](/configuration/output/#outputuniquename)으로 namespace를 지정하므로, 같은 프로세스에서 렌더링되는 여러 번들이 서로의 style을 읽지 않습니다.
+
 ## \_\_webpack_get_script_filename\_\_ (webpack-specific)
 
-`function (chunkId)`
+`(chunkId: string | number) => string`
 
 id로 청크의 파일 이름을 제공합니다.
 
@@ -478,7 +560,3 @@ if (__webpack_is_included__("./module-a.js")) {
 ```js
 console.log(__webpack_runtime_id__ === "main");
 ```
-
-## DEBUG (webpack-specific)
-
-설정 옵션 `debug`와 동일합니다.

@@ -1,0 +1,117 @@
+---
+title: CopyPlugin
+description: 빌드 과정에서 파일과 디렉터리를 output.path로 복사합니다.
+group: webpack
+contributors:
+  - alexander-akait
+translators:
+  - dkstyle
+related:
+  - title: output.copy
+    url: /configuration/output/#outputcopy
+  - title: output-copy example
+    url: https://github.com/webpack/webpack/tree/main/examples/output-copy
+---
+
+빌드 과정에서 파일과 디렉터리를 [`output.path`](/configuration/output/#outputpath)로 복사합니다. 이 plugin은 [`output.copy`](/configuration/output/#outputcopy)의 기반이며, 해당 옵션을 설정하면 webpack이 자동으로 적용합니다. `output.copy`에서 제공하지 않는 `concurrency` 또는 `stage` 옵션이 필요할 때 plugin을 직접 사용하세요.
+
+<Badge text="5.111.0+" />
+
+```js
+import webpack from "webpack";
+
+new webpack.CopyPlugin(options);
+```
+
+## Options
+
+```ts
+{
+  patterns: (string | object)[], // 복사할 항목, output.copy 참고
+  concurrency?: number, // 동시에 읽을 파일 수
+  stage?: number, // 파일을 복사할 processAssets 단계
+}
+```
+
+- `patterns` (`(string | object)[]`): 복사할 파일입니다. 패턴은 `from`과 `context`, `filename`, `globOptions`, `info`, `preservePermissions`, `preserveTimestamps`, `to`, `transform`으로 구성됩니다. 동일한 패턴을 사용하는 [`output.copy`](/configuration/output/#outputcopy)에서 모두 설명합니다.
+- `concurrency` (`number = 100`): 동시에 읽을 수 있는 최대 파일 수입니다.
+- `stage` (`number = webpack.Compilation.PROCESS_ASSETS_STAGE_ADDITIONAL`): 파일을 복사할 [`processAssets`](/api/compilation-hooks/#processassets) 단계입니다. 기본 단계에서는 복사된 파일도 다른 애셋과 마찬가지로 최소화되고 압축됩니다. 이후 단계를 지정하면 이러한 작업을 수행할 tap이 끝난 뒤 파일을 emit합니다.
+
+## Usage
+
+```js
+import webpack from "webpack";
+
+export default {
+  // ...
+  plugins: [
+    new webpack.CopyPlugin({
+      patterns: [
+        "static",
+        { from: "img", to: "images" },
+        { from: "licenses/*.txt", to: "licenses" },
+      ],
+      concurrency: 50,
+    }),
+  ],
+};
+```
+
+### Keeping a file out of the minimizer
+
+미리 빌드된 파일은 이미 최소화되어 있으므로 minimizer를 다시 실행하면 불필요하게 시간만 소요됩니다. [asset info](/api/stats/#asset-objects)에 최소화된 파일이라고 표시하면 minimizer가 해당 파일을 건너뜁니다.
+
+```js
+import webpack from "webpack";
+
+export default {
+  // ...
+  plugins: [
+    new webpack.CopyPlugin({
+      patterns: [
+        {
+          from: "*.min.js",
+          context: "vendor",
+          to: "vendor",
+          info: { minimized: true },
+        },
+      ],
+    }),
+  ],
+};
+```
+
+W> 이후의 `stage`를 지정하는 것만으로는 파일을 minimizer에서 제외할 수 없습니다. Minimizer는 `additionalAssets`를 사용해 `processAssets`를 tap하므로 이후 단계에 추가된 애셋에도 다시 실행됩니다. `info: { minimized: true }`를 지정해야 minimizer가 해당 파일을 건너뜁니다.
+
+### Merging copied assets
+
+하나의 소스 파일은 하나의 애셋이 되므로 여러 파일을 하나로 합치려면 복사된 결과물을 다시 처리해야 합니다. 이 작업은 어떤 plugin으로도 수행할 수 있습니다. 복사된 애셋의 asset info에는 `copied: true`가 포함되므로 다음과 같이 대상을 선별할 수 있습니다.
+
+```js
+compilation.hooks.processAssets.tap(
+  {
+    name: "MergeCopiedAssetsPlugin",
+    stage: webpack.Compilation.PROCESS_ASSETS_STAGE_DERIVED,
+  },
+  () => {
+    const assets = compilation
+      .getAssets()
+      .filter((asset) => asset.info.copied && /^licenses\//.test(asset.name))
+      .toSorted((a, b) => (a.name < b.name ? -1 : 1));
+    if (assets.length === 0) return;
+
+    const merged = assets
+      .map((asset) => `/* ${asset.name} */\n${asset.source.source()}`)
+      .join("\n");
+
+    compilation.emitAsset(
+      "THIRD_PARTY_LICENSES.txt",
+      new webpack.sources.RawSource(merged),
+      { copied: true },
+    );
+    for (const asset of assets) compilation.deleteAsset(asset.name);
+  },
+);
+```
+
+T> [`output-copy` 예제](https://github.com/webpack/webpack/tree/main/examples/output-copy)에는 캐싱을 포함한 이 plugin의 전체 구현과 모든 패턴 옵션을 사용하는 설정이 담겨 있습니다.

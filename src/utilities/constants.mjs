@@ -1,4 +1,15 @@
 export const excludedLoaders = [
+  // CSS is built in — see /guides/native-css/
+  "webpack/css-loader",
+  "webpack/style-loader",
+  // HTML is built in — see /guides/native-html/
+  "webpack/html-loader",
+  // Deprecated: webpack shims these without a loader — see /guides/shimming/
+  "webpack/expose-loader",
+  "webpack/imports-loader",
+  "webpack/exports-loader",
+  // Deprecated in favour of webpack's own markdown example
+  "webpack/remark-loader",
   "webpack-contrib/config-loader",
   "webpack-contrib/eslint-loader",
   "webpack-contrib/transform-loader",
@@ -26,6 +37,19 @@ export const excludedLoaders = [
   "webpack-contrib/worker-loader",
 ];
 export const excludedPlugins = [
+  // CSS extraction is built in — see /guides/native-css/
+  "webpack/mini-css-extract-plugin",
+  // Copying is built in since 5.111.0 — see /plugins/copy-plugin/
+  "webpack/copy-webpack-plugin",
+  // Folded into minimizer-webpack-plugin, which minimizes every asset type
+  "webpack/css-minimizer-webpack-plugin",
+  "webpack/html-minimizer-webpack-plugin",
+  "webpack/json-minimizer-webpack-plugin",
+  "webpack/image-minimizer-webpack-plugin",
+  // Folded into minimizer-webpack-plugin too, as an `asset` generator
+  "webpack/compression-webpack-plugin",
+  // Folded into diagnostics-webpack-plugin, which runs every linter
+  "webpack/stylelint-webpack-plugin",
   "webpack-contrib/component-webpack-plugin",
   "webpack-contrib/extract-text-webpack-plugin",
   "webpack-contrib/i18n-webpack-plugin",

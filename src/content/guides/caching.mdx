@@ -33,6 +33,8 @@ T> [시작하기](/guides/getting-started), [출력 관리](/guides/output-manag
 
 `index.html` 파일을 수동으로 관리할 필요가 없도록 [출력 관리의](/guides/output-management) `플러그인`과 [시작하기의](/guides/getting-started) 예제를 사용하여 프로젝트를 설정해 보겠습니다.
 
+T> Webpack은 [`output.html`](/configuration/output/#outputhtml)을 사용해 페이지를 직접 생성할 수 있습니다. [Native HTML](/guides/native-html/)을 참고하세요. 이 가이드에서는 생성된 페이지가 내부 청크 이름으로 엔트리의 스크립트를 다시 추가하여 이 가이드에서 다루는 번들 파일 이름을 알아보기 어렵게 만들기 때문에 `HtmlWebpackPlugin`을 계속 사용합니다.
+
 **project**
 
 ```diff
@@ -256,13 +258,13 @@ webpack-demo
 ...
 ```
 
-... 세가지 모두가 변경 된 것을 볼 수 있습니다. 이는 각 [`module.id`](/api/module-variables/#moduleid-commonjs)가 기본적으로 해석 순서에 따라 증가하기 때문입니다. 해석 순서가 변경되면 ID도 변경됩니다. 그래서 요약하자면:
+... 세 가지 모두가 변경된 것을 볼 수 있습니다. 이는 각 [`module.id`](/api/module-variables/#moduleid-commonjs)가 해석 순서에 따라 할당되기 때문입니다(`optimization.moduleIds: 'natural'`). webpack 5는 `mode: 'none'`인 경우에만 기본적으로 이 방식을 사용합니다. 해석 순서가 변경되면 ID도 변경됩니다. 요약하자면:
 
 - 새로운 콘텐츠로 인해 `main` 번들이 변경되었습니다.
 - `module.id`가 바뀌어 `vendor` 번들이 변경되었습니다.
 - 그리고, `runtime` 번들은 이제 새로운 모듈에 대한 참조를 포함하기 때문에 변경되었습니다.
 
-첫 번째와 마지막은 우리가 고치고 싶은 `vendor` 해시입니다. `'deterministic'`옵션과 함께 [`optimization.moduleIds`](/configuration/optimization/#optimizationmoduleids)를 사용하겠습니다.
+첫 번째와 마지막은 예상된 결과이며, 수정하고 싶은 것은 `vendor` 해시입니다. `production` 모드는 이미 [`optimization.moduleIds`](/configuration/optimization/#optimizationmoduleids)를 기본적으로 `'deterministic'`으로, `development` 모드는 `'named'`으로 설정하며, 두 가지 모두 빌드 간 안정적입니다. `'deterministic'`을 명시적으로 설정하면 `mode`에 관계없이 ID가 안정적으로 유지됩니다.
 
 **webpack.config.js**
 
@@ -352,6 +354,31 @@ Entrypoint main = runtime.725a1a51ede5ae0cfde0.js vendors.55e79e5927a639d21a1b.j
 ```
 
 두 빌드 모두 `55e79e5927a639d21a1b`를 vendor 번들 파일 이름으로 표시한 것을 알 수 있습니다.
+
+## Deploying a new build
+
+콘텐츠 해시는 배포할 때마다 새로운 파일명 세트를 생성하며, 이는 [코드 스플리팅](/guides/code-splitting/)과 상호 작용하므로 미리 계획할 필요가 있습니다. 배포 전에 페이지를 로드한 방문자는 _이전_ 엔트리 청크를 실행 중이며, 해당 청크는 비동기 청크의 이전 파일명을 요청합니다. 해당 파일이 서버에서 사라졌다면 `import()`가 거부되고 애플리케이션은 `ChunkLoadError`를 겪게 됩니다. 보통 탭이 열려 있는 동안 라우트 또는 지연 로드된 위젯이 실패하는 형태로 나타납니다.
+
+이 문제의 해결은 설정이 아닌 배포 측에서 이루어집니다. 두 가지 방법으로 해결할 수 있습니다.
+
+**이전 빌드의 애셋을 유지합니다.** 오래된 파일을 제공하는 비용은 크지 않으며, 배포 전에 페이지를 로드한 사람들의 오류를 없애줍니다. 디렉터리를 교체하는 대신 새 빌드를 이전 빌드 위에 복사하세요. 빌드 시 출력 디렉터리를 정리하는 경우, [`output.clean`](/configuration/output/#outputclean)은 `keep` 조건자를 허용하며, CDN은 다음 배포 시가 아니라 하루 정도 후에 오래된 객체를 만료시킬 수 있습니다.
+
+**거부를 처리합니다.** 어떤 보존 기간도 주말 내내 열려 있는 탭을 커버하지 못하므로, 실패한 청크 로드를 "이 페이지가 오래되었습니다"로 처리하고 리로드합니다.
+
+```js
+async function loadWidget() {
+  try {
+    return await import("./widget.js");
+  } catch {
+    // the deploy removed the chunk this build asks for
+    globalThis.location.reload();
+  }
+}
+```
+
+T> 무조건 리로드하면 청크가 다른 이유(잘못된 배포, 오프라인 사용자)로 없는 경우 루프가 발생합니다. 최대 한 번만 리로드하고(`sessionStorage`에 기록), 이미 "새 버전이 있습니다, 리로드하세요" 프롬프트가 있다면 그것을 대신 표시하세요.
+
+관련 옵션: [`output.chunkLoadTimeout`](/configuration/output/#outputchunkloadtimeout)은 webpack이 거부하기 전에 기다리는 시간을 설정하고, [`output.crossOriginLoading`](/configuration/output/#outputcrossoriginloading)은 청크가 다른 출처에서 제공될 때 불투명한 오류 대신 유용한 오류를 얻기 위해 필요합니다.
 
 ## Conclusion
 

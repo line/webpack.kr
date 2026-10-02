@@ -2,16 +2,10 @@
 import PropTypes from "prop-types";
 import { Fragment, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import {
-  Outlet,
-  Route,
-  Routes,
-  useLocation,
-  useNavigate,
-} from "react-router-dom";
+import { Outlet, Route, Routes, useLocation, useNavigate } from "react-router";
 
 // Import Utilities
-/* eslint import/no-unresolved: ["error", { ignore: ["_content\.json$"] }] */
+/* eslint import/no-unresolved: ["error", { ignore: ["_content\.json$", "^react-router$"] }] */
 import Content from "../../_content.json";
 import OgImage from "../../assets/icon-pwa-512x512.png";
 import Logo from "../../assets/logo-on-white-bg.svg";
@@ -41,7 +35,6 @@ import Sponsors from "../Sponsors/Sponsors.jsx";
 
 // Load Styling
 import "../../styles/index.css";
-import "../../styles/ko.css"; // kr patch
 
 // Load Content Tree
 
@@ -141,7 +134,7 @@ function Site(props) {
 
   useEffect(() => {
     if (process.env.NODE_ENV === "production") {
-      const GA4_ID = "UA-192982695-2";
+      const GA4_ID = "G-KGQCZQ8B8H";
 
       if (!window.gtag) {
         const script = document.createElement("script");
@@ -195,7 +188,7 @@ function Site(props) {
 
   const description =
     getPageDescription(Content, location.pathname) ||
-    "Webpack은 모듈 번들러입니다. 주요 목적은 브라우저에서 사용할 수 있도록 JavaScript 파일을 번들로 묶는 것이지만, 리소스나 애셋을 변환하고 번들링 또는 패키징할 수도 있습니다.";
+    "webpack은 JavaScript, CSS, HTML, WebAssembly와 애셋을 위한 모듈 번들러입니다. 프로젝트에서 의존성 그래프를 만들고 브라우저, Node.js, Deno, Bun 및 기타 환경에 최적화된 번들을 생성합니다.";
 
   function isPrintPage(url) {
     return url.includes("/printable");
@@ -219,7 +212,7 @@ function Site(props) {
   return (
     <div className="flex flex-col min-h-screen bg-white dark:bg-gray-900">
       <Helmet>
-        <html lang="ko" />
+        <html lang="en" />
         <meta charset="utf-8" />
         <meta name="theme-color" content="#2B3A42" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -228,7 +221,7 @@ function Site(props) {
         ) : null}
         <title>{title}</title>
         <meta name="description" content={description} />
-        <meta property="og:site_name" content="Webpack 한글문서" />
+        <meta property="og:site_name" content="webpack" />
         <meta property="og:type" content="website" />
         <meta property="og:title" content={title} />
         <meta

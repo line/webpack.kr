@@ -19,10 +19,27 @@ const fragmentLinkMap = {
     "/configuration/output/#outputpublicpath",
   "/configuration/resolve/#resolve-modules":
     "/configuration/resolve/#resolvemodules",
-  "/guides/shimming/#exports-loader": "/loaders/exports-loader",
-  "/guides/shimming/#imports-loader": "/loaders/imports-loader",
+  "/guides/shimming/#exports-loader": "/guides/shimming/#global-exports",
+  "/guides/shimming/#imports-loader": "/guides/shimming/#granular-shimming",
   "/guides/shimming/#provideplugin": "/plugins/provide-plugin/",
 };
+
+/**
+ * The page a raw README url is rendered at. A raw url names the branch where a
+ * rendered one names `blob` and then the branch, and the branch is whatever the
+ * repository calls its default one.
+ * @param {string} sourceUrl where the readme was read from
+ * @returns {string} what its relative links resolve against
+ */
+function renderedUrlOf(sourceUrl) {
+  const raw = new URL(sourceUrl);
+
+  if (raw.hostname !== "raw.githubusercontent.com") return sourceUrl;
+
+  const [, owner, repository, ...rest] = raw.pathname.split("/");
+
+  return `https://github.com/${owner}/${repository}/blob/${rest.join("/")}`;
+}
 
 function linkFixerFactory(sourceUrl) {
   return function linkFixer(markdownLink, href) {
@@ -34,12 +51,7 @@ function linkFixerFactory(sourceUrl) {
 
     // Only resolve non-absolute urls from their source if they are not a document fragment link
     if (!href.startsWith("#")) {
-      // Convert Github raw links to rendered links
-      const renderedUrl = sourceUrl
-        .replace(/raw.githubusercontent.com/, "github.com")
-        .replace(/master/, "blob/master");
-
-      href = new URL(href, renderedUrl).href;
+      href = new URL(href, renderedUrlOf(sourceUrl)).href;
     }
 
     // Modify absolute documentation links to be root relative
@@ -87,6 +99,21 @@ function getMatches(string, regex) {
     matches.push(match);
   }
   return matches;
+}
+
+// A README may link to a repository the site builds no page for, because the
+// repository was renamed or moved after that README was written. `repos` is the
+// list the pages are generated from, so a package missing from it keeps its
+// GitHub link, which redirects, rather than becoming a link to a page that does
+// not exist. Rewrite everything when no list is given.
+function hasPage(repos, packageName) {
+  if (!Array.isArray(repos)) {
+    return true;
+  }
+
+  return repos.some(
+    (repo) => repo.slice(repo.indexOf("/") + 1) === packageName,
+  );
 }
 
 export default function processREADME(body, options = {}) {
@@ -147,10 +174,15 @@ export default function processREADME(body, options = {}) {
   );
   // dont make relative links for excluded loaders
   for (const match of loaderMatches) {
-    if (!excludedLoaders.includes(`${match[1]}/${match[2]}`)) {
+    const packageName = match[2].replace(/\/$/, "");
+
+    if (
+      !excludedLoaders.includes(`${match[1]}/${packageName}`) &&
+      hasPage(options.loaders, packageName)
+    ) {
       processingString = processingString.replace(
         match[0],
-        `/loaders/${match[2]}/)`,
+        `/loaders/${packageName}/)`,
       );
     }
   }
@@ -161,10 +193,15 @@ export default function processREADME(body, options = {}) {
   );
   // dont make relative links for excluded loaders
   for (const match of pluginMatches) {
-    if (!excludedPlugins.includes(`${match[1]}/${match[2]}`)) {
+    const packageName = match[2].replace(/\/$/, "");
+
+    if (
+      !excludedPlugins.includes(`${match[1]}/${packageName}`) &&
+      hasPage(options.plugins, packageName)
+    ) {
       processingString = processingString.replace(
         match[0],
-        `/plugins/${match[2]}/)`,
+        `/plugins/${packageName}/)`,
       );
     }
   }

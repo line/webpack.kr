@@ -1,5 +1,6 @@
 ---
 title: Stats Data
+description: Stats Data API의 기능과 사용 방법을 설명합니다.
 sort: 3
 contributors:
   - skipjack
@@ -48,7 +49,7 @@ npx webpack --profile --json=compilation-stats.json
   "modules": [
     // [모듈 객체](#module-objects) 목록
   ],
-  "entryPoints": {
+  "entrypoints": {
     // [엔트리 객체](#entry-objects) 목록
   },
   "errors": [
@@ -123,10 +124,7 @@ npx webpack --profile --json=compilation-stats.json
   "moduleId": 0, // 모듈 ID
   "moduleIdentifier": "(webpack)\\test\\browsertest\\lib\\index.web.js", // 모듈 경로
   "moduleName": "./lib/index.web.js", // 모듈에 대한 상대 경로
-  "name": "main", // 청크 이름
-  "reasons": [
-    // [module objects](#module-objects)에서 찾은 동일한 `reasons` 목록
-  ]
+  "request": "./lib/index.web.js" // 청크 그룹을 생성한 요청
 }
 ```
 
@@ -139,18 +137,18 @@ npx webpack --profile --json=compilation-stats.json
   "assets": [
     // [애셋 객체](#asset-objects) 목록
   ],
-  "built": true, // 모듈이 [로더](/concepts/loaders), 파싱 및 코드 제너레이션을 거쳤음을 의미
+  "built": true, // 이번 컴파일에서 모듈이 빌드([로더](/concepts/loaders) 및 파싱)되었음을 의미
   "cacheable": true, // 모듈이 캐시 가능한지 여부
   "chunks": [
     // 모듈을 포함하는 청크 ID
   ],
+  "codeGenerated": true, // 이번 컴파일에서 모듈이 코드 생성을 거쳤음을 의미
   "errors": 0, // 모듈을 리졸브하거나 처리할 때 발생한 오류 수
   "failed": false, // 모듈에서 컴파일 실패 여부
   "id": 0, // 모듈의 ID ([`module.id`](/api/module-variables/#moduleid-commonjs)와 유사)
   "identifier": "(webpack)\\test\\browsertest\\lib\\index.web.js", // 내부적으로 사용되는 고유 ID
   "name": "./lib/index.web.js", // 실제 파일 경로
   "optional": false, // 모듈에 대한 모든 요청에는 `try... catch` 블록이 있습니다(ESM와 관련 없음)
-  "prefetched": false, // 모듈이 [prefetched](/plugins/prefetch-plugin) 되었는지 여부
   "profile": {
     // [`--profile` flag](/api/cli/#profiling)에 해당하는 모듈별 컴파일 통계 (밀리초 단위)
     "building": 73, // 로드 및 파싱

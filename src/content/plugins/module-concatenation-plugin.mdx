@@ -1,5 +1,6 @@
 ---
 title: ModuleConcatenationPlugin
+description: ModuleConcatenationPlugin의 기능과 사용 방법을 설명합니다.
 group: webpack
 contributors:
   - skipjack
@@ -35,10 +36,11 @@ W> 이 플러그인은 webpack에서 직접 처리되는 [ES6 modules](/api/modu
 | 다수의 다른 모듈 그룹에서 가져옴              | Root    |
 | `import()`로 가져옴                           | Root    |
 | `ProvidePlugin`의 영향을 받거나 `module` 사용 | Prevent |
-| HMR 허용                                      | Root    |
+| HMR 사용 (`module.hot`)                       | Prevent |
 | `eval()` 사용                                 | Prevent |
-| 다수의 청크                                   | Prevent |
-| "cjs-module"로부터 \* 내보내기                | Prevent |
+| 어떤 청크에도 없음                            | Prevent |
+| import한 쪽과 다른 청크에 있음                | Root    |
+| `export * from "cjs-module"`                  | Prevent |
 
 ### Module Grouping Algorithm
 

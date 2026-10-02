@@ -1,5 +1,6 @@
 ---
 title: Stats
+description: webpack의 Stats 설정과 사용 방법을 설명합니다.
 sort: 18
 contributors:
   - SpaceK33z
@@ -38,22 +39,24 @@ export default {
 
 Webpack은 stats 출력에 사용할 수있는 특정 프리셋을 함께 제공합니다.
 
-| Preset              | Alternative | Description                                         |
-| ------------------- | ----------- | --------------------------------------------------- |
-| `'errors-only'`     | _none_      | 에러가 발생할 때만 출력                             |
-| `'errors-warnings'` | _none_      | 에러와 경고가 발생할 때만 출력                      |
-| `'minimal'`         | _none_      | 에러와 새로운 컴파일이 발생할 때만 출력             |
-| `'none'`            | `false`     | 출력 없음                                           |
-| `'normal'`          | `true`      | 표준 출력                                           |
-| `'verbose'`         | _none_      | 모두 출력                                           |
-| `'detailed'`        | _none_      | `chunkModules`과 `chunkRootModules`을 제외하고 출력 |
-| `'summary'`         | _none_      | webpack 버전, 경고 횟수, 에러 횟수를 출력           |
+| Preset              | Alternative | Description                                                                                                                                                                                                                                                    |
+| ------------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `'errors-only'`     | _none_      | 에러가 발생할 때만 출력                                                                                                                                                                                                                                        |
+| `'errors-warnings'` | _none_      | 에러와 경고가 발생할 때만 출력                                                                                                                                                                                                                                 |
+| `'minimal'`         | _none_      | 에러와 새로운 컴파일이 발생할 때만 출력                                                                                                                                                                                                                        |
+| `'none'`            | `false`     | 출력 없음                                                                                                                                                                                                                                                      |
+| `'normal'`          | `true`      | 표준 출력                                                                                                                                                                                                                                                      |
+| `'verbose'`         | _none_      | 모두 출력                                                                                                                                                                                                                                                      |
+| `'detailed'`        | _none_      | `'verbose'`와 유사하지만 `chunkModules`, `chunkGroupResourceHints`, `dependentModules`, `reasons`, `orphanModules`, `errorStack`, `env`, `children` 없이, `errorsSpace`, `warningsSpace`, `modulesSpace`, `assetsSpace`, `reasonsSpace`가 1000으로 제한됩니다. |
+| `'summary'`         | _none_      | webpack 버전, 경고 횟수, 에러 횟수를 출력                                                                                                                                                                                                                      |
 
 ## Stats Options
 
 stats 출력에서 보고 싶은 정보를 설정할 수 있습니다.
 
 T> stats 설정 객체의 모든 옵션은 선택 사항입니다.
+
+T> 아래의 기본값은 문자열 출력(`stats.toString()`, CLI에서 사용)을 설명합니다. 이 옵션들은 문자열 출력에서는 `false`이지만 `stats.toJson()`에서는 `true`입니다. `builtAt`, `cachedAssets`, `cachedModules`, `children`, `chunkGroupAuxiliary`, `chunkGroupChildren`, `chunkGroupResourceHints`, `chunkGroups`, `chunkOrigins`, `chunkRelations`, `chunks`, `dependentModules`, `depth`, `errorStack`, `hash`, `ids`, `loggingTrace`, `moduleAssets`, `nestedModules`, `optimizationBailout`, `orphanModules`, `outputPath`, `providedExports`, `publicPath`, `reasons`, `relatedAssets`, `runtimeModules`, `usedExports`.
 
 ### stats.all
 
@@ -85,9 +88,9 @@ export default {
 
 ### stats.assetsSort
 
-`string = 'id'`
+`string = '!size'` `false`
 
-주어진 필드를 기준으로 애셋을 정렬하도록 `stats`에 지시합니다. 모든 [정렬 필드](#sorting-fields)는 `stats.assetsSort`의 값으로 사용할 수 있습니다. 값에 `!`접두사를 사용하여 주어진 필드의 정렬 순서를 반대로 할 수 있습니다.
+주어진 필드를 기준으로 애셋을 정렬하도록 `stats`에 지시합니다. 모든 [정렬 필드](#sorting-fields)는 `stats.assetsSort`의 값으로 사용할 수 있습니다. 값에 `!`접두사를 사용하여 주어진 필드의 정렬 순서를 반대로 할 수 있습니다. `false`로 설정하면 정렬을 비활성화합니다.
 
 ```js
 export default {
@@ -115,7 +118,7 @@ export default {
 
 ### stats.builtAt
 
-`boolean = true`
+`boolean = false`
 
 빌드 날짜 및 빌드 시간 정보를 추가할지 여부를 `stats`에 알려줍니다. 숨기려면 `stats.builtAt`을 `false`로 설정하세요.
 
@@ -134,7 +137,7 @@ export default {
 
 ### stats.cachedAssets
 
-`boolean = true`
+`boolean = false`
 
 캐시 된 애셋에 대한 정보를 추가할지 여부를 `stats`에 알려줍니다. `stats.cachedAssets`을 `false`로 설정하면 `stats`에 생성된 파일이 아닌 내보낸 파일만 표시됩니다.
 
@@ -149,7 +152,7 @@ export default {
 
 ### stats.cachedModules
 
-`boolean = true`
+`boolean = false`
 
 빌드되지 않고 캐시 된 모듈에 대한 정보를 추가할지 여부를 `stats`에 알려줍니다.
 
@@ -164,7 +167,7 @@ export default {
 
 ### stats.children
 
-`boolean = true`
+`boolean = false`
 
 children에 대한 정보를 추가할지 여부를 `stats`에 알려줍니다.
 
@@ -179,7 +182,7 @@ export default {
 
 ### stats.chunkGroupAuxiliary
 
-`boolean = true`
+`boolean = false`
 
 청크 그룹에 보조 애셋을 표시합니다.
 
@@ -194,7 +197,7 @@ export default {
 
 ### stats.chunkGroupChildren
 
-`boolean = true`
+`boolean = false`
 
 프리페치, 프리로드 된 청크 및 애셋 같은 청크 그룹의 하위 항목을 표시합니다.
 
@@ -203,6 +206,23 @@ export default {
   // ...
   stats: {
     chunkGroupChildren: false,
+  },
+};
+```
+
+### stats.chunkGroupResourceHints
+
+`boolean = false`
+
+각 엔트리포인트의 해석된 resource-hint 설명자를 `entrypoints[name].resourceHints`로 포함합니다. [`output.resourceHints.chunks`](/configuration/output/#outputresourcehints)(초기 그래프에 대한 `modulepreload` / `preload` / `prefetch` 힌트)와 `output.resourceHints.assets`(폰트, 이미지 및 기타 URL 참조 애셋)를 결합합니다.
+
+이를 통해 서버 사이드 렌더러가 청크 그래프를 순회하는 대신 `<link>` 태그를 직접 출력할 수 있습니다. `stats.toString()`에서는 `false`이고 `stats.toJson()`에서는 `true`입니다.
+
+```js
+export default {
+  // ...
+  stats: {
+    chunkGroupResourceHints: true,
   },
 };
 ```
@@ -224,7 +244,7 @@ export default {
 
 ### stats.chunkGroups
 
-`boolean = true`
+`boolean = false`
 
 `namedChunkGroups`에 대한 정보를 추가할지 여부를 `stats`에 알려줍니다.
 
@@ -269,7 +289,7 @@ export default {
 
 ### stats.chunkOrigins
 
-`boolean = true`
+`boolean = false`
 
 청크 및 청크 병합의 출처에 대한 정보를 추가할지 여부를 `stats`에 알려줍니다.
 
@@ -299,7 +319,7 @@ export default {
 
 ### stats.chunks
 
-`boolean = true`
+`boolean = false`
 
 청크에 대한 정보를 추가할지 여부를 `stats`에 알려줍니다. `stats.chunks`를 `false`로 설정하면 출력이 상세하게 표시되지 않습니다.
 
@@ -314,9 +334,9 @@ export default {
 
 ### stats.chunksSort
 
-`string = 'id'`
+`string` `false`
 
-주어진 필드를 기준으로 청크를 정렬하도록 `stats`에 지시합니다. 모든 [정렬 필드](#sorting-fields)는 `stats.chunksSort`의 값으로 사용할 수 있습니다. 값에 `!`접두사를 사용하여 주어진 필드의 정렬 순서를 반대로 할 수 있습니다.
+주어진 필드를 기준으로 청크를 정렬하도록 `stats`에 지시합니다. 모든 [정렬 필드](#sorting-fields)는 `stats.chunksSort`의 값으로 사용할 수 있습니다. 값에 `!`접두사를 사용하여 주어진 필드의 정렬 순서를 반대로 할 수 있습니다. 기본적으로 정렬은 비활성화되어 있습니다(`false`).
 
 ```js
 export default {
@@ -359,8 +379,10 @@ npx webpack --no-stats-colors
 ```js
 export default {
   // ...
-  colors: {
-    green: "\u001B[32m",
+  stats: {
+    colors: {
+      green: "\u001B[32m",
+    },
   },
 };
 ```
@@ -420,9 +442,9 @@ export default {
 
 ### stats.entrypoints
 
-`boolean = true` `string = 'auto'`
+`boolean` `string = 'auto'`
 
-대응하는 번들과 함께 엔트리 포인트를 표시할지 여부를 `stats`에 알려줍니다.
+대응하는 번들과 함께 엔트리 포인트를 표시할지 여부를 `stats`에 알려줍니다. 문자열 출력에서는 기본값이 `'auto'`이고 `stats.toJson()`에서는 `true`입니다.
 
 ```js
 export default {
@@ -499,7 +521,7 @@ export default {
 
 ### stats.errorStack
 
-`boolean = true`
+`boolean = false`
 
 에러 스택 추적을 표시할지 여부를 `stats`에 알려줍니다.
 
@@ -561,13 +583,13 @@ export default {
 
 ### stats.exclude
 
-[`stats.excludeModules`](#statsexcludemodules)을 참고하세요.
+W> Deprecated 및 비효과: `stats.exclude`는 설정 스키마에서 여전히 허용되지만 읽히지 않습니다. 대신 [`stats.excludeModules`](#statsexcludemodules)를 사용하세요.
 
 ### stats.excludeAssets
 
-`array = []: string | RegExp | function (assetName) => boolean` `string` `RegExp` `function (assetName) => boolean`
+`(string | RegExp | ((name: string, asset: StatsAsset) => boolean))[] = []` `string` `RegExp` `(name: string, asset: StatsAsset) => boolean`
 
-일치하는 애셋 정보를 제외하도록 `stats`에 지시합니다. 이것은 `string`, `RegExp`, 애셋 이름을 인수로 받고 `boolean`을 반환하는 `function`로 수행할 수 있습니다. `stats.excludeAssets`는 위 요소를 원소로 가지는 `배열`일 수 있습니다.
+매칭되는 애셋 정보를 제외하도록 `stats`에 지시합니다. `string`, `RegExp`, 또는 애셋의 이름과 stats 객체를 받는 함수를 사용할 수 있습니다. `stats.excludeAssets`는 위의 항목들 중 하나로 구성된 `array`가 될 수 있습니다.
 
 ```js
 export default {
@@ -584,15 +606,23 @@ export default {
 
 ### stats.excludeModules
 
-`array = []: string | RegExp | function (assetName) => boolean` `string` `RegExp` `function (assetName) => boolean` `boolean: false`
+`(string | RegExp | ModuleFilterFn)[] = []` `string` `RegExp` `ModuleFilterFn` `false`
 
-일치하는 모듈 정보를 제외하도록 `stats`에 지시합니다. 이는 `string`, `RegExp`, 모듈의 소스를 인자로 받고 `boolean`을 반환하는 `function`로 수행할 수 있습니다. `stats.excludeModules`는 위 요소를 원소로 가지는 `배열`일 수 있습니다. `stats.excludeModules`은 `stats.exclude`와 [병합](https://github.com/webpack/webpack/blob/main/lib/Stats.js#L215)됩니다.
+매칭되는 모듈 정보를 제외하도록 `stats`에 지시합니다. `string`, `RegExp`, 또는 `ModuleFilterFn`을 사용할 수 있습니다. `stats.excludeModules`는 위의 항목들 중 하나로 구성된 `array`가 될 수 있습니다.
+
+```ts
+type ModuleFilterFn = (
+  name: string,
+  module: StatsModule,
+  type: "module" | "chunk" | "root-of-chunk" | "nested",
+) => boolean;
+```
 
 ```js
 export default {
   // ...
   stats: {
-    excludeModules: ["filter", /filter/, (moduleSource) => true],
+    excludeModules: ["filter", /filter/, (moduleName) => true],
   },
 };
 ```
@@ -792,7 +822,7 @@ export default {
 
 ### stats.hash
 
-`boolean = true`
+`boolean = false`
 
 컴파일의 해시에 대한 정보를 추가할지 여부를 `stats`에 알려줍니다.
 
@@ -801,6 +831,40 @@ export default {
   // ...
   stats: {
     hash: false,
+  },
+};
+```
+
+### stats.hints
+
+<Badge text="5.110.0+" />
+
+`boolean = true`
+
+[`performance.hints: "stats"`](/configuration/performance/#performancehints)로 보고된 performance hint를 추가합니다. 이 값을 사용하면 hint를 경고나 오류로 내보내지 않으므로 stats에서 확인합니다.
+
+```js
+export default {
+  // ...
+  stats: {
+    hints: false,
+  },
+};
+```
+
+### stats.hintsCount
+
+<Badge text="5.110.0+" />
+
+`boolean = true`
+
+performance hint 수를 추가합니다.
+
+```js
+export default {
+  // ...
+  stats: {
+    hintsCount: false,
   },
 };
 ```
@@ -822,7 +886,7 @@ export default {
 
 ### stats.logging
 
-`string = 'info': 'none' | 'error' | 'warn' | 'info' | 'log' | 'verbose'` `boolean`
+`'none' | 'error' | 'warn' | 'info' | 'log' | 'verbose' = 'info'` `boolean`
 
 로깅 출력을 추가할지 여부를 `stats`에 알려줍니다.
 
@@ -844,9 +908,9 @@ export default {
 
 ### stats.loggingDebug
 
-`array = []: string | RegExp | function (name) => boolean` `string` `RegExp` `function (name) => boolean`
+`(string | RegExp | ((name: string) => boolean))[] = []` `string` `RegExp` `(name: string) => boolean` `boolean`
 
-플러그인 또는 로더와 같은 지정된 로거의 디버그 정보를 포함하도록 `stats`에 지시합니다. [`stats.logging`](#statslogging)이 `false`로 설정되면 `stats.loggingDebug` 옵션이 무시됩니다.
+Plugin이나 Loader와 같이 지정된 logger의 디버그 정보를 포함하도록 `stats`에 지시합니다. `stats.loggingDebug`에 매칭되는 logger는 [`stats.logging`](#statslogging)이 `false`로 설정되어 있어도 표시됩니다.
 
 ```js
 export default {
@@ -864,7 +928,7 @@ export default {
 
 ### stats.loggingTrace
 
-`boolean = true`
+`boolean = false`
 
 에러, 경고 및 추적에 대한 로깅 출력에서 스택 추적을 활성화합니다. 추적을 숨기려면 `stats.loggingTrace`를 설정하세요.
 
@@ -879,7 +943,7 @@ export default {
 
 ### stats.moduleAssets
 
-`boolean = true`
+`boolean = false`
 
 모듈 내부에 애셋에 대한 정보를 추가할지 여부를 `stats`에 알려줍니다. 숨기려면 `stats.moduleAssets`을 `false`로 설정하세요.
 
@@ -924,9 +988,9 @@ export default {
 
 ### stats.modulesSort
 
-`string = 'id'`
+`string = 'depth'` `false`
 
-주어진 필드를 기준으로 모듈을 정렬하도록 `stats`에 지시합니다. 모든 [정렬 필드](#sorting-fields)는 `stats.modulesSort`의 값으로 사용할 수 있습니다. 값에 `!`접두사를 사용하여 주어진 필드의 정렬 순서를 반대로 할 수 있습니다.
+주어진 필드를 기준으로 모듈을 정렬하도록 `stats`에 지시합니다. 모든 [정렬 필드](#sorting-fields)는 `stats.modulesSort`의 값으로 사용할 수 있습니다. 값에 `!` 접두사를 사용하여 주어진 필드의 정렬 순서를 반대로 할 수 있습니다. `false`로 설정하면 정렬을 비활성화합니다.
 
 ```js
 export default {
@@ -1001,7 +1065,7 @@ export default {
 
 `boolean = false`
 
-`고아(orphan)`모듈을 숨길 지 여부를 `stats`에 알려줍니다. 어느 청크에도 포함되지 않는 모듈은 `고아(orphan)`입니다. 고아(orphan) 모듈은 기본적으로 `stats`에서 숨겨져 있습니다.
+`orphan` 모듈의 표시 여부를 `stats`에 알려줍니다. 모듈이 어떤 청크에도 포함되지 않으면 `orphan`입니다. Orphan 모듈은 기본적으로 `stats`에서 숨겨집니다.
 
 ```js
 export default {
@@ -1014,7 +1078,7 @@ export default {
 
 ### stats.outputPath
 
-`boolean = true`
+`boolean = false`
 
 `stats`에 `outputPath`를 표시하도록 지시합니다.
 
@@ -1044,7 +1108,7 @@ export default {
 
 ### stats.preset
 
-`string` `boolean: false`
+`string` `false`
 
 표시되는 정보 유형에 대해 [프리셋](/configuration/stats/#stats-presets)을 설정합니다. [stats 동작 확장](/configuration/stats/#extending-stats-behaviours)에 유용합니다.
 
@@ -1057,7 +1121,7 @@ export default {
 };
 ```
 
-`stats.preset`의 값을 `false`로 설정하면 webpack이 `'none'` [stats 프리셋](/configuration/stats/#stats-presets)을 사용하도록 지시합니다.
+최상위 `stats` 옵션을 `false`로 설정하면 webpack이 `'none'` [stats 프리셋](/configuration/stats/#stats-presets)을 사용하도록 지시합니다; `stats` 객체 내부에서는 `preset: 'none'`을 사용하세요.
 
 ### stats.providedExports
 
@@ -1076,7 +1140,7 @@ export default {
 
 ### stats.publicPath
 
-`boolean = true`
+`boolean = false`
 
 `publicPath`를 표시하도록 `stats`에 지시합니다.
 
@@ -1091,7 +1155,7 @@ export default {
 
 ### stats.reasons
 
-`boolean = true`
+`boolean = false`
 
 모듈이 포함된 이유에 대한 정보를 추가하도록 `stats`에 지시합니다.
 
@@ -1140,7 +1204,7 @@ export default {
 
 ### stats.runtimeModules
 
-`boolean = true`
+`boolean = false`
 
 런타임 모듈에 대한 정보를 추가할지 여부를 `stats`에 알려줍니다.
 
@@ -1245,9 +1309,13 @@ export default {
 
 ### stats.warningsFilter
 
-`array = []: string | RegExp | function (warning) => boolean` `string` `RegExp` `function (warning) => boolean`
+`(string | RegExp | WarningFilterFn)[] = []` `string` `RegExp` `WarningFilterFn`
 
-주어진 필터와 일치하는 경고를 제외하도록 `stats`에 지시합니다. 이것은 `string`, `RegExp`, 인자로 경고를 받고 `boolean`을 반환하는 `function`으로 수행할 수 있습니다. `stats.warningsFilter`는 위 요소를 원소로 가지는 `배열`일 수 있습니다.
+주어진 필터에 매칭되는 경고를 제외하도록 `stats`에 지시합니다. `string`, `RegExp`, 또는 `WarningFilterFn`을 사용할 수 있습니다. `stats.warningsFilter`는 위의 항목들 중 하나로 구성된 `array`가 될 수 있습니다.
+
+```ts
+type WarningFilterFn = (warning: StatsError, warningString: string) => boolean;
+```
 
 ```js
 export default {
@@ -1281,19 +1349,19 @@ export default {
 
 `assetsSort`, `chunksSort` 및 `modulesSort`의 경우 항목을 정렬할 수 있는 몇 가지 필드가 있습니다.
 
-- `'id'` - 항목의 id
-- `'name'` - 가져올 때 설정된 항목의 이름
-- `'size'` - 바이트 단위의 항목 크기
-- `'chunks'` - 항목이 생성된 청크(예를 들어, 하나의 청크에 여러 개의 하위 청크가 있는 경우 하위 청크는 기본 청크에 따라 함께 그룹화 됨)
-- `'errors'` - 항목의 에러 수
-- `'warnings'` - 항목의 경고 수
-- `'failed'` - 항목 컴파일 실패 여부
-- `'cacheable'` - 항목 캐시 가능 여부
-- `'built'` - 애셋 빌드 여부
-- `'prefetched'` - 애셋 프리페치 여부
-- `'optional'` - 애셋 선택 사항 여부
-- `'identifier'` - 항목의 식별자
-- `'index'` - 항목의 처리 인덱스
+- `'id'` - the item's id,
+- `'depth'` - the module's depth in the module graph (the default for `modulesSort`),
+- `'name'` - the item's name that was assigned to it upon importing,
+- `'size'` - the size of item in bytes,
+- `'chunks'` - what chunks the item originates from (for example, if there are multiple subchunks for one chunk: the subchunks will be grouped according to their main chunk),
+- `'errors'` - number of errors in items,
+- `'warnings'` - number of warnings in items,
+- `'failed'` - whether the item has failed compilation,
+- `'cacheable'` - whether the item is cacheable,
+- `'built'` - whether the asset has been built,
+- `'optional'` - whether the asset is optional.
+- `'identifier'` - identifier of the item.
+- `'index'` - item's processing index.
 - `'index2'`
 - `'profile'`
 - `'issuer'` - issuer의 식별자

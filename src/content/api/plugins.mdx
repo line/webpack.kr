@@ -1,5 +1,6 @@
 ---
 title: Plugin API
+description: Plugin API의 기능과 사용 방법을 설명합니다.
 group: Plugins
 sort: 14
 contributors:
@@ -31,15 +32,13 @@ T> 더 높은 수준의 플러그인 작성을 위해서는
 
 이 작은 라이브러리는 webpack의 핵심 유틸리티이지만
 유사한 플러그인 인터페이스를 제공하기 위해 다른 곳에서도 사용할 수 있습니다.
-webpack의 많은 객체가 `Tapable` 클래스를 확장합니다.
-`Tapable` 클래스가 제공하는 `tap`, `tapAsnyc`, `tapPromise` 메소드를 플러그인에서 사용하여
-컴파일 과정에서 실행될 커스텀 빌드 단계를 삽입할 수 있습니다.
+webpack의 많은 객체는 tapable 훅의 `hooks` 객체를 노출합니다. 각 훅은 `tap`을 노출하며, 타입에 따라 플러그인이 컴파일 전체에서 실행될 커스텀 빌드 단계를 삽입하는 데 사용할 수 있는 `tapAsync`와 `tapPromise` 메서드도 제공합니다.
 
 자세한 내용은 [문서](https://github.com/webpack/tapable)를 참고하세요.
 세 가지 `tap` 메소드와
 이를 제공하는 훅을 이해하는 것은 중요합니다.
-`Tapable`을 확장한 객체(예: 컴파일러),
-훅, 각 훅의 타입(예: `SyncHook`)에 대해 알게 될 것입니다.
+훅을 노출하는 객체(예: 컴파일러),
+이들이 제공하는 훅, 각 훅의 타입(예: `SyncHook`)에 대해 알게 될 것입니다.
 
 ## Plugin Types
 
@@ -63,15 +62,12 @@ compiler.hooks.compile.tap("MyPlugin", (params) => {
 `tap`뿐만 아니라 `tapAsync` 또는 `tapPromise`도 사용할 수 있습니다.
 
 ```js
-compiler.hooks.run.tapAsync(
-  "MyPlugin",
-  (source, target, routesList, callback) => {
-    console.log("Asynchronously tapping the run hook.");
-    callback();
-  },
-);
+compiler.hooks.run.tapAsync("MyPlugin", (compiler, callback) => {
+  console.log("Asynchronously tapping the run hook.");
+  callback();
+});
 
-compiler.hooks.run.tapPromise("MyPlugin", (source, target, routesList) =>
+compiler.hooks.run.tapPromise("MyPlugin", (compiler) =>
   new Promise((resolve) => {
     setTimeout(resolve, 1000);
   }).then(() => {
@@ -79,15 +75,12 @@ compiler.hooks.run.tapPromise("MyPlugin", (source, target, routesList) =>
   }),
 );
 
-compiler.hooks.run.tapPromise(
-  "MyPlugin",
-  async (source, target, routesList) => {
-    await new Promise((resolve) => {
-      setTimeout(resolve, 1000);
-    });
-    console.log("Asynchronously tapping the run hook with a delay.");
-  },
-);
+compiler.hooks.run.tapPromise("MyPlugin", async (compiler) => {
+  await new Promise((resolve) => {
+    setTimeout(resolve, 1000);
+  });
+  console.log("Asynchronously tapping the run hook with a delay.");
+});
 ```
 
 즉, `컴파일러`에 `후킹` 하는 다양한 방법이 있으며,
@@ -151,23 +144,19 @@ compiler.hooks.run.tapPromise(
 
 [`ProgressPlugin`](/plugins/progress-plugin/)의 `reportProgress` 함수에 다른 인수를 전달하여 메시지 출력을 커스텀 할 수 있습니다.
 
-진행 상황을 확인하기 위해서는 `context: true` 옵션을 사용하여 훅에 `tap` 해야 합니다.
+진행 상황을 보고하려면, 플러그인이 `ProgressPlugin.getReporter(compiler)`로 리포터를 가져와 일반 `tap`에서 호출합니다. `ProgressPlugin`이 활성화되어 있지 않으면 `getReporter`는 `undefined`를 반환합니다.
 
 ```js
-compiler.hooks.emit.tapAsync(
-  {
-    name: "MyPlugin",
-    context: true,
-  },
-  (context, compiler, callback) => {
-    const reportProgress = context && context.reportProgress;
-    if (reportProgress) reportProgress(0.95, "Starting work");
-    setTimeout(() => {
-      if (reportProgress) reportProgress(0.95, "Done work");
-      callback();
-    }, 1000);
-  },
-);
+import { ProgressPlugin } from "webpack";
+
+compiler.hooks.emit.tapAsync("MyPlugin", (compilation, callback) => {
+  const reportProgress = ProgressPlugin.getReporter(compiler);
+  if (reportProgress) reportProgress(0.95, "Starting work");
+  setTimeout(() => {
+    if (reportProgress) reportProgress(0.95, "Done work");
+    callback();
+  }, 1000);
+});
 ```
 
 `reportProgress` 함수는 다음과 같은 인수를 사용하여 호출할 수 있습니다.

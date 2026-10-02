@@ -1,5 +1,6 @@
 ---
 title: ECMAScript Modules
+description: webpack에서 ECMAScript Modules을 사용하는 방법을 설명합니다.
 sort: 19
 contributors:
   - sokra
@@ -65,7 +66,7 @@ import * as module from "./module.js";
 module.fun();
 ```
 
-When importing a namespace object from an ECMAScript Module, webpack follows the ESM convention of setting `Symbol.toStringTag` to "Module" on the namespace object.
+ECMAScript 모듈에서 namespace 객체를 가져오면 webpack은 ESM 규칙에 따라 namespace 객체의 `Symbol.toStringTag`를 `"Module"`로 설정합니다.
 
 ## Flagging modules as ESM
 
@@ -173,23 +174,65 @@ export default {
 
 ESM에서는 `require`, `module`, `exports`, `__filename`, `__dirname` 같은 CommonJS 구문을 사용할 수 없습니다.
 
-ESM에서 CommonJS 모듈을 import할 때는 `default` export만 사용할 수 있으며, 이는 `module.exports` 객체 전체를 가리킵니다.
+webpack이 ESM에서 import된 CommonJS 모듈을 번들할 때, `default` import(전체 `module.exports` 객체)와 named import(해당 속성들) 모두 동작합니다.
 
 ```js
 // esm-consumer.js (ESM)
 import cjs from "./cjs-module.js";
-// CJS에서는 named import가 동작하지 않습니다.
-import { foo } from "./cjs-module.js"; // undefined
+import { foo } from "./cjs-module.js";
 
 // cjs-module.js (CommonJS)
 module.exports = { foo: 1, bar: 2 };
 
-console.log(cjs.foo); // 동작합니다. cjs는 exports 객체 전체입니다.
+console.log(cjs.foo); // 1 - cjs is the whole exports object
+console.log(foo); // 1 - named imports read properties of module.exports
 ```
 
-이 엄격한 동작은 webpack이 **import된** 모듈을 CommonJS로 판단할 때 적용됩니다. 해당 모듈이 자체적으로 ESM `export` 구문을 사용하면 webpack이 이를 자동으로 ESM으로 감지하므로 named import도 정상적으로 동작합니다. 이 문제는 `"type": "module"`이 설정된 프로젝트에서 `.js` 파일을 혼용할 때 자주 나타납니다. 프로젝트 내부 일부 파일은 ESM으로 처리되는 반면, `node_modules`의 서드파티 패키지는 여전히 CommonJS인 경우가 많기 때문입니다.
+이 상호 운용성은 webpack이 **import된** 모듈을 CommonJS로 처리할 때 적용됩니다. 해당 모듈 자체가 ESM `export` 구문을 사용하면 webpack이 이를 자동으로 ESM으로 감지하여 export를 직접 사용합니다. 이는 `"type": "module"`이 설정된 프로젝트에서 `.js` 파일을 혼용할 때 자주 나타납니다. 프로젝트 내부 일부 파일은 ESM으로 처리되는 반면, `node_modules`의 서드파티 패키지는 여전히 CommonJS인 경우가 많기 때문입니다.
 
-T> CommonJS 모듈에서 named export가 필요하다면 ESM으로 마이그레이션하거나 [`@babel/plugin-transform-modules-commonjs`](https://babeljs.io/docs/babel-plugin-transform-modules-commonjs)를 사용하는 것을 고려하세요.
+T> 이것은 webpack의 번들링 동작입니다. Node.js 자체가 ESM에서 CommonJS 모듈을 로드할 때, named import는 Node.js가 정적으로 감지할 수 있는 경우에만 동작합니다. 그렇지 않으면 `default` import만 사용할 수 있습니다. ESM으로 마이그레이션하거나 [`@babel/plugin-transform-modules-commonjs`](https://babeljs.io/docs/babel-plugin-transform-modules-commonjs) 사용을 고려하세요.
+
+## Dependencies that ship modern syntax
+
+webpack은 디펜던시 코드를 찾은 그대로 번들합니다. [`target`](/configuration/target/)과 browserslist 설정은 webpack이 _생성하는_ 런타임 코드를 제한하며, 사용자나 패키지가 작성한 문법을 다운레벨하지 않습니다. 따라서 화살표 함수, optional chaining, 클래스 필드로 게시된 패키지는 게시된 그대로 브라우저에 도달하며, 구형 브라우저는 패키지가 아닌 번들을 가리키는 오류와 함께 파싱 시점에 실패합니다.
+
+이는 [`exports` 필드](/guides/package-exports/)를 리졸브하는 webpack 5와 함께 더 일반적이 되었습니다. 레거시 빌드와 모던 빌드를 모두 제공하는 패키지는 이제 기본적으로 webpack에 모던 빌드를 전달합니다.
+
+해결 방법은 두 가지이며, 상호 배타적이지 않습니다.
+
+**디펜던시를 트랜스파일합니다.** 이 사이트의 [빌드 성능](/guides/build-performance/#loaders) 페이지를 포함한 가이드들은 `node_modules`에서 로더를 제외하도록 권장합니다. 이것은 코드의 대부분이고 변환하는 데 가장 느린 부분이므로 올바른 기본값입니다. 그 규칙을 제거하는 대신, 필요한 패키지만 예외로 추가하세요.
+
+```js
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
+  module: {
+    rules: [
+      {
+        test: /\.m?js$/,
+        include: [
+          path.resolve(__dirname, "src"),
+          // plus the dependencies that are not ES5
+          /node_modules[\\/](pkg-a|pkg-b)[\\/]/,
+        ],
+        loader: "babel-loader",
+      },
+    ],
+  },
+};
+```
+
+[조건 문법](/configuration/module/#condition)은 이것을 반대 방향으로도 표현할 수 있습니다. `exclude: { and: [/node_modules/], not: [/node_modules[\\/]pkg-a[\\/]/] }`는 하나의 패키지를 제외하고 `node_modules`를 건너뜁니다.
+
+T> CommonJS와 ESM을 혼합한 파일이 있는 패키지는 Babel 옵션에서 `sourceType: "unambiguous"`가 필요합니다. 그렇지 않으면 Babel이 모든 파일을 하나 또는 다른 것으로 처리하고 잘못된 절반이 깨집니다.
+
+**또는 다른 빌드를 리졸브합니다.** 패키지가 다른 조건이나 필드 아래 ES5 번들을 여전히 게시하고 있다면, 트랜스파일하는 대신 webpack이 그것을 가리키도록 하세요. [`resolve.conditionNames`](/configuration/resolve/#resolveconditionnames)와 [`resolve.mainFields`](/configuration/resolve/#resolvemainfields)를 참조하세요. 두 가지 모두 webpack이 리졸브하는 모든 패키지에 적용되므로, 전역적으로 변경하는 대신 [`resolve.byDependency`](/configuration/resolve/#resolvebydependency)나 패키지별 [`Rule.resolve`](/configuration/module/#ruleresolve)로 범위를 좁히세요.
+
+W> 어떤 방법을 선택하든 webpack이 자체 런타임을 위해 내보내는 문법은 별도의 설정입니다. [browserslist](https://github.com/browserslist/browserslist) 설정을 유지하거나 [`target`](/configuration/target/)을 `['web', 'es5']`와 같이 설정하여 런타임이 동일한 브라우저에서 실패하지 않도록 하세요.
 
 ## Common Migration Errors
 

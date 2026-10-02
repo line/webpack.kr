@@ -1,0 +1,311 @@
+---
+title: Webpack 5.110
+sort: 20260829
+contributors:
+  - bjohansebas
+---
+
+import banner from "../../assets/blog/webpack-5-110.png";
+
+<img src={banner} alt="webpack 5.110 릴리스" />
+
+Webpack 5.110이 출시되었습니다. 가장 주목할 점은 이제 webpack이 번들의 문제를 직접 알려준다는 것입니다. 30개가 넘는 성능 검사가 중복 패키지, 사용되지 않는 모듈, waterfall 방식으로 로드되는 청크, 한 번도 일치하지 않는 규칙 등 이전에는 플러그인이나 번들 분석기를 사용해야 찾을 수 있었던 문제를 보고합니다.
+
+두 번째 소식은 내장 minimizer가 이제 JavaScript뿐 아니라 CSS와 HTML도 처리하며, 수행할 수 있는 모든 재작성 작업을 옵션으로 제공한다는 것입니다. 이는 5.107부터 발전해 온 네이티브 CSS 지원과 함께 webpack 자체 CSS 파이프라인과 loader 기반 파이프라인 사이의 마지막 격차를 해소합니다. 이에 따라 이번 릴리스에서는 `css-loader`, `style-loader`, `mini-css-extract-plugin`의 지원 중단 예정도 발표합니다.
+
+새로운 기능을 살펴보세요.
+
+- [**Performance Hints**](#performance-hints)
+  - [Turning them on](#turning-them-on)
+  - [What each check looks at](#what-each-check-looks-at)
+  - [Reporting into stats only](#reporting-into-stats-only)
+- [**CSS and HTML Minification, Built In**](#css-and-html-minification-built-in)
+  - [Configuring the minimizer per asset type](#configuring-the-minimizer-per-asset-type)
+- [**Native CSS Is the Way Forward**](#native-css-is-the-way-forward)
+  - [Migrating](#migrating)
+- [**Externalizing Installed Packages**](#externalizing-installed-packages)
+- [**OS-Independent Module Rules**](#os-independent-module-rules)
+- [**Tree Shaking and Scope Hoisting**](#tree-shaking-and-scope-hoisting)
+- [**Server-Side Rendering**](#server-side-rendering)
+- [**HTML Improvements**](#html-improvements)
+- [**Output and Library**](#output-and-library)
+- [**MultiCompiler**](#multicompiler)
+- [**Other Improvements**](#other-improvements)
+- [**Bug Fixes and Performance**](#bug-fixes-and-performance)
+
+## Performance Hints
+
+기존의 `performance`는 애셋이나 엔트리 포인트가 크기 제한을 초과할 때 경고하는 한 가지 역할만 했습니다. 5.110부터는 webpack이 빌드 과정에서 발견한 모든 사항을 보고하는 곳이 됩니다.
+
+검사는 두 그룹으로 나뉩니다. 일부는 번들을 검사합니다. 두 번 포함된 패키지, 여러 엔트리 포인트에서 전달되는 모듈, 사용되지 않는 코드를 끌어오는 barrel 파일, 단일 모듈만 담은 청크, 아무것도 지연하지 않는 `import()` 호출 등이 대상입니다. 나머지는 설정을 검사합니다. 한 번도 일치하지 않은 `module.rules` 항목, 리졸브에 사용되지 않은 `resolve.alias`, 어떤 모듈도 읽지 않는 `DefinePlugin` 키, 가져온 대상이 없는 `externals` 요청, 특정 운영체제에서만 일치하는 `test` 등을 찾습니다.
+
+이는 빌드 외부에서 추측한 결과가 아닙니다. webpack은 이미 모듈 그래프, 청크 그래프, resolver의 결과와 규칙 세트를 가지고 있으므로 각 검사는 실제 보고 대상을 직접 읽습니다.
+
+### Turning them on
+
+모든 검사는 기본적으로 비활성화되어 있습니다. [`performance.all`](/configuration/performance/#performanceall)은 전체 검사를 활성화하며, 명시적으로 지정한 개별 설정이 우선합니다.
+
+```js
+export default {
+  // ...
+  performance: {
+    hints: "warning",
+    all: true,
+  },
+};
+```
+
+프로젝트를 점검할 때 사용할 설정입니다. 보고서를 확인한 뒤에는 필요한 검사만 남기고 나머지는 비활성화하세요. 일부 검사는 모듈 그래프를 순회하므로 빌드 시간이 늘어납니다.
+
+개별 검사도 같은 방식으로 설정합니다.
+
+```js
+export default {
+  // ...
+  performance: {
+    hints: "warning",
+    duplicatePackages: true,
+    unusedRules: true,
+  },
+};
+```
+
+### What each check looks at
+
+| 영역                          | 검사                                                                                                               |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| 중복으로 전달되는 항목        | `duplicatePackages`, `duplicateModules`, `entrypointOverlap`                                                       |
+| 사용되지 않지만 전달되는 항목 | `unusedReexports`, `missingSideEffects`, `dynamicExports`, `scopeHoistingBailouts`, `legacyJavascript`             |
+| 청크 로드 방식                | `asyncChunkWaterfalls`, `redundantDynamicImports`, `tinyChunks`, `unsplitVendors`, `splitChunksCapped`             |
+| 청크 용량을 차지하는 항목     | `largeModules`, `inlinedAssets`, `embeddedSourceMaps`, `broadContexts`                                             |
+| 코드 위험 요소                | `evalUsage`, `pureAnnotations`, `topLevelThis`, `mixedExports`                                                     |
+| 설정                          | `unusedRules`, `unusedAliases`, `unusedDefines`, `unusedExternals`, `osDependentRules`, `conflictingResourceHints` |
+| 빌드 자체                     | `cacheEffectiveness`, `hotspots`, `circularDependencies`                                                           |
+
+각 검사가 보고하는 내용과 대응 방법은 [`performance`](/configuration/performance/#available-checks)에 설명되어 있습니다.
+
+각 힌트는 발견한 문제와 그 비용, 해결 방법을 알려줍니다. 중복 패키지 보고서는 버전과 바이트 크기를 표시하고, scope hoisting 보고서는 모든 모듈을 나열하는 대신 bailout을 원인별로 묶습니다. [`hotspots`](/configuration/performance/#performancehotspots)는 대기 시간이 아니라 각 loader, plugin, hook 자체의 동기 코드 실행 시간을 측정하므로 실제로 느린 대상을 가리킵니다.
+
+설정 검사는 `hints`의 영향을 받지 않습니다. 아무것도 일치하지 않는 규칙이나 철자가 틀린 external은 크기 문제가 아니라 설정 오류이므로 해당 검사가 활성화되어 있으면 항상 보고됩니다.
+
+### Reporting into stats only
+
+이러한 검사를 사용한 적 없는 프로젝트에서 20개를 한꺼번에 활성화하면 많은 경고가 발생하고 CI에서는 다수의 실패로 이어질 수 있습니다. [`performance.hints: "stats"`](/configuration/performance/#performancehints)는 힌트를 경고나 오류로 내보내는 대신 [`stats`](/configuration/stats/#statshints)에 수집하므로, 보고서를 검토하는 동안에도 빌드를 성공 상태로 유지할 수 있습니다.
+
+```js
+export default {
+  // ...
+  performance: {
+    hints: "stats",
+    all: true,
+  },
+};
+```
+
+이제 힌트는 해싱 후에 계산되므로 힌트를 활성화해도 출력 hash가 달라지지 않으며, 항목의 우선순위가 같을 때도 일정한 순서로 보고됩니다.
+
+## CSS and HTML Minification, Built In
+
+[`optimization.minimize`](/configuration/optimization/#optimizationminimize)를 활성화하면 webpack의 기본 minimizer가 동일한 worker pool을 통해 JavaScript뿐 아니라 CSS와 HTML 애셋도 최소화합니다. 해당 애셋을 처리하는 minimizer가 이미 설정되어 있으면 webpack은 이를 직접 처리하지 않고 기존 minimizer에 맡깁니다.
+
+두 minifier는 모두 보수적으로 설계되어 엔진이 차이를 구분할 수 없는 변환만 수행합니다.
+
+CSS에서는 상수를 사용하는 `calc()`와 기타 수학 함수를 계산하고, box longhand를 동일한 shorthand로 병합하며, 색상·숫자·selector·media query를 의미가 같은 가장 짧은 표기로 작성합니다. 또한 뒤에 나오는 동일한 규칙 때문에 불필요해진 규칙을 제거하고 `browserslist` 대상에 맞춰 vendor prefix를 유지합니다.
+
+HTML에서는 parser가 암시적으로 다시 생성하는 태그를 생략하고, 렌더링에 영향을 주지 않는 공백을 축소하며, 속성의 따옴표와 대소문자를 정규화합니다. 또한 각각의 문법에 따라 `style`, token 목록, `srcset`, `sizes`, JSON `<script>` 본문을 재작성합니다.
+
+### Configuring the minimizer per asset type
+
+이제 `optimization.minimize`는 객체를 받을 수 있으며, 각 minifier가 수행하는 모든 재작성 작업을 개별 옵션으로 비활성화할 수 있습니다.
+
+```js
+export default {
+  // ...
+  optimization: {
+    minimize: {
+      javascript: { compress: { passes: 3 } },
+      css: {
+        // 이 앱은 작성된 custom property 텍스트를 런타임에 다시 읽습니다.
+        rewriteCustomProperties: false,
+      },
+      html: {
+        collapseWhitespace: "smart",
+        sortAttributes: true,
+        sortTokenLists: true,
+      },
+    },
+  },
+};
+```
+
+객체에 명시하지 않은 애셋 타입은 기본값으로 최소화되며, `false`로 지정한 타입만 최소화하지 않고 나머지는 계속 처리합니다. 기본값에는 문서의 의미를 유지하는 변환만 포함됩니다. `sortAttributes`나 `removeRedundantAttributes`처럼 script 또는 selector가 다시 읽는 값을 변경할 수 있는 변환은 명시적으로 요청할 때까지 비활성화됩니다. 전체 옵션은 [`optimization.minimize.css`](/configuration/optimization/#optimizationminimizecss)와 [`optimization.minimize.html`](/configuration/optimization/#optimizationminimizehtml)에 설명되어 있습니다.
+
+CSS와 HTML을 최소화하는 대신 보기 좋은 형식으로 출력할 수도 있어 빌드를 디버깅할 때 결과를 쉽게 읽을 수 있습니다.
+
+## Native CSS Is the Way Forward
+
+이번 릴리스부터 webpack 자체 CSS 파이프라인은 loader stack이 담당하던 기능을 지원합니다. scope가 적용된 class, id, keyframe, counter, grid area 이름을 포함한 CSS Modules, `@import`와 `url()` 리졸브, custom media, source map, hot module replacement, 청크별 code splitting, 그리고 브라우저를 고려한 prefix 처리와 최소화를 제공합니다.
+
+이에 따라 loader 기반 설정은 중복되므로 단계적으로 지원을 종료합니다. **`css-loader`, `style-loader`, `mini-css-extract-plugin`은 내장 지원을 권장하기 위해 deprecated 되었습니다.** 이 도구들은 계속 작동하며 설정된 곳에서는 webpack이 처리를 맡기므로 이번 릴리스에서 기존 빌드가 깨지지는 않습니다. 다만 새로운 기능은 더 이상 추가되지 않으며, 신규 프로젝트와 마이그레이션에는 [`experiments.css`](/configuration/experiments/#experimentscss)를 사용하는 것이 좋습니다.
+
+5.109부터 이 기능의 기본값은 `'auto'`입니다. CSS 파일을 처리하는 loader가 이미 등록되어 있지 않으면 자동으로 활성화됩니다. 따라서 기존 프로젝트는 loader를 제거할 때까지 기존 구성을 유지하고, 새 프로젝트는 별도 설정 없이 네이티브 파이프라인을 사용합니다.
+
+성능도 더 빠릅니다. loader 설정에서는 체인의 각 loader가 모든 스타일시트를 읽고 파싱한 뒤 문자열로 변환하고, 이를 JavaScript 모듈로 webpack에 돌려주어 다시 파싱합니다. 내장 지원은 CSS로 한 번만 파싱하고 애셋이 될 때까지 CSS로 유지합니다. 빌드에서 CSS가 차지하는 비중이 클수록 실제 시간 차이가 커지므로, 스타일시트가 몇 개뿐인 앱보다 수천 개의 스타일시트를 가진 design system이나 component library에서 마이그레이션 효과가 훨씬 큽니다.
+
+### Migrating
+
+직접 마이그레이션할 필요는 없습니다. 새로운 [webpack codemods](https://github.com/webpack/codemods) 저장소의 첫 번째 codemod가 바로 이 작업을 수행합니다.
+
+```bash
+npx codemod @webpack/css-plugins-to-native-css
+```
+
+이 codemod는 `style-loader`, `css-loader`, `MiniCssExtractPlugin.loader`만 연결하는 규칙을 제거하고 plugin과 import를 삭제한 뒤, 네이티브 기능에 대응하는 옵션을 이동합니다. plugin의 `filename`과 `chunkFilename`은 [`output.cssFilename`](/configuration/output/#outputcssfilename)과 [`output.cssChunkFilename`](/configuration/output/#outputcsschunkfilename)이 되고, `css-loader`의 `modules` 하위 옵션은 규칙의 `generator`와 `parser` 옵션이 됩니다. 체인에 남아 있는 preprocessor는 해당 규칙에 `type: "css/auto"`가 추가되어 계속 작동합니다.
+
+함수 형태의 설정, `webpack-merge` 조각, eject한 Create React App 설정에서 사용하는 `isDev ? "style-loader" : MiniCssExtractPlugin.loader` 삼항 연산자 등 실제 설정의 다양한 형태를 이해합니다. 네이티브 대안이 없는 항목은 제거된 내용을 설명하는 주석과 함께 삭제되므로 나중에 우연히 발견하는 대신 변경 사항을 검토할 수 있습니다. codemod가 남긴 항목의 전체 옵션별 대응 관계는 [Native CSS](/guides/native-css/#migration-guide) 가이드에서 확인할 수 있습니다.
+
+대부분의 프로젝트에서 실제 마이그레이션은 설정을 삭제하는 작업입니다.
+
+```diff
+ export default {
++  experiments: {
++    css: true,
++  },
+   module: {
+     rules: [
+-      {
+-        test: /\.css$/,
+-        use: [MiniCssExtractPlugin.loader, "css-loader"],
+-      },
++      // 설정 불필요: webpack이 .css와 .module.css를 직접 처리합니다.
+     ],
+   },
+-  plugins: [new MiniCssExtractPlugin()],
+ };
+```
+
+마이그레이션 전에 알아둘 사항은 다음과 같습니다.
+
+- `.module.css` 파일은 CSS Module이고 다른 `.css` 파일은 전역 파일로 처리되며, 이는 `css/auto`의 동작입니다. [`Rule.type`](/configuration/module/#ruletype)을 사용하면 규칙별로 다른 타입을 명시적으로 선택할 수 있습니다.
+- class 이름 생성은 `css-loader`의 `modules` 옵션 대신 CSS module 타입의 [`generator`](/configuration/module/#rulegenerator) 옵션(`localIdentName`, `exportsConvention`, `exportsOnly`)으로 이동합니다.
+- PostCSS, Sass, Less는 계속 loader로 실행됩니다. Native CSS는 체인의 앞에 있는 preprocessor가 아니라 뒤쪽을 대체합니다. `sass-loader`는 유지하고 그 뒤의 `css-loader`를 제거하세요.
+- 추출된 CSS는 실제 청크 애셋이므로 `[contenthash]`, `splitChunks`, resource hint가 JavaScript와 같은 방식으로 적용됩니다.
+
+## Externalizing Installed Packages
+
+서버 빌드는 오랫동안 `webpack-node-externals`를 사용해 `node_modules`를 번들에서 제외해 왔습니다. 이제 이 기능을 preset으로 제공합니다.
+
+```js
+export default {
+  // ...
+  target: "node",
+  externalsPresets: {
+    nodeModules: true,
+  },
+};
+```
+
+webpack 내부에서 실행되므로 요청의 표기 방식이 아니라 실제로 리졸브되는 위치를 기준으로 판단하여 symlink된 workspace 패키지나 pnpm store 경로도 올바르게 external 처리합니다. 또한 런타임이 자체적으로 로드할 수 없는 항목은 external 처리하지 않습니다. JavaScript에서 가져온 패키지의 CSS나 애셋은 번들에 남아 loader를 계속 통과합니다.
+
+[`allowlist`](/configuration/externals/#externalspresetsnodemodulesallowlist)는 정확한 문자열, `RegExp`, predicate로 선택한 요청을 번들에 유지합니다.
+
+Externals에는 `sideEffects` 플래그도 추가되었습니다. webpack은 external을 분석할 수 없어 이를 가져오면 관찰 가능한 동작이 발생한다고 가정해야 했습니다. 그렇지 않다고 명시하면 어떤 코드도 export를 사용하지 않을 때 해당 external을 완전히 제거할 수 있습니다.
+
+```js
+export default {
+  // ...
+  externals: {
+    "@scope/icons": {
+      external: "commonjs @scope/icons",
+      sideEffects: false,
+    },
+  },
+};
+```
+
+## OS-Independent Module Rules
+
+`test: /src\/components\//`로 작성한 규칙은 Linux와 macOS에서는 일치하지만 Windows에서는 아무 항목에도 일치하지 않습니다. [`Rule.glob`](/configuration/module/#ruleglob)은 이러한 문제가 발생하지 않는 조건입니다. pattern과 검사 대상 경로에서 `/`와 `\`를 모두 경로 구분자로 해석합니다.
+
+```js
+export default {
+  // ...
+  module: {
+    rules: [
+      {
+        glob: ["**/*.ts", "!**/*.test.ts", "!**/generated/**"],
+        loader: "ts-loader",
+      },
+    ],
+  },
+};
+```
+
+pattern은 OR로 결합되고 `!` 접두사는 대상을 제외합니다. 이 조건은 `Condition` 객체 안에서도 사용할 수 있으므로 `include: { glob: "src/**" }`도 작동합니다. [`performance.osDependentRules`](/configuration/performance/#performanceosdependentrules)는 설정에서 이와 같은 문제가 있는 정규 표현식 조건을 보고합니다.
+
+함께 추가된 [`Rule.descriptionRelativePath`](/configuration/module/#ruledescriptionrelativepath) 조건은 설치 구조에 따라 달라지는 절대 위치 대신 자체 패키지 내부 경로(`./lib/button.js`)를 기준으로 모듈을 일치시킵니다.
+
+## Tree Shaking and Scope Hoisting
+
+- `require()` binding에서 destructuring한 export는 `module.exports` 객체 literal 및 사용되지 않는 method require와 마찬가지로 tree shaking됩니다. 사용되지 않고 side effect가 없는 `require()` 호출과 re-export는 완전히 제거됩니다.
+- `default`로 re-export한 namespace가 올바르게 tree shaking되며, `mod`가 namespace를 이 방식으로 re-export할 때 `import d from "./mod"; d.member`가 더 이상 `undefined`를 읽지 않습니다.
+- 병합할 수 없는 concatenated module은 `require()`가 인라인된 지연 `__webpack_require__.cw` accessor로 감쌉니다. 이를 통해 감싼 본문의 이름과 side effect를 유지하면서 그룹의 나머지 항목을 hoisting할 수 있습니다.
+- `node_modules` 아래 파일은 타입만 지정하는 중첩 `package.json`을 지나서도 `sideEffects`를 상속합니다.
+- 활성 `import()`가 평가하는 side effect 없는 모듈의 export 사용 여부를 추적합니다.
+- 제공되는 export를 의존성 순서로 결정하므로 빌드의 모듈 hash가 persistent cache에 저장된 내용에 더 이상 좌우되지 않습니다.
+
+## Server-Side Rendering
+
+서버 렌더링에는 `<style>`을 삽입할 DOM이 없으므로 내장 CSS 지원은 수집한 스타일을 전역 registry에 기록합니다. [`__webpack_css_server_styles__`](/api/module-variables/#__webpack_css_server_styles__-webpack-specific)는 스타일이 적용된 순서대로 해당 registry를 읽습니다.
+
+```js
+export function render() {
+  const html = renderToString(App);
+  const css = __webpack_css_server_styles__;
+
+  return `<!doctype html><html><head><style>${css}</style></head><body>${html}</body></html>`;
+}
+```
+
+registry에는 `output.uniqueName`으로 namespace를 지정하므로 같은 프로세스에서 렌더링되는 여러 번들이 서로의 스타일을 읽지 않습니다.
+
+## HTML Improvements
+
+- 이제 핫 업데이트는 전체 페이지 리로드로 폴백하는 대신 `<head>`를 제자리에서 패치합니다. 따라서 새로운 `<meta>`, 교체된 `<link rel="icon">`, 실행되지 않은 채 제거된 `<script>` 때문에 페이지를 다시 로드하지 않습니다.
+- 엔트리의 [`html`](/configuration/entry-context/#entry-descriptor) 옵션은 [`output.html`](/configuration/output/#outputhtml)을 옵션별로 재정의하는 객체를 받을 수 있습니다. 따라서 나머지 설정을 공유하면서 특정 페이지의 제목이나 script 로드 전략만 다르게 지정할 수 있습니다.
+- parser는 frameset 콘텐츠, quirks mode 문단과 select에 대한 명세의 tree 구조를 따릅니다. foreign content 밖의 `<![CDATA[`를 bogus comment로 처리하고 `<?target data?>`를 processing instruction으로 파싱하며, 반복되는 `<html>` 또는 `<body>` 태그가 병합한 속성을 유지합니다.
+
+## Output and Library
+
+- [`output.library.umdAmdContainer`](/configuration/output/#outputlibraryumdamdcontainer)는 표준 `define.amd` 분기 다음에, `define`을 전역이 아닌 container 객체에 노출하는 AMD 방식 loader용 분기를 UMD wrapper에 추가합니다.
+- [`output.resourceHints.dedupe`](/configuration/output/#outputresourcehintsdedupe)는 문서가 이미 preload 또는 prefetch한 청크에 런타임이 prefetch link를 다시 삽입하지 않도록 합니다. 그렇지 않으면 일부 브라우저가 이를 두 번 가져옵니다. [`performance.conflictingResourceHints`](/configuration/performance/#performanceconflictingresourcehints)는 이 문제의 다른 측면을 보고합니다.
+- [`[containedpath]`와 `[containedfile]`](/configuration/output/#template-strings) placeholder는 결과가 `output.path` 아래에 유지되도록 `[path]`와 `[file]`을 재작성한 것으로, `context` 외부에서 리졸브된 모듈에 필요합니다. `experiments.futureDefaults`를 사용하면 애셋과 HTML 모듈에서 `[path]`와 `[file]`이 이미 이 방식으로 동작합니다.
+- ESM 출력은 청크, 애셋, 스타일, worker, wasm에 대해 분석 가능한 URL을 내보냅니다.
+- 라이브러리 빌드는 더 이상 `development`에서 기본 source map을 생성하지 않습니다. 기본 [`devtool`](/configuration/devtool/)은 각 모듈을 `eval`로 감싸는데, 다른 bundler가 라이브러리를 읽으면 이 wrapper가 `import.meta`를 가립니다. 빌드가 `module` 또는 `modern-module` 라이브러리를 내보낼 때 적용되며, [`experiments.futureDefaults`](/configuration/experiments/#experimentsfuturedefaults)를 사용하면 모든 타입의 라이브러리에 적용됩니다. `devtool`을 직접 설정하면 지정한 대로 동작합니다.
+- 상대 경로 엔트리 `baseUri`를 리졸브하며, ES module 출력에서 이름이 `eval`, `arguments` 또는 예약어인 binding을 보고합니다.
+
+## MultiCompiler
+
+- `done` hook에는 실제로 빌드가 실행된 compiler가 설정 순서대로 전달됩니다. watch mode에서는 일반적으로 변경 사항이 일부 child만 무효화하므로 plugin은 이를 통해 새로운 항목을 구분할 수 있습니다. [MultiCompiler hooks](/api/node/#multicompiler-hooks)를 참고하세요.
+- `shutdown` hook을 사용하면 plugin이 전체 compiler 집합에 대해 한 번만 리소스를 해제할 수 있습니다.
+- child compiler는 하나의 file watcher pool을 공유하고, 공통 `outputPath`는 전체 경로 segment를 기준으로 계산합니다. watch mode는 watching을 누수하지 않고 치명적인 child 오류에서 복구하며, 의존성 검증 실패 후에도 다시 실행할 수 있습니다.
+
+## Other Improvements
+
+- 실패한 요청은 이제 요청의 어느 위치에서든 가장 가까운 이름이나 대소문자 수정안을 제안합니다.
+- [`stats.hints`](/configuration/stats/#statshints)와 [`stats.hintsCount`](/configuration/stats/#statshintscount)는 performance hint를 노출하며, `optimizationBailout`은 inner graph, AMD, 단독 `module` bailout을 보고합니다.
+- [`renderEmbeddedSource`](/api/compilation-hooks/#renderembeddedsource) compilation hook은 한 언어가 다른 언어 안에 포함하는 소스, 즉 JavaScript 문자열 literal로 번들에 들어가는 CSS나 HTML을 삽입 전에 plugin에 제공합니다. 이 소스는 어떤 애셋에도 포함되지 않으므로 애셋 수준 minimizer에서는 접근할 수 없습니다.
+- [`output.environment`](/configuration/output/#outputenvironment)에 `deferImport`와 `sourceImport`가 추가되었으며 `import defer`와 `import source`는 target에서 파생됩니다.
+- 값이 `true`/`false`이거나 다른 custom media를 가리키는 `@custom-media`를 리졸브하고, CSS Modules의 counter 이름에 scope를 적용하며, 서로 다른 종류의 CSS Module export 충돌을 조용히 해결하는 대신 경고합니다.
+- module 및 context replacement plugin에서 UNC 경로를 지원합니다.
+- `compiler.close()` 후에 유지되던 compilation과 파일 시스템 cache를 해제합니다.
+
+## Bug Fixes and Performance
+
+새로운 기능 외에도 [5.109](https://github.com/webpack/webpack/releases/tag/v5.109.0) 이후 많은 버그가 수정되었습니다.
+
+성능 개선도 계속됩니다. `eslint-scope`를 더 빠르고 가벼운 내장 scope analyzer로 교체했으며 runtime module, parser, generator, 의존성은 사용할 때만 로드합니다. concatenated module 이름 변경은 AST offset과 공유 이름 index를 사용하고, CSS·HTML·JavaScript 파싱은 메모리를 적게 할당하면서 더 빨라졌습니다. 런타임 자체도 더 적은 코드를 내보내며 `output.environment`가 허용하는 곳에서는 더 짧은 문법을 사용합니다. 자세한 내용은 [changelog](https://github.com/webpack/webpack/blob/main/CHANGELOG.md)를 확인하세요.
+
+## Thanks
+
+Webpack 5.110을 가능하게 해주신 모든 contributor와 [sponsor](https://github.com/webpack/webpack?tab=readme-ov-file#sponsoring) 여러분께 진심으로 감사드립니다. 코드 기여, 문서 작성, 재정 후원 등 여러분의 지원은 Webpack이 모두를 위해 계속 발전하고 개선되는 데 큰 도움이 됩니다.

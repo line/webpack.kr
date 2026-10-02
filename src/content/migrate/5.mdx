@@ -1,5 +1,6 @@
 ---
 title: To v5 from v4
+description: To v5 from v4 마이그레이션 방법을 설명합니다.
 sort: 1
 contributors:
   - sokra
@@ -75,17 +76,17 @@ webpack 5는 이제는 사용되지 않는 기능을 모두 제거하므로 계�
 
 다음 옵션을 새 버전으로 업데이트합니다. (사용되는 경우)
 
-- `optimization.hashedModuleIds: true` → `optimization.moduleIds: 'hashed'`
+- `optimization.hashedModuleIds: true` → `optimization.moduleIds: 'deterministic'` (`'hashed'`도 여전히 동작하지만, 더 이상 사용되지 않으며 경고를 기록합니다)
 - `optimization.namedChunks: true` → `optimization.chunkIds: 'named'`
 - `optimization.namedModules: true` → `optimization.moduleIds: 'named'`
 - `NamedModulesPlugin` → `optimization.moduleIds: 'named'`
 - `NamedChunksPlugin` → `optimization.chunkIds: 'named'`
-- `HashedModuleIdsPlugin` → `optimization.moduleIds: 'hashed'`
+- `HashedModuleIdsPlugin` → `optimization.moduleIds: 'deterministic'`
 - `optimization.noEmitOnErrors: false` → `optimization.emitOnErrors: true`
 - `optimization.occurrenceOrder: true` → `optimization: { chunkIds: 'total-size', moduleIds: 'size' }`
 - `optimization.splitChunks.cacheGroups.vendors` → `optimization.splitChunks.cacheGroups.defaultVendors`
 - `optimization.splitChunks.cacheGroups.test(module, chunks)` → `optimization.splitChunks.cacheGroups.test(module, { chunkGraph, moduleGraph })`
-- `Compilation.entries` → `Compilation.entryDependencies`
+- `Compilation.entries` (엔트리 모듈의 배열) → `Compilation.entries`는 이제 `Map<string, EntryData>`입니다. `compilation.entries.get(name).dependencies`를 통해 엔트리의 의존성을 읽을 수 있습니다.
 - `serve` → [`DevServer`](/configuration/dev-server/)를 위해 `serve`가 제거되었습니다.
 - [`Rule.query`](/configuration/module/#ruleoptions--rulequery) (v3부터 사용 중단됨) → `Rule.options`/`UseEntry.options`
 - `Rule.loaders` → [`Rule.use`](/configuration/module/#ruleuse)
@@ -148,7 +149,7 @@ T> webpack 5는 설정 스키마에서 이러한 옵션을 제거하고 항상 `
   }
   ```
 
-  > **Note**: Codemod for this change:
+  > **참고**: 이 변경 사항을 위한 codemod:
   >
   > ```bash
   > npx codemod webpack/v5/set-target-to-false-and-update-plugins
@@ -178,7 +179,7 @@ T> webpack 5는 설정 스키마에서 이러한 옵션을 제거하고 항상 `
   }
   ```
 
-  > **Note**: Codemod for this change:
+  > **참고**: 이 변경 사항을 위한 codemod:
   >
   > ```bash
   > npx codemod webpack/v5/migrate-library-target-to-library-object
@@ -188,8 +189,8 @@ T> webpack 5는 설정 스키마에서 이러한 옵션을 제거하고 항상 `
 
 import를 통해 WebAssembly를 사용하는 경우 다음 두 단계 프로세스를 따라야 합니다.
 
-- webpack 4에서와 동일한 동작을 얻으려면 `experiments.syncWebAssembly: true`를 설정하여 이제는 사용되지 않는 사양을 활성화합니다.
-- webpack 5로 성공적으로 마이그레이션 한 후 WASM 통합을 위한 최신 사양을 사용하려면 `experiments` 값을 `experiments: { asyncWebAssembly: true }`으로 변경합니다.
+- webpack 4에서와 동일한 동작을 얻으려면 `experiments.syncWebAssembly: true`를 설정하여 더 이상 사용되지 않는 사양을 활성화합니다.
+- webpack 5로 성공적으로 마이그레이션 한 후, `experiments.syncWebAssembly`를 다시 제거하세요. webpack 5.109.0부터 `experiments.asyncWebAssembly`의 기본값은 `'auto'`로, `syncWebAssembly`가 설정되거나 `module.rules` 규칙이 `.wasm` 파일과 일치하지 않는 한 최신 WASM 통합 사양을 활성화합니다. 이전 webpack 5 버전에서는 `experiments: { asyncWebAssembly: true }`를 명시적으로 설정하세요.
 
 `optimization.splitChunks` 를 재고하세요.
 
@@ -243,7 +244,7 @@ import pkg from "./package.json";
 console.log(pkg.version);
 ```
 
-> **Note**: Codemod for this change:
+> **참고**: 이 변경 사항을 위한 codemod:
 >
 > ```bash
 > npx codemod webpack/v5/json-imports-to-default-imports
@@ -263,15 +264,15 @@ console.log(pkg.version);
 
 최소한 레벨 3 또는 4를 풀 때까지 다음 단계를 반복합니다.
 
-- Level 1: **Schema validation fails**.
+- 레벨 1: **스키마 검증 실패**.
 
   Configuration options가 변경되었습니다. `BREAKING CHANGE:` 메모 또는 대신 사용해야 하는 옵션에 대한 힌트에 유효성 검사 오류가 있어야 합니다.
 
-- Level 2: **Webpack exits with an error**.
+- 레벨 2: **Webpack이 오류와 함께 종료됨**.
 
   오류 메시지는 변경해야 할 사항을 알려야 합니다.
 
-- Level 3: **Build Errors**.
+- 레벨 3: **빌드 오류**.
 
   오류 메시지에는 `BREAKING CHANGE:` 메모가 있어야 합니다.
 
@@ -347,6 +348,6 @@ webpack 5로 성공적으로 마이그레이션 했다고 트윗해주세요. [T
 Webpack 5는 로더 컨텍스트에서 사용할 수 있는 내장 [`this.getOptions`](/api/loaders/#thisgetoptionsschema) 메서드와 함께 제공됩니다. 이것은 이전에 선호하는 [schema-utils](https://github.com/webpack/schema-utils)에서 `getOptions` 메소드를 사용했던 로더에 대한 주요 변경 사항입니다.
 
 - `this.getOptions`는 webpack 5부터 사용할 수 있습니다.
-- JSON5 대신 쿼리 문자열로 JSON을 지원합니다. `?{arg:true}` → `?{"arg":true}`. JSON5를 사용하는 것은 해당 로더의 문서에서 이제는 사용되지 않는 것으로 간주하고 문서화되어야 합니다.
-- [`loader-utils`](https://github.com/webpack/loader-utils)에는 쿼리 문자열 구문 분석을 위한 특정 동작이 있습니다(`true`, `false` 및 `null`은 `string`로 구문 분석되지 않고 원시 값으로 구문 분석됨). 기본 [`querystring`](https://nodejs.org/api/querystring.html) 구문 분석(Node.js와 함께 제공됨) 을 사용하는 새로운 내장 `this.getOptions` 메서드의 경우에는 그렇지 않습니다. `this.getOptions` 메소드를 사용하여 옵션을 가져온 후 로더의 코드에서 이러한 경우에 대한 사용자 정의 동작을 추가하는 것은 여전히 가능합니다.
-- 새로운 `this.getOptions` 메서드에 대해 스키마 인수는 선택 사항이지만 로더 옵션에 대한 스키마 유효성 검사를 추가하는 것이 좋습니다. 스키마의 `title` 필드는 유효성 검사 오류 메시지를 사용자 정의하는 데 사용할 수 있습니다. 예를 들면 `"title": "My Loader ooptions"`는 다음과 같은 방식으로 오류를 표시합니다. `Invalid ooooptions object. My Loader has been initialised using an ooooptions object that does not match the API schema. - ooooptions.foo.bar.baz should be a string.`
+- JSON5 대신 쿼리 문자열로 JSON을 지원합니다. `?{arg:true}` → `?{"arg":true}`. JSON5를 사용하는 것은 해당 로더의 문서에서 JSON을 위해 더 이상 사용되지 않는 것으로 간주하고 문서화되어야 합니다.
+- [`loader-utils`](https://github.com/webpack/loader-utils)에는 쿼리 문자열 구문 분석을 위한 특정 동작이 있습니다(`true`, `false` 및 `null`은 `string`로 구문 분석되지 않고 원시 값으로 구문 분석됨). 기본 [`querystring`](https://nodejs.org/api/querystring.html) 구문 분석(Node.js와 함께 제공됨)을 사용하는 새로운 내장 `this.getOptions` 메서드의 경우에는 그렇지 않습니다. `this.getOptions` 메소드를 사용하여 옵션을 가져온 후 로더의 코드에서 이러한 경우에 대한 사용자 정의 동작을 추가하는 것은 여전히 가능합니다.
+- 새로운 `this.getOptions` 메서드에 대해 스키마 인수는 선택 사항이지만 로더 옵션에 대한 스키마 유효성 검사를 추가하는 것이 좋습니다. 스키마의 `title` 필드는 유효성 검사 오류 메시지를 사용자 정의하는 데 사용할 수 있습니다. 예를 들면 `"title": "My Loader ooooptions"`는 다음과 같은 방식으로 오류를 표시합니다. `Invalid ooooptions object. My Loader has been initialized using an ooooptions object that does not match the API schema. - ooooptions.foo.bar.baz should be a string.`

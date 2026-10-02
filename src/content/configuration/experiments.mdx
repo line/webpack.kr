@@ -14,7 +14,7 @@ translators:
 
 ## experiments
 
-`boolean: false`
+`object`
 
 사용자가 실험적 기능을 활성화하고 시험해 볼 수 있는 권한을 부여하기 위해 `experiments` 옵션이 webpack 5에 도입되었습니다.
 
@@ -31,12 +31,12 @@ W> 실험적 기능은 시멘틱 버저닝을 완화하고 주요 변경 사항�
 - [`futureDefaults`](#experimentsfuturedefaults)
 - [`html`](#experimentshtml)
 - [`lazyCompilation`](#experimentslazycompilation)
-- [`outputModule`](#experimentsoutputmodule)
 - [`typescript`](#experimentstypescript)
 - [`sourceImport`](#experimentssourceimport)
 - `syncWebAssembly`: webpack 4에서와 같이 이전 웹 어셈블리를 지원합니다.
+- `outputModule`: 가능할 때마다 ECMAScript 모듈 구문을 출력합니다. `5.111.0`부터 제거되었으며, 대신 [`output.module`](/configuration/output/#outputmodule)을 `true`로 설정하세요. 더 이상 실험적 기능이 필요하지 않습니다.
 - `layers`: 모듈 및 청크 레이어를 활성화합니다. `5.102.0`부터는 제거되어 추가 옵션 없이 동작합니다.
-- `topLevelAwait`: 최상위 레벨에서 `await`를 사용하면 모듈을 `async` 모듈로 변환합니다. webpack `5.83.0`부터는 기본으로 활성화되며, 그 이전 버전에서는 `experiments.topLevelAwait`를 `true`로 설정해 활성화할 수 있습니다. `5.102.0`부터는 제거되어 추가 옵션 없이 동작합니다.
+- `topLevelAwait`: 최상위 레벨에서 `await`를 사용하면 모듈을 `async` 모듈로 변환합니다. webpack `5.83.0`부터는 기본으로 활성화되며(그 이전 버전에서는 `experiments.topLevelAwait`를 `true`로 설정해 활성화할 수 있습니다), `5.102.0`부터는 제거되어 추가 옵션 없이 동작합니다.
 
 **webpack.config.js**
 
@@ -47,7 +47,6 @@ export default {
     asyncWebAssembly: true,
     buildHttp: true,
     lazyCompilation: true,
-    outputModule: true,
     sourceImport: true,
     syncWebAssembly: true,
     topLevelAwait: true,
@@ -381,16 +380,18 @@ export default {
 };
 ```
 
+webpack 5.111.0부터 이 기본값에는 [`output.module`](/configuration/output/#outputmodule)이 포함됩니다. 빌드는 [`target`](/configuration/target/)이 읽을 수 있는 모든 곳에서 ECMAScript 모듈을 출력하므로, 스크립트 대신 `output.chunkFormat: 'module'`과 `output.chunkLoading: 'import'`를 사용하여 `[name].mjs`를 생성합니다. 모듈 지원이 없는 타겟, `var`나 `umd` 같은 스크립트 라이브러리 타입, 명시적인 `output.module`은 각각 기존 출력을 유지합니다. 정확한 규칙은 [`output.module`](/configuration/output/#outputmodule)을 참조하세요.
+
 ### experiments.html
 
 <Badge text="5.107.0+" />
 
-네이티브 HTML module 지원을 활성화합니다. JavaScript에서 `.html` 파일을 import하면 그 안의 태그 참조가 일반 webpack pipeline을 거치며, 오랫동안 `html-loader`가 맡아 왔던 역할을 대체합니다. 이 플래그는 `NormalModuleFactory`에 `html` module type을 등록하고 아래에 설명된 HTML 동작을 활성화합니다.
+네이티브 HTML 모듈 지원을 활성화합니다. JavaScript에서 `.html` 파일을 import하면 그 안의 태그 참조가 로더 없이 일반 webpack 파이프라인을 거칩니다. 이 플래그는 `NormalModuleFactory`에 `html` 모듈 타입을 등록하고 아래에 설명된 HTML 동작을 활성화합니다.
 
 - Type: `boolean | 'auto'`
 - Default: `false`, `'auto'` since webpack 5.109.0
 
-webpack 5.109.0부터 이 옵션의 기본값은 `'auto'`입니다. loader(또는 명시적인 module type)가 있는 `module.rules` 항목이 이미 `.html` 파일과 일치하지 않는 한 내장 HTML 지원이 활성화되므로, 기존 `html-loader` 설정은 변경 없이 계속 동작합니다. [`experiments.futureDefaults`](#experimentsfuturedefaults)는 이 값을 `true`로 해석합니다.
+webpack 5.109.0부터 이 옵션의 기본값은 `'auto'`입니다. 로더(또는 명시적인 모듈 타입)가 있는 `module.rules` 항목이 이미 `.html` 파일과 일치하지 않는 한 내장 HTML 지원이 활성화되므로, 로더로 HTML을 처리하는 프로젝트는 변경 없이 계속 동작합니다. [`experiments.futureDefaults`](#experimentsfuturedefaults)는 이 값을 `true`로 해석합니다.
 
 **webpack.config.js**
 
@@ -412,7 +413,7 @@ import page from "./page.html";
 document.documentElement.innerHTML = page;
 ```
 
-W> **이 기능은 실험적이며 부분적으로만 구현되었습니다.** Webpack 5.107은 `html-loader` 역할을 구현했습니다: JS에서 HTML 파일을 import하면 그 안의 태그 참조가 webpack 파이프라인을 거칩니다. 5.108부터 `.html` 파일을 엔트리로도 사용할 수 있으며, 이 실험이 활성화되면 기본 `./src` 엔트리가 `index.html`로 해석됩니다(아래 [HTML을 기본 엔트리로 사용](#html-as-the-default-entry) 참조). `html-webpack-plugin`과의 완전한 동등성은 여전히 진행 중이며, 전체 작업은 이슈 [#536](https://github.com/webpack/webpack/issues/536)에서 추적됩니다.
+W> **이 기능은 실험적이며 부분적으로만 구현되었습니다.** Webpack 5.107은 JS에서 HTML 파일을 import하면 그 안의 태그 참조가 webpack 파이프라인을 거치도록 구현했습니다. 5.108부터 `.html` 파일을 엔트리로도 사용할 수 있으며, 이 실험이 활성화되면 기본 `./src` 엔트리가 `index.html`로 해석됩니다(아래 [HTML을 기본 엔트리로 사용](#html-as-the-default-entry) 참조). 플러그인 기반 설정과의 완전한 동등성은 여전히 진행 중이며, 전체 작업은 이슈 [#536](https://github.com/webpack/webpack/issues/536)에서 추적됩니다.
 
 T> HTML 파서는 [`module.parser.html`](/configuration/module/#moduleparserhtml)을 통해 조정할 수 있습니다: [`sources`](/configuration/module/#moduleparserhtmlsources)를 사용하여 URL-속성 추출을 비활성화하거나 커스터마이즈하고, [`template`](/configuration/module/#moduleparserhtmltemplate)을 사용하여 파싱 전에 HTML 소스를 변환할 수 있습니다.
 
@@ -501,7 +502,7 @@ HTML `<!-- webpackIgnore: true -->` comment를 태그 바로 앞에 두면 webpa
 
 <Badge text="5.108.0+" />
 
-`experiments.html`이 활성화되면, `.html`이 JavaScript 확장자보다 앞서 기본 `resolve.extensions`에 추가됩니다. 따라서 `entry: "./src"`와 같은 디렉토리 엔트리는 `./src/index.js`가 존재하더라도 `./src/index.html`로 해석됩니다. 이는 Vite 또는 Parcel과 유사하게 빌드를 HTML 우선으로 만듭니다.
+`experiments.html`이 명시적으로 `true`로 설정되면, `.html`이 JavaScript 확장자보다 앞서 기본 `resolve.extensions`에 추가됩니다. 따라서 `entry: "./src"`와 같은 디렉터리 엔트리는 `./src/index.js`가 존재하더라도 `./src/index.html`로 해석됩니다. 이는 Vite 또는 Parcel과 유사하게 빌드를 HTML 우선으로 만듭니다. 기본값인 `'auto'`(5.109.0부터)에서는 대신 `.html`이 JavaScript 확장자 뒤에 추가되므로 `./src/index.js`가 여전히 우선됩니다.
 
 ```js
 export default {
@@ -518,7 +519,7 @@ export default {
 
 HTML 모듈은 [Hot Module Replacement](/concepts/hot-module-replacement/)를 지원합니다. 추가 설정이 필요하지 않습니다. HMR이 활성화되면 자동으로 활성화됩니다(예: [`devServer.hot`](/configuration/dev-server/#devserverhot)을 통해).
 
-실제 `.html` 파일로 추출된 페이지의 경우, 각 핫 업데이트는 전체 리로드를 트리거하는 대신 `document.body.innerHTML`과 `document.title`을 제자리에서 패치합니다. `<title>` 이외의 `<head>` 변경(새로운 `<meta>`, 교체된 `<link rel="icon">` 등)은 안전하게 DOM 패치할 수 없으므로 shim은 전체 페이지 리로드로 폴백합니다.
+실제 `.html` 파일로 추출된 페이지에서는 각 핫 업데이트가 전체 리로드를 트리거하는 대신 `document.body.innerHTML`과 `document.title`을 제자리에서 패치합니다. webpack 5.110.0부터는 `<head>`도 제자리에서 패치하므로, 새로운 `<meta>`, 교체된 `<link rel="icon">`, 실행되지 않은 채 제거된 `<script>`로 인해 더 이상 전체 페이지를 다시 로드하지 않습니다.
 
 T> HMR이 활성화된 동안 HTML 모듈에 대해 [모듈 연결](/configuration/optimization/#optimizationconcatenatemodules)이 비활성화됩니다. 각 모듈이 업데이트를 자체 수락하기 위해 자체 `module.hot` 스코프가 필요하기 때문입니다.
 
@@ -607,20 +608,6 @@ Plugin은 `injectTags`, `transformTags`, `transformHtml`, `htmlEmitted` compilat
     },
   };
   ```
-
-### experiments.outputModule
-
-`boolean`
-
-활성화되면, webpack은 가능할 때마다 ECMAScript 모듈 구문을 출력합니다. 예를 들어, `import()`를 사용하여 청크를 로드하면, ESM은 청크 데이터를 노출하기 위해 export 합니다.
-
-```js
-export default {
-  experiments: {
-    outputModule: true,
-  },
-};
-```
 
 ### experiments.typescript
 

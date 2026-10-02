@@ -1,5 +1,6 @@
 ---
 title: EnvironmentPlugin
+description: EnvironmentPlugin의 기능과 사용 방법을 설명합니다.
 group: webpack
 contributors:
   - simon04
@@ -26,6 +27,9 @@ new webpack.EnvironmentPlugin(["NODE_ENV", "DEBUG"]);
 new webpack.DefinePlugin({
   "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV),
   "process.env.DEBUG": JSON.stringify(process.env.DEBUG),
+  // since webpack 5.103.0
+  "import.meta.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV),
+  "import.meta.env.DEBUG": JSON.stringify(process.env.DEBUG),
 });
 ```
 

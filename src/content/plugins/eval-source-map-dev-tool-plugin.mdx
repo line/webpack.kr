@@ -1,5 +1,6 @@
 ---
 title: EvalSourceMapDevToolPlugin
+description: EvalSourceMapDevToolPlugin의 기능과 사용 방법을 설명합니다.
 group: webpack
 contributors:
   - johnnyreilly
@@ -24,30 +25,34 @@ EvalSourceMapDevToolPlugin을 사용하면 소스맵 생성을 보다 세밀하�
 new webpack.EvalSourceMapDevToolPlugin(options);
 ```
 
+이 플러그인은 모든 모듈을 소스맵이 데이터 URL로 추가된 `eval()` 호출로 감싸며, `.map` 파일은 방출되지 않습니다. [`SourceMapDevToolPlugin`](/plugins/source-map-dev-tool-plugin/)과 동일한 옵션 객체를 허용하지만, 별도의 소스맵 파일을 설명하는 옵션인 `filename`, `fileContext`, `publicPath`는 여기서는 해당 없으므로 무시되며, 함수 값의 `append`도 마찬가지입니다.
+
 ## Options
 
 다음과 같은 옵션이 지원됩니다.
 
-- `test` (`string` `RegExp` `function (asset) => boolean` `[string, RegExp, function (asset) => boolean]`): 모듈의 확장자를 기반으로 하는 소스맵을 포함합니다(기본값은 `.js` 및 `.css`).
-- `include` (`string` `RegExp` `function (asset) => boolean` `[string, RegExp, function (asset) => boolean]`): 주어진 값과 일치하는 모듈 경로에 대한 소스맵을 포함합니다.
-- `exclude` (`string` `RegExp` `function (asset) => boolean` `[string, RegExp, function (asset) => boolean]`): 소스맵 생성에서 주어진 값과 일치하는 모듈을 제외합니다.
-- `append` (`string|function`): 원래 애셋에 주어진 값을 추가합니다. 보통 `#sourceMappingURL` 을 주석으로 합니다. `[url]`은 소스맵 파일의 URL로 대체됩니다.
+```ts
+type Matcher =
+  | string
+  | RegExp
+  | ((name: string) => boolean)
+  | (string | RegExp | ((name: string) => boolean))[];
+```
 
-  버전 5.84.0부터 webpack은 경로와 애셋 정보 객체를 인수로 받아들이고 문자열을 반환하는 'append' 옵션을 허용합니다.
+`string`은 접두사로 일치하고, `RegExp`는 테스트로 일치하며, 함수는 이름과 함께 호출되어 일치 여부를 반환합니다.
 
-  ```ts
-  (pathData: PathData, assetInfo?: AssetInfo) => string;
-  ```
-
-- `ignoreList` (`string` `RegExp` `function (source) => boolean` `[string, RegExp, function (source) => boolean]`): 소스 맵에서 지정된 값과 일치하는 소스 파일을 무시할지 여부를 결정합니다.
-- `module` (`boolean`): 로더가 소스 맵을 생성해야 하는지 여부를 나타냅니다(기본값은 `true`).
+- `test` (`Matcher`): 경로가 주어진 값과 일치하는 모듈의 소스맵을 생성합니다. 기본값은 없습니다. `test`, `include` 또는 `exclude`로 제한하지 않으면 모든 모듈이 소스맵을 갖습니다. 모듈 자체 경로를 기준으로 하므로 청크나 번들 전체를 제외하는 데는 사용할 수 없습니다.
+- `include` (`Matcher`): 주어진 값과 일치하는 모듈 경로에 대한 소스맵을 포함합니다.
+- `exclude` (`Matcher`): 소스맵 생성에서 주어진 값과 일치하는 모듈을 제외합니다.
+- `append` (`string`): 원래 애셋에 주어진 값을 추가합니다. 보통 `#sourceMappingURL` 주석입니다. `[url]`은 소스맵 파일의 URL로 대체됩니다.
+- `ignoreList` (`Matcher`): 소스맵에서 지정된 값과 일치하는 소스 파일을 무시할지 여부를 결정합니다.
+- `module` (`boolean`): 로더가 소스맵을 생성해야 하는지 여부를 나타냅니다(기본값은 `true`).
 - `moduleFilenameTemplate` (`string`): [`output.devtoolModuleFilenameTemplate`](/configuration/output/#outputdevtoolmodulefilenametemplate)을 참고하세요.
 - `columns` (`boolean`): 열 매핑을 사용해야 하는지 여부를 나타냅니다(기본값은 `true`).
-- `protocol` (`string`): 사용자가 기본 프로토콜(`webpack-internal://`)을 재정의할 수 있도록 합니다.
-- `namespace` (`string`): DevTools에서 여러 WebPack 루트를 허용하는 네임스페이스 접두사입니다. [`output.devtoolNamespace`](/configuration/output/#outputdevtoolnamespace)를 참고하세요.
-- `noSources = false` (`boolean`): 소스 파일 콘텐츠가 소스 맵에 포함되지 않도록 합니다.
-- `sourceRoot` (`string`): 소스 맵의 `sourceRoot` 속성에 사용자 지정 값을 제공합니다.
-- `debugIds` (`boolean`): `true`로 설정하면 소스 맵과 소스 맵에 고유 ID가 생성되어 여러 빌드에서 소스 맵을 식별하는 데 도움이 됩니다. 자세한 내용은 [TC39 소스 맵 디버그 ID 제안](https://github.com/tc39/ecma426/blob/main/proposals/debug-id.md)을 참고하세요.
+- `namespace` (`string`): DevTools에서 여러 webpack 루트를 허용하는 네임스페이스 접두사입니다. [`output.devtoolNamespace`](/configuration/output/#outputdevtoolnamespace)를 참고하세요.
+- `noSources = false` (`boolean`): 소스 파일 콘텐츠가 소스맵에 포함되지 않도록 합니다.
+- `sourceRoot` (`string`): 소스맵의 `sourceRoot` 속성에 사용자 지정 값을 제공합니다.
+- `debugIds` (`boolean`): `true`로 설정하면 소스 및 소스맵에 고유 ID가 생성되어 여러 빌드에서 소스맵을 식별하는 데 도움이 됩니다. 자세한 내용은 [TC39 소스맵 디버그 ID 제안](https://github.com/tc39/ecma426/blob/main/proposals/debug-id.md)을 참고하세요.
 
 T> `module` 및/또는 `columns`를 `false`로 설정하면 소스맵이 덜 정확해지지만, 컴파일 성능은 크게 향상됩니다.
 
@@ -71,10 +76,12 @@ export default {
 
 ### Exclude Vendor Maps
 
-다음 코드는 `vendor.js` 번들에 있는 모든 모듈에 대한 소스맵을 제외합니다.
+다음 코드는 `node_modules`에서 가져온 모든 모듈의 소스맵을 제외합니다.
 
 ```js
 new webpack.EvalSourceMapDevToolPlugin({
-  exclude: ["vendor.js"],
+  exclude: /node_modules/,
 });
 ```
+
+W> `exclude`는 각 모듈의 경로와 대조됩니다. 여기에 `vendor.js`와 같은 출력 파일 이름을 지정해도 일치하는 것이 없습니다. 모듈이 렌더링될 시점에 플러그인은 모듈의 출처만 보기 때문입니다. 애셋별 제어가 필요하다면 [`SourceMapDevToolPlugin`](/plugins/source-map-dev-tool-plugin/)을 사용하세요.

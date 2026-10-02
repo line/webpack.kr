@@ -1,5 +1,6 @@
 ---
 title: Code Splitting
+description: webpack에서 Code Splitting을 사용하는 방법을 설명합니다.
 sort: 5
 contributors:
   - pksjce
@@ -274,9 +275,7 @@ cacheable modules 530 KiB
 webpack 5.x.x compiled successfully in 241 ms
 ```
 
-다음은 코드 스플리팅을 위해 커뮤니티에서 제공하는 다른 유용한 플러그인과 로더입니다.
-
--[`mini-css-extract-plugin`](/plugins/mini-css-extract-plugin) : 메인 애플리케이션에서 CSS를 분리하는데 유용합니다.
+CSS도 같은 방식으로 분할됩니다. webpack이 청크별 스타일시트를 직접 추출하므로 지연 가져온 CSS 파일은 이를 필요로 하는 청크와 함께 전달됩니다. [Native CSS](/guides/native-css/)를 참고하세요.
 
 ## Dynamic Imports
 

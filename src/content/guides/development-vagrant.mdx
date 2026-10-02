@@ -1,5 +1,6 @@
 ---
 title: Development - Vagrant
+description: webpack에서 Development - Vagrant을 사용하는 방법을 설명합니다.
 sort: 11
 contributors:
   - SpaceK33z
@@ -23,10 +24,10 @@ Vagrant.configure("2") do |config|
 end
 ```
 
-다음으로, 프로젝트에 `webpack`, `webpack-cli`, `@webpack-cli/serve`, `webpack-dev-server` 를 설치하세요.
+다음으로, 프로젝트에 `webpack`, `webpack-cli`, `webpack-dev-server`를 설치하세요.
 
 ```bash
-npm install --save-dev webpack webpack-cli @webpack-cli/serve webpack-dev-server
+npm install --save-dev webpack webpack-cli webpack-dev-server
 ```
 
 `webpack.config.js` 파일이 있는지 확인하세요. 만약 파일이 없다면 다음을 최소한의 예제로 사용해 시작하세요.
@@ -44,13 +45,13 @@ export default {
 };
 ```
 
-그리고 `index.html` 파일을 만듭니다. 스크립트 태그는 번들을 가리켜야 합니다. `output.filename`이 지정되어 있지 않다면, `bundle.js`가 됩니다.
+그리고 `index.html` 파일을 만드세요. 스크립트 태그는 번들을 가리켜야 합니다. 설정에서 `output.filename`이 지정되지 않은 경우, 기본 `main` 엔트리에 대해 `main.js`(`[name].js`)가 됩니다.
 
 ```html
 <!DOCTYPE html>
 <html>
   <head>
-    <script src="/bundle.js" charset="utf-8"></script>
+    <script src="/main.js" charset="utf-8"></script>
   </head>
   <body>
     <h2>Hey!</h2>

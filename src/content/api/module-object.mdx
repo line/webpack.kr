@@ -1,0 +1,167 @@
+---
+title: Module Object
+description: 플러그인과 로더가 의존할 수 있는 webpack Module의 속성과 메서드입니다.
+group: Objects
+sort: 14
+contributors:
+  - hai-x
+---
+
+webpack이 빌드하는 모든 파일은 [compilation](/api/compilation-object/)의 `Module`이 됩니다. 플러그인은 어디서나 이를 만날 수 있습니다 — `compilation.modules`를 순회하거나, `succeedModule` 훅에서, `moduleGraph.getIssuer(module)` 뒤에서 — 그리고 로더는 로더 컨텍스트를 통해 자신의 모듈에 접근할 수 있습니다.
+
+`Module`은 기본 클래스입니다. 빌드가 실제로 보유하는 것은 서브클래스 중 하나이며, 어떤 것인지는 모듈의 출처에 따라 다릅니다.
+
+| 클래스               | 출처                                                                                                                |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `NormalModule`       | 로더에 의해 처리된 해석된 파일 — 일반적인 경우                                                                      |
+| `RawModule`          | webpack이 직접 생성한 소스로, 파일이 없음                                                                           |
+| `ExternalModule`     | [`externals`](/configuration/externals/)에 매칭된 요청                                                              |
+| `ContextModule`      | [컨텍스트](/guides/dependency-management/), 즉 표현식의 `require`                                                   |
+| `ConcatenatedModule` | [`optimization.concatenateModules`](/configuration/optimization/#optimizationconcatenatemodules)로 병합된 여러 모듈 |
+| `DllModule`          | [`DllReferencePlugin`](/plugins/dll-plugin/)이 제공하는 모듈                                                        |
+
+W> 이름이나 `module.type`으로 테스트하는 대신 `instanceof`(`module instanceof compiler.webpack.NormalModule`)로 테스트하세요 — [`type`](#type)은 모듈이 어떤 클래스인지가 아니라 모듈이 어떤 종류의 소스를 보유하는지를 나타냅니다.
+
+## Properties on every module
+
+### type
+
+`string`
+
+모듈 타입입니다. 예: `'javascript/auto'`, `'javascript/esm'`, `'json'`, `'css/auto'`, `'asset/resource'`, `'webassembly/async'`. 플러그인은 자체 타입을 추가할 수 있으므로, "모든 JavaScript"를 의미할 때는 고정된 목록 대신 접두사로 매칭하세요.
+
+### layer
+
+`string | null`
+
+모듈이 빌드된 [레이어](/configuration/module/#rulelayer)이거나 `null`입니다.
+
+### context
+
+`string | null`
+
+모듈의 요청이 해석되는 기준 디렉터리의 절대 경로입니다.
+
+### buildMeta
+
+`object`
+
+빌드 중에 채워지는, 파서가 모듈에 대해 파악한 것입니다. 플러그인이 일반적으로 읽는 필드:
+
+| 필드                  | 의미                                                                                                  |
+| --------------------- | ----------------------------------------------------------------------------------------------------- |
+| `exportsType`         | 모듈의 exports가 소비되는 방식: `'namespace'`, `'default'`, `'flagged'`, `'dynamic'` 또는 `undefined` |
+| `defaultObject`       | CommonJS 모듈의 `default` import가 빌드되는 방식: `false`, `'redirect'`, `'redirect-warn'`            |
+| `strictHarmonyModule` | 모듈이 ESM이며 엄격하게 처리되어야 함                                                                 |
+| `async`               | 모듈이 비동기입니다 (최상위 `await`)                                                                  |
+| `sideEffectFree`      | 모듈에 부작용이 없는 것으로 결정됨                                                                    |
+
+### buildInfo
+
+`object`
+
+빌드 자체가 생성한 것 — 감시할 디펜던시, 모듈에서 내보낸 애셋, 결과를 캐시할 수 있는지 여부:
+
+| 필드                                                             | 의미                                                                        |
+| ---------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `cacheable`                                                      | 로더가 `this.cacheable(false)`를 호출한 경우 `false`                        |
+| `fileDependencies`, `contextDependencies`, `missingDependencies` | 변경 감시 경로, 로더 컨텍스트에서 수집됨                                    |
+| `buildDependencies`                                              | 변경 시 지속 캐시를 무효화하는 경로, `this.addBuildDependency()`에서 가져옴 |
+| `assets`, `assetsInfo`                                           | `this.emitFile()`을 통해 모듈이 내보낸 애셋                                 |
+| `strict`, `exportsArgument`, `moduleArgument`                    | 파서가 설정하며 제너레이터가 내보내는 코드를 형성함                         |
+| `hash`                                                           | 빌드 결과의 해시                                                            |
+
+`buildInfo`는 모듈과 함께 직렬화되므로, 로더가 플러그인이 가져갈 데이터를 남기는 곳이기도 합니다. 로더 자체가 다시 실행되지 않는 [지속 캐시](/configuration/cache/#cachetype)에서 복원된 빌드에도 여전히 존재합니다. 플러그인 이름을 딴 속성 아래에 단순하고 직렬화 가능한 값만 저장하세요.
+
+W> 모듈이 빌드되기 전까지는 둘 다 `undefined`입니다. `buildModule`이 아닌 `succeedModule`, `finishModules` 또는 이후에서 읽으세요.
+
+### dependencies
+
+`Dependency[]`
+
+모듈이 필요로 하는 것들입니다. `presentationalDependencies`는 코드 생성에만 영향을 미치는 것들을 보유하고, `blocks`(`AsyncDependenciesBlock[]`)는 `import()` 뒤의 것들을 보유합니다. 디펜던시가 가리키는 모듈을 찾으려면 그래프에 물어보세요: `moduleGraph.getModule(dependency)`.
+
+### factoryMeta
+
+`object`
+
+모듈 팩토리가 빌드 전에 설정한 것입니다. 예: 패키지의 `sideEffects` 필드에서 파생된 `sideEffectFree`.
+
+T> `module.id`, `module.hash`, `module.issuer`, `module.usedExports` 등은 더 이상 사용되지 않습니다 — 모듈이 둘 이상의 그래프에 참여할 수 있으므로, 해당 값들은 이제 `chunkGraph`와 `moduleGraph`에 있습니다. [대체 테이블](/api/compilation-object/#module-and-chunk-graphs)에 모두 나열되어 있습니다.
+
+## Methods on every module
+
+### identifier
+
+`() => string`
+
+compilation에서 모듈을 고유하게 식별하는 문자열 — 모든 로더와 그 옵션이 포함된 요청입니다. `compilation.findModule`이 조회하는 키입니다.
+
+### readableIdentifier
+
+`(requestShortener: RequestShortener) => string`
+
+stats와 경고가 출력하는 축약된 형태의 동일한 식별자입니다. `compilation.requestShortener`에서 shortener를 가져오세요.
+
+### originalSource
+
+`() => Source | null`
+
+코드 생성 전의 모듈 소스이거나, 소스가 없는 모듈의 경우 `null`입니다.
+
+### getSourceTypes
+
+`() => ReadonlySet<string>`
+
+모듈이 생성할 수 있는 코드의 종류입니다. 예: `'javascript'`, `'css'`, `'asset'`. `type`에서 파생하는 대신 모듈에 직접 물어보세요.
+
+### size
+
+`(type?: string) => number`
+
+해당 타입의 모듈 소스 크기(바이트)입니다.
+
+### nameForCondition
+
+`() => string | null`
+
+[규칙 조건](/configuration/module/#condition)이 매칭되는 경로 — 쿼리와 프래그먼트 없는 리소스입니다. 모듈 뒤에 파일이 없으면 `null`입니다.
+
+### addError / addWarning / getErrors / getWarnings
+
+`(error: Error) => void` `(warning: Error) => void` `() => Error[] | undefined` `() => Error[] | undefined`
+
+모듈에 첨부된 진단 정보입니다. 여기에 추가된 것은 모듈에 대해 보고되고 캐시에 남아있습니다. seal 이후에 push된 `compilation.errors` 항목과 달리 유지됩니다.
+
+## Properties of a NormalModule
+
+`NormalModule`은 해석된 파일과 여기에 적용된 로더이므로, 요청의 부분들을 별도로 보유합니다.
+
+| 속성                  | `'babel-loader!./src/app.js?x=1'`의 예                                            |
+| --------------------- | --------------------------------------------------------------------------------- |
+| `request`             | 모든 해석된 로더가 포함된 전체 요청, `'/abs/babel-loader.js!/abs/src/app.js?x=1'` |
+| `userRequest`         | 자동으로 추가된 로더 없는 요청                                                    |
+| `rawRequest`          | 소스에 작성된 대로의 요청, `'./app.js?x=1'`                                       |
+| `resource`            | 쿼리와 프래그먼트가 있는 해석된 파일, `'/abs/src/app.js?x=1'`                     |
+| `matchResource`       | [`!=!` 매치 리소스](/api/loaders/#inline-matchresource) (있는 경우)               |
+| `resourceResolveData` | 리졸버가 반환한 것 — `descriptionFileData`는 package.json을 보유함                |
+| `loaders`             | 실행 순서대로 `[{ loader, options, ident, type }]`                                |
+| `binary`              | 소스가 `Buffer`인 asset과 WebAssembly 모듈의 경우 `true`                          |
+
+로더는 `this._module`로 자신의 모듈에 접근합니다. 이 속성은 문서화된 [로더 컨텍스트](/api/loaders/)의 일부가 아니지만, 로더/플러그인 쌍이 이에 의존합니다.
+
+```js
+class MyPlugin {
+  apply(compiler) {
+    const { NormalModule } = compiler.webpack;
+
+    compiler.hooks.compilation.tap("MyPlugin", (compilation) => {
+      compilation.hooks.succeedModule.tap("MyPlugin", (module) => {
+        if (!(module instanceof NormalModule)) return;
+
+        console.log(module.resource, module.getSourceTypes());
+      });
+    });
+  }
+}
+```

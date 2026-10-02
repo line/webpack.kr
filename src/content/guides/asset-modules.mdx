@@ -1,5 +1,6 @@
 ---
 title: Asset Modules
+description: webpack에서 Asset Modules을 사용하는 방법을 설명합니다.
 sort: 25
 contributors:
   - smelukov
@@ -149,7 +150,7 @@ img.src = mainImage; // '/dist/151cfcfa1bd74779aadb.png'
 
 ### Custom output filename
 
-파일을 출력 디렉터리로 내보낼 때 `asset/resource` 모듈은 기본적으로 `[hash][ext][query]` 파일명을 사용합니다.
+기본적으로, `asset/resource` 모듈은 `[hash][ext][query][fragment]` 파일명을 사용하여 출력 디렉터리로 내보냅니다.
 
 webpack 설정에서 [`output.assetModuleFilename`](/configuration/output/#outputassetmodulefilename)을 설정하여 이 템플릿을 수정할 수 있습니다.
 
@@ -374,10 +375,10 @@ new URL(
 // target: webworker
 new URL(`${__webpack_public_path__}logo.svg`, self.location);
 
-// target: node, node-webkit, nwjs, electron-main, electron-renderer, electron-preload, async-node
+// target: node, node-webkit, nwjs, electron-main, electron-preload, async-node
 new URL(
   `${__webpack_public_path__}logo.svg`,
-  require("node:url").pathToFileUrl(__filename),
+  require("node:url").pathToFileURL(__filename),
 );
 ```
 

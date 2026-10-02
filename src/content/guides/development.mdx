@@ -22,6 +22,8 @@ translators:
   - choilim
 ---
 
+{/* cspell:ignore cosnole — the guide deliberately misspells console to demonstrate a source map */}
+
 T> 이 가이드는 [출력 관리](/guides/output-management) 가이드에 있는 코드 예제를 확장합니다.
 
 가이드를 차례대로 따라왔다면, webpack 기본 사양 중 일부를 확실히 이해하고 있을 것입니다. 계속하기 전 우리의 삶을 좀 더 편안하게 만들 개발 환경 설정을 살펴보겠습니다.
@@ -203,7 +205,9 @@ webpack의 watch 모드를 시작하는 npm 스크립트를 추가해 보겠습�
 
 ### Using webpack-dev-server
 
-`webpack-dev-server`는 간단한 웹 서버와 실시간 다시 로딩 기능을 제공합니다. 설정해보겠습니다.
+T> Webpack은 [`output.html`](/configuration/output/#outputhtml)로 페이지를 직접 생성할 수 있습니다. [Native HTML](/guides/native-html/)을 참고하세요. 이 가이드에서는 모든 엔트리의 script를 포함하는 단일 페이지 대신 엔트리 포인트별 페이지를 내보내야 동일한 결과가 되므로 `HtmlWebpackPlugin`을 계속 사용합니다.
+
+`webpack-dev-server`는 간단한 웹 서버와 live reloading 기능을 제공합니다. 설정해 보겠습니다.
 
 ```bash
 npm install --save-dev webpack-dev-server

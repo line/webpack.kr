@@ -1,5 +1,6 @@
 ---
 title: Optimization
+description: webpack의 Optimization 설정과 사용 방법을 설명합니다.
 sort: 9
 contributors:
   - EugeneHlushko
@@ -408,7 +409,7 @@ export default {
 
 ## optimization.minimize
 
-`boolean`
+`boolean` `object`
 
 [MinimizerPlugin](/plugins/minimizer-webpack-plugin/) 또는 [`optimization.minimizer`](#optimizationminimizer)에 지정된 플러그인을 사용해 번들을 최소화하도록 webpack에 지시합니다.
 
@@ -432,6 +433,115 @@ export default {
 ```
 
 T> [mode](/configuration/mode/)가 어떻게 동작하는지 알아보세요.
+
+### Per-asset-type options
+
+<Badge text="5.110.0+" />
+
+객체를 사용하면 애셋 타입별로 minification을 활성화하고 내장 minimizer를 설정할 수 있습니다. 생략한 타입은 기본값으로 최소화되며 `false`는 해당 타입만 비활성화합니다.
+
+CSS와 HTML minimizer는 각각의 내장 지원([`experiments.css`](/configuration/experiments/#experimentscss), [`experiments.html`](/configuration/experiments/#experimentshtml))이 활성화된 경우에만 실행됩니다. 해당 애셋용 minimizer가 이미 설정되어 있으면 webpack은 이를 직접 처리하지 않으므로 기존 `css-minimizer-webpack-plugin` 설정이 계속 담당합니다.
+
+**webpack.config.js**
+
+```js
+export default {
+  // ...
+  optimization: {
+    minimize: {
+      javascript: {
+        /* JavaScript minimizer에 그대로 전달 */
+      },
+      css: {
+        comments: false,
+      },
+      html: false,
+    },
+  },
+};
+```
+
+#### optimization.minimize.css
+
+`false` `object`
+
+항상 적용되는 변환 외에 내장 CSS minimizer가 수행할 작업을 지정합니다. 스타일시트의 의미를 유지하는 변환은 기본적으로 활성화되며, script가 다시 읽는 텍스트를 변경하거나 애셋 압축 후 효과가 적은 변환은 명시적으로 요청할 때까지 비활성화됩니다.
+
+| 옵션                      | 타입                                                         | 기본값   | 설명                                                                                                                               |
+| ------------------------- | ------------------------------------------------------------ | -------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `comments`                | `boolean \| 'all' \| 'some' \| string \| RegExp \| function` | `'some'` | 유지할 주석입니다. `'some'`은 `/*!` banner와 `@license`/`@preserve`를 유지하며 pattern 또는 predicate로 규칙을 대체할 수 있습니다. |
+| `mergeLonghands`          | `boolean`                                                    | `true`   | longhand 그룹을 동일하게 설정하는 하나의 shorthand로 작성합니다.                                                                   |
+| `mergeRules`              | `boolean`                                                    | `true`   | 사이에 항목이 없는 규칙을 결합하고 prelude를 공유하는 at-rule을 병합합니다.                                                        |
+| `normalizeQuotes`         | `boolean`                                                    | `true`   | escape가 더 적은 따옴표를 사용하고 값이 단일 token이면 따옴표를 제거합니다.                                                        |
+| `reduceFunctions`         | `boolean`                                                    | `true`   | 상수 기반 `calc()`와 수학 함수, identity transform, 암시된 gradient stop, 이름 있는 easing을 계산합니다.                           |
+| `removeDeadRules`         | `boolean`                                                    | `true`   | 아무도 읽을 수 없는 규칙 또는 declaration을 제거합니다.                                                                            |
+| `shortenColors`           | `boolean`                                                    | `true`   | 각 색상을 동일한 값의 가장 짧은 표기로 작성합니다.                                                                                 |
+| `shortenMediaQueries`     | `boolean`                                                    | `true`   | target이 지원하면 media feature를 range 표기로 작성합니다.                                                                         |
+| `shortenNumbers`          | `boolean`                                                    | `true`   | 각 숫자를 동일한 값의 가장 짧은 표기로 작성합니다.                                                                                 |
+| `shortenSelectors`        | `boolean`                                                    | `true`   | selector를 동일하면서 더 짧은 형태로 재작성합니다.                                                                                 |
+| `shortenValues`           | `boolean`                                                    | `true`   | property 문법이 허용하는 가장 짧은 형태로 값을 작성합니다.                                                                         |
+| `vendorPrefixes`          | `boolean`                                                    | `true`   | [browserslist](/configuration/target/) target에 필요한 vendor prefix를 추가하고 불필요한 것은 제거합니다.                          |
+| `convertLengthUnits`      | `boolean`                                                    | `false`  | 길이를 정확히 같은 더 짧은 단위로 재작성합니다(`16px` → `1pc`).                                                                    |
+| `rewriteCustomProperties` | `boolean`                                                    | `false`  | 기본적으로 작성된 그대로 유지하는 custom property 값을 줄입니다.                                                                   |
+
+T> `vendorPrefixes`는 `browserslist` [target](/configuration/target/)에서만 적용됩니다. 다른 target에는 prefix를 지정할 브라우저 정보가 없습니다.
+
+#### optimization.minimize.html
+
+`false` `object`
+
+내장 HTML minimizer가 수행할 작업을 지정합니다. CSS와 마찬가지로 문서 DOM을 유지하는 작업은 기본 활성화되며 script나 selector가 다시 읽는 값을 변경하는 변환은 명시적으로 활성화해야 합니다.
+
+| 옵션                            | 타입                                                         | 기본값    | 설명                                                                                                          |
+| ------------------------------- | ------------------------------------------------------------ | --------- | ------------------------------------------------------------------------------------------------------------- |
+| `collapseBooleanAttributes`     | `boolean`                                                    | `true`    | `disabled="disabled"`를 명세가 정규화하는 속성 이름만 남긴 형태로 작성합니다.                                 |
+| `collapseWhitespace`            | `boolean \| 'conservative' \| 'smart' \| 'all'`              | `true`    | 연속 공백을 축소합니다. `'smart'`는 block 요소 가장자리, `'all'`은 모든 text node 가장자리 공백도 제거합니다. |
+| `comments`                      | `boolean \| 'all' \| 'some' \| string \| RegExp \| function` | `'some'`  | 유지할 주석입니다. HTML parser가 읽는 주석은 동작하지 않으므로 `'some'`은 아무것도 유지하지 않습니다.         |
+| `minifyJson`                    | `boolean`                                                    | `true`    | JSON `<script>` token 사이 공백을 제거하고 literal은 byte 단위로 복사합니다.                                  |
+| `minifyStyles`                  | `boolean`                                                    | `true`    | 위의 `css` 옵션으로 인라인 `<style>`과 모든 `style=""`에 CSS minimizer를 실행합니다.                          |
+| `normalizeAttributeQuotes`      | `boolean`                                                    | `true`    | 비용이 가장 적은 구분자로 속성 값을 작성합니다.                                                               |
+| `normalizeEnumeratedAttributes` | `boolean`                                                    | `true`    | 열거 속성 값을 해당 keyword로 축약합니다.                                                                     |
+| `normalizeListAttributes`       | `boolean`                                                    | `true`    | 목록 형태 속성 값(`class`, `rel`, `srcset`, viewport `content` 등)을 정규화합니다.                            |
+| `normalizeNumericAttributes`    | `boolean`                                                    | `true`    | 해당 규칙이 읽는 단일 방식으로 정수 속성을 작성합니다.                                                        |
+| `removeImpliedTags`             | `boolean \| 'smart' \| 'all'`                                | `'smart'` | 생략할 수 있는 `<html>`/`<head>`/`<body>` shell의 범위입니다.                                                 |
+| `removeOptionalTags`            | `boolean`                                                    | `true`    | parser가 암시할 수 있는 다른 태그를 생략합니다.                                                               |
+| `mergeStyles`                   | `boolean`                                                    | `false`   | 인접한 `<style>` 요소를 하나의 sheet로 출력합니다.                                                            |
+| `minifyConditionalComments`     | `boolean`                                                    | `false`   | downlevel-hidden conditional comment 내부 마크업을 최소화합니다.                                              |
+| `minifySrcdoc`                  | `boolean`                                                    | `false`   | `<iframe srcdoc>`의 문서를 최소화합니다.                                                                      |
+| `removeEmptyAttributes`         | `boolean`                                                    | `false`   | 빈 값이 속성 부재와 동일한 상태를 만드는 속성을 제거합니다.                                                   |
+| `removeEmptyElements`           | `boolean`                                                    | `false`   | child와 속성이 없는 요소를 제거합니다.                                                                        |
+| `removeRedundantAttributes`     | `boolean \| 'smart' \| 'all'`                                | `false`   | 값이 요소 자체 기본값인 속성을 제거합니다. `'smart'`는 렌더링되지 않는 marker만 처리합니다.                   |
+| `sortAttributes`                | `boolean`                                                    | `false`   | 페이지 사이의 공유 구간이 더 잘 압축되도록 속성을 고정 순서로 출력합니다.                                     |
+| `sortTokenLists`                | `boolean`                                                    | `false`   | 같은 이유로 set 형태 token 목록(`class`, `rel` 등)을 token 순서로 출력합니다.                                 |
+
+**webpack.config.js**
+
+```js
+export default {
+  mode: "production",
+  experiments: { html: true, css: true },
+  optimization: {
+    minimize: {
+      html: {
+        collapseWhitespace: "smart",
+        removeRedundantAttributes: "smart",
+        sortAttributes: true,
+        sortTokenLists: true,
+      },
+    },
+  },
+};
+```
+
+T> `comments` predicate는 minimizer의 worker pool에 소스로 전달되므로 외부 값을 closure로 참조해서는 안 됩니다.
+
+W> 이 옵션은 webpack이 기본 설치하는 minimizer를 설정합니다. [`optimization.minimizer`](#optimizationminimizer)를 자체 plugin으로 교체하면 기본 minimizer가 대체되어 이 옵션은 더 이상 적용되지 않습니다.
+
+#### optimization.minimize.javascript
+
+`false` `object`
+
+JavaScript minimizer에 그대로 전달되며 기본값은 `{ compress: { passes: 2 } }`입니다. `false`는 CSS와 HTML minification을 유지하면서 JavaScript만 비활성화합니다.
 
 ## optimization.minimizer
 

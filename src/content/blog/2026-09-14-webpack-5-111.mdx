@@ -1,0 +1,298 @@
+---
+title: Webpack 5.111
+sort: 20260914
+contributors:
+  - bjohansebas
+---
+
+Webpack 5.111이 출시되었습니다! 이번 릴리즈는 공개 파일 복사, 구형 브라우저를 위한 CSS 준비, 더 이상 배포할 필요가 없는 코드 찾기 등 몇 가지 작업을 자동화합니다. 또한 ES 모듈 출력을 안정화하여 설정에서 실험적 플래그를 제거할 수 있습니다.
+
+청크 로딩 런타임 축소, 의존성 두 개 감소, 핫 업데이트 및 캐싱 수정, 플러그인 개발자를 위한 새로운 도구도 포함되어 있습니다. 프로젝트에 어떤 변경 사항이 적용되는지, 5.110에서 업그레이드하는 경우 무엇을 업데이트해야 하는지 살펴보겠습니다.
+
+새로운 기능 탐색:
+
+- [**실험 없는 ES 모듈 출력**](#es-module-output-without-an-experiment)
+- [**ES 모듈 라이브러리와 외부 모듈**](#es-module-libraries-and-externals)
+- [**설정에서 파일 URL 사용**](#file-urls-in-configuration)
+- [**정적 파일 복사**](#copying-static-files)
+- [**브라우저 대상을 위한 CSS**](#css-for-your-browser-targets)
+- [**HTML 및 임베디드 콘텐츠**](#html-and-embedded-content)
+- [**더 유용한 성능 힌트**](#more-useful-performance-hints)
+- [**더 작은 출력과 적은 메모리 사용**](#smaller-output-and-less-memory)
+- [**Webpack 자체 JavaScript 파서**](#webpacks-own-javascript-parser)
+- [**선택적 캐시 의존성**](#optional-cache-dependencies)
+- [**모듈 네임스페이스 객체**](#module-namespace-objects)
+- [**기타 개선 사항**](#other-improvements)
+- [**버그 수정**](#bug-fixes)
+
+## ES Module Output Without an Experiment
+
+앱이나 라이브러리를 ES 모듈로 배포하고 있나요? 이제 `experiments.outputModule`을 제거하고 [`output.module`](/configuration/output/#outputmodule)만 유지할 수 있습니다. ESM 출력이 안정화되었으며, `module`과 `modern-module` 라이브러리 타입 및 `externalsType: "module"`도 실험 플래그 없이 사용할 수 있습니다:
+
+```diff
+ export default {
+-  experiments: {
+-    outputModule: true,
+-  },
+   output: {
+     module: true,
+   },
+ };
+```
+
+업그레이드 시 확인해야 할 사항이 있습니다: **`experiments.outputModule: true`만 설정했다면 `output.module: true`를 추가하세요.** webpack은 이제 이전 플래그를 무시하므로, 해당 플래그만 유지하면 ESM 출력이 활성화되지 않습니다. `universal`, `deno`, `bun` 대상은 여전히 기본적으로 ESM을 사용하며, 다른 대상은 여전히 기본적으로 클래식 출력을 사용합니다.
+
+`module` 또는 `modern-module` 라이브러리 타입은 이제 자동으로 `output.module`을 활성화합니다. 해당 라이브러리는 ECMAScript 모듈로만 존재하므로 동일한 설정을 두 번 할 필요가 없습니다:
+
+```js
+export default {
+  output: {
+    library: {
+      type: "module",
+    },
+  },
+};
+```
+
+webpack 6의 기본값을 지금 바로 사용하고 싶으신가요? [`experiments.futureDefaults`](/configuration/experiments/#experimentsfuturedefaults)에 이제 `output.module`이 포함되어, [`target`](/configuration/target/)이 지원하는 곳에서는 빌드가 ECMAScript 모듈을 출력합니다. 클래식 스크립트 출력이 유지되는 경우는 세 가지입니다: 모듈을 읽을 수 없는 대상(`ie 11`과 같은 엔진으로 해석되는 `browserslist` 쿼리 또는 `node10`과 같이 그 이하 버전), `var` 또는 `umd`와 같이 스크립트에서 읽는 라이브러리 타입, 그리고 `output.module`을 직접 설정하는 경우(양방향으로 우선합니다).
+
+비동기 시작도 개선되었습니다. 엔트리가 최상위 `await`를 사용하여 설정을 로드하는 경우, 번들을 가져오는 코드는 해당 설정이 완료될 때까지 기다리고 실패하면 오류를 받습니다. 이는 대상이 최상위 `await`를 지원할 때 동작합니다. webpack이 해당 지원을 자동으로 감지하며, `output.environment.topLevelAwait`를 통해 [출력 환경 설정](/configuration/output/#outputenvironment)에서 재정의할 수 있습니다.
+
+## ES Module Libraries and Externals
+
+외부로 유지하는 패키지에서 재내보내는 ES 모듈 라이브러리를 게시하는 경우, 이제 여러 사항이 올바르게 동작합니다:
+
+```js
+export * from "lodash";
+export { render } from "react-dom";
+```
+
+- **라이브 바인딩이 유지됩니다.** 외부 패키지가 나중에 재할당하는 값이 소비자에게 전달됩니다. webpack이 값을 한 번만 복사하는 대신 네이티브 재내보내기를 출력하기 때문입니다.
+- **`externals` 매핑이 사용됩니다.** 스타 재내보내기는 소스에 작성된 요청 대신 설정한 요청을 사용합니다.
+- **임포트 속성이 유지됩니다.** `export * from "./data.json" with { type: "json" }`은 출력된 구문에 속성을 유지합니다.
+- **사이클이 더 이상 스택 오버플로를 일으키지 않습니다.** 두 모듈이 외부를 통해 서로 스타 재내보내기를 하는 경우에도 마찬가지입니다.
+- **지정자가 이스케이프됩니다.** 특수 문자가 포함된 요청도 출력에서 유효한 문자열 리터럴로 처리됩니다.
+
+이제 올바르게 처리되지 않고 오류로 보고되는 경우가 있습니다: 배열로 선언된 외부는 모듈 지정자와 속성 경로를 나타내는데, 해당 외부에서 `export *`를 사용하면 속성이 아닌 모듈을 재내보내게 됩니다. webpack은 이를 빌드 오류로 보고하므로 의도한 내보내기를 명시할 수 있습니다.
+
+## File URLs in Configuration
+
+webpack 설정을 ES 모듈로 작성하는 경우, `context` 및 `output.path`와 같은 경로 옵션에 `file:` URL 문자열을 직접 전달할 수 있습니다. 이렇게 하면 추가적인 `fileURLToPath()` 변환이 필요 없습니다:
+
+```diff
+-import { fileURLToPath } from "node:url";
+-
+ export default {
+   output: {
+-    path: fileURLToPath(new URL("./dist/", import.meta.url)),
++    path: new URL("./dist/", import.meta.url).href,
+   },
+ };
+```
+
+`test` 및 `include`와 같은 규칙 조건에도 동일한 방법을 사용할 수 있습니다. `.href`를 잊지 마세요. webpack은 여기서 `URL` 객체가 아닌 문자열 형태의 URL을 기대합니다.
+
+## Copying Static Files
+
+`robots.txt`, 공개 이미지, 라이센스 파일은 아무것도 가져오지 않더라도 출력 디렉터리에 도달해야 합니다. [`output.copy`](/configuration/output/#outputcopy)를 사용하면 빌드의 일부로 폴더 전체를 복사할 수 있습니다:
+
+```js
+export default {
+  output: {
+    copy: "public",
+  },
+};
+```
+
+이렇게 하면 `public/`의 내용이 폴더 구조를 유지하면서 출력 디렉터리로 복사됩니다. 이 설정을 위해 별도의 복사 단계가 더 이상 필요하지 않습니다. watch 모드 실행 중에 파일을 편집하면 webpack이 업데이트된 버전을 복사합니다. 파일은 빌드 통계에도 표시되며 `output.clean`이 출력을 정리할 때도 유지됩니다.
+
+여러 곳에서 복사하거나 파일 위치를 선택하려면 패턴을 사용하세요:
+
+```js
+export default {
+  output: {
+    copy: [
+      "public",
+      { from: ["licenses/*.txt", "vendor/licenses/*.txt"], to: "licenses" },
+      { from: "images", to: "img", filename: "[name].[contenthash][ext]" },
+    ],
+  },
+};
+```
+
+파일 필터링, 내용 변환, 권한 및 타임스탬프 보존도 가능합니다. webpack은 패턴이 아무것도 찾지 못하면 경고를 표시하고, 복사가 생성된 애셋을 덮어쓰게 되면 오류를 보고하여 잘못된 경로를 조기에 발견할 수 있습니다. 복사 시점과 동시에 처리되는 파일 수에 대한 더 많은 제어가 필요하면 내장 [`CopyPlugin`](/plugins/copy-plugin/)을 사용하세요.
+
+## CSS for Your Browser Targets
+
+webpack이 구형 브라우저에 필요한 더 많은 작업을 처리하면서 최신 CSS를 작성할 수 있습니다. [`browserslist` 대상](/configuration/target/)을 사용하면 내장 CSS 최소화기가 지원하는 브라우저를 확인합니다. `lowerUnsupported`는 최신 문법의 지원되는 경우를 해당 브라우저가 이해하는 형식으로 재작성하고, `colorFallbacks`는 최신 색상 선언 앞에 호환 가능한 색상 선언을 추가합니다.
+
+두 옵션 모두 기본적으로 활성화되어 있습니다. 이번 릴리즈는 `inset`, 미디어 범위, CSS 중첩을 포함한 더 많은 문법을 지원하며, 최소화기의 수식 계산 및 색상 처리를 개선합니다. [`optimization.minimize.css`](/configuration/optimization/#optimizationminimizecss)를 통해 개별 설정을 조정할 수 있습니다:
+
+```js
+export default {
+  target: "browserslist",
+  optimization: {
+    minimize: {
+      css: {
+        lowerUnsupported: true,
+        colorFallbacks: true,
+      },
+    },
+  },
+};
+```
+
+예를 들어, 대상 목록의 브라우저가 `inset`을 이해하지 못하면 webpack이 네 면을 각각 작성합니다. 가독성을 위해 형식화된 변경 사항은 다음과 같습니다:
+
+```diff
+ .panel {
+-  inset: 0;
++  top: 0;
++  right: 0;
++  bottom: 0;
++  left: 0;
+ }
+```
+
+프로젝트에 더 많은 제어가 필요한 경우 활성화할 수 있는 몇 가지 옵션이 있습니다:
+
+- `unusedSymbols`를 사용하면 사용되지 않는 것으로 식별한 클래스, ID, 키프레임, 커스텀 속성을 제거할 수 있습니다. 프로젝트를 확인한 후 이름을 제공하면 됩니다. webpack이 자동으로 찾아주지는 않습니다.
+- `pseudoClasses`는 스크립트를 사용하여 의사 클래스 동작을 제공하는 경우 도움이 됩니다. 예를 들어, `{ "focus-visible": "focus-visible" }`은 `:focus-visible`을 `.focus-visible`로 교체하여 스크립트가 적용할 수 있습니다.
+- `resolveCustomAtRules`는 webpack의 CSS 파서를 거치지 않은 스타일시트에서 `@custom-media` 및 `@custom-selector`를 최소화기가 처리할 수 있게 합니다.
+- `rewriteDirSelector`는 지원되지 않는 `:dir()`을 속성 선택자를 사용한 근사값으로 대체합니다. 해당 근사값이 스타일에 맞는 경우에만 활성화하세요.
+- `mergeDistantRules`는 다른 규칙이 사이에 있더라도 일치하는 선언이 있는 규칙을 결합합니다. 순서 변경이 어떤 스타일이 적용될지에 영향을 줄 수 있으므로 기본적으로 비활성화되어 있습니다.
+
+또한 최소화는 다른 CSS 표현식이 채널을 읽을 때 색상을 더 조심스럽게 보존하고, CSS 레이어 블록의 올바른 순서를 유지합니다. 이러한 수정 사항은 프로덕션 스타일이 의도한 대로 동작하도록 합니다.
+
+CSS 모듈에도 알아두어야 할 수정 사항이 있습니다: `@keyframes` 이름과 같은 at-규칙 전문에서 사용된 `@value`는 이제 정확히 한 번만 스코프가 지정됩니다. 이전에는 일반 값 처리 과정에서 두 번 재작성되어, 어떤 애니메이션도 일치하지 않는 이중 이름이 출력되는 문제가 있었습니다.
+
+## HTML and Embedded Content
+
+webpack의 네이티브 HTML 지원을 사용하는 경우, 이번 릴리즈에서 생성된 페이지가 더 깔끔해집니다. 최소화기는 `href` 및 `src`와 같은 속성의 URL 주변 공백을 제거합니다. `mergeScripts`를 사용하여 인접한 스크립트 요소를 결합하거나, `collapseBooleanAttributes: "all"`을 통해 더 많은 불리언 속성을 단축할 수도 있습니다. 설정에 대한 자세한 내용은 [`optimization.minimize.html`](/configuration/optimization/#optimizationminimizehtml)을 참고하세요.
+
+속성은 이제 소스에 작성된 방식이 아닌 값이 의미하는 바에 따라 최소화됩니다. 이전에는 인용된 값이 재작성되고 인용되지 않은 값은 그대로 출력되어, `method="GET"`은 최적화되고 `method=GET`은 그렇지 않았습니다. 이제 불리언 축약(`checked=checked`) 및 문자 참조 디코딩을 포함하여 동일한 경로를 취합니다.
+
+커스텀 최소화기를 사용하는 경우, 이제 `renderEmbeddedSource`를 통해 인라인 CSS와 JSON을 전달하여 페이지의 해당 부분을 독립 파일과 동일한 제어 하에 둘 수 있습니다. webpack은 최소화기가 처리를 맡긴 내용을 처리할 수 있습니다. 이벤트 핸들러 속성도 올바르게 읽는 데 필요한 컨텍스트와 함께 최소화기로 전달될 수 있습니다.
+
+플러그인을 개발하고 있나요? `webpack.css.syntax.cssMinify`와 `webpack.html.syntax.htmlMinify`를 통해 webpack 자체 CSS 및 HTML 최소화기를 재사용할 수 있습니다.
+
+플러그인은 `NormalModule`의 `processResult` 훅에서 비동기 작업도 수행할 수 있습니다. 예를 들어, 이미지 플러그인이 PNG를 WebP로 변환하고 `module.buildInfo.assetResource`를 새 경로로 설정하면, webpack은 일치하는 파일명과 인라인 미디어 타입을 사용하므로 캐시를 사용하는 빌드에서도 참조가 올바른 파일을 가리킵니다.
+
+HTML 엔트리도 탐색하기 더 쉬운 출력을 생성합니다: 페이지 청크는 엔트리 또는 소스 파일을 기반으로 한 이름을 사용하고, 중복 JavaScript 복사본이 제거됩니다. HTML에 속성 이름이나 목록에 템플릿 구분자가 포함되어 있으면 최소화 중에 보존됩니다.
+
+## More Useful Performance Hints
+
+페이지에서 이미지를 제거했는데 왜 출력에 여전히 나타나는지 궁금했나요? 또는 잘못된 줄을 가리키는 소스 맵을 열어본 적 있나요? 새로운 검사들이 이러한 문제를 추적하는 데 도움을 줍니다:
+
+- [`sourceMaps`](/configuration/performance/#performancesourcemaps)는 프로덕션 번들에 무게를 더하는 맵과 코드를 변경하면서 맵을 반환하지 않는 로더를 찾아 디버깅을 어렵게 만드는 경우를 발견하는 데 도움을 줍니다.
+- [`unusedAssets`](/configuration/performance/#performanceunusedassets)는 더 이상 사용하지 않는 임포트로 인해 여전히 출력되고 있는 파일을 지적하여 이를 유지하는 임포트를 정리할 수 있습니다.
+- [`unusedModules`](/configuration/performance/#performanceunusedmodules)는 "왜 이 모듈이 아직 번들에 있나요?"라는 질문에 답하는 데 도움을 줍니다. 이 모듈을 유지하는 재내보내기나 사이드 이펙트를 식별합니다.
+- [`analyzableBailouts`](/configuration/performance/#performanceanalyzablebailouts)는 ESM 출력을 다른 도구에 전달할 때 도움이 됩니다. 참조가 도구가 따라갈 수 있는 리터럴 `import()` 또는 `new URL()`이 되지 못하는 이유를 설명합니다.
+
+여러 페이지에 동일한 모듈의 복사본이 포함된 경우, 중복 모듈 보고가 이제 webpack이 최적화 중에 모듈을 병합한 경우에도 해당 복사본을 감지합니다.
+
+이러한 보고서도 캐시에서 유지됩니다. 모듈을 파싱하는 동안 webpack이 발견한 베일아웃이 이제 해당 모듈과 함께 저장되므로, 파일 시스템 캐시에서 복원하는 빌드는 파싱한 빌드와 동일한 이유를 보고합니다.
+
+### Updating existing checks
+
+5.110에서 검사를 활성화했다면 잠시 이름을 업데이트하세요. 여러 관련 검사를 그룹화했으며, 제거된 이름을 유지하면 webpack이 설정 오류를 보고합니다:
+
+| 이전 옵션                                                          | 5.111에서 사용     |
+| ------------------------------------------------------------------ | ------------------ |
+| `unusedAliases`, `unusedDefines`, `unusedExternals`, `unusedRules` | `unusedConfig`     |
+| `unusedReexports`                                                  | `unusedModules`    |
+| `embeddedSourceMaps`                                               | `sourceMaps`       |
+| `entrypointOverlap`                                                | `duplicateModules` |
+
+`unusedConfig`는 alias, define, external, rule 검사를 그룹화합니다. 또한 Module Federation `shared` 엔트리와 아무것도 가져오지 않는 `remotes`도 보고하여, 앱 변경에 따라 남겨진 설정을 정리할 수 있습니다. 예를 들어:
+
+```js
+export default {
+  performance: {
+    hints: "warning",
+    unusedConfig: true,
+    sourceMaps: true,
+    unusedAssets: true,
+  },
+};
+```
+
+활성화할 검사를 직접 선택합니다. 빌드에 경고를 추가하지 않고 결과를 탐색하고 싶다면 [`performance.hints: "stats"`](/configuration/performance/#performancehints)를 사용하세요. `unusedConfig`도 포함됩니다. 한 가지 구분할 점: `hints: false`는 번들 검사를 비활성화하지만 활성화된 설정 검사는 여전히 경고합니다. 해당 개별 옵션을 끄면 경고를 비활성화할 수 있습니다. 이름이 변경된 옵션의 전체 목록은 [성능 문서](/configuration/performance/#renamed-checks)에서 확인하세요.
+
+## Smaller Output and Less Memory
+
+모든 빌드가 설정 변경 없이 조금 더 가벼워집니다.
+
+청크 로딩 런타임이 축소됩니다. `__webpack_require__.e`는 적용될 수 있는 모든 핸들러 맵을 순회하는 대신 청크의 단일 로딩 핸들러를 직접 호출하고, `__webpack_require__.O` 뒤의 우선순위 큐는 우선순위를 전달하는 빌드에서만 출력됩니다. 현재는 프리페칭을 사용하는 빌드를 의미합니다.
+
+ESM 출력에서는 청크 임포트가 각 `import()` 사이트가 아닌 청크 로더로 이동했습니다. 출력은 여전히 탐색 가능합니다. 출력된 모든 청크는 다른 번들러나 프리로드 스캐너가 따라갈 수 있는 리터럴 지정자로 여전히 도달할 수 있습니다. 재빌드도 더 저렴해졌습니다. 임포트하는 모듈이 더 이상 임포트된 청크의 콘텐츠 해시를 포함하지 않으므로, 지연 로드된 라우트를 편집해도 초기 번들로 가는 경로의 청크를 무효화하지 않습니다.
+
+webpack의 메모리 사용량도 줄었습니다. 파서, 생성기, 마지막 빌드의 렌더링된 소스가 중첩된 자식 컴파일레이션과 watch 빌드가 유휴 상태일 때 해제됩니다. 1700개 모듈 프로젝트에서 85.6 MB 유휴 힙에서 6.3 MB가 줄었습니다. 출력된 애셋은 변경되지 않습니다.
+
+## Webpack's Own JavaScript Parser
+
+일부 개선 사항은 내부에서 이루어집니다. webpack은 이제 자체 파서로 JavaScript를 파싱하며, CSS와 HTML 출력 및 캐시 저장 작업에서 메모리 할당을 줄였습니다. 업그레이드만으로 이러한 변경 사항을 얻을 수 있습니다.
+
+이 파서 덕분에 `acorn`은 더 이상 webpack 의존성이 아니며, `neo-async`도 내장 헬퍼로 대체되어 제거되었습니다. 설치, resolve, 감사해야 할 패키지가 두 개 줄었습니다.
+
+빌드 머신보다 최신 환경에서 앱이 실행되는 경우에도 유용한 변경 사항이 있습니다. webpack은 이제 빌드를 실행하는 Node.js 버전이 실행할 수 없는 정규 표현식도 읽을 수 있습니다. 앱을 실행하는 브라우저나 런타임은 여전히 해당 표현식을 지원해야 하지만, webpack은 이제 소스를 문제없이 처리할 수 있습니다.
+
+구문 오류도 파일 시스템 캐시에서 복원될 때 소스 위치를 유지하므로, 다음 빌드에서도 수정해야 할 줄을 정확히 가리킵니다.
+
+## Optional Cache Dependencies
+
+여러 프로젝트에서 webpack 설정을 공유하는 경우, 일부 프로젝트에는 `tailwind.config.js`가 있고 없는 프로젝트도 있을 수 있습니다. 이제 파일 시스템 캐시에 빌드 의존성이 선택적임을 알릴 수 있어, 파일이 없어도 webpack이 캐시를 저장하지 못하는 상황을 방지할 수 있습니다:
+
+```js
+// webpack.config.cjs
+const path = require("node:path");
+
+module.exports = {
+  cache: {
+    type: "filesystem",
+    buildDependencies: {
+      config: [__filename],
+      tailwind: [
+        {
+          dependency: path.resolve(__dirname, "tailwind.config.js"),
+          optional: true,
+        },
+      ],
+    },
+  },
+};
+```
+
+해당 파일이 없는 프로젝트도 캐시를 저장하고 재사용할 수 있습니다. 나중에 파일을 추가하거나 제거하면, webpack은 오래된 결과를 재사용하는 대신 새 설정으로 재빌드합니다.
+
+## Module Namespace Objects
+
+`import * as utils from "./utils.js"`를 작성할 때 일반적으로 `utils.format()`과 같은 것을 호출합니다. 일부 라이브러리는 `utils` 객체 자체를 더 자세히 살펴봅니다: 어떤 키가 있는지, 프로토타입이 무엇인지, 변경될 수 있는지 등입니다. 새로운 `module.parser.javascript.specNamespaceObject` 옵션은 해당 코드가 네이티브 ESM에 더 가깝게 동작하도록 도와줍니다. null 프로토타입, 정렬된 내보내기 이름, 최신 상태를 유지하는 바인딩, 네임스페이스 변경 방지를 제공합니다.
+
+이 옵션은 JSON, 텍스트, CommonJS와 같이 자체 네임스페이스가 없는 모듈도 다룹니다. 해당 모듈에 합성된 네임스페이스는 동일한 형태를 얻으며, 하나의 모듈을 임포트하는 모든 임포터는 같아 보이는 객체가 아닌 동일한 객체를 받습니다. 모듈이 내보내지 않는 이름을 읽으면 `undefined`를 반환합니다. 이전에는 `Object.prototype`을 통해 접근하여 `toString`과 같은 것을 반환했습니다. 지연된 임포트는 내보내기가 알려지면 동일한 형태를 보고합니다.
+
+대부분의 앱은 이 옵션을 끄두어도 됩니다. 필요한 경우, 임포트하는 모듈에서 활성화하고 런타임이 `Proxy`를 지원하는지 확인하세요. 트레이드오프가 있습니다: webpack은 해당 모듈의 모든 내보낸 이름을 유지하고 다른 모듈과 병합할 수 없으므로, 추가 런타임 코드가 생성되고 최적화가 줄어듭니다. 임포트하는 모듈은 여전히 평소처럼 병합될 수 있습니다.
+
+## Other Improvements
+
+설정에 영향을 줄 수 있는 몇 가지 소소한 변경 사항이 있습니다:
+
+- [`resolve.fileSystem`](/configuration/resolve/#resolvefilesystem)이 적용됩니다. 이전에는 webpack이 컴파일러의 입력 파일 시스템을 설정한 것 위에 덮어썼으므로 커스텀 파일 시스템이 resolver에 도달하지 못했습니다. 이제 [`resolve.resolver`](/configuration/resolve/#resolveresolver)가 이미 동작하는 방식처럼 기본값이 되었으며, [`resolveLoader.fileSystem`](/configuration/resolve/#resolveloader)도 로더에 대해 동일하게 동작합니다.
+- `module.exprContextCritical`은 이동된 위치를 알려줍니다. 형제 옵션들과 마찬가지로 [`module.parser.javascript.exprContextCritical`](/configuration/module/#moduleparserjavascript)을 위해 더 이상 사용되지 않으며, 메시지가 이제 그 사실을 알려줍니다.
+- `DefinePlugin` 값이 `undefined`인 곳에서 속성을 읽으면 예외를 발생시키는 코드가 생성됩니다. 이는 플러그인 없이 동일한 표현식이 하는 것과 같습니다. 값이 없을 것으로 예상되는 곳에서는 선택적 체이닝을 사용하세요.
+
+## Bug Fixes
+
+이번 릴리즈는 일상적인 개발을 더 원활하게 만듭니다:
+
+- **더 안정적인 재빌드.** CSS 핫 업데이트 및 캐시 무효화 수정으로 최신 변경 사항이 올바르게 표시됩니다.
+- **더 예측 가능한 런타임 동작.** 비동기 초기화, 최적화된 JavaScript, 서버 및 로더 워크플로의 CSS가 수정되었습니다.
+- **더 명확한 빌드 오류.** 누락된 애셋 및 런타임 코드 생성 실패가 이제 빌드를 중단시키거나 원인을 숨기는 대신 오류로 표시됩니다.
+- **작성한 대로 읽히는 출력.** 스코프 호이스팅이 래핑된 CommonJS 참조를 별도의 구문으로 유지하고, 익명 `export default class`는 정적 초기화가 실행되기 전에 이름이 지정되며, `</`로 끝나는 HTML 텍스트가 이스케이프되어 이후 태그가 텍스트를 주석으로 만들지 않습니다.
+- **더 많은 설정에서 올바른 재빌드.** `DelegatedModule`은 DLL 매니페스트의 메타데이터가 변경되면 재빌드되고, 캐시된 모듈은 캐시가 아닌 팩토리에서 `resolveOptions`를 가져오며, webpack이 인라인한 값이 변경되면 소비자가 재생성됩니다.
+
+전체 변경 사항 및 기여자 목록은 [5.111.0 릴리즈 노트](https://github.com/webpack/webpack/pull/21914)를 참고하세요.
+
+## Thanks
+
+코드를 기여하고, 문서를 개선하고, 변경 사항을 테스트하고, 버그를 보고해 주신 모든 분들께 감사드립니다. 이 작업을 가능하게 해주신 [스폰서](https://github.com/webpack/webpack?tab=readme-ov-file#sponsoring) 여러분께도 감사드립니다.

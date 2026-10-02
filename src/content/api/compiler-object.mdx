@@ -1,0 +1,210 @@
+---
+title: Compiler Object
+description: 플러그인이 의존할 수 있는 webpack Compiler의 속성과 메서드입니다.
+group: Objects
+sort: 14
+contributors:
+  - hai-x
+---
+
+`Compiler`는 빌드를 주도하는 객체입니다. 설정마다 한 번 생성되며, 단일 빌드를 넘어 존속하는 모든 것 — 해석된 옵션, 파일 시스템, 캐시 — 을 보유하고, [훅](/api/compiler-hooks/)을 통해 실제 작업을 플러그인에 위임합니다.
+
+플러그인은 `apply`의 인수로 이를 받습니다.
+
+```js
+class MyPlugin {
+  apply(compiler) {
+    compiler.hooks.done.tap("MyPlugin", (stats) => {
+      // ...
+    });
+  }
+}
+```
+
+하나의 `Compiler`는 보통 많은 빌드를 실행합니다 — watch 모드에서의 모든 재빌드는 동일한 컴파일러에서 새로운 [`Compilation`](/api/compilation-object/)입니다. 재빌드에서도 살아남아야 하는 상태는 여기에 속하고, 하나의 빌드에 관한 상태는 compilation에 속합니다.
+
+## Properties
+
+### hooks
+
+[컴파일러 훅](/api/compiler-hooks/)으로, 플러그인이 빌드에 참여하는 주요 방법입니다.
+
+### webpack
+
+실행 중인 인스턴스에서 가져온 webpack exports — `Compilation`, `sources`, `NormalModule`, 모든 플러그인 — 으로, 자체 `require("webpack")`에서 가져온 것이 아닙니다. 플러그인 옆의 webpack과 다른 복사본을 프로젝트가 해석하는 경우에도 플러그인이 계속 작동하도록 이것을 사용하세요.
+
+```js
+class MyPlugin {
+  apply(compiler) {
+    const { Compilation, sources } = compiler.webpack;
+    // ...
+  }
+}
+```
+
+### options
+
+기본값과 정규화가 적용된 후의 해석된 설정입니다. 이것은 사용자가 작성한 객체가 아닙니다. `compiler.options.output.path`를 읽으면 webpack이 최종적으로 결정한 값, 즉 빌드에서 실제로 사용하는 값을 얻습니다.
+
+### context
+
+빌드가 해석되는 기준 절대 디렉터리입니다 — [`context`](/configuration/entry-context/#context).
+
+### name
+
+[`name`](/configuration/other-options/#name)에서 가져온 컴파일러 이름입니다. 자식 컴파일러의 경우 생성 시 부여된 이름입니다.
+
+### outputPath
+
+절대 출력 디렉터리, 즉 해석된 [`output.path`](/configuration/output/#outputpath)입니다.
+
+### watchMode / running / idle
+
+`boolean`
+
+이 컴파일러가 `watch()`로 시작되었는지, 빌드가 진행 중인지, 컴파일러가 유휴 상태(빌드 사이에 캐시를 저장할 수 있는 상태)인지 여부입니다. 빌드 상태를 직접 추적하는 대신 이를 읽으세요.
+
+### watching
+
+watch 모드에서 실행 중일 때의 `Watching` 인스턴스이며, 그렇지 않으면 `undefined`입니다. watch 루프 제어를 담당합니다.
+
+| 메서드                 | 기능                                                 |
+| ---------------------- | ---------------------------------------------------- |
+| `invalidate(callback)` | 파일 변경을 기다리지 않고 즉시 재빌드를 트리거합니다 |
+| `suspend()`            | 감시자를 유지하면서 변경 시 재빌드를 중지합니다      |
+| `resume()`             | `suspend()` 이후 재개합니다                          |
+| `close(callback)`      | 감시를 중지합니다                                    |
+
+### modifiedFiles / removedFiles
+
+`Set<string> | undefined`
+
+watch 모드에서, 이전 빌드 이후 변경되고 삭제된 파일들입니다. 첫 번째 빌드에서는 `undefined`이며, 재빌드가 무엇에 반응하는지 알아내는 지원되는 방법입니다.
+
+### fileTimestamps / contextTimestamps
+
+무엇이 오래되었는지 결정하는 데 사용되는 타임스탬프 캐시입니다.
+
+W> 이것들은 변경 감지의 구현 세부사항이지, 재빌드를 강제하는 방법이 아닙니다. 다른 파일이 변경될 때 하나의 파일을 재빌드하려면 대신 디펜던시를 선언하세요 — [다른 파일에 모듈을 의존하게 만들기](#making-a-module-depend-on-another-file)를 참고하세요.
+
+### inputFileSystem / outputFileSystem / intermediateFileSystem / watchFileSystem
+
+webpack이 소스를 읽는 파일 시스템, 애셋을 쓰는 파일 시스템, 자체 중간 파일(캐시, 레코드)을 쓰는 파일 시스템, 그리고 변경을 감시하는 파일 시스템입니다. 교체할 시기는 [파일 시스템 테이블](/api/node/#custom-file-systems)을 참고하세요.
+
+### cache
+
+컴파일러 레벨 캐시입니다. 이 객체를 직접 사용하는 대신 [`getCache(name)`](#getcache)를 사용하세요.
+
+### resolverFactory
+
+webpack이 사용하는 리졸버를 생성하고 캐시합니다. 훅을 탭하여 해석에 영향을 줍니다 — [리졸버](/api/resolvers/)를 참고하세요.
+
+### platform
+
+[`target`](/configuration/target/)에서 해석된 타겟 환경으로, 읽기 전용 플래그(`web`, `node`, `webworker` 등)로 각각 `true`, `false`, 또는 플랫폼이 중립적으로 남겨진 경우 `null`입니다. [컴파일러 인스턴스](/api/node/#compiler-instance)를 참고하세요.
+
+### managedPaths / immutablePaths / unmanagedPaths
+
+webpack이 파일을 재확인하지 않고 얼마나 적극적으로 신뢰할 수 있는지를 결정하는 해석된 [`snapshot`](/configuration/other-options/#snapshot) 경로 집합입니다.
+
+### parentCompilation / root
+
+자식 컴파일러의 경우, 이를 생성한 compilation과 트리의 최상위 컴파일러입니다. `isChild()`는 확인을 위한 단축 메서드입니다.
+
+## Methods
+
+### run
+
+`(callback: (err: Error | null, stats?: Stats) => void) => void`
+
+단일 빌드를 실행합니다. 콜백은 `(err, stats)`를 받습니다.
+
+W> `run`은 컴파일러의 리소스를 해제하지 않습니다 — 빌드가 완료되면 [`close`](#close)를 호출하세요. 그렇지 않으면 파일 시스템 캐시가 기록되지 않을 수 있습니다.
+
+### watch
+
+`(watchOptions: WatchOptions, handler: (err: Error | null, stats?: Stats) => void) => Watching | undefined`
+
+빌드하고, 감시 중인 파일이 변경될 때마다 재빌드합니다. [`Watching`](#watching) 인스턴스를 반환하며, `handler`는 매 빌드 후 `(err, stats)`와 함께 호출됩니다.
+
+### close
+
+`(callback: (err: Error | null) => void) => void`
+
+컴파일러를 종료합니다. 감시를 중지하고, 캐시를 기록하고, 빌드가 보유한 것을 해제합니다.
+
+### getCache
+
+`(name: string) => CacheFacade`
+
+빌드 사이에 결과를 저장하기 위해 `name`으로 범위가 지정된 `CacheFacade`를 반환합니다. compilation 내부에서는 항목이 만들어지는 빌드에 속하도록 [`compilation.getCache(name)`](/api/compilation-object/#getcache)를 사용하세요.
+
+### getInfrastructureLogger
+
+`(name: string | (() => string)) => WebpackLogger`
+
+빌드에 관한 것이 아니라 컴파일러에 관한 출력을 위한 [로거](/api/logging/)입니다 — 인프라 로그입니다. 빌드와 관련된 모든 것에는 대신 `compilation.getLogger(name)`을 사용하여 해당 빌드의 stats에 메시지가 나타나도록 하세요.
+
+### isChild
+
+`() => boolean`
+
+이것이 자식 컴파일러인지 여부입니다.
+
+### runAsChild
+
+`(callback: (err: Error | null, entries?: Chunk[], compilation?: Compilation) => void) => void`
+
+[`compilation.createChildCompiler`](/api/compilation-object/#createchildcompiler)로 생성된 자식 컴파일러를 실행하며, 애셋을 부모 compilation에 전달합니다.
+
+### purgeInputFileSystem
+
+`() => void`
+
+입력 파일 시스템의 캐시를 지웁니다. 거의 필요하지 않습니다 — webpack이 watch 모드에서 적절한 시점에 자체적으로 처리합니다.
+
+## Common tasks
+
+### Making a module depend on another file
+
+컴파일러에 접근하는 일반적인 이유는 모듈이 _다른_ 파일이 변경될 때 재빌드되기를 원하는 경우입니다 — 설정 파일, 스키마, 빌드 시에 모듈이 읽는 템플릿 등입니다.
+
+파일 디펜던시로 선언하세요. [`fileTimestamps`](#filetimestamps--contexttimestamps)는 건드리지 마세요. Webpack은 `compilation.fileDependencies`의 모든 경로를 감시하고 이를 선언한 모듈을 재빌드합니다.
+
+가장 단순한 경우인 로더에서:
+
+```js
+export default function (source) {
+  this.addDependency("/abs/path/to/config.json");
+  return transform(source);
+}
+```
+
+하나의 모듈이 아닌 전체 빌드가 의존하는 경로를 위한 플러그인에서:
+
+```js
+compiler.hooks.thisCompilation.tap("MyPlugin", (compilation) => {
+  compilation.fileDependencies.add("/abs/path/to/config.json");
+});
+```
+
+디렉터리에는 `contextDependencies`를, 아직 존재하지 않지만 나타날 때 재빌드를 트리거해야 하는 경로에는 `missingDependencies`를 사용하세요.
+
+### Reacting to what changed in a rebuild
+
+```js
+compiler.hooks.watchRun.tap("MyPlugin", (compiler) => {
+  const changed = compiler.modifiedFiles;
+  const removed = compiler.removedFiles;
+
+  if (!changed) return; // first build
+
+  for (const file of changed) {
+    // ...
+  }
+});
+```
+
+### On demand rebuild
+
+`compiler.watching.invalidate()`는 즉시 재빌드를 시작합니다 — 파일 시스템 외부에서 무언가 변경되어 감시자가 감지할 수 없을 때 유용합니다.

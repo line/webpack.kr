@@ -1,5 +1,6 @@
 ---
 title: Entry Points
+description: webpack의 Entry Points 개념과 동작 방식을 설명합니다.
 sort: 1
 contributors:
   - TheLarkInn
@@ -25,16 +26,14 @@ translators:
 이 과정의 결과는 나중에 `output` 구성에 따라 디스크에 기록됩니다.
 `output` 구성은 번들로 묶인 파일이 어디에 어떻게 저장되는지를 제어합니다.
 
-T> When running webpack without a configuration file, the entry defaults to `'./src/index.js'`. If that file is missing — even if your `src/` directory exists — webpack will throw: <br /> **`ERROR in Entry module not found: Error: Can't resolve './src'`** <br /><br /> The error says `'./src'` rather than `'./src/index.js'` because webpack resolves the directory first, then fails to find `index.js` inside it. To use a different entry filename, configure the `entry` option as shown in the sections below.
-
-T> When running webpack without a configuration file, the entry defaults to `'./src/index.js'`. If that file is missing — even if your `src/` directory exists — webpack will throw: <br /> **`ERROR in Entry module not found: Error: Can't resolve './src'`** <br /><br /> The error says `'./src'` rather than `'./src/index.js'` because webpack resolves the directory first, then fails to find `index.js` inside it. To use a different entry filename, configure the `entry` option as shown in the sections below.
+T> 설정 파일 없이 webpack을 실행하면 entry의 기본값은 `'./src'`이며, webpack은 `resolve.mainFiles`와 `resolve.extensions`를 통해 이를 `./src/index.js`로 해석합니다. `src/` 디렉터리가 존재하더라도 해당 파일이 없으면 webpack은 다음 오류를 발생시킵니다. <br /> **`Module not found: Error: Can't resolve './src' in '/path/to/project'`** <br /><br /> 오류에 `'./src'`가 표시되는 이유는 그것이 실제 엔트리 요청이기 때문입니다. `index.js`는 그 안에서 검색되는 기본 파일일 뿐입니다. 다른 엔트리 파일 이름을 사용하려면 아래 섹션처럼 `entry` 옵션을 설정하세요.
 
 ## Single Entry (Shorthand) Syntax
 
-Usage: `entry: string | [string]`
+Usage: `entry: string | string[]`
 
 - `string`: 단일 항목 파일
-- `[string]`: 다중 항목 파일
+- `string[]`: 다중 항목 파일
 
 **webpack.config.js**
 
@@ -86,12 +85,12 @@ export default {
 
 ## Object Syntax
 
-Usage: `entry: { <entryChunkName> string | [string] } | {}`
+Usage: `entry: Record<entryChunkName, string | string[]>`
 
-- `<entryChunkName>`: name of the entry chunk
+- `entryChunkName`: 엔트리 청크의 이름
 - `string`: 단일 항목 파일
-- `[string]`: 다중 항목 파일
-- `{}`: 빈 객체
+- `string[]`: 다중 항목 파일
+- `{}`: 빈 객체도 허용됩니다
 
 **webpack.config.js**
 

@@ -1,5 +1,6 @@
 ---
 title: PrefetchPlugin
+description: PrefetchPlugin의 기능과 사용 방법을 설명합니다.
 group: webpack
 contributors:
   - skipjack
@@ -20,3 +21,25 @@ new webpack.PrefetchPlugin([context], request);
 
 - `context`: 디렉터리에 대한 절대경로
 - `request`: 일반 모듈에 대한 요청 문자열
+
+## What it does
+
+webpack은 디펜던시 그래프를 순회하면서 모듈을 발견합니다. import 체인 깊은 곳에 있는 모듈은 그 위에 있는 모든 것이 파싱된 후에야 해결됩니다. 따라서 webpack이 가능한 곳에서는 병렬로 모듈을 처리하지만, 긴 체인은 부분적으로 순차적으로 빌드됩니다.
+
+이 플러그인은 대신 컴파일의 맨 처음에 그러한 체인 중 하나를 시작합니다. 그 시점에는 webpack이 첫 번째 모듈들이 파싱되기를 기다리고 있을 것입니다. 실제 `import`가 발견될 때쯤이면 모듈은 이미 빌드되어 있고 결과가 재사용됩니다.
+
+```js
+import path from "node:path";
+import webpack from "webpack";
+
+export default {
+  plugins: [
+    // 가장 무거운 디펜던시를 즉시 빌드 시작
+    new webpack.PrefetchPlugin(path.resolve("./src"), "./deeply/nested/heavy"),
+  ],
+};
+```
+
+빌드에서 한 번도 import하지 않는 모듈을 프리페치하면 작업만 낭비됩니다. 해당 모듈은 어떤 청크에도 포함되지 않고 아무것도 방출되지 않습니다. 따라서 먼저 빌드를 프로파일링하는 것이 좋습니다 — [빌드 성능](/guides/build-performance/)을 참고하세요. 성과는 전적으로 비용이 많이 들고 늦게 발견되는 요청을 선택하는 데 달려 있습니다.
+
+W> 이것은 **빌드 시간**에 관한 것이며, 브라우저가 하는 것과 다릅니다. [`<link rel="prefetch">`](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/rel/prefetch) 태그를 방출하지 않으며 출력에 아무런 변화도 주지 않습니다. 브라우저가 청크를 미리 가져오도록 하려면, [프리페칭/프리로딩 모듈](/guides/code-splitting/#prefetchingpreloading-modules)에서 설명하는 `webpackPrefetch` [매직 주석](/api/module-methods/#magic-comments)을 사용하세요.

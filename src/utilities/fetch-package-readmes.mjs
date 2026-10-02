@@ -24,11 +24,9 @@ const pathMap = {
 };
 
 const loaderGroup = {
-  "css-loader": "CSS",
   "less-loader": "CSS",
   "postcss-loader": "CSS",
   "sass-loader": "CSS",
-  "style-loader": "CSS",
   "stylus-loader": "CSS",
 };
 const communityPackages = [
@@ -42,15 +40,26 @@ const communityPackages = [
   },
 ];
 
+/** @type {{ loaders: string[], plugins: string[] }} */
+const repositories = Object.fromEntries(
+  await Promise.all(
+    types.map(async (type) => [
+      type,
+      JSON.parse(
+        await readFile(
+          path.resolve(__dirname, `../../repositories/${type}.json`),
+        ),
+      ),
+    ]),
+  ),
+);
+
 for (const type of types) {
   const outputDir = pathMap[type];
 
   await mkdirp(outputDir);
 
-  /** @type string[] */
-  const repos = JSON.parse(
-    await readFile(path.resolve(__dirname, `../../repositories/${type}.json`)),
-  );
+  const repos = repositories[type];
 
   for (const repo of repos) {
     const [owner, packageName] = repo.split("/");
@@ -118,7 +127,11 @@ for (const type of types) {
         format: "raw",
       },
     });
-    const body = processReadme(content, { source: url });
+    const body = processReadme(content, {
+      source: url,
+      loaders: repositories.loaders,
+      plugins: repositories.plugins,
+    });
     await writeFile(fileName, headmatter + body);
     console.log("Generated:", path.relative(cwd, fileName));
   }

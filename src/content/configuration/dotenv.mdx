@@ -1,5 +1,6 @@
 ---
 title: Dotenv
+description: webpack의 Dotenv 설정과 사용 방법을 설명합니다.
 sort: 16
 contributors:
   - xiaoxiaojx
@@ -34,7 +35,6 @@ export default {
   // ...
   dotenv: {
     prefix: "WEBPACK_",
-    dir: true,
     template: [".env", ".env.local", ".env.[mode]", ".env.[mode].local"],
   },
 };
@@ -76,23 +76,27 @@ T> 보안상의 이유로 빈 문자열 `''`는 접두사로 허용되지 않습
 
 ### `dir`
 
-`boolean` `string`
+`false` `string`
 
-**Default:** `true`
+**Default:** the compiler [`context`](/configuration/entry-context/#context)
 
 `.env` 파일이 로드되는 디렉터리입니다.
 
-- `true` - 프로젝트 루트에서 로드합니다(컨텍스트).
 - `false` - `.env` 파일 로드를 비활성화합니다.
-- `string` - 프로젝트 루트로부터의 상대 경로 또는 절대 경로
+- `string` - 디렉터리의 절대 경로입니다. 상대 경로는 설정 검증에서 거부됩니다.
 
 **webpack.config.js**
 
 ```js
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 export default {
   // ...
   dotenv: {
-    dir: "./config", // ./config 디렉토리에서 로드
+    dir: path.resolve(__dirname, "config"), // Load from ./config directory
   },
 };
 ```
@@ -285,10 +289,15 @@ export default {
 **webpack.config.js**
 
 ```js
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 export default {
   // ...
   dotenv: {
-    dir: "./environments",
+    dir: path.resolve(__dirname, "environments"),
     template: [".env.base", ".env.[mode]"],
   },
 };

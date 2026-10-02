@@ -1,5 +1,6 @@
 ---
 title: JavascriptParser Hooks
+description: JavascriptParser Hooks API의 기능과 사용 방법을 설명합니다.
 group: Plugins
 sort: 12
 contributors:
@@ -145,6 +146,28 @@ parser.hooks.evaluate.for("NewExpression").tap(
 - 훅 파라미터: `identifier`
 - 콜백 파라미터: `expression`
 
+### evaluateNewExpression
+
+`SyncBailHook`
+
+<Badge text="5.73.0+" />
+
+`new` 표현식을 평가할 때 호출되며, 호출되는 생성자의 이름으로 키가 지정됩니다.
+
+- 훅 파라미터: `identifier`
+- 콜백 파라미터: `expression`
+
+### evaluateCallExpression
+
+`SyncBailHook`
+
+<Badge text="5.73.0+" />
+
+호출 대상이 단순 식별자인 호출을 평가할 때 호출되며, 해당 식별자 이름으로 키가 지정됩니다.
+
+- 훅 파라미터: `identifier`
+- 콜백 파라미터: `expression`
+
 ### evaluateCallExpressionMember
 
 `SyncBailHook`
@@ -172,6 +195,15 @@ parser.hooks.evaluateCallExpressionMember.for("myFunc").tap(
     expressionResult,
 );
 ```
+
+### isPure
+
+`SyncBailHook`
+
+노드가 부작용이 없는지 판단하기 위해 호출되며, 노드의 타입으로 키가 지정됩니다. `false`를 반환하면 순수하지 않은 것으로 표시되어 webpack이 이를 제거하지 않습니다.
+
+- 훅 파라미터: `type`
+- 콜백 파라미터: `expression` `commentsStartPosition`
 
 ### statement
 
@@ -210,6 +242,60 @@ parser.hooks.statement.tap("MyPlugin", (statement) => {
 - `'TryStatement'`
 - `'LabeledStatement'`
 - `'WithStatement'`
+
+### preStatement
+
+`SyncBailHook`
+
+프리워크 중 모든 구문에 대해, 블록의 어떤 구문도 워크되기 전에 호출됩니다. 여기서 호이스팅된 선언이 처리됩니다. `true`를 반환하면 구문이 처리되었음을 파서에 알리고 해당 구문의 기본 프리워크를 중지합니다.
+
+- 콜백 파라미터: `statement`
+
+### preStatementByType
+
+`SyncBailHook`
+
+<Badge text="5.109.0+" />
+
+[`preStatement`](#prestatement)의 타입별 형태로, 구문의 노드 타입으로 키가 지정됩니다. `preStatement` 탭이 이미 bail하지 않은 경우에만 실행됩니다.
+
+- 훅 파라미터: `type`
+- 콜백 파라미터: `statement`
+
+### blockPreStatement
+
+`SyncBailHook`
+
+[`preStatement`](#prestatement)와 동일하지만, 현재 블록으로 범위가 지정된 선언만 방문하는 블록 프리워크에 대한 것입니다.
+
+- 콜백 파라미터: `statement`
+
+### blockPreStatementByType
+
+`SyncBailHook`
+
+<Badge text="5.109.0+" />
+
+[`blockPreStatement`](#blockprestatement)의 타입별 형태로, 선언의 노드 타입으로 키가 지정되며 [`preStatementByType`](#prestatementbytype)과 동일한 조건으로 실행됩니다.
+
+- 훅 파라미터: `type`
+- 콜백 파라미터: `declaration`
+
+### unusedStatement
+
+`SyncBailHook`
+
+동일한 블록에서 종료 구문 뒤에 오는, 도달 불가능한 각 구문에 대해 호출됩니다. `true`를 반환하면 이를 워킹하는 것을 건너뜁니다.
+
+- 콜백 파라미터: `statement`
+
+### terminate
+
+`SyncBailHook`
+
+최상위 범위 외부의 `return` 또는 `throw` 구문에 대해 호출됩니다. `true`를 반환하면 스코프가 종료된 것으로 표시되어, 파서는 그 이후의 구문을 도달 불가능한 것으로 처리합니다.
+
+- 콜백 파라미터: `statement`
 
 ### statementIf
 
@@ -346,35 +432,83 @@ export class ClassName {}
 
 ### varDeclaration
 
+`HookMap<SyncBailHook>`
+
+변수 선언문을 파싱할 때, 선언된 각 식별자마다 한 번씩 호출됩니다. 콜백은 `Identifier` 노드를 받습니다.
+
+- 훅 파라미터: `identifier`
+- 콜백 파라미터: `identifier`
+
+```js
+const a = 1;
+
+parser.hooks.varDeclaration.for("a").tap("MyPlugin", (identifier) => {
+  // identifier is the `Identifier` node of a
+});
+```
+
+### preDeclarator
+
 `SyncBailHook`
 
-변수 선언문을 파싱할 때 호출됩니다.
+프리워크 중 변수 선언의 각 선언자에 대해, 선언 자체가 워크되기 전에 호출됩니다.
 
-- 콜백 파라미터: `declaration`
+- 콜백 파라미터: `declarator` `declaration`
+
+### declarator
+
+`SyncBailHook`
+
+변수 선언을 워킹하는 동안 각 선언자에 대해 호출됩니다. `true`를 반환하면 파서가 해당 선언자 자체를 워킹하는 것을 중지합니다.
+
+- 콜백 파라미터: `declarator` `statement`
 
 ### varDeclarationLet
 
-`SyncBailHook`
+`HookMap<SyncBailHook>`
 
 `let`을 사용해 정의된 변수 선언문을 파싱할 때 호출됩니다.
 
-- 콜백 파라미터: `declaration`
+- 훅 파라미터: `identifier`
+- 콜백 파라미터: `identifier`
 
 ### varDeclarationConst
 
-`SyncBailHook`
+`HookMap<SyncBailHook>`
 
 `const`를 사용해 정의된 변수 선언문을 파싱할 때 호출됩니다.
 
+- 훅 파라미터: `identifier`
+- 콜백 파라미터: `identifier`
+
+### varDeclarationUsing
+
+`SyncBailHook`
+
+<Badge text="5.100.0+" />
+
+`using` 또는 `await using`으로 선언된 변수에 대해 호출되며, 선언된 이름으로 키가 지정됩니다. [`let`](#vardeclarationlet), [`const`](#vardeclarationconst) 및 [`var`](#vardeclarationvar) 형태와 함께 사용됩니다.
+
+- 훅 파라미터: `identifier`
 - 콜백 파라미터: `declaration`
 
 ### varDeclarationVar
 
-`SyncBailHook`
+`HookMap<SyncBailHook>`
 
 `var`를 사용해 정의된 변수 선언문을 파싱할 때 호출됩니다.
 
-- 콜백 파라미터: `declaration`
+- 훅 파라미터: `identifier`
+- 콜백 파라미터: `identifier`
+
+### pattern
+
+`SyncBailHook`
+
+디스트럭처링 패턴이 바인딩하는 각 식별자에 대해 호출되며, 해당 이름으로 키가 지정됩니다.
+
+- 훅 파라미터: `identifier`
+- 콜백 파라미터: `pattern`
 
 ### canRename
 
@@ -411,11 +545,11 @@ const a = b;
 parser.hooks.rename.for("b").tap("MyPlugin", (expression) => {});
 ```
 
-### assign (before parsing assigned expression)
+### assign
 
 `SyncBailHook`
 
-할당된 표현식을 파싱하기 전에 `AssignmentExpression`을 파싱할 경우에 호출됩니다.
+`AssignmentExpression`을 파싱할 때 호출됩니다. 할당된 표현식이 워크된 후, 대상이 워크되기 전에 호출됩니다. `true`를 반환하면 대상이 워크되는 것을 방지합니다.
 
 - 훅 파라미터: `identifier`
 - 콜백 파라미터: `expression`
@@ -424,26 +558,18 @@ parser.hooks.rename.for("b").tap("MyPlugin", (expression) => {});
 a += b;
 
 parser.hooks.assign.for("a").tap("MyPlugin", (expression) => {
-  // 이것은 b를 파싱하기 전에 호출됩니다.
+  // this is called after b has been walked, before a is walked
 });
 ```
 
-### assign (before parsing target)
+### assignMemberChain
 
 `SyncBailHook`
 
-할당 표현식을 파싱하기 전에 `AssignmentExpression`을 파싱할 경우에 호출됩니다.
+멤버 체인에 할당될 때 호출되며, 체인이 시작되는 이름으로 키가 지정됩니다.
 
 - 훅 파라미터: `identifier`
-- 콜백 파라미터: `expression`
-
-```js
-a += b;
-
-parser.hooks.assign.for("a").tap("MyPlugin", (expression) => {
-  // 이것은 a를 파싱하기 전에 호출됩니다.
-});
-```
+- 콜백 파라미터: `expression` `members`
 
 ### typeof
 
@@ -488,6 +614,24 @@ parser.hooks.callMemberChain
   .tap("MyPlugin", (expression, properties) => {});
 ```
 
+### memberChainOfCallMemberChain
+
+`SyncBailHook`
+
+멤버 체인에서 이루어진 호출의 결과로부터 읽힌 멤버 체인에 대해 호출되며, 체인이 시작되는 이름으로 키가 지정됩니다.
+
+- 훅 파라미터: `identifier`
+- 콜백 파라미터: `expression` `calleeMembers` `callExpression` `members` `memberRanges`
+
+### callMemberChainOfCallMemberChain
+
+`SyncBailHook`
+
+[`memberChainOfCallMemberChain`](#memberchainofcallmemberchain)과 동일하지만, 그 외부 멤버 체인이 자체적으로 호출되는 경우입니다.
+
+- 훅 파라미터: `identifier`
+- 콜백 파라미터: `expression` `calleeMembers` `callExpression` `members` `memberRanges`
+
 ### new
 
 `SyncBailHook`
@@ -518,6 +662,24 @@ const a = this;
 parser.hooks.expression.for("this").tap("MyPlugin", (expression) => {});
 ```
 
+### expressionMemberChain
+
+`SyncBailHook`
+
+표현식으로 읽히는 멤버 체인에 대해 호출되며, 체인이 시작되는 이름으로 키가 지정됩니다.
+
+- 훅 파라미터: `identifier`
+- 콜백 파라미터: `expression` `members` `membersOptionals` `memberRanges`
+
+### unhandledExpressionMemberChain
+
+`SyncBailHook`
+
+[`expressionMemberChain`](#expressionmemberchain)이 처리하지 않고 남긴 멤버 체인에 대해 호출되며, 체인이 시작되는 이름으로 키가 지정됩니다.
+
+- 훅 파라미터: `identifier`
+- 콜백 파라미터: `expression` `members`
+
 ### expressionConditionalOperator
 
 `SyncBailHook`
@@ -525,6 +687,96 @@ parser.hooks.expression.for("this").tap("MyPlugin", (expression) => {});
 `ConditionalExpression`을 파싱할 때 호출됩니다. 예. `condition ? a : b`
 
 - 콜백 파라미터: `expression`
+
+### expressionLogicalOperator
+
+`SyncBailHook`
+
+`LogicalExpression`, 예를 들어 `a && b` 또는 `a || b`를 파싱할 때 호출됩니다. 값을 반환하면 파서가 피연산자를 직접 워킹하는 것을 중지합니다. 이것이 플러그인이 죽은 것으로 평가된 분기를 건너뛰는 방법입니다.
+
+- 콜백 파라미터: `expression`
+
+### binaryExpression
+
+`SyncBailHook`
+
+`BinaryExpression`, 예를 들어 `a === b`를 파싱할 때 호출됩니다. 값을 반환하면 두 피연산자의 기본 워크를 중지합니다.
+
+- 콜백 파라미터: `expression`
+
+### optionalChaining
+
+`SyncBailHook`
+
+`ChainExpression`, 즉 `a?.b` 또는 `a?.()`와 같이 옵셔널 체이닝을 사용하는 표현식을 파싱할 때 호출됩니다.
+
+- 콜백 파라미터: `expression`
+
+### importCall
+
+`SyncBailHook`
+
+동적 [`import()`](/api/module-methods/#import-1)를 파싱할 때 호출됩니다. `true`를 반환하면 호출이 처리된 것으로 표시되어 webpack이 자체 디펜던시를 생성하지 않습니다.
+
+- 콜백 파라미터: `expression` `callExpression`
+
+`callExpression`은 `import()`가 즉시 호출되는 경우, 예를 들어 `import("./m").then(...)`에서만 제공됩니다.
+
+### topLevelAwait
+
+`SyncBailHook`
+
+최상위 `await`가 파싱될 때 호출됩니다. 이것이 모듈을 비동기 모듈로 만드는 것입니다.
+
+- 콜백 파라미터: `expression`
+
+### classExtendsExpression
+
+`SyncBailHook`
+
+클래스가 확장하는 표현식과 함께 호출됩니다. 예를 들어 `class A extends Base {}`에서 `Base`입니다.
+
+- 콜백 파라미터: `expression` `classDefinition`
+
+### classBodyElement
+
+`SyncBailHook`
+
+클래스 본문의 각 요소 — 메서드, 속성 정의 또는 정적 블록에 대해 호출됩니다. `true`를 반환하면 파서가 해당 요소를 워킹하는 것을 중지합니다.
+
+- 콜백 파라미터: `element` `classDefinition`
+
+### classBodyValue
+
+`SyncBailHook`
+
+클래스 본문 요소의 값, 즉 필드 초기화자 또는 메서드의 함수 표현식에 대해 호출됩니다. `true`를 반환하면 파서가 이를 워킹하는 것을 중지합니다.
+
+- 콜백 파라미터: `expression` `element` `classDefinition`
+
+### collectDestructuringAssignmentProperties
+
+`SyncBailHook`
+
+디스트럭처링 할당에 대해 호출되어 읽는 속성을 수집할 수 있습니다. 이를 통해 webpack이 디스트럭처링된 import를 해당 exports에 대한 참조로만 처리할 수 있습니다.
+
+- 콜백 파라미터: `expression`
+
+### collectGuards
+
+`SyncBailHook`
+
+조건부 표현식의 테스트와 함께 호출되어 그것이 내포하는 가드를 수집합니다. 이를 통해 파서가 분기들이 평가될 수 있는 것을 좁힐 수 있습니다.
+
+- 콜백 파라미터: `expression`
+
+### finish
+
+`SyncBailHook`
+
+전체 프로그램이 워크된 후, 파싱된 AST와 주석과 함께 호출됩니다.
+
+- 콜백 파라미터: `ast` `comments`
 
 ### program
 

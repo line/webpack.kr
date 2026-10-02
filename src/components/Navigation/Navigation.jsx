@@ -2,7 +2,7 @@
 import { DocSearch } from "@docsearch/react";
 import PropTypes from "prop-types";
 import { useEffect, useRef, useState } from "react";
-import { Link as ReactDOMLink, NavLink, useLocation } from "react-router-dom";
+import { Link as ReactDOMLink, NavLink, useLocation } from "react-router";
 
 // Import Internal Config
 import {
@@ -211,7 +211,7 @@ function Navigation({ links, pathname, hash = "", toggleSidebar }) {
               <DocSearch
                 appId={DOCSEARCH_APP_ID}
                 apiKey={DOCSEARCH_API_KEY}
-                indexName={DOCSEARCH_INDEX_NAME}
+                indices={[DOCSEARCH_INDEX_NAME]}
                 disableUserPersonalization={true}
                 placeholder="webpack 문서를 검색해보세요"
                 transformItems={(items) =>

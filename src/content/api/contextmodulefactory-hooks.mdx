@@ -1,5 +1,6 @@
 ---
 title: ContextModuleFactory Hooks
+description: ContextModuleFactory Hooks API의 기능과 사용 방법을 설명합니다.
 group: Plugins
 sort: 11
 contributors:
@@ -10,8 +11,8 @@ translators:
 
 `ContextModuleFactory` 모듈은 webpack의 [require.context](/api/module-methods/#requirecontext) API에서 디펜던시를 생성하기 위해 `컴파일러`에서 사용됩니다. 요청된 디렉터리를 확인하고, 각 파일에 대한 요청을 생성하며 전달된 정규 표현식으로 필터링합니다. 이 과정을 거쳐 일치하는 디펜던시만 [NormalModuleFactory](/api/normalmodulefactory-hooks)를 통과합니다.
 
-`ContextModuleFactory` 클래스는 `Tapable`을 확장하고 다음과 같은 수명 주기 훅을 제공합니다.
-아래와 같이 컴파일러 훅과 같은 방식으로 탭할 수 있습니다.
+`ContextModuleFactory` 클래스는 tapable 훅의 `hooks` 객체를 노출하며 다음과 같은 생명주기 훅을 제공합니다.
+컴파일러 훅과 같은 방식으로 탭할 수 있습니다.
 
 ```js
 ContextModuleFactory.hooks.someHook.tap(/* ... */);
@@ -47,6 +48,6 @@ ContextModuleFactory.hooks.someHook.tap(/* ... */);
 
 `AsyncSeriesWaterfallHook`
 
-요청이 생성된 후 정규 표현식으로 필터링하기 전에 각 파일에 대해 호출됩니다.
+정규 표현식으로 필터링하기 전에, 생성된 `{ context, request }` 대안 배열과 함께 디렉터리마다 한 번씩 호출됩니다. (수정될 수 있는) 배열을 반환합니다.
 
-- 콜백 파라미터: `request` `options`
+- 콜백 파라미터: `modules` `options`

@@ -167,11 +167,6 @@ export default {
         // 스타일시트를 생성하고 로드하는 것을 피하고 출력 자바스크립트 파일에 css의 내보내기만 포함합니다.
         // type: boolean, webpack 5.90.0부터 사용 가능합니다.
         exportsOnly: true,
-
-        // css export 이름을 javascript module로 내보내는 방식을 사용자 정의합니다. 예를 들어 현재 형태를 유지하거나 camel case로 변환할 수 있습니다.
-        // type: 'as-is' | 'camel-case' | 'camel-case-only' | 'dashes' | 'dashes-only' | ((name: string) => string | string[])
-        // webpack 5.90.4부터 사용 가능하며, 함수 형식은 webpack 5.107.0부터 string[]를 반환할 수 있습니다.
-        exportsConvention: "camel-case-only",
       },
       "css/auto": {
         // CSS/자동 모듈 생성용 옵션
@@ -182,13 +177,15 @@ export default {
 
         // css export 이름을 javascript module로 내보내는 방식을 사용자 정의합니다. 예를 들어 현재 형태를 유지하거나 camel case로 변환할 수 있습니다.
         // type: 'as-is' | 'camel-case' | 'camel-case-only' | 'dashes' | 'dashes-only' | ((name: string) => string | string[])
-        // webpack 5.90.4부터 사용 가능하며, 함수 형식은 webpack 5.107.0부터 string[]를 반환할 수 있습니다.
+        // webpack 5.91.0부터 사용 가능하며, 함수 형식은 webpack 5.107.0부터 string[]를 반환할 수 있습니다.
         exportsConvention: "camel-case-only",
 
         // CSS 모듈에 대해 생성된 로컬 클래스 이름의 형식을 사용자 정의합니다.
         // type: string, https://webpack.js.org/configuration/output/#template-strings의 파일 수준 및 모듈 수준 대체 외에도 [uniqueName] 및 [local]도 포함됩니다.
-        // webpack 5.90.4부터 사용 가능합니다.
-        // webpack 5.108.0부터 여기서 [hash]는 로컬 식별자 해시(css-loader와 일치)로 해석됩니다. 모듈 해시를 위해서는 [modulehash]를 사용하세요. 인라인 다이제스트/길이 형식도 지원됩니다. 예: [hash:base64:8].
+        // webpack 5.91.0부터 사용 가능합니다.
+        // webpack 5.108.0부터 여기서 [hash]는 로컬 식별자 해시로 해석됩니다. 모듈 해시를 위해서는 [modulehash]를 사용하세요. 인라인 다이제스트/길이 형식도 지원됩니다. 예: [hash:base64:8].
+        // 여기서 [hash]와 [fullhash]는 compilation hash가 아니라 로컬 식별자 해시입니다. 즉, `localIdentHashSalt`, `output.uniqueName`, `context`에 대한 상대 리소스 경로 및 로컬 이름의 해시입니다.
+        // 이는 결정론적이므로, 해당 값들을 공유하고 다른 모든 placeholder(예: [id])를 같은 방식으로 해석하는 빌드는 동일한 class name을 생성합니다(예: SSR용 web 및 node 빌드).
         localIdentName: "[uniqueName]-[id]-[local]",
       },
       "css/global": {
@@ -200,7 +197,8 @@ export default {
       json: {
         // JSON 모듈에 대한 생성기 옵션
         // JSON 문자열이 20자를 넘는 경우 `JSON.parse`를 사용합니다.
-        parse: JSONParse,
+        // type: boolean, 기본값 true
+        JSONParse: true,
       },
       html: {
         // html 모듈에 대한 생성기 옵션, `experiments.html` 필요, webpack 5.107.0부터 사용 가능
@@ -243,6 +241,20 @@ import styles from "./button.module.css";
 console.log(styles.btn); // 해시된 class
 console.log(styles.BTN); // 같은 해시된 class의 대문자 alias
 ```
+
+### module.generator.css.exportsOnly
+
+`boolean`
+
+스타일시트 생성 및 로드를 건너뛰고 CSS 모듈의 내보내기(로컬 클래스 이름에서 생성된 이름으로의 매핑)만 JavaScript 출력에 포함합니다. 이는 스타일이 클라이언트 빌드에서 제공되고 서버는 이름만 필요한 서버 사이드 빌드에 적합합니다.
+
+- 기본값: `document`가 있는 타겟의 경우 `false`, 없는 타겟(`node` 등)의 경우 `true`이므로 서버 빌드에서는 별도 설정 없이 동작합니다.
+
+### module.generator.css.esModule
+
+`boolean = true`
+
+CSS 모듈의 내보내기를 ES 모듈 구문으로 생성하여 트리 쉐이킹과 연결이 가능하도록 합니다. CommonJS 내보내기를 출력하려면 `false`로 설정하세요.
 
 ### module.generator.html.extract
 
@@ -288,31 +300,12 @@ export default {
       asset: {
         // asset 모듈 파서 옵션
 
-        // 데이터 URL 제너레이터 옵션입니다.
-        dataUrl: {
-          // 애셋 인코딩(기본값은 "base64")
-          // type: 'base64' | false
-          encoding: "base64",
-          // 애셋 Mimetype (기본적으로 파일 확장자에서 가져옵니다).
-          // type: string
-          mimetype: "image/png",
+        // 애셋을 데이터 URI로 인라인하는 조건입니다.
+        // type: { maxSize: number } | ((source: string | Buffer, { filename, module }) => boolean)
+        dataUrlCondition: {
+          // 이 크기(바이트) 이하의 애셋을 인라인으로 처리합니다(기본값 8096).
+          maxSize: 8096,
         },
-
-        // 이 애셋 모듈에서 출력 애셋을 내보냅니다. 예를 들어 SSR의 경우 내보내기를 생략하려면 'false'로 설정할 수 있습니다.
-        // type: boolean
-        emit: true,
-
-        // 이 애셋 모듈의 파일 이름을 사용자 정의합니다.
-        // type: string | ((pathData: PathData, assetInfo?: AssetInfo) => string)
-        filename: "static/[path][name][ext]",
-
-        // asset 모듈을 위한 publicPath 사용자 정의. webpack 5.28.0 이후로 사용 가능.
-        // type: string | ((pathData: PathData, assetInfo?: AssetInfo) => string)
-        publicPath: "https://cdn/assets/",
-
-        // Webpack 5.67.0부터 사용 가능한 'output.path'를 기준으로 지정된 폴더의 애셋을 내보냅니다.
-        // type: string | ((pathData: PathData, assetInfo?: AssetInfo) => string)
-        outputPath: "cdn-assets/",
       },
       "asset/inline": {
         // 이 모듈 유형에는 아직 파서 옵션이 지원되지 않습니다.
@@ -585,7 +578,7 @@ a {
 
 <Badge text="5.104.0+" />
 
-CSS 모듈에서 `@keyframes` 애니메이션 이름 변경 기능을 활성화 또는 비활성화합니다.
+CSS 모듈에서 `@keyframes` 애니메이션 이름 변경 기능을 활성화 또는 비활성화합니다. `css/auto`, `css/module` 및 `css/global` 모듈 타입에서만 사용 가능합니다.
 
 - Type: `boolean`
 - Default: `true`
@@ -596,8 +589,8 @@ CSS 모듈에서 `@keyframes` 애니메이션 이름 변경 기능을 활성화 
 export default {
   module: {
     parser: {
-      css: {
-        animation: true, // @keyframes 이름 변경을 활성화합니다.
+      "css/auto": {
+        animation: true, // Enable @keyframes renaming
       },
     },
   },
@@ -608,7 +601,7 @@ export default {
 
 <Badge text="5.104.0+" />
 
-CSS 모듈에서 `@container` 이름 변경을 활성화 또는 비활성화합니다.
+CSS 모듈에서 `@container` 이름 변경을 활성화 또는 비활성화합니다. `css/auto`, `css/module` 및 `css/global` 모듈 타입에서만 사용 가능합니다.
 
 - Type: `boolean`
 - Default: `true`
@@ -619,8 +612,8 @@ CSS 모듈에서 `@container` 이름 변경을 활성화 또는 비활성화합�
 export default {
   module: {
     parser: {
-      css: {
-        container: true, // @container 이름 변경을 활성화합니다.
+      "css/auto": {
+        container: true, // Enable @container renaming
       },
     },
   },
@@ -631,7 +624,7 @@ export default {
 
 <Badge text="5.104.0+" />
 
-CSS 모듈에서 사용자 지정 식별자의 이름 변경을 활성화 또는 비활성화합니다.
+CSS 모듈에서 사용자 지정 식별자의 이름 변경을 활성화 또는 비활성화합니다. `css/auto`, `css/module` 및 `css/global` 모듈 타입에서만 사용 가능합니다.
 
 - Type: `boolean`
 - Default: `true`
@@ -644,8 +637,8 @@ T> webpack 5.109.0부터는 `view-transition-name` / `view-transition-group` / `
 export default {
   module: {
     parser: {
-      css: {
-        customIdents: true, // 사용자 지정 식별자 이름 변경 활성화
+      "css/auto": {
+        customIdents: true, // Enable custom identifier renaming
       },
     },
   },
@@ -718,7 +711,7 @@ export default {
 
 <Badge text="5.104.0+" />
 
-CSS 사용자 지정 속성(예: `--my-variable`)과 같은 하이픈으로 구분된 식별자의 이름 변경을 활성화 또는 비활성화합니다.
+CSS 사용자 지정 속성(예: `--my-variable`)과 같은 하이픈으로 구분된 식별자의 이름 변경을 활성화 또는 비활성화합니다. `css/auto`, `css/module` 및 `css/global` 모듈 타입에서만 사용 가능합니다.
 
 - Type: `boolean`
 - Default: `true`
@@ -729,8 +722,8 @@ CSS 사용자 지정 속성(예: `--my-variable`)과 같은 하이픈으로 구�
 export default {
   module: {
     parser: {
-      css: {
-        dashedIdents: true, // 대시로 구분된 식별자 이름 변경을 활성화합니다.
+      "css/auto": {
+        dashedIdents: true, // Enable dashed identifier renaming
       },
     },
   },
@@ -741,7 +734,7 @@ export default {
 
 <Badge text="5.104.0+" />
 
-CSS 모듈에서 `@function` 이름 변경을 활성화 또는 비활성화합니다.
+CSS 모듈에서 `@function` 이름 변경을 활성화 또는 비활성화합니다. `css/auto`, `css/module` 및 `css/global` 모듈 타입에서만 사용 가능합니다.
 
 - Type: `boolean`
 - Default: `true`
@@ -752,8 +745,8 @@ CSS 모듈에서 `@function` 이름 변경을 활성화 또는 비활성화합�
 export default {
   module: {
     parser: {
-      css: {
-        function: true, // @function 이름 변경을 활성화합니다
+      "css/auto": {
+        function: true, // Enable @function renaming
       },
     },
   },
@@ -797,7 +790,7 @@ CSS의 `url(...)`을 통해 참조되는 asset에 대한 기본 resource-hint ru
 
 <Badge text="5.104.0+" />
 
-CSS 모듈에서 그리드 식별자 이름 변경 기능을 활성화 또는 비활성화합니다.
+CSS 모듈에서 그리드 식별자 이름 변경 기능을 활성화 또는 비활성화합니다. `css/auto`, `css/module` 및 `css/global` 모듈 타입에서만 사용 가능합니다.
 
 - Type: `boolean`
 - Default: `true`
@@ -808,8 +801,8 @@ CSS 모듈에서 그리드 식별자 이름 변경 기능을 활성화 또는 �
 export default {
   module: {
     parser: {
-      css: {
-        grid: true, // 그리드 식별자 이름 변경 활성화
+      "css/auto": {
+        grid: true, // Enable grid identifier renaming
       },
     },
   },
@@ -820,8 +813,8 @@ export default {
 
 CSS 콘텐츠를 내보내는 방법을 설정합니다.
 
-- Type: `boolean`
-- Available: 5.102.0+
+- Type: `'link' | 'text' | 'css-style-sheet' | 'style'`
+- Available: 5.103.0+
 - Example:
 
   ```js
@@ -837,11 +830,12 @@ CSS 콘텐츠를 내보내는 방법을 설정합니다.
   };
   ```
 
-가능한 설정 값: `'link' | 'text' | 'css-style-sheet'
+가능한 설정 값: `'link' | 'text' | 'css-style-sheet' | 'style'`
 
 - `link` - CSS를 자체 파일로 추출하고 `link` 태그를 사용하여 DOM에 삽입합니다.
 - `text` - CSS를 JS 파일에 저장하고 기본 내보내기를 사용하여 반환합니다.
 - `css-style-sheet` - 기본 내보내기는 생성 가능한 스타일시트(예: CSSStyleSheet)입니다. 사용자 정의 요소와 Shadow DOM에 유용합니다.
+- `style` - CSS를 JS 파일에 저장하고 런타임에 `<style>` 요소를 통해 DOM에 삽입합니다(5.106.0부터 사용 가능).
 
 ### module.parser.css.as
 
@@ -921,9 +915,57 @@ export default {
 
 CommonJS를 위해 [magic comments](/api/module-methods/#magic-comments) 지원을 활성화할 수 있습니다.
 
-- 타입: `boolean`
-- 가능한 버전: 5.17.0+
-- 예제:
+#### module.parser.javascript.createRequire
+
+`import { createRequire } from "module"` 파싱 및 반환되는 `require` 함수 평가를 활성화하여, 이러한 호출이 실제 디펜던시가 되도록 합니다.
+
+- Type: `boolean | string`
+- Default: [`target`](/configuration/target/)이 Node.js인 경우 `true`, 그렇지 않으면 `false`
+
+문자열은 `"module"` 대신 `createRequire`를 가져올 모듈을 지정합니다.
+
+#### module.parser.javascript.dynamicUrl
+
+첫 번째 인수가 정적 문자열이 아닌 `new URL()` 파싱을 활성화합니다. 예: ``new URL(`./${name}.png`, import.meta.url)``. `false`로 설정하면 webpack이 정적으로 해석할 수 있는 URL만 애셋이 되고, 동적 URL은 작성된 그대로 유지됩니다.
+
+- Type: `boolean`
+- Default: `true`
+
+#### module.parser.javascript.strictThisContextOnImports
+
+namespace 객체에 대해 사양이 요구하는 방식으로 import된 함수의 `this` 컨텍스트를 처리합니다. 즉, namespace 객체 대신 `this === undefined`로 호출합니다. 활성화하면 출력 크기가 약간 증가하므로 기본적으로 비활성화되어 있습니다.
+
+- Type: `boolean`
+- Default: `false`
+
+#### module.parser.javascript.worker
+
+Web Worker 참조로 파싱되는 구문을 비활성화하거나 구성합니다.
+
+- Type: `boolean | string[]`
+- Default: `["Worker", "SharedWorker", "navigator.serviceWorker.register()", "Worker from worker_threads"]`
+
+항목은 생성자 이름(`"Abc"`는 `new Abc()`를 처리), import된 바인딩(`"Abc from xyz"`는 `Abc`가 `xyz`에서 import된 경우 `new Abc()`를 처리), 또는 함수 호출 표현식(`"abc.def()"`)입니다. `"..."`는 기본값을 나타내므로 대체가 아닌 확장이 됩니다. `false`로 설정하면 webpack이 worker를 전혀 번들링하지 않습니다.
+
+**webpack.config.js**
+
+```js
+export default {
+  module: {
+    parser: {
+      javascript: {
+        worker: ["MyWorker from ./my-worker.js", "..."],
+      },
+    },
+  },
+};
+```
+
+T> [`module.parser.javascript.worklet`](#moduleparserjavascriptworklet)은 worklet에 대해 동일한 역할을 하며, 동적 의존성 옵션(`exprContext*`, `unknownContext*`, `wrappedContext*`)은 [Module Contexts](#module-contexts)에서 설명됩니다.
+
+- Type: `boolean`
+- Available: 5.17.0+
+- Example:
 
   ```js
   export default {
@@ -1250,6 +1292,38 @@ T> 의도된 모듈에서만 이름이 사이드 이펙트 없음으로 표시�
   };
   ```
 
+#### module.parser.javascript.specNamespaceObject
+
+이 모듈의 `import * as ns` 및 `import()`에 대해 webpack이 기본적으로 제공하는 일반 exports 객체 대신, 사양을 준수하는 [Module Namespace Exotic Object](https://tc39.es/ecma262/#sec-module-namespace-exotic-objects)를 제공합니다.
+
+- Type: `boolean`
+- Default: `false`
+- Available: 5.111.0+
+
+일반 exports 객체도 이미 `[object Module]`을 보고하고, 동일한 live binding을 가지며, export를 쓰거나 삭제하려 하면 `TypeError`를 발생시키므로 대부분의 코드는 두 객체를 구분하지 못합니다. spec 객체가 추가하는 것은 나머지 불변성입니다: `Object.getPrototypeOf(ns)`가 `Object.prototype` 대신 `null`이고, `Object.isExtensible(ns)`가 `false`입니다. 그래프 내에서 이를 확인하는 것이 있을 때 — 적합성 테스트나 실제 namespace를 feature-detect하는 라이브러리 — 일반 설정으로 사용하지 말고 해당 경우에만 사용하세요.
+
+W> **import하는** 모듈이 아닌 **import되는** 모듈에 설정하세요 — webpack은 각 모듈에 제공하는 namespace가 spec 객체인지 묻습니다. `import * as ns`만 수행하는 파일에 활성화해도 아무것도 변경되지 않습니다.
+
+`Proxy`로 구현되어 추가 런타임 코드가 필요하므로, 전역적으로 활성화하지 말고 일반적으로 [`Rule.parser`](#ruleparser)를 통해 모듈별로 활성화하세요:
+
+```js
+export default {
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        include: /node_modules\/strict-package/,
+        parser: {
+          specNamespaceObject: true,
+        },
+      },
+    ],
+  },
+};
+```
+
+W> 타겟 환경이 `Proxy`를 지원해야 하므로, ES5 타겟에서는 사용할 수 없습니다.
+
 #### module.parser.javascript.strictModeViolations
 
 module이 ES module output([`output.module`](/configuration/output/#outputmodule))으로 emit될 때 strict mode에서 runtime에 깨지는 구문의 동작을 지정합니다. strict-mode-only syntax(변수의 `delete`, `with`, 8진 literal 및 escape, 중복 parameter, `eval`/`arguments`에 할당)와 semantic hazard(`arguments.callee`/`arguments.caller`, 읽기 전용 global에 할당)를 포함합니다.
@@ -1419,6 +1493,59 @@ T> webpack 5.109.0부터 custom parser는 더 이상 `semicolons`를 수집할 �
     },
   };
   ```
+
+#### module.parser.javascript.typescript
+
+TypeScript 구문을 파싱합니다. [`experiments.typescript`](/configuration/experiments/#experimentstypescript)를 기본값으로 사용하므로, 해당 실험을 활성화하면 자동으로 켜집니다; 규칙별로 재정의하려면 여기서 설정하세요.
+
+- Type: `boolean`
+
+#### module.parser.javascript.deferImport
+
+TC39 [deferred module evaluation](https://github.com/tc39/proposal-defer-import-eval) 제안(`import defer * as ns from "..."`)을 파싱합니다. [`experiments.deferImport`](/configuration/experiments/#experimentsdeferimport)를 기본값으로 사용합니다.
+
+- Type: `boolean`
+
+#### module.parser.javascript.sourceImport
+
+TC39 [source phase imports](https://github.com/tc39/proposal-source-phase-imports) 제안(`import source x from "..."`)을 파싱합니다. [`experiments.sourceImport`](/configuration/experiments/#experimentssourceimport)를 기본값으로 사용합니다.
+
+- Type: `boolean`
+
+#### Syntax toggles
+
+각각은 하나의 모듈 구문 파싱을 켜거나 끕니다. `boolean` 값을 받으며, **모두 동일한 기본값을 가지지 않습니다** — 세 가지는 명시적으로 설정하기 전까지 비활성화되거나 경고를 표시합니다:
+
+| Option           | Syntax                                               | Default                                                                        |
+| ---------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `amd`            | AMD — `define()`, `require([...], cb)`               | 활성화                                                                         |
+| `browserify`     | browserify 전용 처리                                 | 활성화                                                                         |
+| `commonjs`       | CommonJS — `require()`, `module.exports`             | 활성화                                                                         |
+| `harmony`        | ECMAScript modules — `import` / `export`             | 활성화                                                                         |
+| `import`         | `import()`                                           | 활성화                                                                         |
+| `requireContext` | `require.context()`                                  | 활성화                                                                         |
+| `requireEnsure`  | `require.ensure()`                                   | 활성화                                                                         |
+| `requireInclude` | `require.include()`                                  | 활성화, 단 명시적으로 설정하지 않으면 deprecated 경고 표시                     |
+| `requireJs`      | RequireJS 전용 — `require.config`, `require.version` | `true`로 설정하지 않으면 **비활성화**                                          |
+| `system`         | System.js — `System.import`, `System.register`       | `true`로 설정하지 않으면 **비활성화**                                          |
+| `node`           | Node.js 내장 — `__dirname`, `__filename`, `global`   | [`node`](/configuration/node/)와 동일한 형식; `false`로 설정하면 처리 비활성화 |
+
+**webpack.config.js**
+
+```js
+export default {
+  module: {
+    parser: {
+      javascript: {
+        // this project has no AMD, so do not pay to parse for it
+        amd: false,
+        // opt in to the two that are off by default
+        system: true,
+      },
+    },
+  },
+};
+```
 
 ### module.parser.json
 
@@ -1653,7 +1780,7 @@ export default {
 
 ## module.noParse
 
-`RegExp` `[RegExp]` `function(resource)` `string` `[string]`
+`RegExp` `string` `(request: string) => boolean` `(RegExp | string | ((request: string) => boolean))[]`
 
 webpack이 주어진 정규식과 일치하는 파일을 파싱하지 못하도록 합니다. 제외된 파일에는 `import`, `require`, `define` 또는 기타 import 메커니즘의 호출이 **없어야 합니다**. 이렇게 하면 큰 라이브러리를 무시할 때 빌드 성능을 향상 시킬 수 있습니다.
 
@@ -1685,7 +1812,7 @@ export default {
 
 ## module.unsafeCache
 
-`boolean` `function (module)`
+`boolean` `(module: Module) => boolean`
 
 모듈 요청에 대한 해석을 캐시합니다. `module.unsafeCache`에 대한 몇 가지 기본값이 있습니다.
 
@@ -1729,7 +1856,9 @@ conditions에 대한 두가지 입력 값이 있습니다.
 
 Rule의 [`test`](#ruletest), [`include`](#ruleinclude), [`exclude`](#ruleexclude) 그리고 [`resource`](#ruleresource) 프로퍼티가 resource와 일치하고 [`issuer`](#ruleissuer) 프로퍼티가 issuer와 일치합니다.
 
-여러 조건을 사용하는 경우, 모든 조건이 일치해야 합니다.
+webpack 5.110.0부터 운영체제와 무관한 [`glob`](#ruleglob)과 리소스 자체 패키지 내부 경로인 [`descriptionRelativePath`](#ruledescriptionrelativepath)로도 리소스를 일치시킬 수 있습니다.
+
+여러 조건을 사용하면 모든 조건이 일치해야 합니다.
 
 W> 조심하세요! resource는 파일이 _해석된_ 경로이며, 이는 심볼릭 링크를 사용하는 resource가 심볼릭 링크의 위치가 _아닌_ 실제 경로임을 의미합니다. 이것은 `npm link`와 같은 패키지를 심볼릭 링크하는 도구를 사용할 때 기억하면 좋습니다. `/node_modules/`같은 일반적인 조건은 심볼릭 링크 된 파일을 실수로 놓칠 수 있습니다. resource가 심볼릭 링크 경로로 확인되도록 [`resolve.symlinks`](/configuration/resolve/#resolvesymlinks)를 통해 심볼릭 링크 해석을 끌 수 있습니다.
 
@@ -1744,9 +1873,7 @@ Rule에는 두 가지 출력 값이 있습니다.
 
 [`loader`](#ruleloader), [`options`](#ruleoptions--rulequery), [`use`](#ruleuse) 프로퍼티는 로더에 영향을 줍니다.
 
-[`query`](#ruleoptions--rulequery), [`loaders`](#ruleloaders) 프로퍼티는 호환성을 위해 존재합니다.
-
-[`enforce`](#ruleenforce) 프로퍼티는 일반, 사전 또는 사후 로더인지에 따라서 로더의 범주에 영향을 줍니다.
+[`enforce`](#ruleenforce) 프로퍼티는 loader 카테고리에 영향을 줍니다. normal, pre, post loader 중 어느 것인지를 결정합니다.
 
 [`parser`](#ruleparser) 프로퍼티는 파서 옵션에 영향을 줍니다.
 
@@ -1820,6 +1947,35 @@ export default {
 };
 ```
 
+## Rule.descriptionRelativePath
+
+<Badge text="5.110.0+" />
+
+모듈의 description 파일(일반적으로 가장 가까운 `package.json`) 디렉터리를 기준으로 한 경로(예: `./lib/button.js`)와 일치하는 [`Condition`](#condition)입니다. 경로는 항상 slash를 사용하므로 모든 운영체제에서 같은 규칙이 일치합니다.
+
+hoist된 `node_modules`, pnpm store, workspace symlink처럼 설치 구조에 따라 달라지는 절대 위치 대신 패키지 내부 위치로 파일을 지정할 때 사용합니다.
+
+**webpack.config.js**
+
+```js
+export default {
+  // ...
+  module: {
+    rules: [
+      {
+        descriptionData: {
+          name: "some-package",
+        },
+        descriptionRelativePath: /^\.\/src\//,
+        // ...
+      },
+    ],
+  },
+};
+```
+
+[match resource](/api/loaders/#inline-matchresource)가 리소스를 교체한 경우 원래 요청의 description 파일이 더 이상 해당 리소스를 설명하지 않으므로 이 조건을 적용하지 않습니다.
+
 ## Rule.enforce
 
 `string`
@@ -1866,6 +2022,66 @@ import { c } from "!!./file3.js";
 
 조건과 일치하는 모든 모듈을 포함합니다. `Rule.include` 옵션을 사용하면 `Rule.resource` 옵션을 사용할 수 없습니다. 자세한 내용은 [`Rule.resource`](#ruleresource) 및 [`Condition.include`](#condition)를 참고하세요.
 
+## Rule.glob
+
+<Badge text="5.110.0+" />
+
+`string` `string[]`
+
+모듈 리소스를 하나 이상의 glob pattern과 일치시킵니다. 정규 표현식과 달리 glob은 모든 운영체제에서 같은 방식으로 일치합니다. pattern과 검사 경로 모두에서 `/`와 `\`를 경로 구분자로 읽으므로 macOS에서 작성한 규칙이 Windows에서도 일치합니다. 그렇지 않은 정규 표현식 조건을 보고하는 [`performance.osDependentRules`](/configuration/performance/#performanceosdependentrules)도 참고하세요.
+
+**webpack.config.js**
+
+```js
+export default {
+  // ...
+  module: {
+    rules: [
+      {
+        glob: "src/**/*.css",
+        type: "css/module",
+      },
+    ],
+  },
+};
+```
+
+여러 pattern은 OR로 결합되고 `!` 접두사는 일치 항목을 제외합니다. `!` pattern만 포함한 목록은 전체 항목에서 대상을 제외하므로 제외 목록으로 동작합니다.
+
+```js
+export default {
+  // ...
+  module: {
+    rules: [
+      {
+        // test 및 생성 파일을 제외한 모든 .ts 파일
+        glob: ["**/*.ts", "!**/*.test.ts", "!**/generated/**"],
+        loader: "ts-loader",
+      },
+    ],
+  },
+};
+```
+
+상대 pattern은 모든 깊이에서 일치하므로 `"src/**/*.css"`는 `packages/ui/src/theme.css`와도 일치합니다. 특정 디렉터리로 제한하려면 절대 경로로 pattern을 시작하세요.
+
+`glob`은 다른 조건과 결합됩니다. [`test`](#ruletest), [`include`](#ruleinclude), [`exclude`](#ruleexclude)도 함께 일치해야 합니다. [`Condition`](#condition) 객체 안에서도 사용할 수 있어 condition을 받는 모든 위치에서 사용할 수 있습니다.
+
+```js
+export default {
+  // ...
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        include: { glob: "src/**" },
+        loader: "babel-loader",
+      },
+    ],
+  },
+};
+```
+
 ## Rule.issuer
 
 요청한 모듈과 비교할 [`Condition`](#condition)입니다. 아래의 예제에서, `a.js`의 `issuer`는 `index.js` 파일의 경로입니다.
@@ -1901,7 +2117,11 @@ export default {
 
 `string`
 
-모듈이 배치되어야 하는 계층을 지정합니다. 모듈 그룹은 [분할 청크](/plugins/split-chunks-plugin/#splitchunkslayer), [통계](/configuration/stats/#statsgroupmodulesbylayer) 또는 [엔트리 옵션](/configuration/entry-context/#entry-descriptor)에서 사용할 수 있는 하나의 레이어로 통합될 수 있습니다.
+모듈이 배치될 레이어를 지정합니다. 모듈 그룹을 하나의 레이어로 묶어 [split chunks](/plugins/split-chunks-plugin/#splitchunkscachegroupscachegrouplayer), [stats](/configuration/stats/#statsgroupmodulesbylayer) 또는 [entry options](/configuration/entry-context/#entry-descriptor)에서 사용할 수 있습니다.
+
+동적 ``import(`./dir/${name}`)``를 통해 도달하는 모듈은 context 모듈을 통해 해석되며, 이는 import한 모듈의 레이어를 상속합니다. 따라서 해석될 수 있는 모듈들은 규칙이 다른 위치에 배치하지 않는 한 import한 모듈의 레이어에 배치됩니다. 이는 정적으로 import된 모듈과 동일한 방식입니다.
+
+모듈이 최종적으로 배치된 레이어는 모듈 자체에서 [`__webpack_layer__`](/api/module-variables/#__webpack_layer__-webpack-specific)로 읽을 수 있습니다.
 
 **webpack.config.js**
 
@@ -1947,9 +2167,9 @@ export default {
 
 ## Rule.loaders
 
-W> 이 옵션은 `Rule.use`로 **대체되었습니다**.
+W> 이 옵션은 webpack 5에서 **제거**되었으며 설정 유효성 검사에서 거부됩니다.
 
-`Rule.loaders`는 `Rule.use`의 별칭입니다. 자세한 내용은 [`Rule.use`](#ruleuse)를 참고하세요.
+대신 [`Rule.use`](#ruleuse)를 사용하세요.
 
 ## Rule.mimetype
 
@@ -2006,9 +2226,9 @@ T> 자세한 내용은 [`중첩된 rule`](#nested-rules)을 참고하세요.
 
 ## Rule.options / Rule.query
 
-`Rule.options`과 `Rule.query`는 `Rule.use: [ { options } ]`의 단축어입니다. 자세한 내용은 [`Rule.use`](#ruleuse)와 [`UseEntry.options`](#useentry)을 참고하세요.
+`Rule.options`는 `Rule.use: [ { options } ]`의 단축어입니다. 자세한 내용은 [`Rule.use`](#ruleuse)와 [`UseEntry.options`](#useentry)를 참고하세요.
 
-W> `Rule.query`는 `Rule.options`과 `UseEntry.options`으로 대체되었습니다.
+W> `Rule.query`는 webpack 5에서 제거되었으며 설정 유효성 검사에서 거부됩니다. 대신 `Rule.options` 또는 `UseEntry.options`를 사용하세요.
 
 ## Rule.parser
 
@@ -2066,9 +2286,9 @@ export default {
 
 ## Rule.parser.dataUrlCondition
 
-`object = { maxSize number = 8096 }` `function (source, { filename, module }) => boolean`
+`{ maxSize?: number = 8096 }` `(source: string | Buffer, context: { filename: string, module: Module }) => boolean`
 
-모듈 소스 크기가 `maxSize`보다 작으면 모듈이 Base64 인코딩 문자열로 번들에 삽입되고, 그렇지 않으면 모듈 파일이 출력 디렉터리로 내보내집니다.
+모듈 소스 크기가 `maxSize` 이하이면 모듈은 Base64로 인코딩된 문자열로 번들에 삽입되고, 그렇지 않으면 모듈 파일이 출력 디렉터리에 생성됩니다.
 
 **webpack.config.js**
 
@@ -2117,7 +2337,7 @@ export default {
 
 ### Rule.generator.dataUrl
 
-`object = { encoding string = 'base64' | false, mimetype string = undefined | false }` `function (content, { filename, module }) => string`
+`{ encoding?: 'base64' | false = 'base64', mimetype?: string }` `(content: string | Buffer, context: { filename: string, module: Module }) => string`
 
 `Rule.generator.dataUrl`이 객체로 사용되면 두개의 프로퍼티를 설정할 수 있습니다.
 
@@ -2284,6 +2504,80 @@ export default {
 
 리소스와 일치하는 [`Condition`](#condition)입니다. 자세한 내용은 [`규칙` 조건](#rule-conditions)을 참고하세요.
 
+## Rule.realResource
+
+실제 리소스 — 실제로 읽히는 파일의 경로 — 와 매칭되는 [`Condition`](#condition)입니다. [match resource](/api/loaders/#inline-matchresource)(`!=!`)로 인해 webpack이 다른 경로의 규칙을 적용하게 된 경우에만 [`Rule.resource`](#ruleresource)와 다르며, 이때 `resource`는 가장된 경로이고 `realResource`는 디스크의 실제 파일입니다.
+
+## Rule.resourceFragment
+
+요청의 fragment — 즉 `#` 이후의 모든 것 — 와 매칭되는 [`Condition`](#condition)입니다. `import Foo from './foo.svg#icon'`에서 fragment는 `#icon`입니다:
+
+**webpack.config.js**
+
+```js
+export default {
+  // ...
+  module: {
+    rules: [
+      {
+        test: /\.svg$/,
+        resourceFragment: /^#icon$/,
+        type: "asset/inline",
+      },
+    ],
+  },
+};
+```
+
+## Rule.descriptionData
+
+모듈의 description 파일(일반적으로 가장 가까운 `package.json`) 내용과 매칭되는 [`Condition`](#condition) 집합입니다. 각 키는 테스트할 속성을 지정하며, 중첩된 속성은 점으로 구분된 키로 지정합니다:
+
+**webpack.config.js**
+
+```js
+export default {
+  // ...
+  module: {
+    rules: [
+      {
+        descriptionData: {
+          type: "module",
+        },
+        // ...
+      },
+    ],
+  },
+};
+```
+
+[`Rule.descriptionRelativePath`](#ruledescriptionrelativepath)와 마찬가지로, match resource가 resource를 대체한 경우에는 조건이 적용되지 않습니다.
+
+## Rule.dependency
+
+모듈을 요청한 dependency의 타입과 매칭되는 [`Condition`](#condition)으로, 규칙이 동일한 파일을 import된 방식에 따라 다르게 처리할 수 있게 합니다. webpack이 사용하는 값에는 `import`에 대한 `'esm'`, `require()`에 대한 `'commonjs'`, `new URL()`에 대한 `'url'`, worker 생성자에 대한 `'worker'`, `'amd'`, `'css-import'`, `'unknown'`이 포함됩니다.
+
+**webpack.config.js**
+
+```js
+export default {
+  // ...
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        dependency: "url",
+        type: "asset/resource",
+      },
+    ],
+  },
+};
+```
+
+## Rule.phase
+
+dependency의 [import phase](https://github.com/tc39/proposal-defer-import-eval)와 매칭되는 [`Condition`](#condition)입니다: 일반 import에는 `'evaluation'`, `import defer`에는 `'defer'`, `import source`에는 `'source'`입니다.
+
 ## Rule.resourceQuery
 
 리소스 쿼리와 일치하는 [`Condition`](#condition)입니다. 이 옵션은 요청 문자열의 쿼리 섹션에 대해 테스트하는 경우 사용됩니다(즉, 물음표부터). `import Foo from './foo.css?inline'`을 사용하는 경우 다음 조건이 일치합니다.
@@ -2307,9 +2601,9 @@ export default {
 
 ## Rule.parser.parse
 
-`function(input) => string | object`
+`(input: string) => Buffer | JsonValue`
 
-`Rule.type`이 `'json'`으로 설정된 경우 `Rules.parser.parse`옵션은 모듈의 소스를 구문 분석하고 이를 JavaScript `객체`로 변환하는 커스텀 로직을 구현하는 함수일 수 있습니다. 특정 로더없이 `toml`, `yaml` 및 기타 JSON이 아닌 파일을 JSON으로 가져 오는 것이 유용할 수 있습니다.
+`Rule.type`이 `'json'`으로 설정되면 `Rules.parser.parse` 옵션은 모듈의 소스를 파싱하여 JavaScript `object`로 변환하는 커스텀 로직을 구현하는 함수가 될 수 있습니다. 기본값은 `JSON.parse`입니다. 특정 loader 없이 `toml`, `yaml` 및 기타 JSON이 아닌 파일을 JSON으로 import할 때 유용할 수 있습니다:
 
 **webpack.config.js**
 
@@ -2331,6 +2625,10 @@ export default {
   },
 };
 ```
+
+위의 `type: 'json'`은 불필요하지 않으며, webpack이 이를 가정할 수 없습니다. [`Rule.parser`](#ruleparser)는 규칙이 선택하는 모듈 타입의 파서에 전달되며, [`Rule.type`](#ruletype)만이 해당 타입을 선택합니다. 기본적으로 `.json` 파일과 `application/json` MIME 타입의 모듈만 `'json'` 타입이므로, `.toml` 파일은 그렇지 않으면 JavaScript로 파싱되어 `parse` 함수가 실행되지 않습니다.
+
+모든 모듈 타입은 자체 스키마에 따라 주어진 parser 옵션을 검증하므로, `parse`는 해당 옵션이 없는 타입에는 적용되지 않습니다. 예를 들어 `type: 'asset'`의 경우 빌드가 `parser has an unknown property 'parse'` 오류와 함께 실패합니다.
 
 ## Rule.rules
 
@@ -2425,15 +2723,15 @@ export default {
 
 ## Rule.use
 
-`[UseEntry]` `function(info)`
+`UseEntry` `UseEntry[]` `(info: UseEntryInfo) => UseEntry | UseEntry[]`
 
 Webpack 5.87.0부터 `undefined` `null`과 같은 falsy 값을 사용하여 조건부로 특정 사용 항목을 비활성화할 수 있습니다.
 
-**`[UseEntry]`**
+**`UseEntry[]`**
 
 `Rule.use`는 모듈에 적용되는 [UseEntry](#useentry)의 배열일 수 있습니다.
 
-`use: [ 'style-loader' ]` 같이 string을 전달하는 것은 `use: [ { loader: 'style-loader '} ]` 같이 loader 프로퍼티에 대한 단축어 입니다.
+문자열을 전달하는 `use: [ 'sass-loader' ]`는 loader property를 사용하는 `use: [ { loader: 'sass-loader' } ]`의 shorthand입니다.
 
 로더는 여러 로더를 전달하여 연결될 수 있으며, 이는 오른쪽에서 왼쪽으로, 마지막 설정에서 첫 번째 설정 순서로 적용됩니다.
 
@@ -2447,13 +2745,7 @@ export default {
       {
         // ...
         use: [
-          "style-loader",
-          {
-            loader: "css-loader",
-            options: {
-              importLoaders: 1,
-            },
-          },
+          "postcss-loader",
           {
             loader: "less-loader",
             options: {
@@ -2461,24 +2753,25 @@ export default {
             },
           },
         ],
+        type: "css/auto",
       },
     ],
   },
 };
 ```
 
-**`function(info)`**
+**`(info: UseEntryInfo) => UseEntry | UseEntry[]`**
 
-`Rule.use`는 로드 중인 모듈을 설명하는 객체를 인수로 받는 함수일 수도 있으며 `UseEntry`를 원소로 가지는 배열을 반환해야 합니다.
+`Rule.use`는 로드되는 모듈을 설명하는 객체를 받아 `UseEntry` 항목의 배열을 반환해야 하는 함수가 될 수도 있습니다.
 
-`info` 객체 파라미터는 다음과 같은 필드를 가집니다.
+`info` 파라미터(`UseEntryInfo`)에는 다음 필드가 있습니다:
 
-- `compiler`: 현재 webpack 컴파일러 (정의되지 않을 수 있음)
-- `issuer`: 로드 중인 모듈을 가져오는 모듈의 경로
-- `realResource`: 항상 로드되는 모듈의 경로
-- `resource`: 로드되는 모듈의 경로. 요청 문자열의 `!=!`를 통해 리소스 이름을 덮어 쓰는 경우를 제외하고는 일반적으로 `realResource`와 같습니다.
+- `compiler` (`string | undefined`): 현재 [child compiler](#rulecompiler)의 이름, child compiler 외부에서는 `undefined`
+- `issuer` (`string`): 로드되는 모듈을 import하는 모듈의 경로
+- `realResource` (`string | undefined`): 항상 로드되는 모듈의 경로
+- `resource` (`string | undefined`): 로드되는 모듈의 경로, 요청 문자열에서 `!=!`로 리소스 이름이 덮어쓰여지지 않는 한 일반적으로 `realResource`와 동일
 
-반환값에 `use: [ 'style-loader' ]`같이 배열과 동일한 단축어를 사용할 수 있습니다.
+반환 값에도 배열과 같은 shorthand를 사용할 수 있습니다(예: `use: [ 'sass-loader' ]`).
 
 **webpack.config.js**
 
@@ -2520,7 +2813,32 @@ W> `Rule.resolve`는 webpack 4.36.1 이후로 사용 가능합니다.
 모듈 계층에서 해석에 대한 설정을 할 수 있습니다. [해설 설정 페이지](/configuration/resolve/#resolve)에서 가능한 모든 옵션을 참고하세요.
 적용된 모든 해석 옵션은 상위 계층의 해석 옵션과 병합됩니다.
 
-예를 들면, 모듈 계층 해석을 보여주기 위해 `./src/index.js`, `./src/footer/default.js` 및 `./src/footer/overridden.js` 엔트리가 있다고 가정하겠습니다.
+병합은 프로퍼티 단위로 이루어집니다: 객체는 상위 객체와 병합되는 반면, 배열은 상위 배열을 **대체**합니다. 배치한 위치에서 외부 값을 유지하려면 `"..."` 항목을 사용하세요 — 최상위 레벨에서 [`resolve.extensions`](/configuration/resolve/#resolveextensions) 및 다른 배열 옵션이 사용하는 것과 동일한 규칙입니다. `Rule.parser`도 같은 방식으로 병합되며, loader에서 [`this.getResolve(options)`](/api/loaders/#thisgetresolve)에 전달되는 옵션도 마찬가지입니다.
+
+```js
+export default {
+  module: {
+    rules: [
+      {
+        test: /\.txt$/,
+        resolve: {
+          // only .txt and .md are tried here, the outer extensions are dropped
+          extensions: [".txt", ".md"],
+        },
+      },
+      {
+        test: /\.mdx$/,
+        resolve: {
+          // .mdx is tried first, then whatever the outer config had
+          extensions: [".mdx", "..."],
+        },
+      },
+    ],
+  },
+};
+```
+
+예를 들어, 모듈 레벨 resolve를 설명하기 위해 `./src/index.js`, `./src/footer/default.js`, `./src/footer/overridden.js`에 엔트리가 있다고 가정해봅시다.
 
 **./src/index.js**
 
@@ -2654,6 +2972,44 @@ Condition은 아래 항목중의 하나가 됩니다.
 
 `{ not: [Condition] }`: 모든 Condition이 일치하면 안 됩니다.
 
+`{ glob: string | [string] }`: <Badge text="5.110.0+" /> 입력이 glob pattern 중 하나와 일치해야 합니다. pattern 문법은 [`Rule.glob`](#ruleglob)을 참고하세요.
+
+조건이 테스트되는 입력은 어떤 필드에 작성되었는지에 따라 다릅니다: [`test`](#ruletest), [`include`](#ruleinclude), [`exclude`](#ruleexclude)는 모두 모듈의 resource 경로를 받고, [`issuer`](#ruleissuer)는 이를 요청한 모듈의 경로, [`resourceQuery`](#ruleresourcequery)는 쿼리 문자열을 받습니다. 문법은 모든 곳에서 동일합니다.
+
+조건은 조합됩니다. 단순 배열은 `or`이므로 `test: [/\.ts$/, /\.tsx$/]`와 `test: { or: [/\.ts$/, /\.tsx$/] }`는 동일한 모듈과 매칭되며, 하나의 객체의 프로퍼티는 `and`로 결합됩니다. 다음 조건은 `src/` 아래의 TypeScript 파일 중 테스트 파일이 아닌 것과 매칭됩니다 — 세 가지 프로퍼티가 모두 충족되어야 하며, `not`은 자체 조건을 취하므로 두 개의 정규표현식을 나열하면 둘 중 하나에 매칭되는 파일을 제외합니다:
+
+```js
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
+  // ...
+  module: {
+    rules: [
+      {
+        test: {
+          // every property of this object must match, so:
+          and: [
+            // the path must start with `<context>/src`
+            path.resolve(__dirname, "src"),
+            // and end with `.ts` or `.tsx` (an array is an `or`)
+            [/\.ts$/, /\.tsx$/],
+          ],
+          // and match neither of these
+          not: [/\.test\.tsx?$/, /\.stories\.tsx?$/],
+        },
+        loader: "ts-loader",
+      },
+    ],
+  },
+};
+```
+
+T> `{ not: [A, B] }`는 "둘 다 매칭되지 않는" 것이 아니라 "`A`도, `B`도 매칭되지 않는" 것을 의미합니다. 여러 조건 모두에 매칭되는 입력만 제외하려면 `and`를 부정하세요: `{ not: { and: [A, B] } }`.
+
 **Example:**
 
 ```js
@@ -2684,7 +3040,7 @@ export default {
 
 ## UseEntry
 
-`object` `function(info)`
+`object` `(info: UseEntryInfo) => UseEntry`
 
 **`object`**
 
@@ -2692,9 +3048,7 @@ export default {
 
 `options` 프로퍼티는 문자열이나 객체가 될 수 있습니다. 이 값은 로더에 전달되며 로더 옵션으로 해석되어야 합니다.
 
-호환성을 위해 `options` 프로퍼티의 별칭인 `query` 속성도 가능합니다. `options` 프로퍼티를 사용하는 것을 권장합니다.
-
-webpack은 옵션을 포함한 모든 로더와 리소스에서 고유한 모듈 식별자를 생성해야합니다. 옵션 객체의 `JSON.stringify`로 이를 시도합니다. 99.9%의 경우에 문제가 없지만 리소스에 다른 옵션이 있는 동일한 로더를 적용하고 옵션에 동일한 문자열 값이 있는 경우 고유하지 않을 수 있습니다.
+webpack은 리소스와 옵션을 포함한 모든 loader로부터 고유한 모듈 식별자를 생성해야 합니다. 이를 위해 options 객체를 `JSON.stringify`합니다. 99.9%의 경우에는 문제없지만, 동일한 loader를 다른 옵션으로 리소스에 적용하고 옵션의 문자열화된 값이 동일한 경우 고유하지 않을 수 있습니다.
 
 순환 JSON 같은 옵션 객체를 문자열화 할 수 없는 경우에도 중단됩니다. 이를 해결하기 위해 고유 식별자로 사용되는 옵션 객체에서 `ident` 속성을 가질 수 있습니다.
 
@@ -2706,9 +3060,9 @@ export default {
   module: {
     rules: [
       {
-        loader: "css-loader",
+        loader: "sass-loader",
         options: {
-          modules: true,
+          sourceMap: true,
         },
       },
     ],
@@ -2716,16 +3070,16 @@ export default {
 };
 ```
 
-**`function(info)`**
+**`(info: UseEntryInfo) => UseEntry`**
 
-`UseEntry`는 로드되는 모듈을 나타내는 객체를 인수로 받는 함수일 수도 있으며 함수가 아닌 `UseEntry` 객체를 반환해야 합니다.
+`UseEntry`는 로드되는 모듈을 설명하는 객체를 받아 함수가 아닌 `UseEntry` 객체를 반환해야 하는 함수가 될 수도 있습니다. 이를 사용하여 모듈별로 loader 옵션을 다르게 적용할 수 있습니다.
 
-`info` 객체 파라미터에는 다음과 같은 필드가 있습니다.
+`info` 파라미터(`UseEntryInfo`)에는 다음 필드가 있습니다:
 
-- `compiler`: 현재 webpack 컴파일러 (정의되지 않을 수 있음)
-- `issuer`: 로드 중인 모듈을 가져오는 모듈의 경로
-- `realResource`: 항상 로드되는 모듈의 경로
-- `resource`: 로드되는 모듈의 경로. 요청 문자열의 `!=!`를 통해 리소스 이름을 덮어 쓰는 경우를 제외하고는 일반적으로 `realResource`와 같습니다.
+- `compiler` (`string | undefined`): 현재 [child compiler](#rulecompiler)의 이름, child compiler 외부에서는 `undefined`
+- `issuer` (`string`): 로드되는 모듈을 import하는 모듈의 경로
+- `realResource` (`string | undefined`): 항상 로드되는 모듈의 경로
+- `resource` (`string | undefined`): 로드되는 모듈의 경로, 요청 문자열에서 `!=!`로 리소스 이름이 덮어쓰여지지 않는 한 일반적으로 `realResource`와 동일
 
 **webpack.config.js**
 
@@ -2763,7 +3117,9 @@ export default {
 
 `wrapped` 동적 종속성 의 예시: `require('./templates/' + expr)`.
 
-다음은 [기본값](https://github.com/webpack/webpack/blob/main/lib/config/defaults.js)으로 사용 가능한 옵션입니다.
+동일한 설정이 동등한 `import()` 호출에도 적용되므로, `exprContextRegExp`는 완전히 동적인 `import(expr)`가 어떤 모듈을 가져오는지 결정합니다. 기본값에서 어떤 일이 발생하는지는 [import()의 동적 표현식](/api/module-methods/#dynamic-expressions-in-import)을 참고하세요.
+
+이 옵션들은 [`module.parser.javascript`](#moduleparserjavascript) 아래에 있습니다. 다음은 [기본값](https://github.com/webpack/webpack/blob/main/lib/config/defaults.js)과 함께 나열한 것입니다:
 
 **webpack.config.js**
 
@@ -2771,18 +3127,21 @@ export default {
 export default {
   // ...
   module: {
-    exprContextCritical: true,
-    exprContextRecursive: true,
-    exprContextRegExp: false,
-    exprContextRequest: ".",
-    unknownContextCritical: true,
-    unknownContextRecursive: true,
-    unknownContextRegExp: false,
-    unknownContextRequest: ".",
-    wrappedContextCritical: false,
-    wrappedContextRecursive: true,
-    wrappedContextRegExp: /.*/,
-    strictExportPresence: false,
+    parser: {
+      javascript: {
+        exprContextCritical: true,
+        exprContextRecursive: true,
+        exprContextRegExp: false,
+        exprContextRequest: ".",
+        unknownContextCritical: true,
+        unknownContextRecursive: true,
+        unknownContextRegExp: false,
+        unknownContextRequest: ".",
+        wrappedContextCritical: false,
+        wrappedContextRecursive: true,
+        wrappedContextRegExp: /.*/,
+      },
+    },
   },
 };
 ```
@@ -2791,10 +3150,9 @@ T> `ContextReplacementPlugin`을 사용하여 개별 종속성에 대한 값을 
 
 다음은 몇 가지 사용 사례입니다.
 
-- 동적 종속성에 대한 경고(`wrappedContextCritical: true`)
-- `require(expr)`는 전체 디렉터리를 포함해야합니다(`exprContextRegExp: /^\.\//`).
-- `require('./templates/' + expr)`은 기본적으로 하위 디렉터리를 포함하지 않아야 합니다(`wrappedContextRecursive: false`).
-- `strictExportPresence`는 export가 누락되면 경고 대신 오류를 발생시킵니다.
-- 부분적 동적 종속성에 대한 내부 정규식 설정(`wrappedContextRegExp: /\\.\\*/`)
+- Warn for dynamic dependencies: `wrappedContextCritical: true`.
+- `require(expr)` should include the whole directory: `exprContextRegExp: /^\.\//`
+- `require('./templates/' + expr)` should not include subdirectories by default: `wrappedContextRecursive: false`
+- Set the inner regular expression for partial dynamic dependencies: `wrappedContextRegExp: /\.\*/`
 
-W> `strictExportPresence`는 더 이상 사용되지 않으며 [`exportsPresence`](#moduleparserjavascriptexportspresence) 옵션이 사용됩니다.
+W> `module`에 직접 설정하는 것 — `module.exprContextCritical` 등 — 은 deprecated입니다. 각 옵션은 동일한 이름으로 `module.parser.javascript` 아래로 이동되어 `module.exprContextRegExp`는 `module.parser.javascript.exprContextRegExp`가 됩니다. `module.strictExportPresence`도 동일하게 이동되었으며, [`exportsPresence`](#moduleparserjavascriptexportspresence)로 대체되어 deprecated입니다. `module.strictThisContextOnImports`는 [`module.parser.javascript.strictThisContextOnImports`](#moduleparserjavascriptstrictthiscontextonimports)가 되었습니다.

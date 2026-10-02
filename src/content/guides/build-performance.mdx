@@ -1,5 +1,6 @@
 ---
 title: Build Performance
+description: webpack에서 Build Performance을 사용하는 방법을 설명합니다.
 sort: 9
 contributors:
   - sokra
@@ -69,6 +70,8 @@ export default {
   },
 };
 ```
+
+T> Some dependencies ship syntax your target browsers cannot parse, and those do have to go through the loader. Add them to `include` one by one instead of transforming all of `node_modules` — see [dependencies that ship modern syntax](/guides/ecma-script-modules/#dependencies-that-ship-modern-syntax).
 
 ### Bootstrap
 

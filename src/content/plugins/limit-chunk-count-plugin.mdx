@@ -1,5 +1,6 @@
 ---
 title: LimitChunkCountPlugin
+description: LimitChunkCountPlugin의 기능과 사용 방법을 설명합니다.
 group: webpack
 contributors:
   - rouzbeh84
@@ -47,12 +48,4 @@ export default {
 
 ### minChunkSize
 
-위의 지정된 청크 크기를 유지하는 것은 이 플러그인에서 구현하지 않습니다. [MinChunkSizePlugin](/plugins/min-chunk-size-plugin)을 대신 사용하세요.
-
-## Usage via CLI
-
-이 플러그인과 옵션은 [CLI](/api/cli/)를 통해 호출될 수도 있습니다.
-
-```bash
-webpack --optimize-max-chunks 15
-```
+청크 크기를 지정한 제한 이상으로 유지하는 기능은 더 이상 이 플러그인의 기능이 아닙니다. 대신 [MinChunkSizePlugin](/plugins/min-chunk-size-plugin)을 사용하세요.

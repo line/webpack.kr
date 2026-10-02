@@ -47,6 +47,7 @@ jobs:
       - run: npm run lint:js
       - run: npm run lint:prettier
       - run: npm run lint:markdown
+      - run: npm run lint:spelling
 
   proseLint:
     name: Proselint
@@ -68,7 +69,7 @@ jobs:
         run: npm install -g mdx2vast
 
       - name: Vale
-        uses: errata-ai/vale-action@85f9f7f2c5f449ac0ae5b66662961bae3f77ca6a # v2.1.2
+        uses: errata-ai/vale-action@518a9136acc6e6668ce7c00d367051e0941e87ff # v3.0.0
         with:
           files: src/content
         env:
@@ -96,7 +97,7 @@ jobs:
         uses: ./.github/actions/webpack-persistent-cache
 
       - name: Cypress run
-        uses: cypress-io/github-action@fa4a118725a8f001170d49631ea89e5d66fee626 # v7.4.1
+        uses: cypress-io/github-action@01e3b659a495b41649cdd0aa82e1d1624e26520b # v7.4.4
         with:
           browser: chrome
           config-file: cypress.config.js

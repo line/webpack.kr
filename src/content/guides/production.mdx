@@ -1,5 +1,6 @@
 ---
 title: Production
+description: webpack에서 Production을 사용하는 방법을 설명합니다.
 sort: 17
 contributors:
   - henriquea
@@ -67,7 +68,6 @@ npm install --save-dev webpack-merge
 ```diff
 + import path from 'node:path';
 + import { fileURLToPath } from 'node:url';
-+ import HtmlWebpackPlugin from 'html-webpack-plugin';
 +
 + const __filename = fileURLToPath(import.meta.url);
 + const __dirname = path.dirname(__filename);
@@ -76,15 +76,21 @@ npm install --save-dev webpack-merge
 +   entry: {
 +     app: './src/index.js',
 +   },
-+   plugins: [
-+     new HtmlWebpackPlugin({
-+       title: 'Production',
-+     }),
-+   ],
++   experiments: {
++     html: true,
++   },
 +   output: {
 +     filename: '[name].bundle.js',
++     htmlFilename: 'index.html',
 +     path: path.resolve(__dirname, 'dist'),
 +     clean: true,
++     html: {
++       meta: {
++         charset: 'UTF-8',
++         viewport: 'width=device-width, initial-scale=1',
++       },
++       title: 'Production',
++     },
 +   },
 + };
 ```
@@ -141,11 +147,8 @@ npm install --save-dev webpack-merge
     "author": "",
     "license": "ISC",
     "devDependencies": {
-      "css-loader": "^7.1.3",
       "csv-loader": "^3.0.5",
       "express": "^5.2.1",
-      "html-webpack-plugin": "^5.6.6",
-      "style-loader": "^4.0.0",
       "webpack": "^5.105.0",
       "webpack-cli": "^7.0.0",
       "webpack-dev-middleware": "^8.0.3",
@@ -230,7 +233,7 @@ T> 프로덕션에서 `inline-***`과 `eval-***`은 번들 크기가 커질 수 
 
 ## Minimize CSS
 
-프로덕션을 위해 CSS를 최소화하는 것이 중요합니다. [Minimizing for Production](/plugins/mini-css-extract-plugin/#minimizing-for-production)을 참고하세요.
+production에서는 CSS를 최소화하는 것이 중요하며 webpack이 이를 처리합니다. `production` mode에서는 [`optimization.minimize`](/configuration/optimization/#optimizationminimize)가 활성화되어 별도 plugin 없이 JavaScript와 CSS 애셋을 최소화합니다. 동작과 변환별 설정은 [Minification](/guides/native-css/#minification)을 참고하세요.
 
 ## CLI Alternatives
 

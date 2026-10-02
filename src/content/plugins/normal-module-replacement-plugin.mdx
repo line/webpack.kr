@@ -1,5 +1,6 @@
 ---
 title: NormalModuleReplacementPlugin
+description: NormalModuleReplacementPlugin의 기능과 사용 방법을 설명합니다.
 group: webpack
 contributors:
   - gonzoyumo
@@ -19,7 +20,7 @@ translators:
 new webpack.NormalModuleReplacementPlugin(resourceRegExp, newResource);
 ```
 
-`resourceRegExp`는 해결된 리소스가 아닌 코드에 작성한 요청을 기준으로 테스트된다는 점에 유의하세요. 예를 들어, `import sum from './sum'` 코드가 있는 경우 `./sum.js'` 대신 `./sum'`이 테스트에 사용됩니다.
+`resourceRegExp`는 두 번 테스트됩니다. 해결 전에는 코드에 작성된 요청(예: `import sum from './sum'`의 `'./sum'`)과, 해결 후에는 절대 리소스 경로(예: `'/project/src/sum.js'`)와 대조됩니다.
 
 또한 Windows를 사용하는 경우 폴더 구분 기호가 다르다는 점에 유의하십시오. 예를 들어 `/src\/environments\/environment\.ts/`는 Windows에서 작동하지 않으며, 대신 `/src[\\/]environments[\\/]environment\.ts/`를 사용해야 합니다.
 

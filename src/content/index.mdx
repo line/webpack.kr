@@ -8,6 +8,8 @@ import FirstRight from "../components/Splash/first/right.mdx";
 import SecondLeft from "../components/Splash/second/left.mdx";
 import SecondRight from "../components/Splash/second/right.mdx";
 import Install from "../components/Splash/install/install.mdx";
+import BuildDevelopment from "../components/Splash/build/development.mdx";
+import BuildProduction from "../components/Splash/build/production.mdx";
 
 ## Webpack을 설치해 보세요
 
@@ -39,11 +41,29 @@ import Install from "../components/Splash/install/install.mdx";
   </div>
 </div>
 
-그다음 커멘드 라인에서 `webpack` 명령어를 실행해 `bundle.js`를 생성하세요.
+그런 다음 커맨드 라인에서 webpack을 실행하세요. HTML, CSS, JavaScript는 모두 webpack 자체에서 처리하므로 `dist/`에는 페이지와 페이지가 가리키는 애셋이 생성됩니다.
+
+<div className="splash__wrap">
+  <div className="splash__install">
+    <BuildDevelopment />
+  </div>
+</div>
+
+[`--mode development`](/configuration/mode/)는 페이지와 스타일시트를 최소화하지 않고 번들을 브라우저 개발자 도구에서 자신의 파일에 다시 매핑하므로, 디버깅하는 것이 작성한 것처럼 보입니다.
+
+<div className="splash__wrap">
+  <div className="splash__install">
+    <BuildProduction />
+  </div>
+</div>
+
+[`--mode production`](/configuration/mode/)은 페이지, 스타일시트, 스크립트를 최소화하고 사용하지 않는 코드를 제거합니다. 이것이 배포하는 빌드입니다.
 
 ## 멋지지 않나요? 좀 더 알아보세요!
 
 **가이드를** 따라 빠르게 **[시작해](/guides/getting-started)** 보거나, **[Concepts](/concepts)에서** webpack의 핵심 개념을 자세히 알아보세요.
+
+[Native HTML](/guides/native-html/)과 [Native CSS](/guides/native-css/) 가이드에서는 내장 기능과 기존 설정을 이전하는 방법을 설명합니다.
 
 ## 한글화 작업에 참여하려면 어떻게 해야합니까?
 

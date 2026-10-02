@@ -18,17 +18,71 @@ describe("processReadme", () => {
     );
   });
 
+  it("renders a relative link against the branch the readme was read from", () => {
+    // A raw url names the branch where a rendered one names `blob` and then
+    // the branch, whatever the repository calls its default one.
+    for (const branch of ["master", "main", "next"]) {
+      const options = {
+        source: `https://raw.githubusercontent.com/webpack/html-loader/${branch}/README.md`,
+      };
+
+      expect(processReadme("[LICENSE](./LICENSE)", options)).toBe(
+        `[LICENSE](https://github.com/webpack/html-loader/blob/${branch}/LICENSE)`,
+      );
+    }
+  });
+
+  it("keeps the github link when the site builds no page for the package", () => {
+    const options = {
+      source: url,
+      loaders: ["webpack/postcss-loader"],
+      plugins: ["webpack/stylelint-webpack-plugin"],
+    };
+    const renamedPluginMDData =
+      "- [lint-webpack-plugin](https://github.com/webpack/lint-webpack-plugin)";
+    const renamedLoaderMDData =
+      "- [sass-loader](https://github.com/webpack/sass-loader)";
+
+    expect(processReadme(renamedPluginMDData, options)).toBe(
+      renamedPluginMDData,
+    );
+    expect(processReadme(renamedLoaderMDData, options)).toBe(
+      renamedLoaderMDData,
+    );
+  });
+
+  it("links a package the site has a page for under its current owner", () => {
+    const options = {
+      source: url,
+      loaders: ["webpack/postcss-loader"],
+      plugins: ["webpack/copy-webpack-plugin"],
+    };
+
+    expect(
+      processReadme(
+        "- [copy-webpack-plugin](https://github.com/webpack-contrib/copy-webpack-plugin)",
+        options,
+      ),
+    ).toBe("- [copy-webpack-plugin](/plugins/copy-webpack-plugin/)");
+    expect(
+      processReadme(
+        "- [postcss-loader](https://github.com/webpack/postcss-loader)",
+        options,
+      ),
+    ).toBe("- [postcss-loader](/loaders/postcss-loader/)");
+  });
+
   it("links without the site", () => {
     const options = { source: url };
     const loaderMDData =
       "- [extract-loader](https://github.com/peerigon/extract-loader)";
     const pluginMDData =
-      "- [html-webpack-plugin](https://github.com/jantimon/html-webpack-plugin)";
+      "- [dotenv-webpack](https://github.com/mrsteele/dotenv-webpack)";
     expect(processReadme(loaderMDData, options)).toBe(
       "- [extract-loader](https://github.com/peerigon/extract-loader)",
     );
     expect(processReadme(pluginMDData, options)).toBe(
-      "- [html-webpack-plugin](https://github.com/jantimon/html-webpack-plugin)",
+      "- [dotenv-webpack](https://github.com/mrsteele/dotenv-webpack)",
     );
   });
 
@@ -40,7 +94,7 @@ describe("processReadme", () => {
     const loaderMDData =
       "See the file [`./src/config.d.ts`](./src/config.d.ts).";
     expect(processReadme(loaderMDData, options)).toBe(
-      "See the file [`https://github.com/webpack/postcss-loader/main/src/config.d.ts`](https://github.com/webpack/postcss-loader/main/src/config.d.ts).",
+      "See the file [`https://github.com/webpack/postcss-loader/blob/main/src/config.d.ts`](https://github.com/webpack/postcss-loader/blob/main/src/config.d.ts).",
     );
   });
 

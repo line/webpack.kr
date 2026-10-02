@@ -1,5 +1,6 @@
 ---
 title: MergeDuplicateChunksPlugin
+description: MergeDuplicateChunksPlugin의 기능과 사용 방법을 설명합니다.
 group: webpack
 contributors:
   - shivxmsharma
@@ -21,7 +22,7 @@ new webpack.optimize.MergeDuplicateChunksPlugin({
 
 `number`
 
-중복 청크 병합이 실행되는 최적화 단계를 제어합니다. 기본적으로 병합은 `SplitChunksPlugin`보다 먼저 발생합니다. `stage` 값을 높게 설정하면 병합은 `SplitChunksPlugin`과 같은 다른 최적화 작업 *이후*에 실행됩니다.
+중복 청크 병합이 실행되는 최적화 단계를 제어합니다. 기본적으로 병합은 `SplitChunksPlugin` 이전에 발생합니다. `stage`를 `10`(`SplitChunksPlugin`의 단계) 보다 크게 설정하면 병합이 그 _이후에_ 실행됩니다. `10` 값은 사용자 플러그인이 먼저 적용되기 때문에 여전히 이전에 실행됩니다. 내장 인스턴스(단계 `-10`)는 활성 상태를 유지하므로, 이 설정은 두 번째 병합 패스를 추가합니다.
 
 **webpack.config.js**
 
@@ -32,7 +33,7 @@ export default {
   // ...
   plugins: [
     new webpack.optimize.MergeDuplicateChunksPlugin({
-      stage: 10, // SplitChunksPlugin 실행 후
+      stage: 11, // run after SplitChunksPlugin (stage 10)
     }),
   ],
 };

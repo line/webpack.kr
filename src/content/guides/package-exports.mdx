@@ -1,5 +1,6 @@
 ---
 title: Package exports
+description: webpack에서 Package exports을 사용하는 방법을 설명합니다.
 sort: 25
 contributors:
   - sokra
@@ -90,7 +91,7 @@ Webpack 5.94.0+에서는 이전 동작이 `existent.js`로 확인되었을 것�
 
 이 경우 결과에 대한 객체 매핑 조건을 사용해야 합니다.
 조건은 객체 순서대로 시도됩니다.
-유효하지 않은 결과가 포함된 조건은 건너뜁니다.
+조건이 일치하면 해당 대상이 사용됩니다. 대상이 `null`이거나 리졸브할 수 없는 경우, 이후 조건을 시도하지 않고 리졸브가 실패합니다.
 논리적 AND를 만들기 위해 조건이 중첩될 수 있습니다.
 객체의 마지막 조건은 특별한 `"default"` 조건일 수 있습니다.
 이 조건은 항상 매치됩니다.
@@ -116,14 +117,13 @@ Webpack 5.94.0+에서는 이전 동작이 `existent.js`로 확인되었을 것�
 위 조건은 다음과 같이 번역됩니다.
 
 ```ts
-if (red && valid("./stop.js")) return "./stop.js";
-if (yellow && valid("./stop.js")) return "./stop.js";
+if (red) return "./stop.js";
+if (yellow) return "./stop.js";
 if (green) {
-  if (free && valid("./drive.js")) return "./drive.js";
-  if (valid("./wait.js")) return "./wait.js";
+  if (free) return "./drive.js";
+  return "./wait.js";
 }
-if (valid("./drive-carefully.js")) return "./drive-carefully.js";
-throw new ModuleNotFoundError();
+return "./drive-carefully.js";
 ```
 
 사용 가능한 조건은 모듈 시스템 및 도구에 따라 다릅니다.
@@ -202,7 +202,7 @@ throw new ModuleNotFoundError();
 | --------- | ------------------------------------------------------------ | -------------------------------------------------------------------- |
 | `import`  | ESM 또는 유사한 구문에서 요청이 발생합니다.                  | Node.js, webpack, rollup, esinstall<sup>(1)</sup>, wmr<sup>(1)</sup> |
 | `require` | CommonJs/AMD 또는 유사한 구문에서 요청이 발생합니다.         | Node.js, webpack, rollup, esinstall<sup>(1)</sup>, wmr<sup>(1)</sup> |
-| `style`   | 스타일시트 참조에서 요청이 발생합니다.                       |                                                                      |
+| `style`   | 스타일시트 참조에서 요청이 발생합니다.                       | webpack                                                              |
 | `sass`    | sass 스타일시트 참조에서 요청이 발생합니다.                  |                                                                      |
 | `asset`   | 애셋 참조에서 요청이 발생합니다.                             |                                                                      |
 | `script`  | 모듈 시스템 없이 스크립트 태그를 사용할때 요청이 발생합니다. |                                                                      |
@@ -226,8 +226,8 @@ throw new ModuleNotFoundError();
 - HTML의 HTML `<script type="module">`
 - HTML의 HTML `<link rel="preload/prefetch">`
 - JS `new Worker(..., { type: "module" })`
-- WASM `import`섹션
-- ESM HMR(webpack) `import.hot.accept/decline([...])`
+- WASM `import` section
+- ESM HMR (webpack) `import.meta.webpackHot.accept/decline([...])`
 - JS `Worklet.addModule`
 - 자바스크립트를 엔트리 포인트로 사용
 
@@ -294,7 +294,8 @@ CommonJs를 지원하는 시스템에서 스크립트를 전처리하는 경우,
 | `worker`       | Code will run in a (Web)Worker.<sup>(1)</sup> | webpack                             |
 | `worklet`      | Code will run in a Worklet.<sup>(1)</sup>     |                                     |
 | `node`         | Code will run in Node.js.                     | Node.js, webpack, wmr<sup>(2)</sup> |
-| `deno`         | Code will run in Deno.                        |                                     |
+| `deno`         | Code will run in Deno.                        | webpack                             |
+| `bun`          | Code will run in Bun.                         | webpack                             |
 | `react-native` | Code will run in react-native.                |                                     |
 
 (1) `electron`, `worker` 및 `worklet`은 컨텍스트에 따라 `node` 또는 `browser`와 결합합니다.

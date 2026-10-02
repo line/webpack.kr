@@ -1,0 +1,62 @@
+---
+title: Codebase Overview
+description: A map of the webpack source tree for contributors, covering the objects a build runs through and where each part of the code lives.
+sort: 8
+contributors:
+  - hai-x
+---
+
+이 페이지는 변경을 준비하는 사람을 위한 [webpack/webpack](https://github.com/webpack/webpack) 안내 지도입니다. pull request를 여는 방법은 [CONTRIBUTING.md](https://github.com/webpack/webpack/blob/main/CONTRIBUTING.md)에, 테스트 스위트를 실행하는 방법은 [TESTING_DOCS.md](https://github.com/webpack/webpack/blob/main/TESTING_DOCS.md)에 있습니다.
+
+T> 이 페이지는 webpack 자체 소스에 관한 것입니다. 외부에서 webpack을 확장하려면 [로더 작성하기](/contribute/writing-a-loader/) 및 [플러그인 작성하기](/contribute/writing-a-plugin/)를 참고하세요.
+
+## Five objects
+
+`lib/`의 거의 모든 것이 이 중 하나에 연결되어 있으며, 어떤 객체가 특정 동작을 소유하는지 알면 코드를 찾는 작업의 대부분이 해결됩니다.
+
+| 객체                                                                             | 설명                                                                               |
+| -------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| [`Compiler`](https://github.com/webpack/webpack/blob/main/lib/Compiler.js)       | 설정에서 한 번 생성됩니다. 전체 빌드를 주도하며 파일 시스템과 감시자를 소유합니다. |
+| [`Compilation`](https://github.com/webpack/webpack/blob/main/lib/Compilation.js) | 빌드마다 한 번 생성됩니다. 모듈 그래프와 청크를 보유하며, 이후 버려집니다.         |
+| [`Module`](https://github.com/webpack/webpack/blob/main/lib/Module.js)           | 빌드된 하나의 단위입니다. 파일, 애셋, 외부 모듈이며 생성하는 소스를 포함합니다.    |
+| [`Dependency`](https://github.com/webpack/webpack/blob/main/lib/Dependency.js)   | 한 모듈에서 다른 모듈로의 참조 하나와, 출력에서 이를 재작성하는 템플릿입니다.      |
+| [`Chunk`](https://github.com/webpack/webpack/blob/main/lib/Chunk.js)             | 하나의 파일로 출력되는 모듈 그룹입니다.                                            |
+
+실행은 세 단계로 이루어지며, 각 단계는 `debugger`를 놓기 좋은 위치입니다:
+
+1. **make** — [`Compiler#compile`](https://github.com/webpack/webpack/blob/main/lib/Compiler.js)이 컴파일레이션을 생성하고 엔트리를 추가합니다. 각 엔트리는 resolve되고, 로더를 통해 로드되고, 파싱되며, 의존성이 큐에 추가됩니다. 그래프가 더 이상 성장하지 않을 때까지 반복됩니다.
+2. **seal** — [`Compilation#seal`](https://github.com/webpack/webpack/blob/main/lib/Compilation.js)이 그래프를 출력으로 변환합니다. 청크가 형성되고, ID와 해시가 할당되며, 최적화가 실행되고, 코드가 생성됩니다.
+3. **emit** — [`Compiler#emitAssets`](https://github.com/webpack/webpack/blob/main/lib/Compiler.js)가 애셋을 출력 파일 시스템에 씁니다.
+
+모든 단계는 일련의 [tapable](https://github.com/webpack/tapable) 훅으로 이루어져 있으며, 이를 통해 플러그인이 참여합니다. 컴파일러 전체 훅은 `Compiler.js` 상단에 선언되어 있으며 [Compiler 훅](/api/compiler-hooks/)에 문서화되어 있습니다. 빌드별 훅은 `Compilation.js`에 있으며 [Compilation 훅](/api/compilation-hooks/)에 문서화되어 있습니다.
+
+## Where the code lives
+
+`lib/`은 CommonJS 전용이며, 타입은 JSDoc에 선언되어 `types.d.ts`로 컴파일됩니다. 따라서 타입 오류는 생성된 파일이 아닌 함수 위의 JSDoc에서 수정합니다.
+
+| 영역                       | 디렉터리                                                                                                           |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| 그래프                     | `dependencies/`(의존성 클래스와 템플릿), `optimize/`(`SplitChunksPlugin`, 모듈 연결), `ids/`                       |
+| 언어 및 애셋               | `javascript/`(acorn 파싱, 내보내기 분석, 코드 생성), `css/`, `html/`, `json/`, `asset/`, `wasm*/`, `typescript/`   |
+| 대상                       | `web/`, `webworker/`, `node/`, `deno/`, `electron/`, `bun/`, `esm/` — 각각 자체 청크 로딩 및 외부 모듈 프리셋 포함 |
+| 사용자에게 배포되는 런타임 | `runtime/`(webpack이 번들에 쓰는 런타임 모듈)과 저장소 루트의 `hot/`(브라우저 측 HMR 클라이언트)                   |
+| 설정                       | `config/`(기본값, 정규화, 대상 프리셋), `rules/`(`module.rules` 매칭 엔진)                                         |
+| 기능                       | `container/`와 `sharing/`(Module Federation), `library/`, `hmr/`, `dll/`, `prefetch/`, `performance/`, `schemes/`  |
+| 인프라                     | `cache/`, `serialization/`(퍼시스턴트 캐시), `logging/`, `stats/`, `errors/`(모든 오류 및 경고 클래스), `util/`    |
+
+`lib/` 외부에는: `schemas/`에 설정 API를 정의하는 JSON 스키마가, `bin/`에 CLI 엔트리 포인트가, `tooling/`에 코드 생성기 및 분석 스크립트가, `test/`에 테스트 스위트가, `examples/`에 문서 역할을 겸하는 실행 가능한 설정이 있습니다.
+
+## Finding the code behind a thing
+
+- **설정 옵션.** 옵션은 순서대로 네 계층을 거칩니다: [`schemas/WebpackOptions.json`](https://github.com/webpack/webpack/blob/main/schemas/WebpackOptions.json)의 스키마, `lib/config/defaults.js`의 기본값, `lib/config/normalization.js`의 단축 표현, 마지막으로 해당 옵션을 읽는 플러그인입니다. 옵션 이름으로 grep하면 네 곳 모두에서 찾을 수 있습니다.
+- **훅.** 훅은 소유하는 클래스에 선언되어 있으므로 `Compiler.js` 또는 `Compilation.js`에서 이름을 검색하세요. `lib/WebpackOptionsApply.js`는 옵션이 훅을 탭하는 플러그인으로 변환되는 곳입니다.
+- **생성된 번들에 있는 무언가.** 런타임 심볼은 [`lib/RuntimeGlobals.js`](https://github.com/webpack/webpack/blob/main/lib/RuntimeGlobals.js)에 이름이 지정되어 있으며, 각각의 코드는 `lib/runtime/` 아래의 `RuntimeModule` 서브클래스입니다.
+- **오류 메시지.** 오류 및 경고 클래스는 무엇이 이를 발생시키든 `lib/errors/`에 있습니다.
+
+## Before you change it
+
+- **생성된 것을 재생성하세요.** `types.d.ts`, `declarations/` 아래의 파일, 미리 컴파일된 스키마 검증기는 모두 `yarn fix:special`로 생성됩니다. JSDoc 또는 스키마를 편집하고 다시 실행하세요. 생성된 파일을 직접 편집하지 마세요.
+- **통합 테스트로 변경 사항을 커버하세요.** `test/configCases/`는 실제 빌드를 실행하고 번들을 실행하여 목(mock) 유닛 테스트에서 놓치는 것을 잡아냅니다. 레이아웃과 단일 케이스 실행 방법은 [TESTING_DOCS.md](https://github.com/webpack/webpack/blob/main/TESTING_DOCS.md)를 참고하세요.
+- **changeset을 추가하세요.** 사용자에게 영향을 미치는 모든 변경 사항은 `.changeset/`에 파일 하나가 필요하며, 이것이 변경 로그를 작성합니다.
+
+T> webpack은 번들러이므로 `lib/`의 변경 사항은 모듈당 한 번 실행되는 경로에 종종 적용됩니다. 때로는 청크당 모듈당 한 번이기도 합니다. 우아함을 위해 최적화하기 전에 비용을 고려하세요.

@@ -1,5 +1,6 @@
 ---
 title: Plugins
+description: webpack의 Plugins 설정과 사용 방법을 설명합니다.
 sort: 10
 contributors:
   - sokra
@@ -18,7 +19,7 @@ T> 참고: 이 페이지에서는 플러그인 사용에 대해서만 설명합�
 
 ## plugins
 
-[`[Plugin]`](/plugins/)
+[`Plugin[]`](/plugins/)
 
 webpack 플러그인의 배열입니다. 예를 들어 [`DefinePlugin`](/plugins/define-plugin/)을 사용하면 컴파일 때에 구성 가능한 전역 상수를 만들 수 있습니다. 이는 개발 빌드와 릴리스 빌드 간에 서로 다른 동작을 허용하는 데 유용합니다. Webpack 5.87.0 부터는 falsy 값을 사용하여 특정 플러그인을 조건부로 비활성화할 수 있습니다.
 
@@ -51,7 +52,10 @@ import DashboardPlugin from "webpack-dashboard/plugin";
 export default {
   // ...
   plugins: [
-    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+    new webpack.IgnorePlugin({
+      resourceRegExp: /^\.\/locale$/,
+      contextRegExp: /moment$/,
+    }),
     // 컴파일 타임 플러그인
     new webpack.DefinePlugin({
       "process.env.NODE_ENV": '"production"',

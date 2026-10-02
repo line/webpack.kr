@@ -1,5 +1,6 @@
 ---
 title: Compilation Object
+description: Compilation Object API의 기능과 사용 방법을 설명합니다.
 group: Objects
 sort: 14
 contributors:
@@ -13,15 +14,26 @@ Compilation 객체에는 사용 가능한 많은 메소드와 훅이 있습니�
 
 ## compilation object methods
 
+아래 시그니처는 API 전반에 걸쳐 반복되는 두 가지 콜백 형태를 사용합니다:
+
+```ts
+type ModuleCallback = (
+  err?: WebpackError | null,
+  result?: Module | null,
+) => void;
+
+type ErrorCallback = (err?: WebpackError | null) => void;
+```
+
 ### getStats
 
-`function`
+`() => Stats`
 
 현재 컴파일에 대한 State 객체를 반환합니다.
 
 ### addModule
 
-`function (module, callback)`
+`(module: Module, callback: ModuleCallback) => void`
 
 현재 컴파일에 모듈을 추가합니다.
 
@@ -32,7 +44,7 @@ Compilation 객체에는 사용 가능한 많은 메소드와 훅이 있습니�
 
 ### getModule
 
-`function (module)`
+`(module: Module) => Module`
 
 식별자를 통해 컴파일에서 모듈을 가져옵니다.
 
@@ -42,30 +54,28 @@ Compilation 객체에는 사용 가능한 많은 메소드와 훅이 있습니�
 
 ### findModule
 
-`function (module)`
+`(identifier: string) => Module | undefined`
 
-식별자로 모듈 검색을 시도합니다.
+식별자로 모듈 검색을 시도합니다. 모듈을 반환하거나, 일치하는 것이 없으면 `undefined`를 반환합니다.
 
 파라미터:
 
-- `module` - 검색할 모듈. 식별자는 `module.identifier()` 메소드를 사용한 컴파일을 통해 모듈에서 추출됩니다.
+- `identifier` - 검색할 모듈의 식별자 문자열.
 
 ### buildModule
 
-`function (module, optional, origin, dependencies)`
+`(module: Module, callback: ModuleCallback) => void`
 
 주어진 모듈을 빌드합니다.
 
 파라미터:
 
 - `module` - 빌드할 모듈.
-- `optional` - 선택적 플래그.
-- `origin` - 모듈 빌드가 요청된 원본 모듈.
-- `dependencies` - 빌드할 모듈의 선택적 의존성.
+- `callback` - 빌드가 완료되면 `callback(err, module)`로 호출되는 함수.
 
 ### processModuleDependencies
 
-`function (module, callback)`
+`(module: Module, callback: ModuleCallback) => void`
 
 주어진 모듈 의존성을 처리합니다.
 
@@ -76,7 +86,7 @@ Compilation 객체에는 사용 가능한 많은 메소드와 훅이 있습니�
 
 ### addEntry
 
-`function (context, entry, name, callback)`
+`(context: string, entry: Dependency, optionsOrName: string | EntryOptions, callback: ModuleCallback) => void`
 
 컴파일에 엔트리를 추가합니다.
 
@@ -89,7 +99,7 @@ Compilation 객체에는 사용 가능한 많은 메소드와 훅이 있습니�
 
 ### rebuildModule
 
-`function (module, thisCallback)`
+`(module: Module, callback: ModuleCallback) => void`
 
 모듈 재빌드를 트리거 합니다.
 
@@ -100,7 +110,7 @@ Compilation 객체에는 사용 가능한 많은 메소드와 훅이 있습니�
 
 ### finish
 
-`function (callback)`
+`(callback: ErrorCallback) => void`
 
 컴파일을 완료하고 주어진 콜백을 호출합니다.
 
@@ -110,7 +120,7 @@ Compilation 객체에는 사용 가능한 많은 메소드와 훅이 있습니�
 
 ### seal
 
-`function (callback)`
+`(callback: ErrorCallback) => void`
 
 컴파일을 봉인합니다.
 
@@ -120,17 +130,13 @@ Compilation 객체에는 사용 가능한 많은 메소드와 훅이 있습니�
 
 ### unseal
 
-`function`
+`() => void`
 
 컴파일 봉인을 해제합니다.
 
-파라미터:
-
-- `callback` - 컴파일 봉인이 해제될 때 호출되는 함수.
-
 ### reportDependencyErrorsAndWarnings
 
-`function (module, blocks)`
+`(module: Module, blocks: DependenciesBlock[]) => boolean`
 
 컴파일 오류 및 경고에 주어진 모듈의 오류 및 경고를 추가합니다.
 
@@ -141,7 +147,7 @@ Compilation 객체에는 사용 가능한 많은 메소드와 훅이 있습니�
 
 ### addChunkInGroup
 
-`function (groupOptions, module, loc, request)`
+`(groupOptions: string | ChunkGroupOptions, module?: Module, loc?: DependencyLocation, request?: string) => ChunkGroup`
 
 기존 청크 그룹에 모듈을 추가하거나 새 그룹을 만듭니다. `chunkGroup`을 반환합니다.
 
@@ -154,7 +160,7 @@ Compilation 객체에는 사용 가능한 많은 메소드와 훅이 있습니�
 
 ### addChunk
 
-`function (name)`
+`(name?: string | null) => Chunk`
 
 `compilation.chunks`에 새 청크를 만들고 추가합니다. 해당 `chunk`를 반환합니다.
 
@@ -162,9 +168,36 @@ Compilation 객체에는 사용 가능한 많은 메소드와 훅이 있습니�
 
 - `name` - 청크 이름.
 
+### addRuntimeModule
+
+`(chunk: Chunk, module: RuntimeModule, chunkGraph?: ChunkGraph) => void`
+
+청크에 런타임 모듈을 추가합니다. 컴파일에 모듈을 등록하고, 청크 그래프에서 청크에 연결하고 첨부하여, 모듈이 생성하는 코드가 해당 청크의 런타임의 일부가 됩니다. 플러그인은 보통 모듈이 구현하는 요구 사항에 대해 한 번씩 [`runtimeRequirementInTree`](/api/compilation-hooks/#runtimerequirementintree)에서 이를 호출합니다.
+
+파라미터:
+
+- `chunk` - 런타임 모듈을 추가할 청크.
+- `module` - 추가할 `RuntimeModule`.
+- `chunkGraph` - 연결할 청크 그래프; 기본값은 컴파일 자체의 청크 그래프.
+
+### addLazyRuntimeModule
+
+`(chunk: Chunk, load: () => Promise<any>, create: (loaded: any) => RuntimeModule, chunkGraph?: ChunkGraph) => void`
+
+구현이 필요할 때 로드되는 런타임 모듈을 큐에 넣습니다. 호출 중에는 어떤 콜백도 실행되지 않습니다: 런타임 요구 사항 패스가 끝나면 큐가 처리되고, 먼저 `load`가 대기되며, 그런 다음 `create`가 해석된 값에서 모듈을 빌드하고, 이는 [`addRuntimeModule`](#addruntimemodule)이 추가하는 방식으로 추가됩니다.
+
+파라미터:
+
+- `chunk` - 런타임 모듈을 추가할 청크.
+- `load` - 런타임 모듈 구현을 해석합니다.
+- `create` - 로드된 값에서 `RuntimeModule`을 빌드합니다.
+- `chunkGraph` - 연결할 청크 그래프; 기본값은 컴파일 자체의 청크 그래프.
+
+W> [`runtimeRequirementInTree`](/api/compilation-hooks/#runtimerequirementintree)는 동기적이므로, 탭은 로드 자체를 await할 수 없습니다 — 이 메서드가 그 목적을 위한 것입니다. 큐에 넣기 전에 요구 사항 집합에서 필요한 것을 모두 캡처하세요, `create`는 패스가 진행된 후에 실행되기 때문입니다.
+
 ### assignDepth
 
-`function (module)`
+`(module: Module) => void`
 
 주어진 모듈과 그 의존성 블록에 재귀적으로 `depth`를 할당합니다.
 
@@ -172,30 +205,20 @@ Compilation 객체에는 사용 가능한 많은 메소드와 훅이 있습니�
 
 - `module` - depth를 할당할 모듈.
 
-### getDependencyReference
+### getDependencyReferencedExports
 
-`function (module, dependency)`
+`(dependency: Dependency, runtime: RuntimeSpec) => (string[] | ReferencedExport)[]`
 
-주어진 모듈에서 의존성에 대한 참조를 반환합니다.
-
-파라미터:
-
-- `module` - 주어진 모듈.
-- `dependency` - 참조할 의존성.
-
-### processDependenciesBlocksForChunkGroups
-
-`function (inputChunkGroups)`
-
-`Module` 그래프에서 `Chunk` 그래프를 생성합니다. 이 과정은 두 단계로 이루어집니다. 1단계: 모듈 그래프를 탐색하고 `chunkDependencies`에서 기본 청크 그래프를 빌드합니다. 2단계: 기본 청크 그래프를 통해 가능한 모든 방법을 탐색하고 사용 가능한 모듈을 추적합니다. 탐색하는 동안, `processDependenciesBlocksForChunkGroups`는 청크를 서로 연결하고 `Blocks`는 `Chunks`와 연결합니다. 청크에 대한 모든 모듈이 이미 사용 가능하고 불필요한 청크를 연결하지 않으면 탐색을 중지합니다.
+주어진 의존성이 참조하는 exports를 반환합니다.
 
 파라미터:
 
-- `inputChunkGroups` - 처리되는 청크 그룹.
+- `dependency` - 참조된 exports를 가져올 의존성.
+- `runtime` - exports를 가져올 런타임.
 
 ### removeReasonsOfDependencyBlock
 
-`function (module, block)`
+`(module: Module, block: DependenciesBlockLike) => void`
 
 모듈과 의존성 블록의 관계를 제거합니다.
 
@@ -206,7 +229,7 @@ Compilation 객체에는 사용 가능한 많은 메소드와 훅이 있습니�
 
 ### patchChunksAfterReasonRemoval
 
-`function (module, chunk)`
+`(module: Module, chunk: Chunk) => void`
 
 의존성 이유를 제거한 후 모듈 및 청크의 연결을 패치합니다. `removeReasonsOfDependencyBlock`에 의해 자동으로 호출됩니다.
 
@@ -217,7 +240,7 @@ Compilation 객체에는 사용 가능한 많은 메소드와 훅이 있습니�
 
 ### removeChunkFromDependencies
 
-`function (block, chunk)`
+`(block: DependenciesBlock, chunk: Chunk) => void`
 
 의존성 이유를 제거한 후 의존성 블록 모듈 및 청크에서 주어진 청크를 제거합니다. `removeReasonsOfDependencyBlock`에 의해 자동으로 호출됩니다.
 
@@ -228,27 +251,27 @@ Compilation 객체에는 사용 가능한 많은 메소드와 훅이 있습니�
 
 ### sortItemsWithChunkIds
 
-`function`
+`() => void`
 
 ### summarizeDependencies
 
-`function`
+`() => void`
 
 ### createHash
 
-`function`
+`() => CodeGenerationJob[]`
 
 ### createModuleAssets
 
-`function`
+`() => void`
 
 ### createChunkAssets
 
-`function`
+`(callback: ErrorCallback) => void`
 
 ### getPath
 
-`function (filename, data)`
+`(filename: string | TemplatePathFn, data?: PathData) => string`
 
 삽입된 경로를 반환합니다.
 
@@ -259,7 +282,7 @@ Compilation 객체에는 사용 가능한 많은 메소드와 훅이 있습니�
 
 ### getPathWithInfo
 
-`function (filename, data)`
+`(filename: string | TemplatePathFn, data?: PathData) => { path: string, info: AssetInfo }`
 
 삽입된 경로 및 애셋 정보를 반환합니다.
 
@@ -270,7 +293,7 @@ Compilation 객체에는 사용 가능한 많은 메소드와 훅이 있습니�
 
 ### createChildCompiler
 
-`function (name, outputOptions, plugins)`
+`(name: string, outputOptions?: Partial<OutputNormalized>, plugins?: (WebpackPluginInstance | ((this: Compiler, compiler: Compiler) => void) | Falsy)[]) => Compiler`
 
 webpack 내에서 webpack의 다른 인스턴스를 실행할 수 있습니다. 그러나, 다른 설정과 구성이 적용된 하위 컴파일러로서 상위(또는 최상위 컴파일러)에서 모든 훅과 플러그인을 복사하고 하위 `Compiler` 인스턴스를 만듭니다. 생성된 `Compiler`를 반환합니다.
 
@@ -282,21 +305,21 @@ webpack 내에서 webpack의 다른 인스턴스를 실행할 수 있습니다. 
 
 ### checkConstraints
 
-`function`
+`() => void`
 
 ### emitAsset
 
-`function (file, source, assetInfo = {})`
+`(file: string, source: Source, assetInfo?: AssetInfo) => void`
 
 파라미터:
 
 - `file` - 애셋의 파일 이름
 - `source` - 애셋의 소스
-- `assetInfo` - 추가 애셋 정보
+- `assetInfo` - 추가 애셋 정보, 생략 시 `{}`
 
 ### updateAsset
 
-`function (file, newSourceOrFunction, assetInfoUpdateOrFunction)`
+`(file: string, newSourceOrFunction: Source | ((source: Source) => Source), assetInfoUpdateOrFunction?: AssetInfo | ((assetInfo?: AssetInfo) => AssetInfo | undefined)) => void`
 
 파라미터:
 
@@ -306,7 +329,7 @@ webpack 내에서 webpack의 다른 인스턴스를 실행할 수 있습니다. 
 
 ### deleteAsset
 
-`function (file)`
+`(file: string) => void`
 
 파라미터:
 
@@ -314,14 +337,131 @@ webpack 내에서 webpack의 다른 인스턴스를 실행할 수 있습니다. 
 
 ### getAssets
 
-`function`
+`() => Readonly<Asset>[]`
 
 현재 컴파일에서 모든 애셋의 배열을 반환합니다.
 
 ### getAsset
 
-`function (name)`
+`(name: string) => Readonly<Asset> | undefined`
 
 파라미터:
 
 - `name` - 반환할 애셋의 이름
+
+### getCache
+
+`(name: string) => CacheFacade`
+
+주어진 이름으로 범위가 지정된 `CacheFacade`를 반환합니다. 플러그인이 빌드 간에 결과를 저장하고 [지속 캐시](/configuration/cache/)에서 재사용하는 API입니다. `compiler.getCache(name)`이나 더 이상 사용되지 않는 `compilation.cache` 대신 이것을 사용하여, 캐시된 항목이 빌드 중인 컴파일에 속하도록 하세요.
+
+파라미터:
+
+- `name` - 캐시를 식별하는 이름, 관례적으로 플러그인의 이름
+
+```js
+compiler.hooks.compilation.tap("MyPlugin", (compilation) => {
+  const cache = compilation.getCache("MyPlugin");
+
+  compilation.hooks.processAssets.tapPromise("MyPlugin", async (assets) => {
+    for (const [name, source] of Object.entries(assets)) {
+      // the etag decides when an entry is stale: pass something derived
+      // from the inputs, here the source itself
+      const etag = cache.getLazyHashedEtag(source);
+      const cached = await cache.getPromise(name, etag);
+      if (cached !== undefined) {
+        compilation.updateAsset(name, cached);
+        continue;
+      }
+      const result = transform(source);
+      await cache.storePromise(name, etag, result);
+      compilation.updateAsset(name, result);
+    }
+  });
+});
+```
+
+`CacheFacade`가 제공하는 메서드:
+
+| 메서드                                          | 설명                                                                                                                                       |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `get(identifier, etag, callback)`               | 항목을 읽습니다. 유효한 것이 저장되지 않은 경우 콜백은 `undefined`를 받습니다.                                                             |
+| `getPromise(identifier, etag)`                  | `get`의 프로미스 형태입니다.                                                                                                               |
+| `store(identifier, etag, data, callback)`       | 항목을 씁니다.                                                                                                                             |
+| `storePromise(identifier, etag, data)`          | `store`의 프로미스 형태입니다.                                                                                                             |
+| `provide(identifier, etag, computer, callback)` | 항목을 읽거나, `computer`로 계산하고 결과를 저장합니다.                                                                                    |
+| `getItemCache(identifier, etag)`                | 하나의 식별자와 etag에 바인딩된 `ItemCacheFacade`로, 식별자 없이 `get` / `getPromise` / `store` / `storePromise` / `provide`를 사용합니다. |
+| `getChildCache(name)`                           | `name` 아래에 항목이 네임스페이스된 중첩된 `CacheFacade`입니다.                                                                            |
+| `getLazyHashedEtag(obj)`                        | `Source`와 같은 해시 가능한 객체에 대한 etag로, 실제로 필요할 때만 계산됩니다.                                                             |
+| `mergeEtags(a, b)`                              | 항목이 둘 이상의 입력에 의존할 때, 두 etag를 나타내는 하나의 etag입니다.                                                                   |
+| `isEnabled()`                                   | 캐싱이 전혀 활성화되어 있는지 여부입니다.                                                                                                  |
+
+W> 항목은 `etag`가 일치할 때만 재사용되므로, etag는 저장된 값이 파생된 모든 것을 포함해야 합니다 — 소스, 플러그인의 옵션, 그리고 결과를 변경할 수 있는 다른 모든 것.
+
+## Module and chunk graphs
+
+<Badge text="5.0.0+" />
+
+webpack 5는 모듈과 청크 간의 관계를 `Module`과 `Chunk` 객체 자체에서 꺼내어 컴파일이 보유하는 두 그래프로 옮겼습니다:
+
+- `compilation.moduleGraph` — 모듈이 서로 관계 맺는 방식: 어떤 모듈이 어떤 모듈을 요청했는지, 의존성이 무엇을 참조하는지, 어떤 exports가 사용되는지.
+- `compilation.chunkGraph` — 모듈이 청크와 관계 맺는 방식: 어떤 청크가 모듈을 포함하는지, 모듈의 id와 해시, 어떤 모듈이 청크의 엔트리 모듈인지.
+
+그 이유는 하나의 모듈이 이제 여러 그래프에 참여할 수 있기 때문입니다 (한 번 빌드된 모듈이 둘 이상의 런타임에 나타날 수 있음), 따라서 "이 모듈의 id"와 같은 값은 그래프와 함께할 때만 의미가 있습니다.
+
+```js
+compilation.hooks.optimizeChunks.tap("MyPlugin", (chunks) => {
+  const { chunkGraph, moduleGraph } = compilation;
+
+  for (const chunk of chunks) {
+    for (const module of chunkGraph.getChunkModules(chunk)) {
+      const id = chunkGraph.getModuleId(module);
+      const issuer = moduleGraph.getIssuer(module);
+      // ...
+    }
+  }
+});
+```
+
+이전 멤버에 접근하는 것은 여전히 작동하지만, `DEP_WEBPACK_*` 코드를 명시하는 지원 중단 경고를 로그에 남깁니다. 다음은 대체 방법입니다:
+
+| 지원 중단                                 | 대체 방법                                                                         |
+| ----------------------------------------- | --------------------------------------------------------------------------------- |
+| `chunk.entryModule`                       | `chunkGraph.getChunkEntryModulesIterable(chunk)`                                  |
+| `chunk.hasEntryModule()`                  | `chunkGraph.getNumberOfEntryModules(chunk) > 0`                                   |
+| `chunk.getModules()`                      | `chunkGraph.getChunkModules(chunk)`                                               |
+| `chunk.modulesIterable`                   | `chunkGraph.getChunkModulesIterable(chunk)`                                       |
+| `chunk.getNumberOfModules()`              | `chunkGraph.getNumberOfChunkModules(chunk)`                                       |
+| `chunk.containsModule(module)`            | `chunkGraph.isModuleInChunk(module, chunk)`                                       |
+| `chunk.addModule(module)`                 | `chunkGraph.connectChunkAndModule(chunk, module)`                                 |
+| `chunk.removeModule(module)`              | `chunkGraph.disconnectChunkAndModule(chunk, module)`                              |
+| `chunk.moveModule(module, other)`         | `chunkGraph.disconnectChunkAndModule(chunk, module)` then `connectChunkAndModule` |
+| `chunk.remove()`                          | `chunkGraph.disconnectChunk(chunk)` and `chunk.disconnectFromGroups()`            |
+| `chunk.isEmpty()`                         | `chunkGraph.getNumberOfChunkModules(chunk) === 0`                                 |
+| `chunk.integrate(other)`                  | `chunkGraph.integrateChunks(chunk, other)`                                        |
+| `chunk.canBeIntegrated(other)`            | `chunkGraph.canChunksBeIntegrated(chunk, other)`                                  |
+| `chunk.integratedSize(other, options)`    | `chunkGraph.getIntegratedChunksSize(chunk, other, options)`                       |
+| `chunk.modulesSize()`                     | `chunkGraph.getChunkModulesSize(chunk)`                                           |
+| `chunk.size(options)`                     | `chunkGraph.getChunkSize(chunk, options)`                                         |
+| `chunk.compareTo(other)`                  | `chunkGraph.compareChunks(chunk, other)`                                          |
+| `chunk.hasModuleInGraph(filter, filter2)` | `chunkGraph.hasModuleInGraph(chunk, filter, filter2)`                             |
+| `module.id`                               | `chunkGraph.getModuleId(module)`                                                  |
+| `module.hash`                             | `chunkGraph.getModuleHash(module, runtime)`                                       |
+| `module.renderedHash`                     | `chunkGraph.getRenderedModuleHash(module, runtime)`                               |
+| `module.getChunks()`                      | `chunkGraph.getModuleChunks(module)`                                              |
+| `module.getNumberOfChunks()`              | `chunkGraph.getNumberOfModuleChunks(module)`                                      |
+| `module.isInChunk(chunk)`                 | `chunkGraph.isModuleInChunk(module, chunk)`                                       |
+| `module.addChunk(chunk)`                  | `chunkGraph.connectChunkAndModule(chunk, module)`                                 |
+| `module.removeChunk(chunk)`               | `chunkGraph.disconnectChunkAndModule(chunk, module)`                              |
+| `module.isEntryModule()`                  | `chunkGraph.isEntryModule(module)`                                                |
+| `module.index`                            | `moduleGraph.getPreOrderIndex(module)`                                            |
+| `module.index2`                           | `moduleGraph.getPostOrderIndex(module)`                                           |
+| `module.depth`                            | `moduleGraph.getDepth(module)`                                                    |
+| `module.issuer`                           | `moduleGraph.getIssuer(module)`                                                   |
+| `module.usedExports`                      | `moduleGraph.getUsedExports(module, runtime)`                                     |
+| `module.optimizationBailout`              | `moduleGraph.getOptimizationBailout(module)`                                      |
+| `module.profile`                          | `moduleGraph.getProfile(module)`                                                  |
+| `module.optional`                         | `module.isOptional(moduleGraph)`                                                  |
+| `dependency.originModule`                 | `moduleGraph.getParentModule(dependency)`                                         |
+
+T> 컴파일을 전달하는 훅 밖에서도 `ChunkGraph.getChunkGraphForChunk(chunk, ...)` / `ModuleGraph.getModuleGraphForModule(module, ...)`를 통해 그래프에 접근할 수 있지만, 컴파일에서 가져오는 것이 권장됩니다.

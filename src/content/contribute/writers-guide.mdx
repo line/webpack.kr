@@ -1,5 +1,6 @@
 ---
 title: Writer's Guide
+description: webpack에 기여할 때 필요한 My Article 내용을 설명합니다.
 sort: 1
 contributors:
   - pranshuchittora
@@ -53,11 +54,11 @@ related:
 
 ## Typesetting
 
-- Webpack은 문장의 시작 부분에 대문자 W로 작성할 수 있습니다. ([출처](https://github.com/webpack/media#name))
-- 로더는 역 따옴표로 묶여 있으며 [kebab-cased](https://en.wikipedia.org/w/index.php?title=Kebab_case)입니다. 다음은 예시 입니다. `css-loader`, `ts-loader`, …
-- 플러그인은 백틱 및 [camel-cased](https://en.wikipedia.org/wiki/Camel_case)로 묶입니다. 다음은 예시 입니다. `BannerPlugin`, `NpmInstallWebpackPlugin`, …
-- "webpack 2"를 사용하여 특정 Webpack 버전을 나타냅니다(~~"webpack v2"~~).
-- ES5 사용; ES2015, ES2016, ... ECMAScript 표준 참조(~~ES6~~, ~~ES7~~)
+- 문장 시작에서는 Webpack을 대문자 W로 작성할 수 있습니다. ([출처](https://github.com/webpack/media#name))
+- loader는 backtick으로 감싸고 [kebab-case](https://en.wikipedia.org/w/index.php?title=Kebab_case)로 작성합니다: `sass-loader`, `ts-loader` 등
+- plugin은 backtick으로 감싸고 [camel-case](https://en.wikipedia.org/wiki/Camel_case)로 작성합니다: `BannerPlugin`, `NpmInstallWebpackPlugin` 등
+- 특정 webpack 버전은 "webpack 2"로 표기합니다(~~"webpack v2"~~).
+- ECMAScript 표준은 ES5, ES2015, ES2016 등으로 표기합니다(~~ES6~~, ~~ES7~~).
 
 ## Formatting
 
@@ -158,63 +159,43 @@ W> 이것은 Warning입니다.
 
 ### Configuration defaults and types
 
-문서를 쉽게 이해할 수 있고 잘 작성할 수 있도록 항상 모든 문서 옵션에 유형과 기본값을 제공하세요. 저희는 문서화된 옵션은 제목으로 작성한 후 유형과 기본값을 추가합니다.
+문서를 쉽게 이해할 수 있고 잘 작성할 수 있도록, 항상 모든 문서 옵션에 유형과 기본값을 제공하세요. 유형은 **TypeScript 표기법**으로 작성하며, 문서화된 옵션 제목 바로 아래에 배치합니다:
 
 **configuration.example.option**
 
-`string = 'none'`
+`'none' | 'development' | 'production' = 'none'`
 
-여기서 `= 'none'`은 주어진 옵션에 대한 기본값이 `'none'`임을 의미합니다.
+유형이 먼저 오고, 기본값이 있는 경우 `=` 뒤에 따라옵니다. TypeScript에는 기본값 문법이 없으므로, `= value` 형식은 이 사이트가 추가한 유일한 확장입니다. 그 왼쪽의 모든 내용은 편집기에 붙여넣을 수 있는 표준 TypeScript입니다.
 
-`string = 'none': 'none' | 'development' | 'production'`
+단일 유니온보다 구분하기 쉬운 여러 항목을 나열할 때는 어노테이션 사이에 공백을 사용하세요:
 
-여기서 `: 'none' | 'development' | 'production'`에는 가능한 유형 값을 열거합니다. 이 경우에는 `'none'`, `'development'` 및 `'production'`의 세 가지 문자열을 사용할 수 있습니다.
+`'none' | 'development' | 'production' = 'none'` `boolean`
 
-주어진 옵션에 대해 사용 가능한 모든 유형을 나열하려면 유형 사이에 공백을 사용하세요.
+배열, 함수, 객체, 레코드는 TypeScript 문법 그대로 작성합니다:
 
-`string = 'none': 'none' | 'development' | 'production'` `boolean`
+| 의미                             | 표기법                                                  |                    |                               |
+| -------------------------------- | ------------------------------------------------------- | ------------------ | ----------------------------- |
+| 문자열 배열                      | `string[]`                                              |                    |                               |
+| 여러 유형이 혼합된 배열          | `(string \| RegExp \| ((arg: string) => string))[]` |
+| 인수가 알려진 함수               | `(compilation: Compilation, module: Module) => boolean` |                    |                               |
+| 알려진 속성을 가진 객체          | `{ prop1: string, prop2?: boolean }`                    |                    |                               |
+| 사용자 정의 키를 가진 객체       | `Record<string, string>`                                |                    |                               |
+| 하나 또는 여러 플러그인 인스턴스 | `MinimizerPlugin \| MinimizerPlugin[]` |                               |
+| 고정된 숫자 집합                 | `5 \| 15 \| 30 = 15`                      |
 
-배열을 표시하려면 대괄호를 사용하세요.
+선택적 속성은 TypeScript에서 그러하듯이 `?`로 표시하고, 설명 텍스트로 기술하지 마세요.
 
-`string` `[string]`
+W> 배열을 `[string]`으로 작성하지 마세요. TypeScript에서 이것은 **정확히 하나의 문자열로 이루어진 튜플**이므로, 언어를 아는 독자는 해당 옵션이 받아들이지 않는 타입으로 읽을 것입니다. `string[]`을 사용하세요.
 
-`array`에 여러 유형이 허용되는 경우 쉼표를 사용합니다.
-
-`string` `[string, RegExp, function(arg) => string]`
-
-함수를 표시하려면 사용 가능한 인수도 나열하세요.
-
-`function (compilation, module, path) => boolean`
-
-여기서 `(compilation, module, path)`에는 제공된 함수가 수신할 인수를 나열하고 `=> boolean`은 함수의 반환 값이 `boolean`이어야 함을 의미합니다.
-
-플러그인을 사용 가능한 옵션 값 유형으로 표시하려면 `Plugin`의 camel-cased 형식의 제목을 사용하세요.
-
-`MinimizerPlugin` `[MinimizerPlugin]`
-
-이는 해당 옵션이 하나 또는 소수의 `MinimizerPlugin` 인스턴스를 기대한다는 의미입니다.
-
-숫자를 표시하려면 `number`를 사용하세요.
-
-`number = 15: 5, 15, 30`
-
-객체를 표시하려면 `object`를 사용하세요.
-
-`object = { prop1 string = 'none': 'none' | 'development' | 'production', prop2 boolean = false, prop3 function (module) => string }`
-
-객체의 키가 여러 유형을 가질 수 있는 경우 `|`를 사용하여 나열하세요. 다음은 `prop1`이 문자열과 문자열 배열 모두일 수 있는 예입니다.
-
-`object = { prop1 string = 'none': 'none' | 'development' | 'production' | [string]}`
-
-이를 통해 기본값, 열거 및 기타 정보를 표시할 수 있습니다.
+T> 유형을 직접 만들기보다 실제 유형을 복사하는 것이 좋습니다. webpack은 `lib/`의 JSDoc에서 생성된 자체 타입을 `types.d.ts`로 제공하므로, 옵션의 공식적인 형태는 이미 정의되어 있습니다. `webpack.Configuration`과 그 하위 옵션 인터페이스가 사용자의 편집기에 표시되는 내용입니다. 실제 타입이 너무 복잡한 경우 가독성을 위해 단순화하되, 유효한 TypeScript를 유지하세요.
 
 옵션의 기본값이 [`모드`](/configuration/mode/)에 따라 다를 경우, inline `= 값` 구문 대신 기본값 테이블을 사용하십시오.
 
 **configuration.example.option**
 
-`string: 'natural' | 'named' | 'deterministic'`
+`'natural' | 'named' | 'deterministic'`
 
-The default value of `configuration.example.option` depends on the [`mode`](/configuration/mode/):
+`configuration.example.option`의 기본값은 [`mode`](/configuration/mode/)에 따라 달라집니다.
 
 | 모드            | 기본값            |
 | --------------- | ----------------- |
@@ -222,13 +203,13 @@ The default value of `configuration.example.option` depends on the [`mode`](/con
 | `"development"` | `'named'`         |
 | `"none"`        | `'natural'`       |
 
-If an option has a boolean default that varies by mode:
+옵션의 boolean 기본값이 mode에 따라 달라지는 경우:
 
 **configuration.example.flag**
 
 `boolean`
 
-The default value of `configuration.example.flag` depends on the [`mode`](/configuration/mode/):
+`configuration.example.flag`의 기본값은 [`mode`](/configuration/mode/)에 따라 달라집니다.
 
 | 모드            | 기본값  |
 | --------------- | ------- |
@@ -236,16 +217,13 @@ The default value of `configuration.example.flag` depends on the [`mode`](/confi
 | `"development"` | `false` |
 | `"none"`        | `false` |
 
-If the object's key is dynamic, user-defined, use `<key>` to describe it:
-
-`object = { <key> string }`
-
 ### Options shortlists and their typing
 
-때때로 목록에 있는 객체와 함수의 특정 속성을 설명하고 싶을 때가 있습니다. 해당하는 경우 속성이 등록된 목록에 직접 입력을 추가합니다.
+때때로 목록에 있는 객체와 함수의 특정 속성을 설명하고 싶을 때가 있습니다. 해당하는 경우, 동일한 TypeScript 표기법으로 속성이 나열된 목록에 직접 유형을 추가합니다:
 
 - `madeUp` (`boolean = true`): short description
 - `shortText` (`string = 'i am text'`): another short description
+- `pattern` (`RegExp | string`): a property with no default
 
 W> `:`는 여기에서 필수가 아닙니다. 속성, 유형 및 기본값에 유의하세요.
 

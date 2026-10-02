@@ -1,5 +1,6 @@
 ---
 title: DevServer
+description: webpack의 DevServer 설정과 사용 방법을 설명합니다.
 sort: 11
 contributors:
   - sokra
@@ -76,7 +77,7 @@ Node.js API를 통해 dev-server를 사용하는 경우 `devServer`의 옵션은
 
 W> `WebpackDevServer`를 사용할 때 두 번째 `compiler` 인수(콜백)를 사용할 수 없습니다.
 
-W> [여러 설정을 내보낼 때](/configuration/configuration-types/#exporting-multiple-configurations) 첫 번째 설정에 대한 `devServer` 옵션만 고려되며 배열의 모든 설정에 사용됩니다.
+W> [여러 설정을 내보낼 때](/configuration/configuration-types/#exporting-multiple-configurations) `devServer` 옵션은 `devServer`를 정의한 첫 번째 설정에서 가져옵니다. 없는 경우 웹 유사 타겟(`web` 또는 `universal` 플랫폼, `web`, `webworker`, `electron-preload`, `electron-renderer`, `node-webkit` 및 설정되지 않은 `target` 포함)을 가진 첫 번째 설정에서, 그렇지 않으면 첫 번째 설정에서 가져옵니다. 이 옵션은 배열의 모든 설정에 사용됩니다.
 
 T> 문제가 있는 경우, `/webpack-dev-server` 경로로 이동하면 파일이 제공되는 위치가 표시됩니다. 예를 들면, `http://localhost:9000/webpack-dev-server` 처럼 표시됩니다.
 
@@ -121,7 +122,7 @@ export default {
 
 ## devServer.allowedHosts
 
-`'auto' | 'all'` `[string]`
+`'auto' | 'all'` `string` `string[]`
 
 개발 서버에 접근할 수 있는 서비스를 허용목록에 추가할 수 있습니다.
 
@@ -367,9 +368,9 @@ W> 이 함수는 설정 파일 내의 외부 범위에서 선언된 변수에 �
 
 ### progress
 
-`boolean`
+`boolean` `'linear' | 'circular'`
 
-브라우저에서 컴파일 진행률을 백분율로 출력합니다.
+브라우저에서 컴파일 진행률을 백분율로 출력합니다. `'linear'`과 `'circular'`는 추가로 시각적 표시기를 표시합니다.
 
 **webpack.config.js**
 
@@ -398,11 +399,11 @@ npx webpack serve --no-client-progress
 
 ### reconnect
 
-`boolean = true` `number`
+`boolean` `number = 10`
 
 <Badge text="v4.4.0+" />
 
-클라이언트 재연결을 시도해야 하는 횟수를 dev-server에 알려줍니다. `true`라면 무제한 재연결을 시도합니다.
+클라이언트 재연결을 시도해야 하는 횟수를 dev-server에 알려줍니다. 기본값은 10입니다. `true`라면 무제한 재연결을 시도하고, `false`는 재연결을 비활성화합니다.
 
 **webpack.config.js**
 
@@ -634,7 +635,7 @@ export default {
 
 ## devServer.headers
 
-`array` `function` `object`
+`object` `{ key: string, value: string }[]` `(req: Request, res: Response, context?: Context) => object | { key: string, value: string }[]`
 
 모든 응답에 헤더를 추가합니다.
 
@@ -929,7 +930,7 @@ W> 라이브 리로딩은 `web`, `webworker`, `electron-renderer` 및 `node-webk
 
 ## devserver.onListening
 
-`function (devServer)`
+`(devServer: WebpackDevServer) => void`
 
 Webpack-dev-server가 포트에서 연결 수신을 시작할 때 커스텀 함수를 실행하는 기능을 제공합니다.
 
@@ -953,7 +954,7 @@ export default {
 
 ## devServer.open
 
-`boolean` `string` `object` `[string, object]`
+`boolean` `string` `object` `(string | object)[]`
 
 서버가 시작된 후 브라우저를 열도록 dev-server에 지시합니다. 기본 브라우저를 열려면 `true`로 설정하세요.
 
@@ -1106,7 +1107,7 @@ npx webpack serve --port auto
 
 ## devServer.proxy
 
-`[object, function]`
+`(object | Function)[]`
 
 별도의 백엔드 API 개발 서버가 있고 동일한 도메인에서 API 요청을 보내려는 경우 일부 URL을 프록시하는 것이 유용할 수 있습니다.
 
@@ -1264,7 +1265,7 @@ export default {
 
 ## devServer.server
 
-`'http' | 'https' | 'spdy'` `string` `object`
+`'http' | 'https' | 'http2'` `string` `object` `function`
 
 <Badge text="v4.4.0+" />
 
@@ -1325,7 +1326,7 @@ CLI를 통한 사용법.
 npx webpack serve --server-type spdy
 ```
 
-W> Node 15.0.0 이상에서는 [spdy에서 문제가 발생하기 때문에 이 옵션은 무시됩니다](https://github.com/spdy-http2/node-spdy/issues/380). 개발 서버는 [Express](https://expressjs.com/)가 지원하면 Node의 내장 HTTP/2로 마이그레이션 됩니다.
+W> webpack-dev-server v6부터 `'spdy'`는 더 이상 내장 서버 타입이 아닙니다. `spdy` 패키지가 설치된 경우에만 커스텀 서버 문자열로 작동하며, CLI는 이를 허용하지 않고 [Node 15.0.0 이상에서 spdy에 문제가 발생합니다](https://github.com/spdy-http2/node-spdy/issues/380). Node의 내장 `http2` 모듈(HTTP/1 폴백 포함)을 사용하는 `'http2'`를 사용하세요.
 
 객체 구문을 사용한 고유한 인증서 제공법.
 
@@ -1406,7 +1407,7 @@ export default {
 
 ## devServer.setupMiddlewares
 
-`function (middlewares, devServer)`
+`(middlewares: Middleware[], devServer: WebpackDevServer) => Middleware[]`
 
 <Badge text="v4.7.0+" />
 
@@ -1461,7 +1462,7 @@ export default {
 
 ## devServer.static
 
-`boolean` `string` `object` `[string, object]`
+`boolean` `string` `object` `(string | object)[]`
 
 디렉터리(기본적으로 'public' 디렉터리)에서 정적 파일을 제공하기 위한 옵션을 구성할 수 있습니다. 비활성화하려면 `false`로 설정하세요:
 
@@ -1602,7 +1603,7 @@ export default {
 
 ### publicPath
 
-`string = '/'` `[string]`
+`string = '/'` `string[]`
 
 [`static.directory`](#directory) 콘텐츠를 제공할 URL을 서버에 알려주세요. 예를 들면 `/serve-public-path-url/manifest.json`에서 `assets/manifest.json` 파일을 제공하려면, 설정은 다음과 같아야 합니다.
 
@@ -1759,7 +1760,7 @@ export default {
 
 ## devServer.watchFiles
 
-`string` `object` `[string, object]`
+`string` `object` `(string | object)[]`
 
 파일 변경 사항을 감시할 globs/directories/files 목록을 구성할 수 있습니다. 예를 들면 다음과 같습니다.
 

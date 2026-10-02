@@ -1,5 +1,6 @@
 ---
 title: Concepts
+description: webpack의 Concepts 개념과 동작 방식을 설명합니다.
 sort: -1
 contributors:
   - TheLarkInn
@@ -62,7 +63,7 @@ export default {
 };
 ```
 
-T> 설정 파일 없이 webpack을 실행하면 기본 엔트리 포인트는`./src/index.js`로 설정됩니다. `src/` 디렉터리가 존재하더라도 해당 파일이 없으면 webpack은 다음과 같은 오류를 발생시킵니다. <br /> **`ERROR in Entry module not found: Error: Can't resolve './src'`** <br /><br /> 오류 메시지에 `./src/index.js`가 아닌 `./src`가 표시되는 이유는 webpack이 먼저 디렉터리를 확인한 후 그 안에 있는 기본 `index.js` 파일을 찾지 못했기 때문입니다. 다른 엔트리 포인트 파일 이름을 사용하려면 위 예시와 같이 `webpack.config.js` 파일을 추가하세요.
+T> 설정 파일 없이 webpack을 실행하면 entry의 기본값은 `'./src'`이며, webpack은 `resolve.mainFiles`와 `resolve.extensions`를 통해 이를 `./src/index.js`로 해석합니다. `src/` 디렉터리가 존재하더라도 해당 파일이 없으면 webpack은 다음 오류를 발생시킵니다. <br /> **`Module not found: Error: Can't resolve './src' in '/path/to/project'`** <br /><br /> 오류에 `'./src'`가 표시되는 이유는 그것이 실제 엔트리 요청이기 때문입니다. `index.js`는 그 안에서 검색되는 기본 파일일 뿐입니다. 다른 엔트리 파일 이름을 사용하려면 위 예시와 같이 `webpack.config.js`를 추가하세요.
 
 T> [엔트리 포인트](/concepts/entry-points) 섹션에서 자세히 알아보세요.
 
@@ -76,6 +77,7 @@ T> [엔트리 포인트](/concepts/entry-points) 섹션에서 자세히 알아�
 
 ```js
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 // For compatibility with older Node.js versions
 const __filename = fileURLToPath(import.meta.url);
@@ -96,7 +98,7 @@ T> `output` 속성에는 [설정 가능한 더 많은 기능](/configuration/out
 
 ## Loaders
 
-webpack은 기본적으로 JavaScript와 JSON 파일만 이해합니다. **로더를** 사용하면 webpack이 다른 유형의 파일을 처리하거나, 그들을 유효한 [모듈](/concepts/modules)로 변환 하여 애플리케이션에서 사용하거나 디펜던시 그래프에 추가합니다.
+webpack은 기본적으로 JavaScript, JSON, WebAssembly 파일을 이해하며, 기본적으로 활성화된 내장 지원([Native CSS](/guides/native-css/), [Native HTML](/guides/native-html/))을 통해 CSS와 HTML도 처리합니다. **로더를** 사용하면 webpack이 다른 유형의 파일을 처리하거나, 그들을 유효한 [모듈](/concepts/modules)로 변환하여 애플리케이션에서 사용하거나 디펜던시 그래프에 추가할 수 있습니다.
 
 W> webpack의 특정 기능 중 하나인 모든 유형의 모듈(예: `.css`)을 `import` 하는 기능은 다른 번들러나 태스크 러너에서 지원하지 않을 수 있습니다. 개발자들에게 더욱 정확한 디펜던시 그래프를 생성하는 데 도움을 주기 때문에 이러한 언어의 확장이 필요하다고 생각합니다.
 
@@ -141,18 +143,21 @@ T> [플러그인 인터페이스](/api/plugins)를 사용하여 webpack의 기�
 **webpack.config.js**
 
 ```js
-import HtmlWebpackPlugin from "html-webpack-plugin";
-import webpack from "webpack"; // 내장 plugin에 접근하는 데 사용
+import webpack from "webpack"; // 내장 plugin에 접근
 
 export default {
+  entry: "./src/index.html",
+  experiments: {
+    html: true,
+  },
   module: {
     rules: [{ test: /\.js$/, use: "babel-loader" }],
   },
-  plugins: [new HtmlWebpackPlugin({ template: "./src/index.html" })],
+  plugins: [new webpack.ProgressPlugin()],
 };
 ```
 
-위의 예제에서 `html-webpack-plugin`은 생성된 모든 번들을 자동으로 삽입하여 애플리케이션용 HTML 파일을 생성합니다.
+위 예제에서 `ProgressPlugin`은 빌드 진행 상황의 보고 방식을 설정합니다. `src/index.html`이 엔트리이므로 webpack은 해당 파일이 참조하는 script와 style을 번들링하고 URL을 빌드된 파일 이름으로 재작성합니다. 페이지 생성에는 plugin이 필요하지 않습니다. [Native HTML](/guides/native-html/)을 참고하세요.
 
 T> webpack은 설치 없이 사용할 수 있는 많은 플러그인을 제공합니다! [plugin 목록](/plugins)을 확인해보세요.
 

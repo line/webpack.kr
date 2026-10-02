@@ -3,7 +3,6 @@ import fs from "node:fs";
 import path from "node:path";
 import { TransformStream } from "node:stream/web";
 import CopyWebpackPlugin from "copy-webpack-plugin";
-import CssMinimizerPlugin from "css-minimizer-webpack-plugin";
 import RedirectWebpackPlugin from "redirect-webpack-plugin";
 import SSGPlugin from "static-site-generator-webpack-plugin";
 
@@ -38,12 +37,10 @@ export default (env) =>
       filename: ".server/[name].[contenthash].js",
       libraryTarget: "umd",
     },
+    // 서버 번들은 페이지만 렌더링하며, 여기서 내보내는 스타일시트는 참조되지
+    // 않으므로 이곳에서 최소화할 대상이 없습니다.
     optimization: {
-      minimizer: [
-        new CssMinimizerPlugin({
-          minify: CssMinimizerPlugin.lightningCssMinify,
-        }),
-      ],
+      minimize: false,
     },
     plugins: [
       new SSGPlugin({
@@ -94,6 +91,32 @@ export default (env) =>
           migrating: "/migrate/3/",
           "plugins/no-emit-on-errors-plugin":
             "/configuration/optimization/#optimizationemitonerrors",
+          "plugins/html-webpack-plugin": "/guides/native-html/",
+          "plugins/mini-css-extract-plugin": "/guides/native-css/",
+          "loaders/css-loader": "/guides/native-css/",
+          "loaders/style-loader": "/guides/native-css/",
+          "loaders/html-loader": "/guides/native-html/",
+          "loaders/expose-loader": "/guides/shimming/",
+          "loaders/imports-loader": "/guides/shimming/#granular-shimming",
+          "loaders/exports-loader": "/guides/shimming/#global-exports",
+          "loaders/remark-loader":
+            "https://github.com/webpack/webpack/tree/main/examples/markdown",
+          "plugins/copy-webpack-plugin": "/configuration/output/#outputcopy",
+          "plugins/terser-webpack-plugin": "/plugins/minimizer-webpack-plugin/",
+          "plugins/css-minimizer-webpack-plugin":
+            "/plugins/minimizer-webpack-plugin/",
+          "plugins/html-minimizer-webpack-plugin":
+            "/plugins/minimizer-webpack-plugin/",
+          "plugins/json-minimizer-webpack-plugin":
+            "/plugins/minimizer-webpack-plugin/",
+          "plugins/image-minimizer-webpack-plugin":
+            "/plugins/minimizer-webpack-plugin/",
+          "plugins/compression-webpack-plugin":
+            "/plugins/minimizer-webpack-plugin/#compressing-with-minifying-and-without",
+          "plugins/eslint-webpack-plugin":
+            "/plugins/diagnostics-webpack-plugin/",
+          "plugins/stylelint-webpack-plugin":
+            "/plugins/diagnostics-webpack-plugin/",
           "concepts/mode": "/configuration/mode",
           "contribute/writing-a-scaffold": "/api/cli/#init",
           "loaders/raw-loader": "https://v4.webpack.js.org/loaders/raw-loader",
@@ -132,11 +155,11 @@ export default (env) =>
             from: "./googlef7893965f8fb4e95.html",
             to: "./",
           },
-          "CNAME",
-          {
-            from: ".well-known/atproto-did",
-            to: ".well-known/",
-          },
+          // "CNAME",
+          // {
+          //   from: ".well-known/atproto-did",
+          //   to: ".well-known/",
+          // },
         ],
       }),
       new WebpackPwaManifest({

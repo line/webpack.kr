@@ -1,5 +1,6 @@
 ---
 title: Command Line Interface
+description: Command Line Interface API의 기능과 사용 방법을 설명합니다.
 sort: 1
 contributors:
   - anshumanv
@@ -52,7 +53,7 @@ webpack-cli는 webpack을 더 쉽게 사용할 수 있도록 다양한 명령을
 | [`help`](#help)             | `help\|h [command] [option]`              | 명령어 및 옵션에 대한 도움말을 표시합니다.                                              |
 | [`info`](#info)             | `info\|i [options]`                       | 시스템 정보를 출력합니다.                                                               |
 | [`serve`](#serve)           | `serve\|server\|s [options]`              | `webpack-dev-server`를 실행합니다.                                                      |
-| [`version`](#version)       | `version\|v [commands...]`                | 'webpack', 'webpack-cli', 'webpack-dev-server' 및 기타 패키지의 버전 번호를 출력합니다. |
+| [`version`](#version)       | `version\|v [options]`                    | 'webpack', 'webpack-cli', 'webpack-dev-server' 및 기타 패키지의 버전 번호를 출력합니다. |
 | [`watch`](#watch)           | `watch\|w [entries...] [options]`         | webpack을 실행하고 파일 변경을 감지합니다.                                              |
 
 ### Build
@@ -179,7 +180,7 @@ npx webpack info [options]
 **예시**
 
 ```bash
-npx webpack info --output json --addition-package postcss
+npx webpack info --output json --additional-package postcss
 ```
 
 #### Options for info
@@ -198,7 +199,7 @@ npx webpack info --additional-package postcss
 
 **`-o`, `--output`**
 
-`string : 'json' | 'markdown'`
+`'json' | 'markdown'`
 
 지정된 형식으로 출력을 가져옵니다.
 
@@ -624,11 +625,11 @@ npx webpack --config-node-env production   # process.env.NODE_ENV = 'production'
 
 설정에서 `mode` 옵션이 지정되지 않은 경우 `--config-node-env` 옵션을 사용하여 `mode`를 설정할 수 있습니다. 예를 들어, `--config-node-env production`을 사용하면 `process.env.NODE_ENV`와 `mode`가 모두 `'production'`으로 설정됩니다.
 
-설정이 함수를 내보내는 경우, 함수가 반환된 후 `--config-node-env` 값이 mode에 할당됩니다. 즉, `mode`는 함수 인수(`env` 및 `argv`)에서 사용할 수 없습니다. 그러나 `--config-node-env`의 값은 함수 내에서 `argv.nodeEnv`로 접근 가능하며 그에 따라 사용할 수 있습니다.
+설정이 함수를 내보내는 경우, 함수가 반환된 후 `--config-node-env` 값이 `mode`에 할당됩니다. 즉, `mode`는 함수 인수(`env` 및 `argv`)에서 사용할 수 없습니다. 그러나 `--config-node-env`의 값은 함수 내에서 `argv.configNodeEnv`로 접근 가능하며 그에 따라 사용할 수 있습니다.
 
 ```js
 export default (env, argv) => {
-  console.log(argv.defineProcessEnvNodeEnv); // 'production' --config-node-env production이 사용되는 경우
+  console.log(argv.configNodeEnv); // --config-node-env production이 사용되는 경우 'production'
   return {
     // 당신의 설정
   };

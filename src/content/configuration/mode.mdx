@@ -1,5 +1,6 @@
 ---
 title: Mode
+description: webpack의 Mode 설정과 사용 방법을 설명합니다.
 sort: 5
 contributors:
   - EugeneHlushko
@@ -17,7 +18,7 @@ related:
 
 `mode` 옵션을 사용하면 webpack에 내장된 최적화 기능을 사용할 수 있습니다.
 
-`string = 'production': 'none' | 'development' | 'production'`
+`'none' | 'development' | 'production' = 'production'`
 
 ## Usage
 
@@ -46,6 +47,36 @@ webpack --mode=development
 설정되지 않은 경우, webpack은 `production`을 `mode`의 기본값으로 설정합니다.
 
 T> 설정이나 CLI를 통해 `mode`가 제공되지 않으면 CLI는 `mode`에 유효한 `NODE_ENV` 값을 사용합니다.
+
+### Defaults per mode
+
+`mode` 자체가 어떤 작업을 수행하는 것은 아닙니다. 대신 다른 옵션의 기본값을 선택하며, 각 옵션은 명시적으로 설정할 수 있습니다. 다음은 기본값이 `mode`에 따라 달라지는 옵션입니다.
+
+| 옵션                                                                                             | `development`        | `production`      | `none`      |
+| ------------------------------------------------------------------------------------------------ | -------------------- | ----------------- | ----------- |
+| [`cache`](/configuration/cache/)                                                                 | `{ type: 'memory' }` | `false`           | `false`     |
+| [`devtool`](/configuration/devtool/)                                                             | `'eval'`             | `false`           | `false`     |
+| [`output.pathinfo`](/configuration/output/#outputpathinfo)                                       | `true`               | `false`           | `false`     |
+| [`performance.hints`](/configuration/performance/#performancehints)                              | `false`              | `'warning'`       | `false`     |
+| [`optimization.chunkIds`](/configuration/optimization/#optimizationchunkids)                     | `'named'`            | `'deterministic'` | `'natural'` |
+| [`optimization.moduleIds`](/configuration/optimization/#optimizationmoduleids)                   | `'named'`            | `'deterministic'` | `'natural'` |
+| [`optimization.nodeEnv`](/configuration/optimization/#optimizationnodeenv)                       | `'development'`      | `'production'`    | `false`     |
+| [`optimization.emitOnErrors`](/configuration/optimization/#optimizationemitonerrors)             | `true`               | `false`           | `true`      |
+| [`optimization.sideEffects`](/configuration/optimization/#optimizationsideeffects)               | `'flag'`             | `true`            | `'flag'`    |
+| [`optimization.usedExports`](/configuration/optimization/#optimizationusedexports)               | `false`              | `true`            | `false`     |
+| [`optimization.innerGraph`](/configuration/optimization/#optimizationinnergraph)                 | `false`              | `true`            | `false`     |
+| [`optimization.mangleExports`](/configuration/optimization/#optimizationmangleexports)           | `false`              | `true`            | `false`     |
+| [`optimization.concatenateModules`](/configuration/optimization/#optimizationconcatenatemodules) | `false`              | `true`            | `false`     |
+| [`optimization.flagIncludedChunks`](/configuration/optimization/#optimizationflagincludedchunks) | `false`              | `true`            | `false`     |
+| [`optimization.realContentHash`](/configuration/optimization/#optimizationrealcontenthash)       | `false`              | `true`            | `false`     |
+| [`optimization.checkWasmTypes`](/configuration/optimization/#optimizationcheckwasmtypes)         | `false`              | `true`            | `false`     |
+| [`optimization.minimize`](/configuration/optimization/#optimizationminimize)                     | `false`              | `true`            | `false`     |
+
+[`optimization.splitChunks`](/configuration/optimization/#optimizationsplitchunks) 역시 `mode`에 따라 조정됩니다. `minSize`, `enforceSizeThreshold`, `maxAsyncRequests`, `maxInitialRequests`는 `production`에서 더 엄격하게 설정됩니다. 각 값은 [`SplitChunksPlugin`](/plugins/split-chunks-plugin/)을 참고하세요.
+
+두 항목에는 조건이 있습니다. `performance.hints`는 브라우저 [target](/configuration/target/)에만 적용되며, 빌드가 [ES 모듈 라이브러리를 출력](/configuration/output/#outputlibrarytype)하는 경우에는 `development`에서도 `devtool`이 `false`로 유지됩니다. [`experiments.css`](/configuration/experiments/#experimentscss)를 활성화하면 `development`에서 CSS 애셋의 기본값이 추가로 `source-map`으로 설정됩니다.
+
+T> `mode: 'none'`은 여기에 나열된 기본값만 사용하지 않습니다. [`optimization.providedExports`](/configuration/optimization/#optimizationprovidedexports)나 [`optimization.removeEmptyChunks`](/configuration/optimization/#optimizationremoveemptychunks)처럼 `mode`에 의존하지 않는 옵션은 원래 기본값을 유지합니다. 따라서 `mode: 'none'`은 모든 최적화를 비활성화하는 것과 같지 않습니다.
 
 ### Mode: development
 

@@ -18,31 +18,67 @@ translators:
 
 Webpack에는 많은 플러그인 인터페이스가 있습니다. Webpack 자체에 있는 대부분의 기능은 플러그인 인터페이스를 사용합니다. 이런점이 webpack을 **유연하게** 만듭니다.
 
-| 이름                                                                            | 설명                                                                                 |
-| ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| [`BannerPlugin`](/plugins/banner-plugin)                                        | 생성된 각 청크 상단에 배너를 추가합니다.                                             |
-| [`ChunksWebpackPlugin`](/plugins/chunks-webpack-plugin/)                        | 번들을 제공하기 위한 엔트리 포인트와 청크 관계가 포함된 HTML 파일을 생성합니다.      |
-| [`CompressionWebpackPlugin`](/plugins/compression-webpack-plugin)               | Content-Encoding으로 제공할 애셋의 압축 버전을 준비합니다.                           |
-| [`ContextReplacementPlugin`](/plugins/context-replacement-plugin)               | `require` 표현식에서 추론된 컨텍스트를 재정의합니다.                                 |
-| [`CopyWebpackPlugin`](/plugins/copy-webpack-plugin)                             | 개별 파일 또는 전체 디렉터리를 빌드 디렉터리로 복사합니다.                           |
-| [`DefinePlugin`](/plugins/define-plugin)                                        | 컴파일 타임에 설정되는 전역 상수를 사용할 수 있게 합니다.                            |
-| [`DllPlugin`](/plugins/dll-plugin)                                              | 빌드 시간을 크게 줄이기 위해 번들을 분리합니다.                                      |
-| [`EnvironmentPlugin`](/plugins/environment-plugin)                              | `process.env` 키에 [`DefinePlugin`](/plugins/define-plugin)을 사용하는 축약형입니다. |
-| [`EslintWebpackPlugin`](/plugins/eslint-webpack-plugin)                         | webpack용 ESLint 플러그인입니다.                                                     |
-| [`HotModuleReplacementPlugin`](/plugins/hot-module-replacement-plugin)          | Hot Module Replacement (HMR)를 활성화합니다.                                         |
-| [`HtmlWebpackPlugin`](/plugins/html-webpack-plugin)                             | 번들을 제공하기 위한 HTML 파일을 쉽게 생성합니다.                                    |
-| [`IgnorePlugin`](/plugins/ignore-plugin)                                        | 번들에서 특정 모듈을 제외합니다.                                                     |
-| [`LimitChunkCountPlugin`](/plugins/limit-chunk-count-plugin)                    | 청킹을 더 잘 제어할 수 있도록 청크 수의 최소/최대 제한을 설정합니다.                 |
-| [`MergeDuplicateChunksPlugin`](/plugins/merge-duplicate-chunks-plugin)          | 동일한 모듈을 포함하는 청크를 병합합니다.                                            |
-| [`MinChunkSizePlugin`](/plugins/min-chunk-size-plugin)                          | 청크 크기를 지정한 제한 이상으로 유지합니다.                                         |
-| [`MiniCssExtractPlugin`](/plugins/mini-css-extract-plugin)                      | CSS가 필요한 각 JS 파일에 대해 CSS 파일을 생성합니다.                                |
-| [`NoEmitOnErrorsPlugin`](/configuration/optimization/#optimizationemitonerrors) | 컴파일 오류가 있을 때 emit 단계를 건너뜁니다.                                        |
-| [`NormalModuleReplacementPlugin`](/plugins/normal-module-replacement-plugin)    | 정규식과 일치하는 리소스를 교체합니다.                                               |
-| [`ProgressPlugin`](/plugins/progress-plugin)                                    | 컴파일 진행 상황을 보고합니다.                                                       |
-| [`ProvidePlugin`](/plugins/provide-plugin)                                      | import 또는 require 없이 모듈을 사용할 수 있게 합니다.                               |
-| [`SourceMapDevToolPlugin`](/plugins/source-map-dev-tool-plugin)                 | 소스맵을 더 세밀하게 제어할 수 있게 합니다.                                          |
-| [`EvalSourceMapDevToolPlugin`](/plugins/eval-source-map-dev-tool-plugin)        | eval 소스맵을 더 세밀하게 제어할 수 있게 합니다.                                     |
-| [`SvgChunkWebpackPlugin`](/plugins/svg-chunk-webpack-plugin/)                   | 엔트리 포인트 의존성을 기반으로 SVGO가 최적화한 SVG 스프라이트를 생성합니다.         |
-| [`MinimizerPlugin`](/plugins/minimizer-webpack-plugin/)                         | Terser(또는 기타 도구)를 사용해 프로젝트의 JS/CSS/HTML/JSON 등을 minify합니다.       |
+T> CSS와 HTML은 실험적인 내장 기능으로 지원되므로 이 목록에서는 별도의 plugin이 필요하지 않습니다. [Native CSS](/guides/native-css/)와 [Native HTML](/guides/native-html/) 가이드에서 각각의 내장 기능([CSS](/guides/native-css/#whats-built-in), [HTML](/guides/native-html/#whats-built-in))과 기존 설정을 이전하는 방법을 확인하세요.
+
+아래 플러그인들은 기능별로 분류되어 있습니다. 대부분은 webpack에 포함되어 있어 `new webpack.SomePlugin()`으로 사용할 수 있으며, `*-webpack-plugin` 이름의 페이지에 있는 것들은 별도로 설치가 필요한 패키지입니다.
+
+T> 이들 중 일부는 [설정 옵션](/configuration/)이 해당 경우를 항상 커버하지 않았기 때문에 주로 존재합니다. 현재 옵션이 동일한 역할을 한다면 해당 행에 이름이 표시됩니다. 기본값이 옵션을 기반으로 구성되므로 플러그인보다 옵션을 선호하세요.
+
+## Sources and modules
+
+| 이름                                                                         | 설명                                                                                   |
+| ---------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| [`DefinePlugin`](/plugins/define-plugin)                                     | 컴파일 시점에 설정되는 전역 상수를 사용할 수 있게 합니다                               |
+| [`EnvironmentPlugin`](/plugins/environment-plugin)                           | `process.env` 키에 [`DefinePlugin`](/plugins/define-plugin)을 사용하는 shorthand입니다 |
+| [`ProvidePlugin`](/plugins/provide-plugin)                                   | import 또는 require 없이 모듈을 사용할 수 있게 합니다                                  |
+| [`IgnorePlugin`](/plugins/ignore-plugin)                                     | 번들에서 특정 모듈을 제외합니다                                                        |
+| [`NormalModuleReplacementPlugin`](/plugins/normal-module-replacement-plugin) | 정규식과 일치하는 리소스를 교체합니다                                                  |
+| [`ContextReplacementPlugin`](/plugins/context-replacement-plugin)            | `require` 표현식에서 추론된 컨텍스트를 재정의합니다                                    |
+| [`ContextExclusionPlugin`](/plugins/context-exclusion-plugin)                | 일치하는 컨텍스트를 제외하여 webpack이 해당 모듈을 생성하지 않도록 합니다              |
+| [`VirtualUrlPlugin`](/plugins/virtual-url-plugin)                            | 디스크에 파일 없이 빌드 시점에 콘텐츠가 생성되는 모듈을 만듭니다                       |
+
+## Output and assets
+
+| 이름                                                          | 설명                                                                          |
+| ------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| [`BannerPlugin`](/plugins/banner-plugin)                      | 생성된 각 청크 상단에 banner를 추가합니다                                     |
+| [`CopyPlugin`](/plugins/copy-plugin)                          | 파일과 디렉터리를 출력 디렉터리로 복사합니다                                  |
+| [`ManifestPlugin`](/plugins/manifest-plugin)                  | 소스 파일명을 방출된 출력 파일로 매핑하는 애셋 매니페스트를 생성합니다        |
+| [`ChunksWebpackPlugin`](/plugins/chunks-webpack-plugin/)      | 번들 제공을 위해 엔트리 포인트와 청크 관계가 포함된 HTML 파일을 생성합니다    |
+| [`SvgChunkWebpackPlugin`](/plugins/svg-chunk-webpack-plugin/) | 엔트리 포인트 디펜던시를 기반으로 SVGO가 최적화한 SVG 스프라이트를 생성합니다 |
+
+## Chunks and optimization
+
+| 이름                                                                            | 설명                                                                                                                                                                    |
+| ------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`SplitChunksPlugin`](/plugins/split-chunks-plugin)                             | 공유 코드와 vendor 코드를 별도 청크로 분리합니다 — [`optimization.splitChunks`](/configuration/optimization/#optimizationsplitchunks)를 통해 설정합니다                 |
+| [`ModuleConcatenationPlugin`](/plugins/module-concatenation-plugin)             | 스코프 호이스팅 — `production` 모드에서 [`optimization.concatenateModules`](/configuration/optimization/#optimizationconcatenatemodules)를 통해 기본적으로 활성화됩니다 |
+| [`MergeDuplicateChunksPlugin`](/plugins/merge-duplicate-chunks-plugin)          | 동일한 모듈을 포함하는 청크를 병합합니다                                                                                                                                |
+| [`LimitChunkCountPlugin`](/plugins/limit-chunk-count-plugin)                    | 청크를 병합하여 최대 청크 수를 제한합니다                                                                                                                               |
+| [`MinChunkSizePlugin`](/plugins/min-chunk-size-plugin)                          | 청크 크기를 지정한 제한 이상으로 유지합니다                                                                                                                             |
+| [`MinimizerPlugin`](/plugins/minimizer-webpack-plugin/)                         | 프로젝트의 JS/CSS/HTML/JSON 등을 minify하고, [방출 결과를 압축합니다](/plugins/minimizer-webpack-plugin/#compressing-with-minifying-and-without)                        |
+| [`HashedModuleIdsPlugin`](/plugins/hashed-module-ids-plugin)                    | 해시 기반 모듈 ID — `production` 기본값인 [`optimization.moduleIds: 'deterministic'`](/configuration/optimization/#optimizationmoduleids)을 대신 사용하세요             |
+| [`NoEmitOnErrorsPlugin`](/configuration/optimization/#optimizationemitonerrors) | 컴파일 오류가 있을 때 emit 단계를 건너뜁니다                                                                                                                            |
+| [`AutomaticPrefetchPlugin`](/plugins/automatic-prefetch-plugin)                 | 이전 컴파일의 모든 모듈을 미리 해결하여 워치 재빌드 속도를 높입니다                                                                                                     |
+| [`PrefetchPlugin`](/plugins/prefetch-plugin)                                    | 첫 번째 import 전에 모듈을 미리 해결하고 빌드하여 크리티컬 빌드 경로를 단축합니다                                                                                       |
+| [`DllPlugin`](/plugins/dll-plugin)                                              | 번들을 사전 빌드된 vendor 번들로 분리합니다 — [파일시스템 캐시](/configuration/cache/)로 대부분 대체되었습니다                                                          |
+
+## Module Federation
+
+| 이름                                                          | 설명                                                           |
+| ------------------------------------------------------------- | -------------------------------------------------------------- |
+| [`ModuleFederationPlugin`](/plugins/module-federation-plugin) | 런타임에 독립적으로 빌드된 애플리케이션 간에 모듈을 공유합니다 |
+
+## Development and diagnostics
+
+| 이름                                                                     | 설명                                                                 |
+| ------------------------------------------------------------------------ | -------------------------------------------------------------------- |
+| [`HotModuleReplacementPlugin`](/plugins/hot-module-replacement-plugin)   | Hot Module Replacement (HMR)를 활성화합니다                          |
+| [`SourceMapDevToolPlugin`](/plugins/source-map-dev-tool-plugin)          | 소스맵을 더 세밀하게 제어할 수 있게 합니다                           |
+| [`EvalSourceMapDevToolPlugin`](/plugins/eval-source-map-dev-tool-plugin) | eval 소스맵을 더 세밀하게 제어할 수 있게 합니다                      |
+| [`ProgressPlugin`](/plugins/progress-plugin)                             | 컴파일 진행 상황을 보고합니다                                        |
+| [`ProfilingPlugin`](/plugins/profiling-plugin)                           | 플러그인 실행 타이밍을 Chrome 프로파일 파일에 기록합니다             |
+| [`WatchIgnorePlugin`](/plugins/watch-ignore-plugin)                      | 워치 모드에서 일치하는 경로를 무시하여 재빌드가 발생하지 않게 합니다 |
+| [`DiagnosticsWebpackPlugin`](/plugins/diagnostics-webpack-plugin)        | 빌드 중 소스에 linter 및 기타 진단 도구를 실행합니다                 |
 
 더 많은 써드 파티 플러그인을 찾고 싶다면, [awesome-webpack](/awesome-webpack/#webpack-plugins)을 참고하세요.

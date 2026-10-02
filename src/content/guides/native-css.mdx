@@ -1,8 +1,10 @@
 ---
 title: Native CSS
+description: webpack에서 Native CSS을 사용하는 방법을 설명합니다.
 sort: 27
 contributors:
   - phoekerson
+  - alexander-akait
 translators:
   - dkstyle
 ---
@@ -25,7 +27,24 @@ export default {
 };
 ```
 
-이 옵션을 활성화하면 webpack은 `.css` 파일을 일급 모듈로 이해하여 `@import`와 `url()`을 파싱하고, 스타일시트를 추출하며, content hash를 생성하고, `css-loader`, `style-loader`, `mini-css-extract-plugin` 없이도 CSS Modules를 지원합니다.
+이 옵션을 활성화하면 webpack은 `.css` 파일을 일급 모듈로 이해하고 loader에 전달하는 대신 직접 파싱합니다.
+
+## What's built-in
+
+"Built-in"은 체인에 loader 없이 webpack이 직접 작업한다는 의미이며, CSS loader의 모든 기능을 지원한다는 의미는 아닙니다. 정확한 지원 범위는 다음과 같습니다.
+
+| 내장 지원                                                                                   | 여전히 loader 또는 plugin 필요                                                                |
+| ------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| `.css` 파싱, `@import` 및 `url()`/`image-set()`/`src()`/`image()` 리졸브                    | **Preprocessor** — Sass, Less, Stylus, PostCSS는 항상 해당 loader 유지                        |
+| [CSS Modules](#css-modules): `composes`, `@value`, `:export`, `:local()`/`:global()`        | `css-loader`의 `importLoaders`, `localIdentRegExp`, `getJSON`, `url`/`import` filter callback |
+| `.css` 파일 [추출](#output-modes-exporttype) 또는 런타임에 `<style>` 태그 주입              | `style-loader`의 `insert`, `attributes`, `styleTagTransform`, lazy/singleton 주입 모드        |
+| content hash, [minification](#minification), browserslist [vendor prefix](#vendor-prefixes) | `@custom-media`/`@custom-selector` 외에 PostCSS plugin이 수행하는 작업                        |
+| [내장 `@custom-media` 및 `@custom-selector`](#custom-media-and-custom-selectors)            |                                                                                               |
+| 스타일시트의 Hot Module Replacement                                                         |                                                                                               |
+
+따라서 기본 옵션으로 `css-loader`와 `style-loader`(또는 `mini-css-extract-plugin`)를 사용하는 프로젝트에는 CSS loader가 필요하지 않습니다. 오른쪽 열의 옵션을 사용하는 프로젝트는 필요한 파일에만 해당 loader를 유지할 수 있으며 두 방식을 규칙별로 함께 사용할 수 있습니다.
+
+T> webpack 5.109.0부터 기본값은 `'auto'`입니다. loader 또는 명시적인 모듈 타입을 지정한 [`module.rules`](/configuration/module/#modulerules) 항목이 `.css` 파일과 이미 일치하지 않으면 내장 CSS 지원이 활성화됩니다. 따라서 기존 `css-loader` 설정은 그대로 작동하며 규칙을 하나씩 마이그레이션할 수 있습니다. 네이티브 지원을 강제하려면 `true`, 비활성화하려면 `false`로 설정하세요.
 
 ## Importing CSS
 
@@ -55,12 +74,12 @@ Webpack은 이 CSS를 처리해 빌드 결과물에 포함합니다.
 
 Native CSS는 네 가지 [`Rule.type`](/configuration/module/#ruletype) 값을 도입합니다. 어떤 값이 적용되는지 이해하는 것이 마이그레이션의 핵심인데, 각각이 서로 다른 `css-loader` `modules.mode`에 대응하기 때문입니다.
 
-| Type         | Scoping                                                                        | `css-loader` equivalent  |
-| ------------ | ------------------------------------------------------------------------------ | ------------------------ |
-| `css`        | 전역, CSS Modules 파싱 없음                                                    | `modules: false`         |
-| `css/global` | 전역 selector, 하지만 `:local()`은 적용됨                                      | `modules.mode: 'global'` |
-| `css/module` | 기본적으로 local, `:global()`로 전역으로 빠져나갈 수 있음                      | `modules.mode: 'local'`  |
-| `css/auto`   | `*.module.css` / `*.modules.css`에는 `css/module`, 그 외에는 `css/global` 선택 | `modules.auto: true`     |
+| 타입         | 스코프 지정                                                                                                 | 대응하는 `css-loader` 설정 |
+| ------------ | ----------------------------------------------------------------------------------------------------------- | -------------------------- |
+| `css`        | 전역, CSS Modules 파싱 없음                                                                                 | `modules: false`           |
+| `css/global` | 전역 selector, 하지만 `:local()`은 적용됨                                                                   | `modules.mode: 'global'`   |
+| `css/module` | 기본적으로 local, `:global()`로 전역으로 빠져나갈 수 있음                                                   | `modules.mode: 'local'`    |
+| `css/auto`   | `*.module.css` / `*.modules.css`에는 `css/module`, 그 외에는 일반 `css`(전역, CSS Modules 파싱 없음)를 선택 | `modules.auto: true`       |
 
 webpack이 `/\.css$/i`에 대해 기본으로 추가하는 rule은 `css/auto`이므로, `*.module.css` 파일은 CSS Modules가 되고 나머지는 모두 전역으로 유지됩니다. 이는 가장 일반적인 `css-loader` 설정과 기본적으로 동일합니다.
 
@@ -147,12 +166,12 @@ Native CSS Modules는 `css-loader`와 같은 authoring 기능을 이해하므로
 
 하나의 CSS module은 네 가지 방식으로 출력할 수 있습니다. [`exportType`](/configuration/module/#moduleparsercssexporttype) parser 옵션으로 이를 선택하며, 각각은 기존 툴체인의 다른 부분을 대체합니다.
 
-| `exportType`         | Behavior                                                                                               | Replaces                                     |
-| -------------------- | ------------------------------------------------------------------------------------------------------ | -------------------------------------------- |
-| `"link"` _(default)_ | `.css` 파일로 추출하고 `<link>`로 로드                                                                 | `mini-css-extract-plugin`                    |
-| `"style"`            | 런타임에서 `<style>` element를 주입                                                                    | `style-loader`                               |
-| `"text"`             | CSS를 string으로 export                                                                                | `css-loader` `exportType: 'string'`          |
-| `"css-style-sheet"`  | 생성 가능한 [`CSSStyleSheet`](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleSheet)를 export | `css-loader` `exportType: 'css-style-sheet'` |
+| `exportType`        | 동작                                                                                                   | 대체 대상                                    |
+| ------------------- | ------------------------------------------------------------------------------------------------------ | -------------------------------------------- |
+| `"link"` _(기본값)_ | `.css` 파일로 추출하고 `<link>`로 로드                                                                 | `mini-css-extract-plugin`                    |
+| `"style"`           | 런타임에서 `<style>` element를 주입                                                                    | `style-loader`                               |
+| `"text"`            | CSS를 string으로 export                                                                                | `css-loader` `exportType: 'string'`          |
+| `"css-style-sheet"` | 생성 가능한 [`CSSStyleSheet`](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleSheet)를 export | `css-loader` `exportType: 'css-style-sheet'` |
 
 module type별로 전역 설정할 수 있습니다.
 
@@ -186,25 +205,174 @@ export default {
 };
 ```
 
+## Custom media and custom selectors
+
+Native CSS는 빌드 시점에 `@custom-media`와 `@custom-selector`를 리졸브하므로 이 두 규칙을 위해 흔히 사용하던 PostCSS plugin이 필요하지 않습니다.
+
+**src/styles.css**
+
+```css
+@custom-media --narrow (width <= 40rem);
+@custom-selector :--heading h1, h2, h3;
+
+@media (--narrow) {
+  :--heading {
+    font-size: 1.25rem;
+  }
+}
+```
+
+리졸브는 파일 단위입니다. 정의는 이를 선언한 파일에만 적용되며, 해당 파일이 `@import`한 대상이나 전체 프로젝트에는 적용되지 않습니다. 둘 다 기본적으로 활성화되며 [`module.parser.css.customMedia`](/configuration/module/#moduleparsercsscustommedia)와 [`module.parser.css.customSelectors`](/configuration/module/#moduleparsercsscustomselectors)로 각각 비활성화할 수 있습니다. 체인의 PostCSS plugin이 이미 처리한다면 비활성화하세요.
+
+## Minification
+
+[`optimization.minimize`](/configuration/optimization/#optimizationminimize)가 활성화되면 내장 minimizer가 CSS 애셋을 최소화합니다. `mode: 'production'`에서는 기본적으로 활성화되며 별도로 설치하거나 연결할 항목이 없습니다.
+
+**webpack.config.js**
+
+```js
+export default {
+  mode: "production",
+  experiments: { css: true },
+};
+```
+
+이는 `css-minimizer-webpack-plugin`과 그 기반의 `cssnano` 체인을 대체합니다. 색상·숫자·값·selector 단축, longhand 및 규칙 병합, 불필요한 규칙 제거, 상수 기반 `calc()`와 수학 함수 계산, 따옴표 정규화, media query range 표기 등 스타일시트의 의미를 유지하는 모든 변환이 기본 활성화됩니다. script가 다시 읽는 텍스트를 변경하는 `rewriteCustomProperties`와 압축 후 효과가 적은 `convertLengthUnits`는 비활성화되어 있습니다.
+
+객체 형태의 `optimization.minimize`로 설정하세요.
+
+```js
+export default {
+  mode: "production",
+  experiments: { css: true },
+  optimization: {
+    minimize: {
+      css: {
+        comments: false,
+        // `getComputedStyle().getPropertyValue()`는 작성된 custom property
+        // 텍스트를 그대로 반환하므로 아무도 읽지 않을 때만 활성화합니다.
+        rewriteCustomProperties: true,
+      },
+    },
+  },
+};
+```
+
+JavaScript minification은 유지하면서 CSS만 비활성화하려면 `minimize: { css: false }`를 사용하세요.
+
+### Vendor prefixes
+
+minimizer는 [browserslist](https://github.com/browserslist/browserslist) target에 맞춰 vendor prefix를 관리합니다. 선택한 브라우저에 여전히 필요한 property, at-rule, pseudo-selector의 `-webkit-`/`-moz-`/`-ms-` 표기를 추가하고 아무 브라우저에도 필요하지 않은 표기는 제거합니다. 따라서 대부분의 프로젝트에서 `autoprefixer`와 이를 위한 `postcss-loader`를 의존성에서 제거할 수 있습니다.
+
+**.browserslistrc**
+
+```text
+> 0.5%
+last 2 versions
+not dead
+```
+
+**webpack.config.js**
+
+```js
+export default {
+  mode: "production",
+  target: "browserslist",
+  experiments: { css: true },
+};
+```
+
+T> prefix 처리는 `browserslist` [target](/configuration/target/)에서만 적용됩니다. 다른 target에는 prefix를 지정할 브라우저 정보가 없습니다. PostCSS 체인이 이미 처리한다면 `optimization.minimize.css.vendorPrefixes: false`로 비활성화하세요.
+
+## Resource hints and font preloading
+
+CSS에서 참조하는 애셋에 plugin 없이 `<link rel="preload">`/`prefetch` hint를 지정할 수 있습니다. [`module.parser.css.fontPreload`](/configuration/module/#moduleparsercssfontpreload)는 HTML 엔트리의 초기 CSS에서 접근 가능한 각 `@font-face`에 preload 하나를 추가합니다. 모든 형식을 preload하면 폰트를 두 번 다운로드하므로 기본 `src` URL만 사용합니다.
+
+**webpack.config.js**
+
+```js
+export default {
+  experiments: { css: true, html: true },
+  output: {
+    // preload는 폰트의 CORS 요청과 일치해야 합니다.
+    crossOriginLoading: "anonymous",
+  },
+  module: {
+    parser: {
+      css: {
+        fontPreload: true,
+      },
+    },
+  },
+};
+```
+
+[`module.parser.css.urlHints`](/configuration/module/#moduleparsercssurlhints)는 `url(...)`로 접근하는 다른 항목에 애셋별 규칙을 제공하고, [`output.resourceHints`](/configuration/output/#outputresourcehints)는 프로젝트 전체 규칙을 설정합니다.
+
+```js
+export default {
+  experiments: { css: true, html: true },
+  module: {
+    parser: {
+      css: {
+        urlHints: [
+          { test: /\.woff2$/, preload: true, as: "font" },
+          { test: /hero\.avif$/, preload: true, as: "image" },
+        ],
+      },
+    },
+  },
+};
+```
+
+## CSS referenced from HTML
+
+[`experiments.html`](/configuration/experiments/#experimentshtml)을 활성화하면 HTML 페이지의 `<link rel="stylesheet">`가 CSS 청크 엔트리가 되고 인라인 `<style>` 본문과 `style=""` 속성도 같은 CSS 파이프라인을 거칩니다. 내부의 `@import`와 `url()`은 HTML 파일을 기준으로 리졸브되며 위의 minimizer 옵션도 적용됩니다.
+
+**webpack.config.js**
+
+```js
+export default {
+  entry: "./src/index.html",
+  experiments: { css: true, html: true },
+};
+```
+
+전체 HTML 기능은 [Native HTML](/guides/native-html/) 가이드를 참고하세요.
+
 ## Migration Guide
+
+### Automated migration (codemod)
+
+[`@webpack/css-plugins-to-native-css`](https://app.codemod.com/registry/@webpack/css-plugins-to-native-css) codemod를 사용하면 마이그레이션의 대부분을 자동으로 처리할 수 있습니다.
+
+```bash
+npx codemod @webpack/css-plugins-to-native-css
+```
+
+이 codemod는 해당 릴리스에서 도입된 [`experiments.css: "auto"`](/configuration/experiments/#experimentscss) 기본값을 사용하므로 webpack 5.109.0 이상이 필요합니다.
 
 ### At a glance
 
-| Legacy setup                                              | Native equivalent                                                                                                                                     |
+| 기존 설정                                                 | 네이티브 대응 기능                                                                                                                                    |
 | --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `mini-css-extract-plugin` (`MiniCssExtractPlugin.loader`) | built-in extraction (default `exportType: "link"`)                                                                                                    |
+| `mini-css-extract-plugin` (`MiniCssExtractPlugin.loader`) | 내장 추출 기능(기본값 `exportType: "link"`)                                                                                                           |
 | `MiniCssExtractPlugin` `filename` / `chunkFilename`       | [`output.cssFilename`](/configuration/output/#outputcssfilename) / [`output.cssChunkFilename`](/configuration/output/#outputcsschunkfilename)         |
 | `style-loader`                                            | [`exportType: "style"`](#output-modes-exporttype)                                                                                                     |
-| `css-loader`                                              | built-in CSS parsing (no loader needed)                                                                                                               |
-| `css-loader` `url` / `import`                             | [`module.parser.css.url`](/configuration/module/#moduleparsercssurl) / [`import`](/configuration/module/#moduleparsercssimport) (both default `true`) |
-| `css-loader` `modules` (`.module.css` auto-detect)        | `css/auto` module type                                                                                                                                |
+| `css-loader`                                              | 내장 CSS 파싱 기능(loader 불필요)                                                                                                                     |
+| `css-loader` `url` / `import`                             | [`module.parser.css.url`](/configuration/module/#moduleparsercssurl) / [`import`](/configuration/module/#moduleparsercssimport) (둘 다 기본값 `true`) |
+| `css-loader` `modules` (`.module.css` 자동 감지)          | `css/auto` 모듈 타입                                                                                                                                  |
 | `css-loader` `modules.mode`                               | `css/module` / `css/global` type + [`pure`](/configuration/module/#moduleparsercsspure)                                                               |
 | `css-loader` `modules.localIdentName`                     | [generator `localIdentName`](/configuration/module/#modulegenerator)                                                                                  |
 | `css-loader` `modules.exportLocalsConvention`             | [generator `exportsConvention`](/configuration/module/#modulegenerator)                                                                               |
-| `css-loader` `modules.namedExport`                        | [`module.parser.css.namedExports`](/configuration/module/#moduleparsercssnamedexports) (default `true`)                                               |
+| `css-loader` `modules.namedExport`                        | [`module.parser.css.namedExports`](/configuration/module/#moduleparsercssnamedexports) (기본값 `true`)                                                |
 | `css-loader` `modules.exportOnlyLocals`                   | generator `exportsOnly`                                                                                                                               |
-| `css-loader` `esModule`                                   | generator `esModule` (default `true`)                                                                                                                 |
+| `css-loader` `esModule`                                   | generator `esModule`(기본값 `true`)                                                                                                                   |
 | `css-loader` `exportType: 'string'` / `'css-style-sheet'` | [`exportType: "text"` / `"css-style-sheet"`](#output-modes-exporttype)                                                                                |
+| `css-minimizer-webpack-plugin` / `cssnano`                | [`optimization.minimize`](#minification) — production에서 기본 활성화                                                                                 |
+| `postcss-loader` + `autoprefixer`                         | [`optimization.minimize.css.vendorPrefixes`](#vendor-prefixes) — `browserslist` target에서 기본 활성화                                                |
+| `postcss-custom-media` / `postcss-custom-selectors`       | [내장 `@custom-media` / `@custom-selector`](#custom-media-and-custom-selectors)                                                                       |
+| `preload-webpack-plugin` (폰트)                           | [`module.parser.css.fontPreload`](#resource-hints-and-font-preloading)                                                                                |
 
 한 번에 loader 하나씩 마이그레이션하세요. 아래 섹션은 각 단계에서 빌드가 깨지지 않도록 하는 순서로 구성되어 있습니다.
 
@@ -269,13 +437,13 @@ Native CSS는 기본적으로 stylesheet를 추출하고(`exportType: "link"`), 
 
 남은 plugin 옵션은 다음과 같이 대응됩니다.
 
-| `mini-css-extract-plugin` | Native equivalent                                                               |
-| ------------------------- | ------------------------------------------------------------------------------- |
-| `filename`                | [`output.cssFilename`](/configuration/output/#outputcssfilename)                |
-| `chunkFilename`           | [`output.cssChunkFilename`](/configuration/output/#outputcsschunkfilename)      |
-| loader `publicPath`       | [`output.publicPath`](/configuration/output/#outputpublicpath)                  |
-| loader `esModule`         | generator [`esModule`](/configuration/module/#modulegenerator) (default `true`) |
-| `ignoreOrder`             | n/a, Native CSS는 order-conflict warning을 발생시키지 않음                      |
+| `mini-css-extract-plugin` | 네이티브 대응 기능                                                                                                                                                                                                                     |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `filename`                | [`output.cssFilename`](/configuration/output/#outputcssfilename)                                                                                                                                                                       |
+| `chunkFilename`           | [`output.cssChunkFilename`](/configuration/output/#outputcsschunkfilename)                                                                                                                                                             |
+| loader `publicPath`       | [`output.publicPath`](/configuration/output/#outputpublicpath)                                                                                                                                                                         |
+| loader `esModule`         | generator [`esModule`](/configuration/module/#modulegenerator)(기본값 `true`)                                                                                                                                                          |
+| `ignoreOrder`             | 해당 없음 — 순서 충돌 경고는 옵션으로 무음 처리할 수 없습니다. [`ignoreWarnings`](/configuration/other-options/#ignorewarnings)를 사용하거나 `CssModulesPlugin.getCompilationHooks(compilation).orderModules`로 직접 순서를 정의하세요 |
 
 **webpack.config.js**
 
@@ -293,7 +461,7 @@ export default {
 
 대부분의 `css-loader` 옵션은 [`module.parser.css`](/configuration/module/#moduleparsercss)와 [`module.generator.css`](/configuration/module/#modulegenerator) 아래에 네이티브 대응 기능이 있습니다. 일반적인 기본값(`url`, `import`, `namedExports` 모두 활성화)은 보통의 `css-loader` 설정과 이미 일치하므로, 많은 프로젝트에서는 `parser` 설정이 아예 필요하지 않습니다.
 
-| `css-loader` option              | Native equivalent                                                |
+| `css-loader` 옵션                | 네이티브 대응 기능                                               |
 | -------------------------------- | ---------------------------------------------------------------- |
 | `url`                            | `module.parser.css.url`, 기본값 `true`                           |
 | `import`                         | `module.parser.css.import`, 기본값 `true`                        |
@@ -367,7 +535,7 @@ T> `localIdentName`은 `[hash:base64:6]` 같은 hash placeholder를 지원합니
 일부 `css-loader` 옵션은 동작 방식이 다릅니다.
 
 - `getLocalIdent`: custom function 대신 Native CSS는 [`localIdentName`](/configuration/module/#modulegenerator) 템플릿을 사용하며, 이 값도 function을 받을 수 있습니다.
-- `getJSON`: class-name mapping은 CSS module 자체에서 export되며 compilation의 module graph에서도 읽을 수 있으므로, framework가 디스크의 JSON 파일을 필요로 할 때는 작은 plugin으로 직렬화할 수 있습니다. server-side rendering에서는 보통 아예 필요하지 않습니다. 자세한 내용은 [Server-side rendering](#7-server-side-rendering-node--web)을 참고하세요.
+- `getJSON`: class-name mapping은 CSS module 자체에서 export되며 compilation의 module graph에서도 읽을 수 있으므로, framework가 디스크의 JSON 파일을 필요로 할 때는 작은 plugin으로 직렬화할 수 있습니다. 서버 사이드 렌더링에서는 보통 아예 필요하지 않습니다. 자세한 내용은 [Server-side rendering](#7-server-side-rendering-node--web)을 참고하세요.
 - `localIdentRegExp`와 filter 스타일의 `url`/`import` callback은 네이티브 대응 기능이 없습니다. 해당 파일에는 계속 `css-loader`를 사용하거나, [`IgnorePlugin`](/plugins/ignore-plugin/)으로 특정 request를 제외하세요.
 
 ### 5. Replace `style-loader`
@@ -435,7 +603,7 @@ export default {
 
 SSR에서는 보통 두 번 빌드합니다. 브라우저용 `web` bundle 하나와 서버용 `node` bundle 하나입니다. 이때 CSS Modules의 class name이 서로 일치해야 서버에서 렌더링한 마크업이 클라이언트에서 정상적으로 hydrate됩니다. `css-loader`의 `getJSON`은 이런 정보를 왕복하기 위해 자주 사용되었지만, Native CSS에서는 target 간에 `localIdentName`을 결정론적으로 맞춰 이 왕복 자체를 피할 수 있습니다.
 
-모든 target에서 같은 class name이 생성되도록 **path 기반** 템플릿(컴파일 전체 hash 없음)을 사용하세요.
+두 빌드가 `localIdentName` 템플릿을 공유하고, 템플릿의 모든 placeholder를 같은 값으로 해석하며(예를 들어 `[id]`는 module ID이므로 별도 빌드 사이에서 달라질 수 있습니다), 아래에서 설명하는 로컬 식별자 해시 입력을 공유한다면 target 간에 class name이 결정론적으로 생성됩니다. 읽기 쉬운 **path 기반** 템플릿은 모든 target에서 동작합니다.
 
 **webpack.config.js**
 
@@ -464,9 +632,39 @@ export default [
 
 `node` target에서는 CSS generator의 기본값이 `exportsOnly: true`이므로, 서버 빌드는 class-name mapping만 export하고 stylesheet는 생성하지 않습니다. 이는 SSR renderer에 정확히 필요한 동작입니다. 브라우저 빌드는 여전히 실제 CSS를 추출합니다. 단일 config를 선호한다면 `target: ["web", "node"]`로 두 환경 모두에서 동작하는 universal bundle을 만들 수도 있습니다.
 
-T> SSR에서는 프로덕션 기본값인 `localIdentName: "[fullhash]"`를 피하세요. 전체 compilation hash는 `web` 빌드와 `node` 빌드 사이에서 다르므로 class name이 맞지 않게 됩니다. 두 config 모두에서 path 기반 또는 `[local]` 기반의 결정론적 템플릿을 고정하세요. 필요하다면 파일별 `[hash]`를 추가할 수 있습니다.
+프로덕션 기본값인 `localIdentName: "[fullhash]"`(및 모든 `[hash]` 템플릿)도 SSR에서 안전합니다. 이름과 달리 `localIdentName`의 `[fullhash]`는 compilation hash가 **아닙니다**. 다음 값으로 계산되는 로컬 식별자 해시입니다.
 
-### 8. Keep imports unchanged and validate
+- [`localIdentHashSalt`](#generator-options) (기본값은 [`output.hashSalt`](/configuration/output/#outputhashsalt))
+- [`output.uniqueName`](/configuration/output/#outputuniquename) — 템플릿에 `[uniqueName]`이 없어도 포함됩니다.
+- [`context`](/configuration/entry-context/#context)에 대한 상대 리소스 경로
+- 로컬 class name
+
+따라서 `web` 빌드와 `node` 빌드에서 서로 일치하는 짧은 class name(기본값은 6자)을 얻을 수 있으며, 두 파일에서 같은 로컬 이름을 사용해도 서로 다른 class name이 생성됩니다.
+
+W> 두 config에서 `output.uniqueName`과 `context`가 같은지 확인하세요. `output.uniqueName`의 기본값은 가장 가까운 `package.json`의 `name`이므로, 별도 프로젝트이거나 config에서 서로 다른 값을 설정하면 다른 해시가 생성되어 class name이 일치하지 않습니다. `localIdentHashSalt`, `localIdentHashFunction`, `localIdentHashDigest`, `localIdentHashDigestLength`도 마찬가지입니다.
+
+### 8. Drop the CSS minimizer and `autoprefixer`
+
+production에서는 `optimization.minimize`가 둘 다 지원하므로 minimizer plugin과, 대부분의 프로젝트에서는 `autoprefixer`만 실행하던 PostCSS 체인을 제거할 수 있습니다.
+
+**webpack.config.js**
+
+```diff
+-import CssMinimizerPlugin from "css-minimizer-webpack-plugin";
+-
+ export default {
+   mode: "production",
++  target: "browserslist",
++  experiments: { css: true },
+-  optimization: {
+-    minimizer: ["...", new CssMinimizerPlugin()],
+-  },
+ };
+```
+
+내장 minimizer의 동작과 설정 방법은 [Minification](#minification)을 참고하세요.
+
+### 9. Keep imports unchanged and validate
 
 JavaScript import는 그대로 유지됩니다.
 
@@ -487,22 +685,26 @@ import * as styles from "./button.module.css";
 
 ### Parser options
 
-아래의 boolean parser 옵션은 모두 기본값이 `true`입니다.
+표에 별도로 표시하지 않은 boolean parser 옵션의 기본값은 `true`입니다.
 
-| Option                                                               | Type                                               | Default        | Description                                                                                                      |
-| -------------------------------------------------------------------- | -------------------------------------------------- | -------------- | ---------------------------------------------------------------------------------------------------------------- |
-| [`import`](/configuration/module/#moduleparsercssimport)             | `boolean`                                          | `true`         | `@import` at-rule을 처리합니다.                                                                                  |
-| [`url`](/configuration/module/#moduleparsercssurl)                   | `boolean`                                          | `true`         | `url()` / `image-set()` / `src()` / `image()`를 처리합니다.                                                      |
-| [`namedExports`](/configuration/module/#moduleparsercssnamedexports) | `boolean`                                          | `true`         | CSS Modules local 값을 ES module named export로 내보냅니다.                                                      |
-| [`exportType`](/configuration/module/#moduleparsercssexporttype)     | `"link" \| "style" \| "text" \| "css-style-sheet"` | `"link"`       | CSS를 어떤 방식으로 출력할지 지정합니다([Output modes](#output-modes-exporttype) 참고).                          |
-| [`pure`](/configuration/module/#moduleparsercsspure)                 | `boolean`                                          | `false`        | strict pure mode. 모든 selector에 local class/id가 포함되어야 합니다. `css/module`, `css/auto`에서만 사용됩니다. |
-| [`as`](/configuration/module/#moduleparsercssas)                     | `"stylesheet" \| "block-contents"`                 | `"stylesheet"` | 소스를 전체 stylesheet로 파싱할지, block 내부 내용으로 파싱할지 지정합니다.                                      |
-| `animation`                                                          | `boolean`                                          | `true`         | local `@keyframes` 이름을 변경합니다.                                                                            |
-| `container`                                                          | `boolean`                                          | `true`         | local `@container` 이름을 변경합니다.                                                                            |
-| `customIdents`                                                       | `boolean`                                          | `true`         | custom identifier를 변경합니다.                                                                                  |
-| `dashedIdents`                                                       | `boolean`                                          | `true`         | dashed identifier(custom property)를 변경합니다.                                                                 |
-| `function`                                                           | `boolean`                                          | `true`         | local `@function` 이름을 변경합니다.                                                                             |
-| `grid`                                                               | `boolean`                                          | `true`         | grid line/area identifier를 변경합니다.                                                                          |
+| 옵션                                                                       | 타입                                               | 기본값         | 설명                                                                                                 |     |     |     |
+| -------------------------------------------------------------------------- | -------------------------------------------------- | -------------- | ---------------------------------------------------------------------------------------------------- | --- | --- | --- |
+| [`import`](/configuration/module/#moduleparsercssimport)                   | `boolean`                                          | `true`         | `@import` at-rule을 처리합니다.                                                                      |     |     |     |
+| [`url`](/configuration/module/#moduleparsercssurl)                         | `boolean`                                          | `true`         | `url()`/`image-set()`/`src()`/`image()`를 처리합니다.                                                |     |     |     |
+| [`namedExports`](/configuration/module/#moduleparsercssnamedexports)       | `boolean`                                          | `true`         | CSS Modules local을 ES module named export로 내보냅니다.                                             |     |     |     |
+| [`exportType`](/configuration/module/#moduleparsercssexporttype)           | `"link" \| "style" \| "text" \| "css-style-sheet"` | `"link"`       | CSS 출력 방식입니다([Output modes](#output-modes-exporttype) 참고).                                  |
+| [`pure`](/configuration/module/#moduleparsercsspure)                       | `boolean`                                          | `false`        | 모든 selector에 local class/id가 필요한 strict pure mode입니다. `css/module`, `css/auto` 전용입니다. |     |     |     |
+| [`as`](/configuration/module/#moduleparsercssas)                           | `"stylesheet" \| "block-contents"`                 | `"stylesheet"` | 전체 stylesheet 또는 block 내용으로 파싱합니다.                                                      |     |     |
+| `animation`                                                                | `boolean`                                          | `true`         | local `@keyframes` 이름을 변경합니다.                                                                |     |     |     |
+| `container`                                                                | `boolean`                                          | `true`         | local `@container` 이름을 변경합니다.                                                                |     |     |     |
+| `customIdents`                                                             | `boolean`                                          | `true`         | custom identifier 이름을 변경합니다.                                                                 |     |     |     |
+| `dashedIdents`                                                             | `boolean`                                          | `true`         | dashed identifier(custom property) 이름을 변경합니다.                                                |     |     |     |
+| `function`                                                                 | `boolean`                                          | `true`         | local `@function` 이름을 변경합니다.                                                                 |     |     |     |
+| `grid`                                                                     | `boolean`                                          | `true`         | grid line/area identifier 이름을 변경합니다.                                                         |     |     |     |
+| [`customMedia`](/configuration/module/#moduleparsercsscustommedia)         | `boolean`                                          | `true`         | 빌드 시점에 `@custom-media`를 리졸브합니다.                                                          |     |     |     |
+| [`customSelectors`](/configuration/module/#moduleparsercsscustomselectors) | `boolean`                                          | `true`         | 빌드 시점에 `@custom-selector`를 리졸브합니다.                                                       |     |     |     |
+| [`fontPreload`](/configuration/module/#moduleparsercssfontpreload)         | `boolean`                                          | `false`        | HTML 엔트리에서 각 `@font-face`의 기본 `src`를 preload합니다.                                        |     |     |     |
+| [`urlHints`](/configuration/module/#moduleparsercssurlhints)               | `UrlHintRule[]`                                    | —              | `url(...)`로 참조한 애셋의 resource hint 규칙입니다.                                                 |     |     |     |
 
 ```js
 export default {
@@ -529,16 +731,16 @@ T> 특정 `@import`나 `url()` 하나만 건드리지 않고 그대로 두려면
 
 ### Generator options
 
-| Option                                                        | Type                                                                                    | Default                                                              | Description                                              |
-| ------------------------------------------------------------- | --------------------------------------------------------------------------------------- | -------------------------------------------------------------------- | -------------------------------------------------------- |
-| [`localIdentName`](/configuration/module/#modulegenerator)    | `string \| function`                                                                    | `"[uniqueName]-[id]-[local]"` (dev) / `"[fullhash]"` (prod)          | 생성할 local class name의 템플릿입니다.                  |
+| 옵션                                                          | 타입                                                                                    | 기본값                                                               | 설명                                                     |     |     |     |     |     |
+| ------------------------------------------------------------- | --------------------------------------------------------------------------------------- | -------------------------------------------------------------------- | -------------------------------------------------------- | --- | --- | --- | --- | --- |
+| [`localIdentName`](/configuration/module/#modulegenerator)    | `string \| function`                                                                    | `"[uniqueName]-[id]-[local]"` (dev) / `"[fullhash]"` (prod)          | 생성할 local class name의 템플릿입니다.                  |     |     |     |     |
 | [`exportsConvention`](/configuration/module/#modulegenerator) | `"as-is" \| "camel-case" \| "camel-case-only" \| "dashes" \| "dashes-only" \| function` | `"as-is"`                                                            | export되는 local 값의 naming convention입니다.           |
-| `exportsOnly`                                                 | `boolean`                                                                               | `document`가 없는 target(예: `node`)에서는 `true`, 그 외에는 `false` | local 값만 export하고 stylesheet 생성은 건너뜁니다(SSR). |
-| `esModule`                                                    | `boolean`                                                                               | `true`                                                               | 생성되는 JS에 ES module 문법을 사용합니다.               |
-| `localIdentHashFunction`                                      | `string`                                                                                | [`output.hashFunction`](/configuration/output/#outputhashfunction)   | `localIdentName` hash에 사용할 hash function입니다.      |
-| `localIdentHashDigest`                                        | `string`                                                                                | `"base64url"`                                                        | local ident의 hash digest 인코딩입니다.                  |
-| `localIdentHashDigestLength`                                  | `number`                                                                                | `6`                                                                  | local ident의 hash digest 길이입니다.                    |
-| `localIdentHashSalt`                                          | `string`                                                                                | [`output.hashSalt`](/configuration/output/#outputhashsalt)           | local ident에 사용할 hash salt입니다.                    |
+| `exportsOnly`                                                 | `boolean`                                                                               | `document`가 없는 target(예: `node`)에서는 `true`, 그 외에는 `false` | local 값만 export하고 stylesheet 생성은 건너뜁니다(SSR). |     |     |     |     |     |
+| `esModule`                                                    | `boolean`                                                                               | `true`                                                               | 생성되는 JS에 ES module 문법을 사용합니다.               |     |     |     |     |     |
+| `localIdentHashFunction`                                      | `string`                                                                                | [`output.hashFunction`](/configuration/output/#outputhashfunction)   | `localIdentName` hash에 사용할 hash function입니다.      |     |     |     |     |     |
+| `localIdentHashDigest`                                        | `string`                                                                                | `"base64url"`                                                        | local ident의 hash digest 인코딩입니다.                  |     |     |     |     |     |
+| `localIdentHashDigestLength`                                  | `number`                                                                                | `6`                                                                  | local ident의 hash digest 길이입니다.                    |     |     |     |     |     |
+| `localIdentHashSalt`                                          | `string`                                                                                | [`output.hashSalt`](/configuration/output/#outputhashsalt)           | local ident에 사용할 hash salt입니다.                    |     |     |     |     |     |
 
 ```js
 export default {
@@ -676,6 +878,127 @@ style.replaceSync(css);
 import "./reset.css"; // 전역
 import * as card from "./card.module.css"; // 범위 지정됨
 ```
+
+### Tailwind CSS (or any PostCSS chain)
+
+Native CSS는 PostCSS가 아니라 CSS loader를 대체합니다. `postcss-loader`를 유지하고 규칙에 CSS module 타입을 지정하여 webpack이 출력 결과를 처리하도록 하세요.
+
+**webpack.config.js**
+
+```js
+export default {
+  experiments: { css: true },
+  module: {
+    rules: [
+      {
+        test: /\.css$/i,
+        use: ["postcss-loader"],
+        type: "css/auto",
+      },
+    ],
+  },
+};
+```
+
+T> 여기서는 `experiments.css: true`를 명시해야 합니다. 기본값 `'auto'`에서는 `.css` 파일에 loader를 지정한 규칙이 있으면 해당 파일의 네이티브 지원이 비활성화됩니다.
+
+### Sass with CSS Modules
+
+**webpack.config.js**
+
+```js
+export default {
+  experiments: { css: true },
+  module: {
+    rules: [
+      {
+        test: /\.module\.s[ac]ss$/i,
+        use: ["sass-loader"],
+        type: "css/module",
+      },
+      {
+        test: /\.s[ac]ss$/i,
+        exclude: /\.module\.s[ac]ss$/i,
+        use: ["sass-loader"],
+        type: "css/global",
+      },
+    ],
+  },
+};
+```
+
+### Group every stylesheet into one file
+
+기본적으로 CSS는 청크 그래프를 따르므로 각 엔트리에 자체 스타일시트가 생성됩니다. CSS module 타입을 key로 사용하는 [cache group](/plugins/split-chunks-plugin/#splitchunkscachegroups)을 사용하면 모두 하나로 모을 수 있습니다.
+
+**webpack.config.js**
+
+```js
+export default {
+  mode: "production",
+  entry: { home: "./src/home.js", about: "./src/about.js" },
+  experiments: { css: true },
+  output: {
+    cssFilename: "css/[name].[contenthash].css",
+  },
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        styles: {
+          type: "css/auto",
+          name: "styles",
+          chunks: "all",
+          enforce: true,
+        },
+      },
+    },
+  },
+};
+```
+
+### Theme switching with constructable stylesheets
+
+**src/index.js**
+
+```js
+import dark from "./theme-dark.css" with { type: "css" };
+import light from "./theme-light.css" with { type: "css" };
+
+const media = matchMedia("(prefers-color-scheme: dark)");
+const apply = () => {
+  document.adoptedStyleSheets = [media.matches ? dark : light];
+};
+
+media.addEventListener("change", apply);
+apply();
+```
+
+각 theme는 별도의 `CSSStyleSheet`이므로 교체할 때 다시 파싱하지 않으며 스타일이 적용되지 않은 콘텐츠가 순간적으로 표시되지 않습니다.
+
+### Development server with hot-reloaded styles
+
+**webpack.config.js**
+
+```js
+export default {
+  mode: "development",
+  experiments: { css: true },
+  devServer: {
+    hot: true,
+  },
+};
+```
+
+CSS 변경 사항은 제자리에서 적용되며 설정할 `style-loader`나 별도의 HMR 연결이 없습니다.
+
+### Importing a package's stylesheet
+
+```css
+/* src/styles.css */
+@import "bootstrap";
+```
+
+Webpack은 패키지의 `package.json`에서 `style` 필드를 찾고 없으면 `main`을 사용하므로 bare specifier가 JavaScript와 같은 방식으로 CSS에서도 작동합니다.
 
 ## Experimental status & known limitations
 

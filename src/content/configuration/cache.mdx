@@ -1,5 +1,6 @@
 ---
 title: Cache
+description: webpack의 Cache 설정과 사용 방법을 설명합니다.
 sort: 12
 contributors:
   - snitin315
@@ -270,11 +271,11 @@ export default {
 
 ### cache.managedPaths
 
-`[string] = ['./node_modules']`
+`(string | RegExp)[]`
 
 W> [snapshot.managedPaths](/configuration/other-options/#managedpaths)로 이동했습니다.
 
-`cache.managedPaths`는 패키지 관리자 전용 관리 경로의 배열입니다. Webpack은 해싱 및 타임 스탬프를 방지하고 버전이 고유하고 스냅샷으로 사용한다고 가정합니다(메모리 및 파일 시스템 캐시 모두).
+`cache.managedPaths`는 설정 스키마에서 계속 허용(`type: 'filesystem'` 하에서만)되지만 무시됩니다. webpack은 설정을 정규화하는 동안 이 값을 삭제하고 패키지 관리자가 관리하는 경로에 실제로 적용되는 옵션인 [`snapshot.managedPaths`](/configuration/other-options/#managedpaths)만 읽습니다.
 
 ### cache.maxAge
 
@@ -434,7 +435,7 @@ export default {
 
 ### cache.store
 
-`string = 'pack': 'pack'`
+`'pack' = 'pack'`
 
 `cache.store`는 파일 시스템에 데이터를 저장할 시기를 webpack에게 알려줍니다.
 
@@ -458,9 +459,9 @@ export default {
 
 ### cache.type
 
-`string: 'memory' | 'filesystem'`
+`'memory' | 'filesystem'`
 
-`cache` 타입을 메모리 또는 파일 시스템으로 설정합니다. `memory` 옵션은 간단하며 webpack에 캐시를 메모리에 저장하도록 지시하고 추가 설정을 허용하지 않습니다.
+`cache` 타입을 메모리 또는 파일 시스템으로 설정합니다. `memory` 옵션은 간단하며 webpack에 캐시를 메모리에 저장하도록 지시하고 [`cache.maxGenerations`](#cachemaxgenerations)와 [`cache.cacheUnaffected`](#cachecacheunaffected) 옵션만 허용합니다.
 
 **webpack.config.js**
 

@@ -40,11 +40,11 @@ translators:
 
 ## output.assetModuleFilename
 
-`string = '[hash][ext][query]'` `function (pathData, assetInfo) => string`
+`string = '[hash][ext][query][fragment]'` `(pathData: PathData, assetInfo?: AssetInfo) => string`
 
 [`output.filename`](#outputfilename)과 동일하지만 [애셋 모듈](/guides/asset-modules/)용입니다.
 
-`[name]`, `[file]`, `[query]`, `[fragment]`, `[base]`, `[path]`는 데이터 URI 대체로 빌드된 애셋에 대해 빈 문자열로 설정됩니다.
+데이터 URI 모듈로부터 빌드된 애셋의 경우 `[file]`, `[query]`, `[fragment]`, `[path]`는 빈 문자열로 설정되고, `[name]`과 `[base]`는 콘텐츠 해시로 해석되며, `[ext]`는 MIME 타입에서 파생됩니다.
 
 ## output.asyncChunks
 
@@ -142,13 +142,15 @@ T> `<script>`태그의 `charset`속성이 [지원 중단](https://developer.mozi
 
 ## output.chunkFilename
 
-`string = '[id].js'` `function (pathData, assetInfo) => string`
+`string = '[id].js'` `(pathData: PathData, assetInfo?: AssetInfo) => string`
 
 이 옵션은 초기가 아닌 청크 파일의 이름을 결정합니다. 가능한 값에 대한 자세한 내용은 [`output.filename`](#outputfilename) 옵션을 참고하세요.
 
 청크 파일 요청을 위해 런타임에서 파일 이름을 생성해야 합니다. 이 때문에 `[name]` 및 `[chunkhash]`와 같은 자리 표시자는 webpack 런타임을 사용하여 청크 ID에서 자리 표시자 값으로의 매핑을 출력 번들에 추가해야 합니다. 이렇게하면 크기가 증가하고 청크의 자리 표시자 값이 변경 될 때 번들이 무효화 될 수 있습니다.
 
-기본적으로 `[id].js`가 사용되거나 [`output.filename`](#outputfilename)에서 유추 된 값이 사용됩니다(`[name]`이 `[id]`로 대체되거나 `[id].`가 추가).
+T> webpack 5.111.0부터, 네이티브 `import()`를 통해 청크를 로드하는 [`output.module`](#outputmodule) 빌드는 청크 로더가 보유한 리터럴 지정자로 각 청크를 명명하므로, 번들러나 프리로드 스캐너가 webpack 런타임을 실행하지 않고도 따라갈 수 있습니다. 이 이름들은 런타임을 포함하는 청크에 저장되므로, 지연 로드된 청크를 변경하면 해당 청크만 무효화되고 이를 import하는 모든 모듈은 무효화되지 않습니다. webpack 5.110은 각 import 사이트에 지정자를 작성했으며, 이로 인해 import된 청크의 `[contenthash]`가 import하는 모듈에 포함되었습니다.
+
+기본적으로 이 값은 [`output.filename`](#outputfilename)에서 유추됩니다. `[name]`, `[id]`, `[chunkhash]` 또는 `[contenthash]`를 포함하는 경우 그대로 사용되고, 그렇지 않으면 기본 이름 앞에 `[id].`가 추가됩니다(`bundle.js`는 `[id].bundle.js`가 됨). `output.filename`이 함수인 경우 `[id].js`(또는 [`output.module`](#outputmodule)과 함께 `[id].mjs`)가 사용됩니다.
 
 **webpack.config.js**
 
@@ -180,7 +182,7 @@ T> `output.filename`이 `[name]`, `[id]`, [`contenthash`], 또는 [`chunkhash`]�
 
 ## output.chunkFormat
 
-`false` `string: 'array-push' | 'commonjs' | 'module' | <any string>`
+`false` `'array-push' | 'commonjs' | 'module' | string`
 
 청크의 포맷 (기본적으로 포함되는 포맷은 `'array-push'` (web/WebWorker), `'commonjs'` (node.js), `'module'` (ESM) 등이지만 플러그인에 의해 추가될 수 있습니다).
 
@@ -218,9 +220,11 @@ export default {
 
 ## output.chunkLoadingGlobal
 
-`string = 'webpackChunkwebpack'`
+`string`
 
-webpack에서 청크를 로드하기 위해 사용하는 전역 변수입니다.
+[`output.chunkFormat`](#outputchunkformat)가 `'array-push'`일 때(기본적으로 `web` 및 `webworker` [타겟](/configuration/target/)) webpack이 청크를 로드하기 위해 사용하는 전역 배열의 이름입니다. 기본 이름은 `'webpackChunk'` 뒤에 [`output.uniqueName`](#outputuniquename)이 붙으며, JavaScript 식별자에 유효하지 않은 모든 문자는 `_`로 대체됩니다. 배열은 [`output.globalObject`](#outputglobalobject)에 있으므로 `my-app` 패키지의 브라우저 빌드에서는 `self['webpackChunkmy_app']`입니다.
+
+모든 청크 파일은 자신의 모듈을 해당 배열에 push하며, 초기 청크에 포함된 런타임은 배열의 `push` 메서드를 자체 콜백으로 교체합니다. 이를 통해 런타임 이전에 로드된 청크와 이후에 도착하는 청크 모두 설치되어, 비동기 청크 로딩이 고정된 로딩 순서 없이 작동합니다.
 
 **webpack.config.js**
 
@@ -234,11 +238,19 @@ export default {
 };
 ```
 
+T> 이 옵션은 webpack 4의 `output.jsonpFunction`을 대체합니다. webpack 5에 `jsonpFunction`을 전달하면 `output.chunkLoadingGlobal`을 가리키는 메시지와 함께 유효성 검사에 실패합니다.
+
+동일한 `chunkLoadingGlobal`을 공유하는 하나의 문서에 로드된 두 빌드는 서로의 배열에 청크를 push하여 일반적으로 `Uncaught TypeError: __webpack_modules__[moduleId] is not a function`과 같은 런타임 오류가 발생합니다.
+
+webpack 5는 [`output.uniqueName`](#outputuniquename)에서 기본값을 파생시켜 이를 방지하며, `output.uniqueName`은 `package.json`의 `name`을 기본값으로 사용합니다. 따라서 동일한 패키지 이름으로 빌드된 호스트 애플리케이션과 리모트, 또는 같은 설정으로 두 번 빌드된 라이브러리처럼 페이지의 여러 빌드가 동일한 고유 이름을 가지게 될 경우에만 이 옵션을 설정하면 됩니다.
+
+W> [`output.uniqueName`](#outputuniquename) 설정을 권장합니다. `chunkLoadingGlobal`과 달리 [`output.hotUpdateGlobal`](#outputhotupdateglobal) 및 [`output.devtoolNamespace`](#outputdevtoolnamespace)도 구분해줍니다.
+
 ## output.chunkLoading
 
-`false` `string: 'jsonp' | 'import-scripts' | 'require' | 'async-node' | 'import' | <any string>`
+`false` `'jsonp' | 'import-scripts' | 'require' | 'async-node' | 'import' | string`
 
-청크를 로드하는 메소드(기본적으로 포함된 메소드는 `'jsonp'` (web), `'import'` (ESM), `'importScripts'` (WebWorker), `'require'` (sync node.js), `'async-node'` (async node.js) 등이지만 플러그인에 의해 추가될 수 있습니다).
+청크를 로드하는 메서드입니다(기본적으로 포함된 메서드는 `'jsonp'` (web), `'import'` (ESM), `'import-scripts'` (WebWorker), `'require'` (sync node.js), `'async-node'` (async node.js)이지만 플러그인에 의해 추가될 수 있습니다).
 
 T> 이 옵션의 기본 값은 [`target`](/configuration/target/)과 [`chunkFormat`](#outputchunkformat) 설정에 따라 달라집니다. 더 자세한 내용은 [webpack의 기본값](https://github.com/webpack/webpack/blob/main/lib/config/defaults.js)에서 `"chunkLoading"` 을 검색하세요.
 
@@ -332,9 +344,192 @@ export default {
 };
 ```
 
+## output.copy
+
+<Badge text="5.111.0+" />
+
+`string` `(string | object)[]`
+
+빌드의 일부로 파일과 디렉터리를 [`output.path`](#outputpath)에 복사합니다. 복사된 파일은 다른 애셋과 마찬가지로 애셋이 되어, [`output.clean`](#outputclean)이 유지하고 [stats](/configuration/stats/)에 보고되며, [watch 모드](/configuration/watch/)에서 소스 파일을 편집하면 나머지를 재빌드하지 않고 다시 복사됩니다.
+
+```js
+export default {
+  // ...
+  output: {
+    copy: "static",
+  },
+};
+```
+
+문자열은 단일 패턴의 `from`에 대한 단축 표기입니다. 문자열과 패턴 객체를 혼합하여 여러 위치에서 복사하려면 배열을 전달하세요.
+
+```js
+export default {
+  // ...
+  output: {
+    copy: [
+      // A directory keeps the structure below itself.
+      "static",
+      // Several sources into one destination, in order.
+      { from: ["licenses/*.txt", "vendor/licenses/*.txt"], to: "licenses" },
+      // A filename template renames, flattens and hashes.
+      { from: "img", to: "i", filename: "[name].[contenthash][ext]" },
+    ],
+  },
+};
+```
+
+복사된 모든 애셋은 [asset info](/api/stats/#asset-objects)에 `copied: true`와 복사된 원본 파일명 `sourceFilename`을 포함하므로, 이후 플러그인이 복사된 애셋과 생성된 애셋을 구별할 수 있습니다.
+
+W> 아무것도 일치하지 않는 패턴은 경고를 발생시키고, 컴파일이 직접 출력하는 애셋 위에 파일을 복사하는 것은 오류입니다. `filename` 또는 `to`로 복사본에 다른 이름을 지정하세요. 하나의 `output.copy` 내에서 나중 패턴은 이전 패턴이 작성한 것을 의도적으로 덮어쓸 수 있습니다.
+
+### Copy patterns
+
+패턴은 `from`과 아래의 옵션으로 구성됩니다.
+
+| 옵션                  | 타입                                                             | 기본값                       | 설명                                                                                                             |                                                                                               |
+| --------------------- | ---------------------------------------------------------------- | ---------------------------- | ---------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| `context`             | `string`                                                         | 아래 참조                    | `from`이 해석되는 디렉터리이며, 복사된 경로가 구조를 유지하는 기준 디렉터리입니다.                               |                                                                                               |
+| `filename`            | `string` `(pathData: PathData, assetInfo?: AssetInfo) => string` | `'[path][base]'`             | `to` 안의 복사된 파일 이름으로, [파일 이름 템플릿](#template-strings)입니다.                                     |                                                                                               |
+| `from`                | `string` `string[]`                                              | 필수                         | 복사할 glob 또는 경로입니다. glob은 `/`로 구분하고 점 파일을 일치시키며 `*`, `**`, `?`, `[]`, `{}`를 지원합니다. |                                                                                               |
+| `globOptions`         | `object`                                                         |                              | `from`의 glob 일치 방법 — [glob 옵션](#glob-options)을 참조하세요.                                               |                                                                                               |
+| `info`                | `object` `(file: CopiedFile) => object`                          |                              | 복사된 파일의 [asset info](/api/stats/#asset-objects)로, 복사가 이미 가진 정보 위에 병합됩니다.                  |                                                                                               |
+| `preservePermissions` | `boolean`                                                        | `false`                      | 복사 시 원본 파일의 권한을 유지할지 여부입니다. Windows에서는 효과가 없습니다.                                   |                                                                                               |
+| `preserveTimestamps`  | `boolean`                                                        | `false`                      | 복사 시 쓰기 시간 대신 원본 파일의 접근 및 수정 시간을 유지할지 여부입니다.                                      |                                                                                               |
+| `to`                  | `string` `(file: CopiedFile) => string`                          | [`output.path`](#outputpath) | 파일이 복사될 디렉터리로, `output.path` 상대 경로입니다.                                                         |                                                                                               |
+| `transform`           | `(content: Buffer, absoluteFilename: string) => string \| Buffer` `object`             |                                                                                                                  | 파일을 통과하는 동안 콘텐츠를 수정합니다 — [콘텐츠 변환](#transforming-content)을 참조하세요. |
+
+`context`는 기본적으로 컴파일러 [`context`](/configuration/entry-context/#context)이며, `from`이 glob이 아닐 때는 `from`이 지정하는 것으로 설정됩니다. 따라서 `from: 'static'`은 `static/` 디렉터리가 아닌 `static/` 아래의 트리를 복사합니다. 명시적으로 설정하면 패턴의 모든 `from`을 하나의 디렉터리에 뿌리를 두게 하며, 여러 glob이 공유 구조를 유지하는 방법입니다.
+
+```js
+export default {
+  // ...
+  output: {
+    copy: [
+      // "vendor/a/x.js" lands at "lib/a/x.js", not at "lib/x.js".
+      { from: ["a/**/*.js", "b/**/*.js"], context: "vendor", to: "lib" },
+    ],
+  },
+};
+```
+
+`to`와 `info`는 각각 복사 중인 파일의 함수가 될 수 있으며, `CopiedFile`을 받습니다. `filename`은 `to` 상대 경로로 파일이 현재까지 가진 이름입니다.
+
+```ts
+type CopiedFile = {
+  absoluteFilename: string;
+  sourceFilename: string;
+  filename: string;
+};
+```
+
+```js
+export default {
+  // ...
+  output: {
+    copy: [
+      {
+        from: "assets",
+        to: (file) => (file.filename.endsWith(".css") ? "css" : "media"),
+        info: (file) => ({ immutable: file.filename.endsWith(".png") }),
+      },
+    ],
+  },
+};
+```
+
+### Glob options
+
+`globOptions`는 `from`의 glob이 어떻게 일치하는지를 지정합니다.
+
+| 옵션             | 타입       | 기본값 | 설명                                                                                                          |
+| ---------------- | ---------- | ------ | ------------------------------------------------------------------------------------------------------------- |
+| `caseSensitive`  | `boolean`  | `true` | glob이 파일 이름의 대소문자를 구분하여 일치하는지 여부입니다.                                                 |
+| `deep`           | `number`   | 무제한 | glob 기준 아래 몇 개의 디렉터리 레벨을 읽을지입니다. `1`은 기준 자체만 읽습니다.                              |
+| `dot`            | `boolean`  | `true` | 이름을 명시하지 않고 점으로 시작하는 파일이나 디렉터리에 glob이 도달하는지 여부입니다.                        |
+| `followSymlinks` | `boolean`  | `true` | 심볼릭 링크를 해석하여 가리키는 대상으로 복사할지 여부입니다. `false`는 링크 자체를 미해석 상태로 복사합니다. |
+| `ignore`         | `string[]` |        | 복사되지 않는 파일의 glob으로, `from`처럼 해석됩니다. 일치하는 디렉터리는 전체가 건너뜁니다.                  |
+
+```js
+export default {
+  // ...
+  output: {
+    copy: [
+      {
+        from: "static/**/*.html",
+        to: "pages",
+        globOptions: { dot: false, deep: 2, ignore: ["**/draft-*.html"] },
+      },
+    ],
+  },
+};
+```
+
+### Transforming content
+
+`transform`은 파일을 통과하는 동안 재작성합니다. 콘텐츠를 `Buffer`로, 읽어온 절대 경로를 받아 문자열, `Buffer`, 또는 이 중 하나의 Promise를 반환할 수 있습니다.
+
+```js
+export default {
+  // ...
+  output: {
+    copy: [
+      {
+        from: "config.json",
+        to: "runtime",
+        transform: (content) =>
+          content.toString().replace("__API__", "https://example.com"),
+      },
+    ],
+  },
+};
+```
+
+결과는 파일 콘텐츠에 캐시됩니다. 변환이 다른 것에 의존하는 경우 객체 형식으로 지정하여 변경 시 캐시가 미스되도록 하세요.
+
+```js
+export default {
+  // ...
+  output: {
+    copy: [
+      {
+        from: "config.json",
+        transform: {
+          transformer: (content) =>
+            content.toString().replace("__API__", apiUrl),
+          cache: { keys: { apiUrl } },
+        },
+      },
+    ],
+  },
+};
+```
+
+`cache`는 캐싱을 건너뛰기 위해 `false`를 받거나, `(defaultKeys, absoluteFilename)`을 받아 캐시 키를 반환하는 함수를 받을 수 있습니다.
+
+T> 링크로 복사된 심볼릭 링크(`globOptions.followSymlinks: false`)는 대상을 전체 콘텐츠로 가지므로, `transform`은 절대 이를 볼 수 없습니다.
+
+### Copying with the plugin
+
+`output.copy`는 패턴을 다루고, [`CopyPlugin`](/plugins/copy-plugin/)은 `concurrency`와 파일이 복사되는 `processAssets` `stage` 두 가지 옵션이 더 있는 동일한 복사입니다. 이 중 하나가 필요할 때 사용하세요.
+
+```js
+import webpack from "webpack";
+
+export default {
+  // ...
+  plugins: [
+    new webpack.CopyPlugin({
+      patterns: ["static"],
+      concurrency: 50,
+    }),
+  ],
+};
+```
+
 ## output.crossOriginLoading
 
-`boolean = false` `string: 'anonymous' | 'use-credentials'`
+`boolean = false` `'anonymous' | 'use-credentials'`
 
 청크의 [cross-origin](https://developer.mozilla.org/en/docs/Web/HTML/Element/script#attr-crossorigin) 로드를 활성화하도록 webpack에게 전달합니다. script 태그를 추가하여 온 디맨트 청크를 로드할 때 JSONP를 사용하는 `'web'`으로 [`target`](/configuration/target/)이 설정된 경우에만 적용됩니다.
 
@@ -343,7 +538,7 @@ export default {
 
 ## output.cssChunkFilename
 
-`string` `function (pathData, assetInfo) => string`
+`string` `(pathData: PathData, assetInfo?: AssetInfo) => string`
 
 이 옵션은 디스크의 비초기 CSS 출력 파일의 이름을 결정합니다. 가능한 값에 대한 자세한 내용은 ['output.filename'](#outputfilename) 옵션을 참고하세요.
 
@@ -351,7 +546,7 @@ export default {
 
 ## output.cssFilename
 
-`string` `function (pathData, assetInfo) => string`
+`string` `(pathData: PathData, assetInfo?: AssetInfo) => string`
 
 이 옵션은 디스크의 CSS 출력 파일 이름을 결정합니다. 가능한 값에 대한 자세한 내용은 [`output.filename`](#outputfilename) 옵션을 참고하세요.
 
@@ -359,7 +554,7 @@ export default {
 
 ## output.devtoolFallbackModuleFilenameTemplate
 
-`string` `function (info)`
+`string` `(context: ModuleFilenameTemplateContext) => string`
 
 위의 템플릿 문자열 또는 함수가 중복을 생성할 때 사용되는 폴백입니다.
 
@@ -367,7 +562,7 @@ export default {
 
 ## output.devtoolModuleFilenameTemplate
 
-`string = 'webpack://[namespace]/[resource-path]?[loaders]'` `function (info) => string`
+`string = 'webpack://[namespace]/[resource-path]?[loaders]'` `(context: ModuleFilenameTemplateContext) => string`
 
 이 옵션은 [`devtool`](/configuration/devtool)이 모듈 이름이 필요한 옵션을 사용하는 경우에만 사용됩니다.
 
@@ -387,18 +582,21 @@ export default {
 
 아래의 substitution 항목은 webpack의 내부 [`ModuleFilenameHelpers`](https://github.com/webpack/webpack/blob/main/lib/ModuleFilenameHelpers.js)를 통해 템플릿 문자열에서 사용할 수 있습니다.
 
-| Template                 | Description                                                                                             |
-| ------------------------ | ------------------------------------------------------------------------------------------------------- |
-| [absolute-resource-path] | 절대 경로 파일이름                                                                                      |
-| [all-loaders]            | 자동 및 명시적 로더, 첫 번째 로더 이름까지 파라미터                                                     |
-| [hash]                   | 모듈 식별자의 해시                                                                                      |
-| [id]                     | 모듈 식별자                                                                                             |
-| [loaders]                | 명시적 로더, 첫 번째 로더 이름까지 파라미터                                                             |
-| [resource]               | 파일을 확인하는 데 사용되는 경로와 첫 번째 로더에서 사용되는 쿼리 파라미터                              |
-| [resource-path]          | 쿼리 파라미터없이 파일을 해결하는 경우 사용되는 경로                                                    |
-| [namespace]              | 모듈 네임스페이스. 일반적으로 라이브러리로 빌드할 때 라이브러리의 이름이고 라이브러리가 아니면 비어있음 |
+| Template                 | `info` property        | Description                                                                                         |
+| ------------------------ | ---------------------- | --------------------------------------------------------------------------------------------------- |
+| [absolute-resource-path] | `absoluteResourcePath` | The absolute filename                                                                               |
+| [all-loaders]            | `allLoaders`           | Automatic and explicit loaders and params up to the name of the first loader                        |
+| [hash]                   | `hash`                 | The hash of the module identifier                                                                   |
+| [id]                     | `moduleId`             | The module id                                                                                       |
+| [identifier]             | `identifier`           | The module identifier, which includes every loader and the query                                    |
+| [loaders]                | `loaders`              | Explicit loaders and params up to the name of the first loader                                      |
+| [query]                  | `query`                | The query of the resource, including the leading `?`, or an empty string                            |
+| [resource]               | `resource`             | The path used to resolve the file and any query params used on the first loader                     |
+| [resource-path]          | `resourcePath`         | The path used to resolve the file without any query params                                          |
+| [short-identifier]       | `shortIdentifier`      | The readable module identifier, as shown in [stats](/configuration/stats/)                          |
+| [namespace]              | `namespace`            | The modules namespace. This is usually the library name when building as a library, empty otherwise |
 
-함수를 사용할 때 `info` 파라미터를 통해 동일한 옵션을 camel case로 사용할 수 있습니다.
+함수를 사용할 때 동일한 값은 위에 나열된 프로퍼티 이름 아래 `info` 파라미터를 통해 사용할 수 있습니다. 항상 캐멀 케이스 템플릿 이름과 동일하지는 않습니다: `[id]`는 `info.moduleId`입니다.
 
 ```js
 export default {
@@ -438,7 +636,7 @@ export default {
 
 ## output.enabledChunkLoadingTypes
 
-`[string: 'jsonp' | 'import-scripts' | 'require' | 'async-node' | <any string>]`
+`('jsonp' | 'import-scripts' | 'require' | 'async-node' | 'import' | string)[]`
 
 엔트리포인트에서 사용할 수 있는 청크 로드의 유형 목록입니다. webpack에 의해 자동으로 채워집니다. 함수를 입력 옵션으로 사용하고, 거기에서 chunkLoading 옵션을 반환할 때만 필요합니다.
 
@@ -456,7 +654,7 @@ export default {
 
 ## output.enabledLibraryTypes
 
-`[string]`
+`string[]`
 
 엔트리 포인트에서 사용할 수 있는 라이브러리 타입 목록입니다.
 
@@ -471,7 +669,7 @@ export default {
 
 ## output.enabledWasmLoadingTypes
 
-`[string]`
+`string[]`
 
 엔트리 포인트에서 사용할 수 있는 wasm 로딩 유형 목록입니다.
 
@@ -537,6 +735,10 @@ export default {
       templateLiteral: true,
       // 이 환경은 `import.meta.dirname`과 `import.meta.filename`을 지원합니다.
       importMetaDirnameAndFilename: false,
+      // 환경이 지연 모듈 평가('import defer * as ns from "..."', 'import.defer("...")')를 지원합니다. webpack 5.110.0부터 지원됩니다.
+      deferImport: false,
+      // 환경이 source phase import('import source m from "..."', 'import.source("...")')를 지원합니다. webpack 5.110.0부터 지원됩니다.
+      sourceImport: false,
     },
   },
 };
@@ -548,7 +750,7 @@ T> `let`, `spread`, `hasOwn`, `symbol` 및 `nodeBuiltinModuleGetter`는 webpack 
 
 ## output.filename
 
-`string` `function (pathData, assetInfo) => string`
+`string` `(pathData: PathData, assetInfo?: AssetInfo) => string`
 
 이 옵션은 각 출력 번들의 이름을 결정합니다. 번들은 [`output.path`](#outputpath) 옵션으로 지정된 디렉터리에 작성됩니다.
 
@@ -672,16 +874,18 @@ T> 이 옵션은 온 디맨드 로드되는 청크의 출력 파일에는 영향
 
 파일 수준에서 사용할 수 있는 substitution입니다.
 
-| Template   | Description                                                                   |
-| ---------- | ----------------------------------------------------------------------------- |
-| [file]     | 쿼리 또는 fragment가 없는 파일 이름 및 경로                                   |
-| [query]    | 앞에 `?`가 있는 쿼리                                                          |
-| [fragment] | 앞에 `#`가 있는 fragment                                                      |
-| [base]     | 경로없이 확장자를 포함한 파일 이름                                            |
-| [filebase] | 더 이상 지원되지 않음                                                         |
-| [path]     | 파일 이름을 제외한 경로                                                       |
-| [name]     | 확장자나 경로가 없는 파일 이름                                                |
-| [ext]      | `.`으로 시작하는 확장자 ([output.filename](#outputfilename)에 사용할 수 없음) |
+| Template        | 설명                                                                            |
+| --------------- | ------------------------------------------------------------------------------- |
+| [file]          | query 또는 fragment가 없는 파일 이름과 경로                                     |
+| [query]         | 앞에 `?`가 있는 query                                                           |
+| [fragment]      | 앞에 `#`가 있는 fragment                                                        |
+| [base]          | 경로 없이 확장자를 포함한 파일 이름                                             |
+| [filebase]      | `[base]`와 같지만 deprecated                                                    |
+| [path]          | 파일 이름을 제외한 경로                                                         |
+| [containedfile] | `[file]`과 같지만 `output.path` 내부에 유지                                     |
+| [containedpath] | `[path]`와 같지만 `output.path` 내부에 유지                                     |
+| [name]          | 확장자와 경로가 없는 파일 이름                                                  |
+| [ext]           | 앞에 `.`이 있는 확장자([output.filename](#outputfilename)에서는 사용할 수 없음) |
 
 URL 수준에서 사용할 수 있는 substitution입니다.
 
@@ -691,9 +895,24 @@ URL 수준에서 사용할 수 있는 substitution입니다.
 
 T> `[file]`은 `[path][base]`와 같습니다. `[base]`는 `[name][ext]`와 같습니다. 전체 경로는 `[path][name][ext][query][fragment]` 또는 `[path][base][query][fragment]` 또는 `[file][query][fragment]`입니다.
 
-해시 길이(`[hash]`, `[contenthash]` 또는 `[chunkhash]`)는 `[hash:16]`(기본값 20)을 사용하여 지정할 수 있습니다. 또는 [`output.hashDigestLength`](#outputhashdigestlength)를 지정하여 길이를 전역적으로 설정합니다.
+`[containedfile]`과 `[containedpath]` <Badge text="5.110.0+" />는 결과가 항상 [`output.path`](#outputpath) 아래에 있도록 `[file]`과 `[path]`를 재작성합니다. 앞쪽 절대 root와 모든 `../` segment를 `_/`로 바꿉니다. [`context`](/configuration/entry-context/#context) 밖에서 리졸브된 모듈, 연결된 패키지, 프로젝트 root 위의 파일은 `[path]`가 `..`로 시작하며 이를 파일 이름 template에 사용하면 애셋을 출력 디렉터리 밖에 기록합니다. contained placeholder는 대신 같은 디렉터리 구조를 출력 디렉터리 안에 유지합니다.
 
-webpack 5.108.0부터 해시 다이제스트 인코딩을 `[<hash>:<digest>:<length>]` 형식으로 인라인 설정할 수도 있습니다. 예: `[contenthash:base64:8]`. 다이제스트는 기본적으로 [`output.hashDigest`](#outputhashdigest)(`hex`)로 설정되며, CSS 모듈 [`localIdentName`](/loaders/css-loader/#localidentname) 자리 표시자에서도 동일한 형식이 작동합니다.
+```js
+// context가 ./src이고 모듈이 ../shared/logo.png에 있는 경우
+export default {
+  // ...
+  output: {
+    assetModuleFilename: "[containedpath][name][ext]", // _/shared/logo.png
+    // "[path][name][ext]"는 output.path 밖의 ../shared/logo.png로 내보냅니다.
+  },
+};
+```
+
+[`experiments.futureDefaults`](/configuration/experiments/#experimentsfuturedefaults)를 활성화하면 애셋과 HTML 모듈에서 `[path]`와 `[file]`이 이미 이 방식으로 동작하므로 해당 template은 contained placeholder와 같은 값으로 리졸브됩니다. 이는 webpack 6에서 기본 동작이 됩니다.
+
+hash 길이(`[hash]`, `[contenthash]`, `[chunkhash]`)는 `[hash:16]` 형식으로 지정할 수 있으며 기본값은 20입니다. 또는 [`output.hashDigestLength`](#outputhashdigestlength)로 전역 길이를 설정할 수 있습니다.
+
+webpack 5.108.0부터 hash digest encoding을 `[<hash>:<digest>:<length>]` 형식으로 인라인 설정할 수도 있습니다(예: `[contenthash:base64:8]`). digest 기본값은 [`output.hashDigest`](#outputhashdigest)(`hex`)이며 같은 형식을 CSS module [`localIdentName`](/configuration/module/#modulegenerator) placeholder에서도 사용할 수 있습니다.
 
 실제 파일 이름에 자리 표시자 중 하나를 사용하려는 경우 자리 표시자 대체를 필터링할 수 있습니다. 예를 들어 `[name].js` 파일을 출력하려면 대괄호 사이에 백슬래시를 추가하여 `[name]` 자리 표시자를 이스케이프해야 합니다. 따라서 `[\name\]`은 애셋의 `name`으로 대체되는 대신 `[name]`을 생성합니다.
 
@@ -770,14 +989,14 @@ export default {
 
 표준 Node.js 인코딩 외에도 webpack은 더 짧거나 URL에 안전한 해시 값을 생성하기 위한 다음과 같은 사용자 지정 다이제스트 알고리즘을 지원합니다.
 
-- `base64url` - URL 안전 Base64 인코딩(RFC 4648), 파일 이름에 권장
-- `base62` - Base62 인코딩(0-9, A-Z, a-z)
-- `base58` - Base58 인코딩(비트코인 알파벳)
-- `base52` - Base52 인코딩(A-Z, a-z)
-- `base49` - Base49 인코딩
-- `base36` - Base36 인코딩(0-9, A-Z)
-- `base32` - Base32 인코딩(RFC 4648)
-- `base25` - Base25 인코딩
+- `'base64url'` - URL-safe base64 encoding (RFC 4648), recommended for filenames
+- `'base62'` - Base62 encoding (0-9, A-Z, a-z)
+- `'base58'` - Base58 encoding (Bitcoin alphabet)
+- `'base52'` - Base52 encoding (A-Z, a-z)
+- `'base49'` - Base49 encoding
+- `'base36'` - Base36 encoding (0-9, a-z)
+- `'base32'` - Base32 encoding (RFC 4648)
+- `'base26'` - Base26 encoding (a-z)
 
 이러한 사용자 지정 인코딩은 URL 안전성을 유지하면서 파일 이름의 해시 값을 더 짧게 생성하는 데 특히 유용합니다.
 
@@ -855,9 +1074,9 @@ T> 일반적으로 `output.hotUpdateChunkFilename`을 변경할 필요가 없습
 
 ## output.hotUpdateMainFilename
 
-`string = '[runtime].[fullhash].hot-update.json'` `function`
+`string = '[runtime].[fullhash].hot-update.json'`
 
-주요 핫 업데이트 파일 이름을 사용자 지정합니다. `[fullhash]`, `[runtime]`을 자리 표시자로 사용할 수 있습니다.
+메인 hot update 파일명을 커스텀합니다. `[fullhash]`와 `[runtime]`을 플레이스홀더로 사용할 수 있습니다. [`output.chunkLoading`](#outputchunkloading)이 `'import'`인 경우, 매니페스트가 `import()`를 통해 로드되므로 기본값은 `'[runtime].[fullhash].hot-update.json.mjs'`입니다.
 
 T> 일반적으로 `output.hotUpdateMainFilename`을 변경할 필요가 없습니다.
 
@@ -1140,9 +1359,9 @@ export default {
 
 <Badge text="5.107.0+" />
 
-`string = output.filename with '.js' replaced by '.html'` `function (pathData, assetInfo) => string`
+`string = output.filename with '.js' replaced by '.html'` `(pathData: PathData, assetInfo?: AssetInfo) => string`
 
-[추출된 HTML 모듈](/configuration/module/#modulegeneratorhtmlextract)(초기 청크)에 의해 생성되는 HTML 파일의 파일명 템플릿입니다. [`output.filename`](#outputfilename)과 같은 방식으로 작동하며 동일한 [템플릿 문자열](#template-strings)을 지원합니다. 설정하지 않으면 `output.filename`에서 `.js` 확장자를 `.html`로 교체하여 파생됩니다(`output.filename`이 함수인 경우 `[name].html`로 폴백). 이는 `cssFilename`이 `filename`에서 파생되는 방식을 미러링합니다.
+[추출된 HTML 모듈](/configuration/module/#modulegeneratorhtmlextract)(초기 청크)에서 생성된 HTML 파일의 파일명 템플릿입니다. [`output.filename`](#outputfilename)처럼 작동하며 동일한 [템플릿 문자열](#template-strings)을 지원합니다. 설정하지 않으면 `output.filename`에서 `.js` 확장자를 `.html`로 교체하여 파생됩니다(`output.filename`이 함수이거나, 파생된 템플릿에 `[name]`, `[id]`, 또는 해시 플레이스홀더가 없는 경우 `[name].html`로 폴백), `cssFilename`이 `filename`에서 파생되는 방식과 동일합니다.
 
 ```js
 // webpack.config.js
@@ -1160,7 +1379,7 @@ W> 여기서 절대 경로를 지정해서는 **안 됩니다**. 경로에는 `/
 
 <Badge text="5.107.0+" />
 
-`string = output.chunkFilename with '.js' replaced by '.html'` `function (pathData, assetInfo) => string`
+`string = output.chunkFilename with '.js' replaced by '.html'` `(pathData: PathData, assetInfo?: AssetInfo) => string`
 
 비초기(온디맨드) 청크에 대해 [추출된 HTML 모듈](/configuration/module/#modulegeneratorhtmlextract)에 의해 생성되는 HTML 파일의 파일명 템플릿입니다. `htmlFilename`이 `filename`에서 기본값을 가져오는 것과 같은 방식으로 [`output.chunkFilename`](#outputchunkfilename)에서 기본값을 가져옵니다.
 
@@ -1244,7 +1463,7 @@ export default {
 
 ## output.library
 
-엔트리 포인트의 export를 내보내는 라이브러리를 설정합니다.
+엔트리 포인트의 export를 노출하는 라이브러리를 출력합니다 — 번들은 export를 자신이 보유하는 대신 로드하는 측에 전달합니다. 전달 방식은 [`output.library.type`](#outputlibrarytype)으로 지정합니다: 전역 변수, CommonJS 또는 AMD 모듈, ECMAScript 모듈 등이 있습니다.
 
 - Type: `string | string[] | object`
 
@@ -1370,9 +1589,36 @@ export default {
 
 그러면 다음과 같은 번들이 생성됩니다.
 
+{/* eslint-disable dot-notation */}
+
 ```js
-globalThis.clientContainer.define(/* define args */); // 또는 'amd-require' window['clientContainer'].require(/*require args*/);
+window["clientContainer"].define(/* define args */); // or 'amd-require' window["clientContainer"].require(/*require args*/);
 ```
+
+### output.library.umdAmdContainer
+
+<Badge text="5.110.0+" />
+
+`string`
+
+`define`을 전역이 아닌 container 객체에 노출하는 AMD 방식 loader용 분기를 UMD wrapper에 추가합니다. container는 점으로 구분된 경로로 지정합니다. 분기는 표준 `define.amd` 바로 뒤에 내보내므로 일반 AMD loader가 계속 우선하며, 해당 container가 존재하는 환경에서만 사용됩니다.
+
+```js
+export default {
+  // ...
+  output: {
+    library: {
+      name: "MyLibrary",
+      type: "umd",
+      umdAmdContainer: "myContainer.amdLoader",
+    },
+  },
+};
+```
+
+값은 임의의 표현식이 아니라 점으로 구분된 식별자 경로(`myContainer.amdLoader`)여야 합니다.
+
+W> `amd`와 `amd-require` library 타입에 적용되어 container를 통해 `define`/`require`를 호출하는 [`output.library.amdContainer`](#outputlibraryamdcontainer)와는 다릅니다. `umdAmdContainer`는 `umd` wrapper의 감지 체인에 분기만 추가합니다.
 
 ### output.library.name
 
@@ -1397,17 +1643,41 @@ export default {
 
 ### output.library.type
 
-라이브러리가 내보내지는 방식을 설정합니다.
+라이브러리가 발행되는 모듈 형식을 설정합니다 — 전역 변수, CommonJS 또는 AMD 모듈, ECMAScript 모듈 등. type은 webpack이 번들 주변에 작성하는 래퍼를 결정하며, 따라서 소비자가 내보내기에 접근하는 방법을 결정합니다.
 
 - 타입: `string`
 
   기본적으로 포함되는 타입은 `'var'`, `'module'`, `'modern-module'`, `'assign'`, `'assign-properties'`, `'this'`, `'window'`, `'self'`, `'global'`, `'commonjs'`, `'commonjs2'`, `'commonjs-module'`, `'commonjs-static'`, `'amd'`, `'amd-require'`, `'umd'`, `'umd2'`, `'jsonp'` 그리고 `'system'`입니다. 다른 것들은 플러그인에 의해 추가될 수 있습니다.
 
-다음 예에서는 `_entry_return_`을 사용하여 엔트리 포인트에서 반환한 값을 나타냅니다.
+`name: 'MyLibrary'`를 사용하는 type의 동작을 한눈에 보면:
+
+| `type`                | 번들이 로드될 때의 동작                                                             |
+| --------------------- | ----------------------------------------------------------------------------------- |
+| `'var'`               | 스크립트가 실행되는 스코프에서 `var MyLibrary`를 선언합니다                         |
+| `'assign'`            | `MyLibrary = …`, 선언되지 않은 경우 암시적 전역을 생성합니다                        |
+| `'assign-properties'` | 기존 `MyLibrary`에 내보내기를 복사하며, 없는 경우에만 생성합니다                    |
+| `'this'`              | `this.MyLibrary = …`                                                                |
+| `'window'`            | `window.MyLibrary = …`                                                              |
+| `'self'`              | `self.MyLibrary = …`                                                                |
+| `'global'`            | 타겟에 대해 [`output.globalObject`](#outputglobalobject)가 지정한 객체에 할당합니다 |
+| `'commonjs'`          | `exports.MyLibrary = …`, CommonJS exports의 named property                          |
+| `'commonjs2'`         | `module.exports = …`, `require()`가 exports 자체를 반환합니다                       |
+| `'commonjs-module'`   | `'commonjs2'`와 동일합니다                                                          |
+| `'commonjs-static'`   | 내보내기마다 `exports.<name>` 하나씩, Node가 ESM에서 이름을 인식할 수 있습니다      |
+| `'amd'`               | `define('MyLibrary', [], …)`                                                        |
+| `'amd-require'`       | `require([], …)`, 번들을 정의하는 대신 즉시 실행합니다                              |
+| `'umd'`               | 로드 시 CommonJS, AMD 또는 전역을 선택하는 헤더                                     |
+| `'umd2'`              | `'umd'`에 전역 객체에서 읽는 선택적 AMD externals 추가                              |
+| `'system'`            | `System.register('MyLibrary', [], …)`                                               |
+| `'jsonp'`             | `MyLibrary(…)`, 페이지에서 미리 정의한 함수를 호출합니다                            |
+| `'module'`            | 실제 `export` 문; [`output.module`](#outputmodule) 필요                             |
+| `'modern-module'`     | `'module'`과 유사하며, 소비자의 번들러를 위해 트리 쉐이킹이 가능하도록 유지됩니다   |
+
+다음 예제에서는 `_entry_return_`을 사용하여 엔트리 포인트에서 반환된 값을 나타냅니다.
 
 #### Expose a Variable
 
-이 옵션은 번들이 포함된 범위에서 [`output.library.name`](#outputlibraryname)이 제공한 이름에 엔트리 포인트의 반환 값(export한 엔트리 포인트에 관계없이)을 할당합니다.
+이 옵션들은 엔트리 포인트에서 내보낸 값을 번들이 로드된 모든 스코프에서 [`output.library.name`](#outputlibraryname)으로 주어진 이름에 할당합니다.
 
 ##### type: 'var'
 
@@ -1532,10 +1802,34 @@ export default {
 
 **엔트리 포인트의 반환 값은** `output.library.name`값을 사용하여 `window` 객체에 할당됩니다.
 
-```js
-globalThis.MyLibrary = _entry_return_;
+{/* eslint-disable */}
 
-globalThis.MyLibrary.doSomething();
+```js
+window.MyLibrary = _entry_return_;
+
+window.MyLibrary.doSomething();
+```
+
+##### type: 'self'
+
+```js
+export default {
+  // …
+  output: {
+    library: {
+      name: "MyLibrary",
+      type: "self",
+    },
+  },
+};
+```
+
+`window` 대신 `self`에 대한 동일한 할당으로, 이는 web worker가 사용하는 것입니다:
+
+{/* eslint-disable */}
+
+```js
+self.MyLibrary = _entry_return_;
 ```
 
 ##### type: 'global'
@@ -1552,13 +1846,22 @@ export default {
 };
 ```
 
-**엔트리 포인트의 반환 값은** `output.library.name`값을 사용하여 전역 개체에 할당됩니다. [`target`](/configuration/target/) 값에 따라 전역 객체가 `self`, `global` 또는 `globalThis`로 변경될 수 있습니다.
+**엔트리 포인트의 반환 값은** `output.library.name` 값을 사용하여 전역 객체에 할당됩니다. 어떤 객체인지는 [`output.globalObject`](#outputglobalobject)에서 결정되며, 기본값은 [`target`](/configuration/target/)을 따릅니다. 즉, 동일한 설정에서 타겟에 따라 다른 첫 번째 토큰이 출력됩니다:
+
+{/* eslint-disable */}
 
 ```js
-globalThis.MyLibrary = _entry_return_;
+// target: 'web' (the default) and target: 'webworker', where it is `self`
+self.MyLibrary = _entry_return_;
 
-globalThis.MyLibrary.doSomething();
+// target: 'node', where it is `global`
+global.MyLibrary = _entry_return_;
+
+// target: ['web', 'node'], where it is `globalThis`
+globalThis.MyLibrary = _entry_return_;
 ```
+
+T> Set [`output.globalObject`](#outputglobalobject) explicitly to pin it — `'globalThis'` is the one name every modern target agrees on, which is why the neutral target picks it.
 
 ##### type: 'commonjs'
 
@@ -1593,10 +1896,8 @@ W> `output.library.name`을 설정하지 않으면 엔트리 포인트에서 반
 ```js
 export default {
   // …
-  experiments: {
-    outputModule: true,
-  },
   output: {
+    module: true,
     library: {
       // 여기에 `name`을 지정하지 마세요.
       type: "module",
@@ -1605,9 +1906,27 @@ export default {
 };
 ```
 
-ES 모듈을 출력합니다.
+실제 ECMAScript 모듈을 출력합니다: 번들이 할당 대신 `export` 문으로 끝나므로 소비자는 `import`로 가져올 수 있습니다. 내보내기 이름은 엔트리 포인트에서 가져오므로 지정할 `name`이 없습니다.
 
-그러나 이 기능은 아직 실험적이며 완전히 지원되지 않으므로 [experiments.outputModule](/configuration/experiments/)을 활성화해야 합니다. 또한 [이 스레드](https://github.com/webpack/webpack/issues/2933#issuecomment-774253975)에서 개발 진행 상황을 추적할 수 있습니다.
+Input:
+
+```js
+export function hello(name) {
+  return `Hello ${name}`;
+}
+```
+
+Output:
+
+```js
+function hello(name) {
+  return `Hello ${name}`;
+}
+
+export { hello };
+```
+
+W> This type requires [`output.module`](#outputmodule). Every other type is written into a classic script, so `module: true` is what lets webpack emit the `export` above.
 
 ##### type: 'modern-module'
 
@@ -1616,10 +1935,8 @@ ES 모듈을 출력합니다.
 ```js
 export default {
   // …
-  experiments: {
-    outputModule: true,
-  },
   output: {
+    module: true,
     library: {
       // 여기에 `name`을 지정하지 마세요
       type: "modern-module",
@@ -1628,9 +1945,9 @@ export default {
 };
 ```
 
-이 설정은 ES 모듈에 대해 트리 쉐이킹 가능한 출력을 생성합니다.
+[`module`](#type-module)과 유사하며, 소비자가 다른 번들러로 처리하는 라이브러리를 위해 설계되었습니다: 출력은 분석 가능한 상태로 유지되어 소비자의 트리 쉐이킹이 애플리케이션에서 한 번도 import하지 않는 내보내기를 여전히 제거할 수 있습니다. 소규모 라이브러리는 두 type에서 바이트 단위로 동일하게 출력되는 경우가 많으며, 차이점은 `module`이 내보내는 것을 불분명하게 만들 수 있는 번들에서 나타납니다.
 
-하지만 이 기능은 아직 실험 단계이며 완전히 지원되지 않으므로 미리 [experiments.outputModule](/configuration/experiments/)을 활성화해야 합니다.
+동일한 이유로 [`output.module`](#outputmodule)도 필요하며, `name`을 지정하지 않습니다.
 
 ##### type: 'commonjs2'
 
@@ -1850,6 +2167,22 @@ export default {
 };
 ```
 
+##### type: 'umd2'
+
+`umd2`는 [`umd`](#type-umd)와 동일한 유니버설 헤더를 생성하지만 한 가지가 다릅니다: AMD 로더가 제공하지 않은 경우, **선택적** AMD 외부 모듈을 undefined로 두는 대신 전역 객체에서 읽어옵니다. 따라서 선택적 AMD 외부 모듈이 없는 번들은 두 type 모두에서 바이트 단위로 동일한 출력을 생성합니다.
+
+```js
+export default {
+  // …
+  output: {
+    library: {
+      name: "MyLibrary",
+      type: "umd2",
+    },
+  },
+};
+```
+
 ##### type: 'system'
 
 라이브러리를 [`System.register`](https://github.com/systemjs/systemjs/blob/master/docs/system-register.md)모듈로 내보냅니다. 이 기능은 [webpack 4.30.0](https://github.com/webpack/webpack/releases/tag/v4.30.0)에서 처음 출시되었습니다.
@@ -2061,7 +2394,7 @@ define("MyLibrary", [], factory);
 
 W> 지원을 중단 할 수 있으므로 `libraryExport`와 동일하게 작동하는 [output.library.export](#outputlibraryexport)를 사용하는 것이 좋습니다.
 
-`string` `[string]`
+`string` `string[]`
 
 `libraryTarget`을 통해 노출될 모듈을 구성합니다. 기본적으로 `undefined`이며 `libraryTarget`을 `''`같이 빈 문자열로 설정하면 동일한 동작이 적용됩니다(전체 네임 스페이스 객체를 export). 아래 예제는 `libraryTarget: 'var'`를 사용할 때 이 설정의 효과를 보여줍니다.
 
@@ -2106,7 +2439,7 @@ T> 아래 예제 코드에서 `_entry_return_`은 엔트리 포인트에서 반�
 
 ### Expose a Variable
 
-이 옵션은 번들이 포함된 모든 범위에서 [`output.library`](#outputlibrary)에서 제공한 이름에 엔트리 포인트의 반환 값을 할당합니다.
+이 옵션들은 엔트리 포인트에서 내보낸 값을 번들이 로드된 모든 스코프에서 [`output.library`](#outputlibrary)로 주어진 이름에 할당합니다.
 
 #### libraryTarget: 'var'
 
@@ -2195,10 +2528,12 @@ W> [`output.library.type: 'window'`](#type-window)를 사용하는 것이 좋습
 
 **엔트리 포인트의 반환 값은** `output.library` 값을 사용하여 `window` 객체에 할당됩니다.
 
-```js
-globalThis.MyLibrary = _entry_return_;
+{/* eslint-disable */}
 
-globalThis.MyLibrary.doSomething();
+```js
+window.MyLibrary = _entry_return_;
+
+window.MyLibrary.doSomething();
 ```
 
 #### libraryTarget: 'global'
@@ -2233,7 +2568,7 @@ require("MyLibrary").doSomething();
 
 W> [`output.library.type: 'module'`](#type-module)을 사용하는 것이 좋습니다.
 
-ES 모듈을 출력합니다. 미리 [experiments.outputModule](/configuration/experiments/)을 활성화해야 합니다.
+ES 모듈을 출력합니다. 먼저 [`output.module`](#outputmodule)을 활성화해야 합니다.
 
 이 기능은 아직 완전히 지원되지 않습니다. [이 스레드](https://github.com/webpack/webpack/issues/2933#issuecomment-774253975)에서 진행 상황을 추적하세요.
 
@@ -2249,7 +2584,7 @@ export default _entry_return_;
 require("MyLibrary").doSomething();
 ```
 
-`output.library`는 `output.libraryTarget`과 함께 사용할 수 없습니다. 자세한 내용은 [이 이슈](https://github.com/webpack/webpack/issues/11800)를 참고하세요.
+`output.library`가 설정된 경우, 엔트리 포인트의 반환 값은 대신 `module.exports.<name>`에 할당됩니다. [`type: 'commonjs2'`](#type-commonjs2)를 참고하세요.
 
 T> CommonJS와 CommonJS2의 차이점이 궁금하신가요? 비슷하지만 webpack과 관련이 없는 약간의 차이가 있습니다. 자세한 내용은 [이 이슈](https://github.com/webpack/webpack/issues/1114)를 참고하세요.
 
@@ -2303,7 +2638,7 @@ W> [`output.library.type: 'amd-require'`](#type-amd-require)를 사용하는 것
 
 `'amd-require'`를 사용하면 나중에 별도의 호출없이 AMD 디펜던시를 사용할 수 있습니다. `'amd'`와 마찬가지로 이는 webpack 출력이 로드되는 환경에서 사용할 수 있는 적절한 [`require` 함수](https://github.com/amdjs/amdjs-api/blob/master/require.md)에 따라 달라집니다.
 
-`'amd-require'`를 사용하면 라이브러리 이름이 무시됩니다.
+이 타겟에서는 라이브러리 이름을 설정하지 않아야 합니다; 그렇지 않으면 webpack이 오류를 발생시킵니다.
 
 #### libraryTarget: 'umd'
 
@@ -2458,7 +2793,13 @@ MyLibrary(_entry_return_);
 
 `boolean = false`
 
-모듈 타입으로 JavaScript 파일을 출력합니다. 실험적 기능이므로 기본적으로 비활성화되어 있습니다.
+JavaScript 파일을 모듈 타입으로 출력합니다. ECMAScript 모듈만 실행하는 [`universal`](/configuration/target/#universal), [`deno`](/configuration/target/#deno) 및 [`bun`](/configuration/target/#bun) 타겟과, ECMAScript 모듈로만 존재하는 [`module`](#type-module) 또는 [`modern-module`](#type-modern-module) 라이브러리 타입에서는 기본값이 `true`입니다. 그 외의 모든 곳에서는 기본값이 `false`입니다.
+
+[`experiments.futureDefaults`](/configuration/experiments/#experimentsfuturedefaults) <Badge text="5.111.0+" /> 에서는 타겟이 ECMAScript 모듈을 읽을 수 있는 모든 곳에서 기본값이 `true`이며, 이것이 webpack 6의 기본값입니다. 스크립트 출력을 유지하는 세 가지 조건은 다음과 같습니다:
+
+- 모듈을 읽을 수 없다고 명시하는 [`target`](/configuration/target/) — 모듈 지원이 없는 엔진(`ie 11`)으로 해석되는 `browserslist` 쿼리, 또는 그 이하의 버전(`node10`, `['web', 'es5']`). `web`, `webworker` 또는 일반 `node`처럼 모듈에 대해 명시하지 않는 타겟은 모듈을 읽을 수 있는 것으로 간주됩니다;
+- 스크립트에서 읽히는 라이브러리 타입 — `var`, `umd`, `commonjs2`, `assign`, `window`, `global`, … — 선언된 위치에 관계없이: [`output.library`](#outputlibrary), 엔트리 자체의 `library`, 또는 `ModuleFederationPlugin`과 같은 플러그인이 설정하는 `output.enabledLibraryTypes`;
+- `output.module`을 직접 설정하는 경우, 타겟과 라이브러리 타입 모두에 대해 양방향으로 우선합니다.
 
 활성화되면 webpack은 내부적으로 [`output.iife`](#outputiife)를 `false`로, [`output.scriptType`](#outputscripttype)을 `'module'`로, `minimizerOptions.module`을 `true`로 설정합니다.
 
@@ -2467,16 +2808,15 @@ MyLibrary(_entry_return_);
 ```js
 export default {
   // ...
-  experiments: {
-    outputModule: true,
-  },
   output: {
     module: true,
   },
 };
 ```
 
-W> `output.module`은 실험적 기능이며 [`experiments.outputModule`](/configuration/experiments/#experiments)을 `true`로 설정해야만 활성화 할 수 있습니다. [알려진 문제 중 하나](https://github.com/webpack/webpack/issues/11277#issuecomment-992565287)는 이러한 라이브러리가 webpack4 기반(및 다른 가능성도 있음) 응용 프로그램에서 사용할 수 없다는 것입니다.
+T> Until webpack `5.111.0` this option also required [`experiments.outputModule`](/configuration/experiments/); that experiment has been removed and `output.module` now works on its own.
+
+W> [One of the known problems](https://github.com/webpack/webpack/issues/11277#issuecomment-992565287) is that such a library can't be consumed by webpack4-based (and possibly other too) applications.
 
 ## output.path
 
@@ -2507,7 +2847,7 @@ W> 경로에는 느낌표(`!`)가 포함되어서는 안 되며, 이는 webpack�
 
 ## output.pathinfo
 
-`boolean` `string: 'verbose'`
+`boolean` `'verbose'`
 
 `output.pathinfo`는 webpack이 번들에 포함된 모듈에 대한 정보를 주석으로 포함하도록 지시합니다. `verbose` 옵션을 사용하면 내보내기, 런타임 요구 사항 및 오류 메시지와 같은 더 자세한 정보를 볼 수 있습니다.
 
@@ -2810,6 +3150,28 @@ export default {
 };
 ```
 
+### output.resourceHints.dedupe
+
+<Badge text="5.110.0+" />
+
+`boolean = false`
+
+문서가 이미 preload 또는 prefetch하는 청크에는 런타임이 `<link rel="prefetch">`를 주입하지 않습니다. Chrome을 포함한 일부 브라우저는 두 link가 모두 있으면 청크를 두 번 가져옵니다.
+
+```js
+export default {
+  // ...
+  output: {
+    resourceHints: {
+      initial: true,
+      dedupe: true,
+    },
+  },
+};
+```
+
+T> [`performance.conflictingResourceHints`](/configuration/performance/#performanceconflictingresourcehints)는 이 문제의 다른 측면, 즉 같은 위치에서 서로 반대 의미인 prefetch와 preload를 모두 요청한 청크를 보고합니다.
+
 ### output.resourceHints.manifest
 
 `string`
@@ -2830,7 +3192,7 @@ export default {
 
 ## output.scriptType
 
-`string: 'module' | 'text/javascript'` `boolean = false`
+`'module' | 'text/javascript'` `boolean = false`
 
 이 옵션을 사용하면 `<script type="module"...>`과 같은 커스텀 스크립트 타입으로 비동기 청크를 로드할 수 있습니다.
 
@@ -2976,7 +3338,7 @@ export default {
 
 ### output.trustedTypes.onPolicyCreationFailure
 
-`string = 'stop': 'continue' | 'stop'`
+`'continue' | 'stop' = 'stop'`
 
 <Badge text="5.82.0+" />
 
@@ -3035,14 +3397,14 @@ export default {
 
 ## output.wasmLoading
 
-`false` `'fetch' | 'async-node'` `string`
+`false` `'fetch' | 'async-node' | 'universal'` `string`
 
-WebAssembly 모듈을 로드하는 방법을 설정하는 옵션입니다. 기본적으로 포함된 메소드는 `'fetch'` (web/WebWorker), `'async-node'` (Node.js)이고 다른 것들도 플러그인에 의해 추가될 수 있습니다.
+WebAssembly 모듈을 로드하는 메서드를 설정하는 옵션입니다. 기본적으로 포함된 메서드는 `'fetch'`(web/WebWorker), `'async-node'`(Node.js), `'universal'`(둘 다)이지만 플러그인에 의해 추가될 수 있습니다.
 
 기본값은 다른 [`target`](/configuration/target/)의 영향을 받을 수 있습니다.
 
-- [`target`](/configuration/target/)이 `'web'`, `'webworker'`, `'electron-renderer'` 또는 `'node-webkit'`으로 설정된 경우 기본값은 `'fetch'`입니다.
-- [`target`](/configuration/target/)이 `'node'`, `'async-node'`, `'electron-main'` 또는 `'electron-preload'`로 설정된 경우 기본값은 `'async-node'`입니다.
+- Defaults to `'fetch'` if [`target`](/configuration/target/) is set to `'web'`, `'webworker'` or `'electron-renderer'`.
+- Defaults to `'async-node'` if [`target`](/configuration/target/) is set to `'node'`, `'async-node'`, `'node-webkit'`, `'electron-main'` or `'electron-preload'`.
 
 ```js
 export default {
@@ -3087,7 +3449,7 @@ export default {
 
 ## output.workerChunkFilename
 
-`string` `function (pathData, assetInfo) => string`
+`string` `(pathData: PathData, assetInfo?: AssetInfo) => string`
 
 - Available: 5.108.0+
 
@@ -3111,7 +3473,7 @@ T> webpack이 `new Worker(new URL(...))`에서 자동으로 생성하는 엔트�
 
 ## output.workerChunkLoading
 
-`string: 'require' | 'import-scripts' | 'async-node' | 'import' | 'universal'` `boolean: false`
+`'require' | 'import-scripts' | 'async-node' | 'import'` `false`
 
 새로운 옵션 `workerChunkLoading`은 worker의 청크 로드를 제어합니다.
 
@@ -3147,7 +3509,7 @@ export default {
 
 ## output.workerWasmLoading
 
-`false` `'fetch-streaming' | 'fetch' | 'async-node'` `string`
+`false` `'fetch' | 'async-node' | 'universal'` `string`
 
 Worker에서 WebAssembly 모듈을 로드하는 방법을 설정하는 옵션이며 기본값은 [output.wasmLoading](#outputwasmloading) 값입니다.
 

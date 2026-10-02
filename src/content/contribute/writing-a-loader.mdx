@@ -70,6 +70,19 @@ export default {
 
 T> 로더 작성을 시작하는데 필요한 보일러플레이트 코드를 생성하기 위해 [`webpack-defaults` package](https://github.com/webpack-contrib/webpack-defaults)를 사용할 수 있습니다.
 
+### Changes to a loader need a restart
+
+W> 빌드가 감시 중인 동안 로더의 소스를 편집해도 출력이 **변경되지 않습니다**. 빌드 프로세스를 재시작하세요.
+
+이것은 데모 프로젝트에서 로더를 개발하는 대부분의 사람들이 겪는 문제이며, 어느 쪽도 명확한 오류를 발생시키지 않습니다:
+
+- **편집이 재빌드를 트리거하지 않습니다.** webpack은 모듈의 `buildDependencies`에 로더의 경로를 기록하여 다음 시작 시 [퍼시스턴트 캐시](/configuration/cache/#cachetype)를 무효화합니다. 감시자는 파일, 컨텍스트, 누락된 의존성만 감시하므로 로더 파일이 변경되어도 아무것도 재빌드되지 않습니다.
+- **강제 재빌드도 도움이 되지 않습니다.** webpack은 로더를 `require()`(또는 ESM 로더의 경우 `import()`)로 한 번 로드하고, Node는 프로세스가 살아있는 동안 해당 모듈을 캐시합니다. 편집 후 재빌드된 모듈은 _이전_ 로더 함수를 받아 이전 출력을 생성하며, 오류나 경고가 없습니다.
+
+따라서 로더에서 `this.addDependency(__filename)`를 호출하는 것은 해결책이 되지 않습니다. 이것은 말 그대로의 동작을 합니다. 즉, 로더 파일이 감시되어 편집하면 해당 파일을 사용하는 모듈이 재빌드됩니다. 하지만 그 재빌드는 프로세스 시작 시 로드된 로더 코드를 실행하므로, 전혀 재빌드하지 않는 것보다 더 나쁩니다. 빌드가 실제로 다시 수행하지 않은 작업을 보고하게 됩니다.
+
+대신 각 실행이 새로운 프로세스인 자체 테스트를 통해 로더를 개발하세요([Testing](#testing) 참고). 데모에서 변경 사항을 확인하려면 webpack을 재시작하세요. `nodemon --watch loaders -- node_modules/.bin/webpack serve` 또는 이와 유사한 래퍼를 사용하면 이를 자동화할 수 있습니다.
+
 ## Simple Usage
 
 단일 로더가 리소스에 적용되었을 때, 로더는 오직 하나의 파라미터(리소스 파일의 콘텐츠를 담고 있는 문자열)와 호출됩니다.
@@ -118,7 +131,7 @@ export default function (source) {
   return `${prefix}\n${source}`;
 }
 
-export function pitch(remainingRequest, precedingRequest, data) {
+export function pitch(remainingRequest, previousRequest, data) {
   // 피치 단계 - 일반 로더보다 먼저 왼쪽에서 오른쪽으로 이동합니다.
   data.value = "/* my-loader에 의해 처리됨 */";
 }
@@ -171,8 +184,9 @@ W> `pitch` 함수가 값을 반환하면 해당 로더의 기본 내보내기는
 로더 옵션 또는 쿼리 파라미터를 통해 지정된 데이터로 템플릿 파일을 렌더링하는 경우를 생각해 봅시다. 소스에서 템플릿을 컴파일 하는 싱글 로더로 작성되고, 그를 실행하고 HTML 코드를 포함하고 있는 문자열을 export 하는 모듈을 반환할 수도 있습니다. 하지만, 가이드라인에 따르면, `apply-loader`는 다른 오픈 소스 로더와 연결될 수 있을 때만 존재합니다.
 
 - `pug-loader`: 템플릿을 함수를 export 하는 모듈로 전환합니다.
-- `apply-loader`: 로더 옵션으로 함수를 실행시키고, raw HTML을 반환합니다.
-- `html-loader`: HTML을 받아들이고 유효한 JavaScript 모듈을 출력합니다.
+- `apply-loader`: 로더 옵션으로 함수를 실행시키고 raw HTML을 반환합니다.
+
+webpack이 나머지를 처리합니다. 체인에서 나오는 HTML은 [내장 HTML 지원](/guides/native-html/)으로 처리되므로 모듈로 변환할 필요가 없습니다.
 
 T> 로더가 연결될 수 있다는 사실은 로더들이 JavaScript를 출력할 필요가 없다는 것을 의미합니다. 체인 안에 다음 로더들이 출력을 다루는 한, 로더는 어느 모듈이든지 반환할 수 있습니다.
 
@@ -221,11 +235,11 @@ export default function (source) {
 
 ### Data Sharing
 
-Webpack에서는 로더를 체인화하여 체인의 후속 로더와 데이터를 공유할 수 있습니다. 이를 위해서는 raw 로더에서 `this.callback` 메소드를 사용하여 콘텐츠(소스 코드)와 함께 데이터를 전달할 수 있습니다. Raw 로더의 기본 내보내기 함수에서는 `this.callback`의 네 번째 인수를 사용하여 데이터를 전달할 수 있습니다.
+webpack에서는 로더를 체인화하여 체인의 후속 로더와 데이터를 공유할 수 있습니다. 이를 위해서는 `this.callback` 메소드를 사용하여 콘텐츠(소스 코드)와 함께 데이터를 전달할 수 있습니다. 로더의 기본 내보내기 함수에서는 `this.callback`의 네 번째 인수를 사용하여 데이터를 전달할 수 있습니다.
 
 ```js
 export default function (source) {
-  const options = getOptions(this);
+  const options = this.getOptions();
   // this.callback의 네 번째 인수를 사용해 데이터를 전달합니다.
   this.callback(null, `export default ${JSON.stringify(source)}`, null, {
     some: data,
@@ -234,6 +248,51 @@ export default function (source) {
 ```
 
 위의 예에서 `this.callback`의 네 번째 인수에 있는 `some` 속성은 다음 체인 로더에 데이터를 전달하는 데 사용됩니다.
+
+### Sharing data with a plugin
+
+로더는 모듈 소스만 반환할 수 있으므로, 다른 무언가를 추출하는 로더(예: 연결할 스타일 조각, 스프라이트에 묶을 아이콘)는 결합된 애셋을 내보내는 플러그인에 해당 데이터를 전달할 다른 방법이 필요합니다. 모듈의 `buildInfo`에 저장하세요:
+
+**loader.js**
+
+```js
+export default function (source) {
+  this._module.buildInfo.myLoaderData = collectIcons(source);
+  return source;
+}
+```
+
+그러면 플러그인은 컴파일의 모듈에서 해당 데이터를 읽어옵니다:
+
+**plugin.js**
+
+```js
+compiler.hooks.thisCompilation.tap("MyPlugin", (compilation) => {
+  compilation.hooks.processAssets.tap(
+    {
+      name: "MyPlugin",
+      stage: compiler.webpack.Compilation.PROCESS_ASSETS_STAGE_ADDITIONAL,
+    },
+    () => {
+      const collected = [];
+
+      for (const module of compilation.modules) {
+        const data = module.buildInfo.myLoaderData;
+        if (data) collected.push(...data);
+      }
+
+      compilation.emitAsset(
+        "sprite.svg",
+        new compiler.webpack.sources.RawSource(buildSprite(collected)),
+      );
+    },
+  );
+});
+```
+
+`buildInfo`는 모듈과 함께 직렬화되므로, 데이터는 [퍼시스턴트 캐시](/configuration/cache/#cachetype)에서도 유지되며 로더 자체가 다시 실행되지 않는 빌드에서도 존재합니다. 이것이 로더 자체의 모듈 스코프 변수 대신 이를 사용하는 이유입니다. 캐시된 빌드에서는 그 변수가 비어있게 됩니다. 직렬화 가능한 순수한 값만 저장하고, 두 로더가 충돌하지 않도록 속성에 네임스페이스를 부여하세요.
+
+W> `this._module`은 문서화된 로더 컨텍스트의 일부가 아닙니다. 이것은 생태계에서 로더/플러그인 쌍이 사용하는 것으로 사라질 가능성은 낮지만, 내부 구현으로 취급하세요.
 
 ### Loader Dependencies
 
@@ -271,6 +330,31 @@ export default function (source) {
 `less-loader`의 예시에서, 모든 `.less`파일은 변수와 믹스인 추정을 위해 반드시 한 번에 컴파일되어야 하므로 각 `@import`를 `require`로 바꿀 수 없습니다. 그러므로, `less-loader`는 사용자 경로 해석 로직으로 더 적은 컴파일러를 확장합니다. 그런 다음 두 번째 접근 방식인 `this.resolve`를 활용하여 webpack을 통해 의존성을 해결할 수 있습니다.
 
 T> 언어가 오직 상대 경로(예를 들어, `url(file)`은 항상 `./file`을 나타냅니다.)만 수용한다면, 설치된 모듈(예를 들어 `node_modules` 안에 있는 것들)에 대한 참조를 지정하기 위한 `~` 규칙을 사용할 수 있습니다. `url`의 경우, `url('~some-library/image.jpg')`처럼 보일 것입니다.
+
+### Hot Module Replacement
+
+로더는 생성하는 코드를 통해 [HMR](/concepts/hot-module-replacement/)에 참여합니다. webpack은 런타임에 변경된 모듈을 교체하며, 생성된 모듈은 `module.hot.accept`를 호출하여 새 버전으로 무엇을 할지 결정합니다. 사이드 이펙트를 발생시키는 로더(예: 스타일시트 설치, 템플릿 등록, 스토어 초기화)는 이 호출을 직접 내보내야 합니다. 그렇지 않으면 파일을 편집할 때 즉시 적용되는 대신 전체 페이지가 리로드됩니다.
+
+[`this.hot`](/api/loaders/#thishot)은 해당 코드를 내보낼 가치가 있는지 알려줍니다. [`HotModuleReplacementPlugin`](/plugins/hot-module-replacement-plugin/)이 적용될 때만 `true`이므로, 이 조건으로 추가 코드를 보호하고 프로덕션 출력을 깔끔하게 유지하세요.
+
+```js
+export default function (source) {
+  const installed = `install(${JSON.stringify(transform(source))});`;
+
+  if (!this.hot) return installed;
+
+  return `${installed}
+if (import.meta.webpackHot) {
+  import.meta.webpackHot.accept();
+}`;
+}
+```
+
+가져오는 측에 맡기지 않고 생성된 모듈에서 accept 하는 것이 업데이트가 엔트리 포인트까지 버블링되어 전체 리로드를 강제하는 것을 막습니다.
+
+생성된 코드에서는 `module.hot` 대신 `import.meta.webpackHot`을 사용하세요. webpack은 모듈이 자동 감지되든 [엄격한 ESM](/guides/ecma-script-modules/#flagging-modules-as-esm)이든 상관없이 이를 인식합니다. 반면 `module.hot`은 엄격한 ESM 모듈에서 사용할 수 없습니다. 정의되지 않은 `module`에 대한 참조로 컴파일되어 오류 없이 빌드되지만 런타임에 예외가 발생합니다. 로더는 출력이 어떤 형태가 될지 제어할 수 없으며, 이는 처리하는 파일에 따라 결정됩니다.
+
+T> `this.hot`은 로더 자체 소스에 대해서는 아무것도 말하지 않습니다. 로더 소스는 핫 리로드가 불가능합니다. [로더 변경 사항에는 재시작이 필요합니다](#changes-to-a-loader-need-a-restart)를 참고하세요.
 
 ### Common Code
 
@@ -366,7 +450,7 @@ export default {
 export default function loader(source) {
   const options = this.getOptions();
 
-  source = source.replaceAll(/\[name\]/, options.name);
+  source = source.replaceAll("[name]", options.name);
 
   return `export default ${JSON.stringify(source)}`;
 }

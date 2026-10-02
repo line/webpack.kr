@@ -1,5 +1,6 @@
 ---
 title: ModuleFederationPlugin
+description: ModuleFederationPlugin의 기능과 사용 방법을 설명합니다.
 group: webpack
 contributors:
   - XiaofengXie16
@@ -33,10 +34,81 @@ export default {
 
 <StackBlitzPreview
   example="module-federation?terminal=start&terminal="
-  description="Check out this live module federation example on StackBlitz."
+  description="StackBlitz에서 실행되는 module federation 예제를 확인해 보세요."
 />
 
 ## Options
+
+### name
+
+`string`
+
+이 빌드가 생성하는 컨테이너의 이름입니다. 기본 `script` 리모트 타입에서는 컨테이너가 할당되는 **전역 변수**이기도 하며, `remoteEntry.js`가 로드된 후 소비자가 컨테이너에 접근하는 방법입니다.
+
+페이지의 빌드들 사이에서 고유해야 합니다. 이것은 [`output.uniqueName`](/configuration/output/#outputuniquename)과는 별개이며, 그것도 고유해야 합니다 — [모든 빌드에는 고유한 이름이 필요합니다](/concepts/module-federation/#every-build-needs-its-own-unique-name)를 참고하세요.
+
+### filename
+
+`string`
+
+[`output.path`](/configuration/output/#outputpath)에 상대적인 경로로 나타낸 컨테이너 엔트리의 파일 이름입니다. 관례적으로 `remoteEntry.js`를 사용합니다.
+
+**이** 빌드가 방출하는 파일의 이름입니다. 소비하는 리모트들의 파일 이름과는 무관합니다 — 그것들은 각 리모트가 선택한 것으로 [`remotes`](#remotes) 아래의 URL에 나타납니다.
+
+### remotes
+
+`string[]` `object`
+
+이 빌드가 소비하는 컨테이너들입니다. 각 항목은 **요청 스코프** — import할 때 사용하는 이름 — 를 **컨테이너 위치**에 매핑합니다.
+
+```js
+new ModuleFederationPlugin({
+  remotes: {
+    // request scope        container location
+    app1: "app1@http://localhost:3001/remoteEntry.js",
+  },
+});
+```
+
+이후 다음과 같이 import합니다.
+
+```js
+import Button from "app1/Button";
+```
+
+위치 문자열의 두 부분은 첫 번째 `@`를 기준으로 분리됩니다.
+
+| 부분                                            | 의미                                                     |
+| ----------------------------------------------- | -------------------------------------------------------- |
+| `@` 앞 — `app1`                                 | 리모트의 [`name`](#name), 즉 컨테이너가 할당된 전역 변수 |
+| `@` 뒤 — `http://localhost:3001/remoteEntry.js` | [`filename`](#filename)이 제공되는 URL                   |
+
+따라서 설정에 이름이 "두 번" 나타나는 경우, 보통은 우연히 일치하는 두 가지 다른 것입니다. 키는 **여러분이** import할 때 사용하는 것으로 자유롭게 변경할 수 있지만, `@` 앞 부분은 **리모트**가 자신에게 붙인 이름과 일치해야 합니다. 둘은 달라도 됩니다.
+
+```js
+new ModuleFederationPlugin({
+  remotes: {
+    // imported as "checkout/…", served by a container that calls itself "shop"
+    checkout: "shop@http://localhost:3001/remoteEntry.js",
+  },
+});
+```
+
+객체 대신 배열을 전달하면 키 없이 webpack이 각 요청 스코프를 위치에서 추론합니다.
+
+T> `@`가 없거나 양 끝에 있는 위치는 `Invalid request "…"` 오류로 빌드가 실패합니다.
+
+정적으로 설정된 리모트는 직접 아무것도 로드하지 않아도 됩니다. webpack이 `<script>`를 주입하는 코드를 방출하고 전역 변수가 나타날 때까지 기다리다가, 나타나지 않으면 `ScriptExternalLoadError`를 보고합니다. 컨테이너를 수동으로 로드하는 것은 빌드 시 위치를 알 수 없는 [동적 리모트](/concepts/module-federation/#dynamic-remote-containers)에서만 필요합니다.
+
+항목은 `external`(위치)과 `shareScope`를 가진 객체일 수도 있으며, 하나의 리모트가 나머지와 다른 [공유 스코프](/concepts/module-federation/#share-scopes)가 필요한 경우에 사용합니다.
+
+### remoteType
+
+`string`
+
+[`externalsType`](/configuration/externals/#externalstype)으로 리모트를 가져오는 방법입니다.
+
+설정하지 않으면 이 플러그인 자체의 `library.type`으로 폴백하지만, 그것이 유효한 externals 타입인 경우에만 그렇고, 그렇지 않으면 위에서 설명한 `name@url` 형식인 `'script'`로 폴백합니다. `library` 자체는 기본값이 `{ type: 'var', name }`이므로, 둘 다 설정하지 않은 설정은 `'script'`를 사용합니다.
 
 ### runtime
 
@@ -56,6 +128,38 @@ export default {
     }),
   ],
 };
+```
+
+### exposes
+
+이 컨테이너가 다른 빌드에 제공하는 모듈들입니다. 속성 이름은 소비자가 import하는 공개 이름(`import Button from "remote/Button"`)이고, 값은 노출할 모듈입니다.
+
+**webpack.config.js**
+
+```js
+new ModuleFederationPlugin({
+  name: "remote",
+  exposes: {
+    "./Button": "./src/components/Button",
+  },
+});
+```
+
+항목은 객체일 수도 있습니다.
+
+- `import` (`string`): 노출할 모듈입니다.
+- `name` (`string`): webpack이 생성하는 청크의 이름입니다. 지정하지 않으면 모듈의 내부 ID를 기반으로 청크 이름이 지정되는데, 빌드가 변경됨에 따라 달라집니다. 설정하면 파일에 정적으로 참조할 수 있는 안정적인 이름을 부여합니다.
+
+```js
+new ModuleFederationPlugin({
+  name: "remote",
+  exposes: {
+    "./Button": {
+      import: "./src/components/Button",
+      name: "button-chunk",
+    },
+  },
+});
 ```
 
 ### Sharing libraries
@@ -123,9 +227,10 @@ export default {
   plugins: [
     new ModuleFederationPlugin({
       // lodash를 공유 모듈로 추가합니다.
-      // package.json으로부터 버전을 추론합니다.
-      // 필수 버전을 확인하지 않습니다.
-      // 그래서 항상 발견된 더 높은 버전을 사용합니다.
+      // version은 package.json으로부터 추론됩니다.
+      // requiredVersion도 package.json으로부터 추론됩니다.
+      // (결정할 수 없으면 경고가 발생합니다)
+      // 만족하지 않는 공유 버전은 로컬 복사본으로 폴백됩니다.
       shared: ["lodash"],
     }),
   ],
@@ -203,17 +308,35 @@ export default {
 
 이 필드는 필수 패키지 버전을 지정합니다. "^1.2.3"과 같은 시멘틱 버전 관리를 허용합니다. 또한 버전이 URL로 제공되는 경우(예: "git+ssh://git@github.com:foo/bar.git#v1.0.0") 버전을 검색합니다.
 
+webpack은 전체 [범위 문법](https://github.com/npm/node-semver#ranges)을 구현하므로, 필수 버전은 정확한 버전(`1.2.3`), 부분 버전(`1.2`, 모든 패치와 일치), 비교자(`>=1.2.3 <2`), 캐럿 또는 틸드 범위(`^1.2.3`, `~1.2.3`), 하이픈 범위(`1.2.3 - 2.3.4`) 또는 이들을 `||`로 결합한 것일 수 있습니다. 스코프가 제공하는 모든 것을 허용하려면 `false`로 설정하세요.
+
+공유 스코프는 동일한 모듈의 여러 버전을 동시에 보유할 수 있습니다 — 각 빌드는 자신이 가진 버전을 제공하고, 소비자는 자신의 `requiredVersion`을 만족하는 가장 높은 버전을 얻습니다. 이것이 서로 다른 메이저 버전의 라이브러리가 필요한 두 빌드가 한 페이지에서 작동할 수 있는 이유이며, 두 버전 모두 전송하는 비용이 듭니다. `singleton: true`는 하나의 인스턴스를 유지하기 위해 그 보장을 포기하며, 선택된 버전이 소비자를 만족시키지 않을 때 경고를 발생시킵니다.
+
 ##### **`shareKey`**
 
 `string`
 
-요청된 공유 모듈은 공유 유효범위에서 ‘shareKey’ 키 안에서 조회됩니다.
+요청된 공유 모듈은 공유 스코프에서 이 키로 조회됩니다. 기본값은 `shared`에서 사용한 키, 즉 요청 자체이므로 `shared: ['lodash']`는 `lodash`로 저장되고 조회됩니다.
+
+빌드가 import하는 이름과 공유할 때 사용해야 하는 이름이 다를 때 설정하세요. 두 빌드는 키와 스코프가 모두 일치할 때만 모듈을 공유합니다. 따라서 `lodash-es`를 import하는 애플리케이션이 다른 빌드가 `lodash`로 제공한 것을 재사용할 수 있게 하는 것이 바로 이 키입니다.
+
+```js
+new ModuleFederationPlugin({
+  shared: {
+    "lodash-es": {
+      shareKey: "lodash",
+    },
+  },
+});
+```
 
 ##### **`shareScope`**
 
 `string`
 
-공유 범위의 이름입니다.
+공유 스코프의 이름으로, 플러그인 자체의 `shareScope` 옵션이 기본값이며, 설정되지 않은 경우 `'default'`입니다. 스코프는 공유 모듈의 하나의 네임스페이스입니다. 빌드는 제공하는 모듈을 스코프에 넣고 필요한 모듈을 스코프에서 조회하므로, 다른 스코프 이름을 사용하는 빌드는 키가 일치하더라도 서로 공유하지 않습니다.
+
+빌드 그룹을 분리하려면 변경하세요 — 예를 들어 페이지가 각자 라이브러리의 복사본을 가져야 하는 두 독립적인 리모트 세트를 호스팅할 때, 또는 위젯이 호스트의 버전을 채택해서는 안 될 때입니다. 제공하는 쪽과 소비하는 쪽 모두 동일한 스코프 이름을 사용해야 합니다.
 
 ##### **`singleton`**
 

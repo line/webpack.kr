@@ -1,5 +1,6 @@
 ---
 title: Tree Shaking
+description: webpack에서 Tree Shaking을 사용하는 방법을 설명합니다.
 sort: 16
 contributors:
   - simon04
@@ -119,25 +120,31 @@ export default {
 
 우리는 `src/math.js` 모듈에서 **`square` 메소드를 `가져오지` 않았습니다**. 이 함수는 "사용하지 않는 코드"로 알려져 있고, 사용하지 않아 삭제되어야 하는 `export`를 의미합니다. 이제 npm 스크립트인 `npm run build`를 실행하여 출력된 번들을 살펴보겠습니다.
 
-**dist/bundle.js (around lines 90 - 100)**
+**dist/bundle.js (around lines 5 - 25)**
 
-{/* eslint-disable no-use-before-define */}
+{/* eslint-skip */}
 
 ```js
-/* 1 */
-/***/ (function (module, __webpack_exports__, __webpack_require__) {
-  "use strict";
+/***/ "./src/math.js"
+/*!*********************!*\
+  !*** ./src/math.js ***!
+  \*********************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
-  /* unused harmony export square */
-  /* harmony export (immutable) */ __webpack_exports__.a = cube;
-  function square(x) {
-    return x * x;
-  }
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   cube: () => (/* binding */ cube)
+/* harmony export */ });
+/* unused harmony export square */
+function square(x) {
+  return x * x;
+}
 
-  function cube(x) {
-    return x * x * x;
-  }
-});
+function cube(x) {
+  return x * x * x;
+}
+
+
+/***/ }
 ```
 
 위의 `unused harmony export square` 주석을 참고하세요. 아래 코드를 보면 `square`를 가져오지 않지만, 여전히 번들에 포함되어 있습니다. 다음 섹션에서 수정해 보겠습니다.
@@ -170,7 +177,7 @@ T> "사이드 이펙트"는 하나 이상의 export를 보여주는 것 이외�
 
 배열은 관련된 파일의 간단한 전역 패턴을 허용합니다. 내부적으로 [glob-to-regexp](https://github.com/fitzgen/glob-to-regexp)을 사용합니다 (사용 가능: `*`, `**`, `{a,b}`, `[a-z]`). `/`을 포함하지 않는 `*.css`와 같은 패턴은 `**/*.css`처럼 취급합니다.
 
-T> 가져온 파일은 tree shaking의 대상이 됩니다. 즉, 프로젝트에서 CSS 파일을 가져오기 위해 `css-loader` 같은 것을 사용하는 경우 side effect 목록에 추가해야 프로덕션 모드에서 실수로 삭제되는 것을 방지할 수 있습니다.
+T> 가져온 모든 파일은 tree shaking의 대상이 됩니다. side effect만을 위해 가져온 CSS 파일이 프로덕션 모드에서 의도치 않게 제거되지 않도록 side effect 목록에 추가해야 합니다.
 
 ```json
 {
@@ -577,7 +584,7 @@ export default {
 };
 ```
 
-T> `--optimize-minimize` 플래그를 사용하여 `TerserPlugin`도 활성화 할 수 있습니다.
+T> `--optimization-minimize` 플래그를 사용하여 `TerserPlugin`도 활성화할 수 있습니다.
 
 즉, 다른 `npm run build`를 실행하고 변경된 사항이 있는지 볼 수 있습니다.
 

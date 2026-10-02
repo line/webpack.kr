@@ -1,5 +1,6 @@
 ---
 title: Under The Hood
+description: webpack의 Under The Hood 개념과 동작 방식을 설명합니다.
 sort: 14
 contributors:
   - smelukov
@@ -141,3 +142,55 @@ import(
 - `[id]` - 청크 ID (예: `[id].js` -> `485.js`)
 - `[name]` - 청크 이름 (예: `[name].js` -> `app.js`). 청크에 이름이 없는 경우 ID가 사용됩니다.
 - `[contenthash]` - 출력 파일 콘텐츠의 md4-hash (예: `[contenthash].js` -> `4ea6ff1de66c537eb9b2.js`)
+
+## The build lifecycle
+
+이러한 부분들은 고정된 순서로 생성되며, 모든 빌드는 동일한 단계를 실행합니다. 플러그인은 이 단계에 훅을 연결합니다. [컴파일러 훅](/api/compiler-hooks/)은 단계 자체를 표시하고, [컴파일레이션 훅](/api/compilation-hooks/)은 `make`와 `seal` 내의 모든 것을 처리합니다.
+
+```text
+compiler created
+  environment -> afterEnvironment -> entryOption -> afterPlugins
+  -> afterResolvers -> initialize
+  |
+run (or watch)
+  beforeRun -> run
+  |
+compile                        빌드당 하나의 Compilation
+  beforeCompile -> compile -> thisCompilation -> compilation
+  |
+make                           파일이 모듈이 됩니다
+  addEntry -> resolve -> buildModule -> succeedModule
+  ...발견된 모든 디펜던시에 대해 반복...
+  finishMake -> finishModules
+  |
+seal                           모듈이 청크가 되고, 청크가 애셋이 됩니다
+  seal -> optimizeDependencies
+  -> beforeChunks -> afterChunks
+  -> optimize -> optimizeModules -> optimizeChunks -> optimizeTree
+  -> moduleIds -> chunkIds
+  -> codeGeneration -> runtimeRequirements -> beforeHash -> afterHash
+  -> processAssets -> afterProcessAssets -> afterSeal
+  |
+emit                           애셋이 파일이 됩니다
+  afterCompile -> shouldEmit -> emit -> assetEmitted -> afterEmit
+  |
+done
+  done -> afterDone
+```
+
+두 단계가 대부분의 작업을 수행합니다.
+
+**`make`** 는 모듈 그래프를 빌드합니다. 각 엔트리는 모듈 팩토리로 전달되어 요청을 파일로 resolve합니다. 그런 다음 모듈이 빌드됩니다. [로더](/concepts/loaders/)가 소스를 처리하고, 결과는 디펜던시를 파싱합니다. 발견된 모든 디펜던시는 동일한 방식으로 resolve되고 빌드되므로, 새로운 것이 발견되지 않을 때까지 그래프가 바깥쪽으로 확장됩니다. [`finishModules`](/api/compilation-hooks/#finishmodules)는 전체 그래프가 존재하는 첫 번째 지점입니다.
+
+**`seal`** 은 그래프를 출력으로 변환합니다. 모듈이 청크에 할당되고, 청크 그래프가 최적화되며, ID와 해시가 할당되고, 코드가 생성됩니다. 그리고 이때 비로소 애셋이 존재합니다. 이러한 순서 때문에 애셋 작업은 컴파일레이션이 이미 봉인된 후에 실행되는 컴파일러의 [`emit`](/api/compiler-hooks/#emit) 훅이 아닌 [`processAssets`](/api/compilation-hooks/#processassets)에 속합니다.
+
+| 목적                             | 훅                                                                                                                           |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| 요청 resolve 방식 확인 또는 변경 | [`normalModuleFactory`](/api/compiler-hooks/#normalmodulefactory) 훅                                                         |
+| 빌드된 모듈 읽기                 | [`succeedModule`](/api/compilation-hooks/#succeedmodule)                                                                     |
+| 그래프가 완성된 후 작업          | [`finishModules`](/api/compilation-hooks/#finishmodules)                                                                     |
+| 모듈이 청크에 배치되는 방식 변경 | [`optimizeChunks`](/api/compilation-hooks/#optimizechunks)                                                                   |
+| 애셋 추가, 편집 또는 제거        | [`processAssets`](/api/compilation-hooks/#processassets), 작업에 맞는 [stage](/api/compilation-hooks/#choosing-a-stage) 지정 |
+| 완성된 빌드 읽기                 | [`done`](/api/compiler-hooks/#done)                                                                                          |
+
+T> watch 모드에서는 컴파일러가 재사용되며, `compile` 이후의 모든 단계는 새로운 [`Compilation`](/api/compilation-object/)으로 리빌드마다 다시 실행됩니다.

@@ -1,5 +1,6 @@
 ---
 title: NormalModuleFactory Hooks
+description: NormalModuleFactory Hooks API의 기능과 사용 방법을 설명합니다.
 group: Plugins
 sort: 13
 contributors:
@@ -11,7 +12,7 @@ translators:
 
 `NormalModuleFactory` 모듈은 `컴파일러`에서 모듈을 생성하는데 사용됩니다. 엔트리 포인트에서 시작하여 각 요청을 해결하고, 내용을 파싱하여 추가 요청을 찾고, 모든 파일을 해결함으로써 크롤링하고 새 파일을 파싱합니다. 마지막 단계에서는 각 의존성이 모듈 인스턴스가 됩니다.
 
-`NormalModuleFactory` 클래스는 `Tapable`을 확장하고 다음과 같은 라이프사이클 훅을 제공합니다. 컴파일러 훅도 같은 방식으로 탭 할 수 있습니다.
+`NormalModuleFactory` 클래스는 tapable 훅의 `hooks` 객체를 노출하며 다음과 같은 생명주기 훅을 제공합니다. 컴파일러 훅도 같은 방식으로 탭 할 수 있습니다.
 
 ```js
 const nmf = NormalModuleFactory.hooks;
@@ -58,11 +59,25 @@ NormalModuleFactory.hooks.parser
 
 ## resolveForScheme
 
-`AsyncSeriesBailHook`
+`HookMap<AsyncSeriesBailHook>`
 
 스킴(URI)과 요청이 해결되기 전에 .
 
-- 콜백 파라미터: `resolveData`
+- 훅 파라미터: `scheme`
+
+- 콜백 파라미터: `resourceData` `resolveData`
+
+## resolveInScheme
+
+`HookMap<AsyncSeriesBailHook>`
+
+<Badge text="5.49.0+" />
+
+스킴이 있는 리소스 내부에서 만들어진 요청을 해석하기 위해 호출됩니다. 요청 자체에 스킴이 없는 경우, 즉 [`resolveForScheme`](#resolveforscheme)의 상대적인 경우입니다. 맵은 가져오는 리소스의 스킴으로 키가 지정됩니다. `true`를 반환하면 요청이 해석된 것으로 보고하며, 그 외의 경우 webpack이 일반 해석으로 폴백합니다.
+
+- 훅 파라미터: `scheme`
+
+- 콜백 파라미터: `resourceData` `resolveData`
 
 ## afterResolve
 
@@ -99,6 +114,16 @@ NormalModuleFactory.hooks.parser
 `NormalModule` 인스턴스를 만들기 전에 호출됩니다.
 
 - 콜백 파라미터: `module` `createData` `resolveData`
+
+## prepareModuleType
+
+`HookMap<AsyncSeriesHook>`
+
+<Badge text="5.110.0+" />
+
+webpack이 해당 타입의 파서나 제너레이터를 필요로 하기 전에 모듈 타입에 대해 한 번 호출됩니다. 이를 통해 플러그인은 동기적인 [`createParser`](#createparser) 또는 [`createGenerator`](#creategenerator) 탭에서 사용할 것을 비동기적으로 로드할 수 있습니다. 탭이 없는 타입이나 이미 준비된 타입은 기다리지 않고 계속됩니다.
+
+- 훅 파라미터: `type`
 
 ## createParser
 

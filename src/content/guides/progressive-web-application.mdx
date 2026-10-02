@@ -58,7 +58,9 @@ Hit CTRL-C to stop the server
 
 ## Adding Workbox
 
-Workbox webpack 플러그인을 추가하고 `webpack.config.js`파일을 수정해 보겠습니다.
+T> Webpack은 [`output.html`](/configuration/output/#outputhtml)로 페이지를 직접 생성할 수 있습니다. [Native HTML](/guides/native-html/)을 참고하세요. 이 가이드에서는 모든 엔트리의 script를 포함하는 단일 페이지 대신 엔트리 포인트별 페이지를 내보내야 동일한 결과가 되므로 `HtmlWebpackPlugin`을 계속 사용합니다.
+
+Workbox webpack plugin을 추가하고 `webpack.config.js` 파일을 수정해 보겠습니다.
 
 ```bash
 npm install workbox-webpack-plugin --save-dev

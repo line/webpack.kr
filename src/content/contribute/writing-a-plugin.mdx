@@ -1,5 +1,6 @@
 ---
 title: Writing a Plugin
+description: webpack에 기여할 때 필요한 Writing a Plugin 내용을 설명합니다.
 sort: 3
 contributors:
   - slavafomin
@@ -157,7 +158,7 @@ class HelloCompilationPlugin {
 export default HelloCompilationPlugin;
 ```
 
-`compiler`, `compilation` 그리고 다른 중요한 객체에서 사용 가능한 훅의 목록은 [플러그인 API](/api/plugins/) 문서를 참고해 주세요.
+`compiler`, `compilation` 그리고 다른 중요한 객체에서 사용 가능한 훅의 목록은 [플러그인 API](/api/plugins/) 문서를 참고해 주세요. 해당 훅이 제공하는 객체들은 별도로 문서화되어 있습니다. 컴파일러는 [Compiler Object](/api/compiler-object/) 페이지에, 컴파일레이션이 제공하는 내용은 [Compilation Object](/api/compilation-object/) 페이지에, 컴파일레이션이 포함하는 모듈은 [Module Object](/api/module-object/) 페이지에서 확인할 수 있습니다.
 
 ## Async event hooks
 
@@ -422,15 +423,15 @@ this.hooks = {
   - `tap` 메소드를 사용하여 탭 됩니다.
   - `call(...params)` 메소드를 사용하여 호출됩니다.
 
-  Bail Hook 타입의 훅들은, 각각의 callback 플러그인이 특정한 `args`를 사용하여 차례로 호출됩니다. 만약 플러그인에 의해 정의되지 않은 값을 제외하고 값이 반환된다면 훅에 의해 값이 반환되고 추가 플러그인 callback은 호출되지 않습니다. 많은 유용한 `optimizeChunks`, `optimizeChunkModules`와 같은 이벤트는 SyncBailHooks입니다.
+  Bail Hook 타입의 훅들은 각각의 플러그인 콜백이 특정한 `args`를 사용하여 차례로 호출됩니다. 만약 플러그인에 의해 `undefined`가 아닌 값이 반환된다면, 훅에 의해 해당 값이 반환되고 추가 플러그인 콜백은 호출되지 않습니다. `optimizeChunks`, `optimizeModules`와 같은 많은 유용한 이벤트들이 SyncBailHooks입니다.
 
 - **Waterfall Hooks**
   - `SyncWaterfallHook[params]`로 정의됩니다.
   - `tap` 메소드를 사용하여 탭 됩니다.
   - `call(...params)` 메소드를 사용하여 호출됩니다.
 
-  여기서 각각 플러그인은 이전 플러그인의 반환 값으로부터 인자들을 차례로 호출합니다. 플러그인은 실행 순서를 반드시 고려해야합니다.
-  실행된 이전의 플러그인으로부터 인자들을 반드시 허용해야합니다. 첫 번째 플러그인의 값은 `init`입니다. 따라서 waterfall hooks에는 최소 1개의 parameter를 제공해야 합니다. 이 패턴은 `ModuleTemplate`, `ChunkTemplate` 등과 같은 webpack 템플릿과 관련된 탭 될 수 있는 인스턴스에서 사용됩니다.
+  여기서 각각 플러그인은 이전 플러그인의 반환 값으로부터 인자들을 차례로 호출합니다. 플러그인은 실행 순서를 반드시 고려해야 합니다.
+  실행된 이전의 플러그인으로부터 인자들을 반드시 허용해야 합니다. 첫 번째 플러그인의 값은 `init`입니다. 따라서 waterfall hooks에는 최소 1개의 parameter를 제공해야 합니다. 이 패턴은 `webpack.javascript.JavascriptModulesPlugin.getCompilationHooks(compilation)`이 노출하는 렌더링 훅(예: `renderChunk`, `renderMain`, `render` 등)에서 사용됩니다.
 
 ### Asynchronous Hooks
 
@@ -447,8 +448,8 @@ this.hooks = {
   - `tap`/`tapAsync`/`tapPromise` 메소드를 사용하여 탭 됩니다.
   - `callAsync(...params)` 메소드를 사용하여 호출됩니다.
 
-  플러그인 핸들러 함수는 `(err: Error, nextValue: any) -> void.` 서명이 있는 callback 함수와 현재 값으로 호출됩니다. `nextValue`가 호출되면 다음 핸들러의 현재 값이 됩니다. 첫 번째 핸들러의 현재 값은 `init`입니다. 모든 핸들러가 적용된 후 callback은 마지막 값으로 호출됩니다. 만약 어떤 핸들러가 `err` 값을 전달하면 callback은 오류가 호출되고 더이상 핸들러는 호출되지 않습니다.
-  이 플러그인 패턴은 `before-resolve`와 `after-resolve`와 같은 이벤트에서 사용할 수 있습니다.
+  플러그인 핸들러 함수는 현재 값과 `(err: Error, nextValue: any) -> void` 서명이 있는 callback 함수와 함께 호출됩니다. `nextValue`가 호출되면 다음 핸들러의 현재 값이 됩니다. 첫 번째 핸들러의 현재 값은 `init`입니다. 모든 핸들러가 적용된 후 callback은 마지막 값으로 호출됩니다. 만약 어떤 핸들러가 `err` 값을 전달하면 callback은 해당 오류와 함께 호출되고 더 이상 핸들러는 호출되지 않습니다.
+  이 플러그인 패턴은 `ContextModuleFactory.hooks.beforeResolve` 및 `afterResolve`와 같은 이벤트에서 사용됩니다. `NormalModuleFactory`에서 이에 해당하는 훅은 AsyncSeriesBailHook입니다.
 
 - **Async Series Bail**
   - `AsyncSeriesBailHook[params]`로 정의됩니다.
@@ -492,7 +493,7 @@ class AssetLoggerPlugin {
 export default AssetLoggerPlugin;
 ```
 
-이 플러그인은 Webpack 컴파일러의 `emit` 훅을 활용하여 생성된 모든 애셋의 이름을 콘솔에 출력합니다. Webpack 훅을 사용하여 플러그인이 컴파일 프로세스와 상호 작용하는 방법을 보여주는 예시입니다.
+이 플러그인은 Webpack 컴파일러의 `thisCompilation` 훅과 컴파일레이션의 `processAssets` 훅을 탭하여 생성된 모든 애셋의 이름을 콘솔에 출력합니다. Webpack 훅을 사용하여 플러그인이 컴파일 프로세스와 상호 작용하는 방법을 보여주는 예시입니다.
 
 예를 들어, Webpack 빌드를 실행하면 다음과 같은 출력이 나타날 수 있습니다.
 
@@ -502,6 +503,118 @@ main.js
 vendor.js
 styles.css
 ```
+
+## Making your own classes cacheable
+
+자체 `Module` 또는 `Dependency` 클래스를 추가하는 플러그인은 해당 인스턴스가 [퍼시스턴트 캐시](/configuration/cache/)에 쓰이고 읽히는 방법을 명시해야 합니다. 그렇지 않으면 캐시가 해당 클래스를 참조하는 모든 내용을 저장하지 않습니다. `webpack.util.serialization`이 이를 위한 API입니다:
+
+```js
+import webpack from "webpack";
+
+class MyDependency extends webpack.dependencies.ModuleDependency {
+  constructor(request, myOption) {
+    super(request);
+    this.myOption = myOption;
+  }
+
+  get type() {
+    return "my dependency";
+  }
+
+  serialize(context) {
+    const { write } = context;
+    // 이 클래스 자체의 필드만 - 베이스 클래스는 자체 필드를 씁니다.
+    write(this.myOption);
+    super.serialize(context);
+  }
+
+  deserialize(context) {
+    const { read } = context;
+    this.myOption = read();
+    super.deserialize(context);
+  }
+}
+
+webpack.util.serialization.register(
+  MyDependency,
+  // 캐시를 읽을 때 이 클래스를 가져오기 위해 webpack이 `require` 할 경로이므로,
+  // 등록하는 파일로 resolve 되어야 합니다.
+  "my-plugin/MyDependency",
+  null,
+  {
+    serialize(obj, context) {
+      obj.serialize(context);
+    },
+    deserialize(context) {
+      const obj = new MyDependency();
+      obj.deserialize(context);
+      return obj;
+    },
+  },
+);
+```
+
+이 모듈은 또한 절대 쓰이지 않아야 하는 클래스를 위한 `registerNotSerializable(Constructor)`와, 등록하는 모듈로 요청을 resolve 하기 위한 `registerLoader(regExp, loader)`도 제공합니다.
+
+W> 모듈 그래프에서 접근 가능하지만 등록되지 않은 클래스는 전체 엔트리를 캐시 불가능하게 만들며, [`infrastructureLogging.debug`](/configuration/infrastructureLogging/)가 활성화된 경우 webpack은 `No serializer registered for <Class>`로 보고합니다.
+
+## Typing your plugin
+
+webpack은 자체 타입 선언을 제공하므로, TypeScript로 작성된 플러그인은 `@types/webpack` 패키지가 필요하지 않습니다. `webpack` 자체를 dev dependency(그리고 플러그인이 사용자의 컴파일러 내에서 실행되므로 peer dependency)로 설치하고 해당 타입을 가져오세요.
+
+**MyPlugin.ts**
+
+```ts
+import type { Compiler, Compilation, WebpackPluginInstance } from "webpack";
+
+interface MyPluginOptions {
+  banner?: string;
+}
+
+export default class MyPlugin implements WebpackPluginInstance {
+  constructor(private readonly options: MyPluginOptions = {}) {}
+
+  apply(compiler: Compiler): void {
+    compiler.hooks.thisCompilation.tap(
+      "MyPlugin",
+      (compilation: Compilation) => {
+        // ...
+      },
+    );
+  }
+}
+```
+
+`WebpackPluginInstance`는 webpack이 `plugins` 배열을 검사할 때 사용하는 인터페이스입니다. `apply(compiler)` 메서드만 요구하므로, 이를 구현하면 플러그인이 허용되는 모든 곳에서 클래스를 할당할 수 있습니다.
+
+W> `import type`은 컴파일 시 지워지므로 런타임에 필요한 것에는 사용할 수 없습니다. `Compilation.PROCESS_ASSETS_STAGE_*` 상수들이 여기에 해당합니다. webpack의 value import를 추가하는 대신 `compiler.webpack`에서 가져오세요. 컴파일러는 빌드를 실행하는 정확한 webpack 인스턴스를 제공하므로, 프로젝트가 플러그인 옆의 webpack 복사본과 다른 복사본을 resolve 하더라도 플러그인이 제대로 동작합니다.
+
+```ts
+export default class MyPlugin implements WebpackPluginInstance {
+  apply(compiler: Compiler): void {
+    const { Compilation, sources } = compiler.webpack;
+
+    compiler.hooks.thisCompilation.tap("MyPlugin", (compilation) => {
+      compilation.hooks.processAssets.tap(
+        {
+          name: "MyPlugin",
+          stage: Compilation.PROCESS_ASSETS_STAGE_ADDITIONS,
+        },
+        () => {
+          compilation.emitAsset(
+            "my-plugin.txt",
+            new sources.RawSource("generated by MyPlugin"),
+          );
+        },
+      );
+    });
+  }
+}
+```
+
+플러그인은 설정의 일부로 Node.js에 의해 로드되므로, 플러그인을 사용하는 프로젝트가 `require` 또는 `import` 할 수 있는 모듈 형식으로 컴파일하세요. 그리고 `package.json`에 `"types"`(또는 `types` 조건이 있는 `"exports"`)를 설정하면, 사용자가 `new MyPlugin({ … })`을 작성할 때 옵션 타입을 제공받을 수 있습니다.
+
+T> 동일한 타입은 JSDoc에서도 사용할 수 있습니다. webpack 자체 플러그인도 이 방식으로 타입이 지정됩니다. 파라미터에 `/** @type {import("webpack").Compiler} */`를 작성하면 빌드 단계 없이 `checkJs`에서 일반 JavaScript 플러그인도 동일한 검사를 받을 수 있습니다.
 
 ## Testing your plugin
 

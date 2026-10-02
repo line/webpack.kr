@@ -1,5 +1,6 @@
 ---
 title: Output
+description: webpack의 Output 개념과 동작 방식을 설명합니다.
 sort: 2
 contributors:
   - TheLarkInn
@@ -33,7 +34,7 @@ export default {
 
 ## Multiple Entry Points
 
-설정에서 하나 이상의 "청크"를 생성하면(다중 엔트리 포인트나 CommonsChunkPlugin과 같은 플러그인을 사용하는 경우) [substitution](/configuration/output/#outputfilename)을 사용하여 파일이 고유한 이름을 갖도록 해야 합니다.
+설정에서 하나 이상의 "청크"를 생성하면(다중 엔트리 포인트나 [`optimization.splitChunks`](/configuration/optimization/#optimizationsplitchunks), `SplitChunksPlugin`을 사용하는 경우), 각 파일이 고유한 이름을 갖도록 [substitution](/configuration/output/#outputfilename)을 사용해야 합니다.
 
 ```js
 import path from "node:path";

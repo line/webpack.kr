@@ -1,5 +1,6 @@
 ---
 title: Externals
+description: webpack의 Externals 설정과 사용 방법을 설명합니다.
 sort: 15
 contributors:
   - sokra
@@ -20,6 +21,7 @@ contributors:
   - anshumanv
   - SaulSilver
   - fi3ework
+  - bjohansebas
 translators:
   - choilim
 ---
@@ -28,7 +30,7 @@ translators:
 
 ## externals
 
-`string` `object` `function` `RegExp` `[string, object, function, RegExp]`
+`string` `RegExp` `object` `ExternalsFn` `(string | RegExp | object | ExternalsFn)[]`
 
 특정 `import` 된 패키지의 **번들링을 방지하고** 대신 런타임에 이러한 _외부 종속성을_ 검색합니다.
 
@@ -63,7 +65,7 @@ import $ from "jquery";
 $(".my-element").animate(/* ... */);
 ```
 
-위의 `webpack.config.js`에서 `externals`에 지정된 속성 이름 `jquery`는 `import $ from 'jquery'`의 모듈인 `jquery`가 번들링에서 제외되어야 함을 나타냅니다. 기본 외부 라이브러리 유형이 `var`이므로 이 모듈을 대체하기 위해 `jQuery`값이 전역 `jQuery`변수를 검색하는 데 사용됩니다. [externalsType](#externalstype)를 참고하세요.
+위의 `webpack.config.js`에서 `externals`에 지정된 속성 이름 `jquery`는 `import $ from 'jquery'`의 모듈인 `jquery`가 번들링에서 제외되어야 함을 나타냅니다. 이 모듈을 대체하기 위해 `jQuery`값이 전역 `jQuery`변수를 검색하는 데 사용됩니다. [`output.library.type`](/configuration/output/#outputlibrarytype)과 [`output.module`](/configuration/output/#outputmodule) 모두 설정되지 않은 경우 기본 외부 라이브러리 유형은 `var`입니다. [externalsType](#externalstype)를 참고하세요.
 
 위에서는 외부 전역 변수를 사용하는 예를 보여주었지만, 실제로 외부 속성에는 전역변수, CommonJS, AMD, ES2015 모듈과 같은 형식으로 사용할 수 있습니다. 자세한 내용은 [externalsType](#externalstype)을 참고하세요.
 
@@ -104,7 +106,7 @@ export default {
 };
 ```
 
-### [string]
+### string[]
 
 ```js
 export default {
@@ -132,7 +134,7 @@ export default {
 
 ### object
 
-W> `{ root, amd, commonjs, ... }`가 있는 객체는 [`libraryTarget: 'umd'`](/configuration/output/#outputlibrarytarget)에만 허용됩니다. 다른 라이브러리 타켓에는 허용되지 않습니다.
+W> `{ root, amd, commonjs, ... }`가 있는 객체는 [externals 타입](#externalstype)을 각 타입에 대한 external의 대상에 매핑합니다. [`umd`](/configuration/output/#outputlibrarytarget) 라이브러리는 `root`, `amd`, `commonjs` 및 `commonjs2` 항목을 읽고, `amd` 또는 `system` 라이브러리는 `amd`를 읽으며, 다른 externals 타입의 경우 webpack은 유효 타입과 일치하는 항목을 사용합니다.
 
 W> webpack 5.109.0부터 사용된 externals type에 대한 entry가 없는 object external은 runtime에 조용히 `undefined`로 resolve되는 대신 build error를 emit합니다.
 
@@ -195,26 +197,55 @@ export default {
 };
 ```
 
+### object with options
+
+<Badge text="5.110.0+" />
+
+external 값은 `external` 아래의 target과 webpack의 처리 방식을 설명하는 옵션을 포함한 객체로도 지정할 수 있습니다.
+
+```js
+export default {
+  // ...
+  externals: {
+    "@scope/icons": {
+      external: "commonjs @scope/icons",
+      sideEffects: false,
+    },
+  },
+};
+```
+
+- `external` - 위 형식 중 하나로 지정한 target(externals 타입별 문자열, 배열 또는 객체)입니다.
+- `sideEffects` - external import에 side effect가 있는지 여부로, `package.json`의 [`sideEffects` 플래그](/guides/tree-shaking/#mark-the-file-as-side-effect-free)와 같은 개념입니다.
+
+webpack은 external을 분석할 수 없으므로 이를 가져오면 관찰 가능한 작업이 수행된다고 가정하고 export를 아무도 읽지 않아도 import를 유지합니다. `sideEffects: false`는 그 반대를 나타내며 export가 사용되지 않으면 external을 완전히 제거할 수 있게 합니다. 특히 barrel 파일이 가져오는 큰 external은 그렇지 않으면 barrel을 사용하는 모든 청크에 요청이 남으므로 중요합니다.
+
+W> 패키지에 실제로 side effect가 없을 때만 설정하세요. 잘못 지정하면 런타임이 side effect를 위해 의존하는 import가 제거되며 빌드 시점이 아니라 런타임에 오류가 발생합니다.
+
 ### function
 
-- `function ({ context, request, contextInfo, getResolve }, callback)`
-- `function ({ context, request, contextInfo, getResolve }) => promise` <Badge text='5.15.0+' />
+`ExternalsFn`은 두 가지 형태가 있습니다.
+
+- `(ctx: ExternalsCtx, callback: ExternalsCallback) => void`
+- `(ctx: ExternalsCtx) => Promise<ExternalsResult>` <Badge text='5.15.0+' />
 
 webpack에서 외부화하려는 동작을 제어하기 위해 자체 함수를 정의하는 것이 유용할 수 있습니다. 예를 들어 [webpack-node-externals](https://www.npmjs.com/package/webpack-node-externals)는, `node_modules` 디렉터리에서 모든 모듈을 제외하고 패키지를 허용 목록에 추가하는 옵션을 제공합니다.
 
 함수가 받을 수 있는 인수는 다음과 같습니다.
 
-- `ctx` (`object`): 파일 세부 정보를 포함하는 객체입니다.
+- `ctx` (`ExternalsCtx`): 파일 세부 정보를 포함하는 객체입니다.
   - `ctx.context` (`string`): import를 포함하는 파일의 디렉터리입니다.
   - `ctx.request` (`string`): 요청 중인 import 경로입니다.
-  - `ctx.contextInfo` (`object`): issuer(예. 레이어, 컴파일)에 대한 정보를 포함합니다.
-  - `ctx.getResolve` <Badge text='5.15.0+' />: 현재 리졸브 옵션으로 리졸브 함수 가져오기.
-- `callback` (`function (err, result, type)`): 모듈을 외부화하는 방법을 나타내는 데 사용되는 콜백 함수입니다.
+  - `ctx.originalRequest` (`string`) <Badge text='5.110.0+' />: `ctx.request`와 동일하지만, 컨텍스트 모듈의 요소인 경우에는 사용자가 작성한 요청입니다.
+  - `ctx.dependencyType` (`string`): 참조하는 디펜던시의 카테고리입니다. 예: `'esm'`, `'commonjs'` 또는 `'url'`.
+  - `ctx.contextInfo` (`object`): issuer(예: 레이어, 컴파일러)에 대한 정보를 포함합니다.
+  - `ctx.getResolve` <Badge text='5.15.0+' />: 현재 리졸버 옵션으로 리졸브 함수를 가져옵니다.
+- `callback` (`ExternalsCallback`, 즉 `(err?: Error | null, result?: ExternalsResult, type?: string) => void`): 모듈을 외부화하는 방법을 나타내는 데 사용되는 콜백 함수입니다.
 
 콜백 함수는 세 가지 인수를 사용합니다.
 
 - `err` (`Error`): import를 외부화하는 동안 오류가 있었는지 나타내는 데 사용됩니다. 오류가 있는 경우 이 파라미터만 사용해야 합니다.
-- `result` (`string` `[string]` `object`): 다른 외부 형식([`string`](#string), [`[string]`](#string-1), 또는 [`object`](#object))를 사용하여 외부 모듈을 설명합니다.
+- `result` (`ExternalsResult`, 즉 `string | string[] | boolean | object`): 다른 외부 형식([`string`](#string), [`string[]`](#string-1), 또는 [`object`](#object))를 사용하여 외부 모듈을 설명합니다.
 - `type` (`string`): 모듈 [external type](#externalstype)을 나타내는 선택적 파라미터입니다(`result` 파라미터에 아직 표시되지 않은 경우).
 
 예를들어, import 경로가 정규 표현식과 일치하는 모든 import를 외부화 하려면 다음을 수행할 수 있습니다.
@@ -353,7 +384,7 @@ W> [기본 유형](/configuration/externals/#externalstype)은 유형 없이 `ex
 
 ### byLayer
 
-`function` `object`
+`Record<string, ExternalItem>` `(layer: string | null) => ExternalItem`
 
 레이어별로 external을 지정합니다.
 
@@ -373,20 +404,25 @@ export default {
 
 ## externalsType
 
-`string = 'var'`
+`string`
 
-기본 외부 유형을 지정합니다. `amd`, `umd`, `system` 그리고 `jsonp` external은 **[`output.libraryTarget`](/configuration/output/#outputlibrarytarget)이** 동일한 값으로 설정되는 것에 의존합니다. 예. `amd` 라이브러리 내에서만 `amd` external을 사용할 수 있습니다.
+기본 external 유형을 지정합니다. [`output.library.type`](/configuration/output/#outputlibrarytype)이 유효한 externals 타입인 경우 기본값은 해당 값이 되며, 그렇지 않으면 [`output.module`](/configuration/output/#outputmodule)이 활성화된 경우 `'module-import'`로, 그 외에는 `'var'`로 설정됩니다. `amd`, `umd`, `system` 및 `jsonp` external은 **[`output.libraryTarget`](/configuration/output/#outputlibrarytarget)이** 동일한 값으로 설정되는 것에 의존합니다. 예. `amd` 라이브러리 내에서만 `amd` external을 사용할 수 있습니다.
 
 지원 유형:
 
 - `'amd'`
 - [`'amd-async'`](#externalstypeamd-async) - 비동기 AMD `require([...])` API를 통해 external을 로드합니다(async module). <Badge text="5.109.0+" />
 - `'amd-require'`
-- `'assign'` - same as `'var'`
+- `'assign'` - `'var'`과 동일합니다.
+- `'asset'` - external이 애셋 URL로 처리되며, 모듈은 요청 문자열을 내보냅니다.
+- `'asset-url'` - external이 URL로 사용됩니다. 예: CSS `url()`.
 - [`'commonjs'`](#externalstypecommonjs)
+- `'commonjs2'` - `'commonjs'`와 동일한 출력입니다.
 - `'commonjs-module'`
+- `'commonjs-static'` - `'commonjs'`와 동일한 출력입니다.
+- `'css-import'` - external이 CSS `@import url(...)`이 됩니다.
+- `'css-url'` - `'asset-url'`의 더 이상 사용되지 않는 별칭입니다.
 - [`'global'`](#externalstypeglobal)
-- `'import'` - `import()`를 사용하여 네이티브 EcmaScript 모듈을 로드합니다(비동기 모듈)
 - `'jsonp'`
 - [`'module'`](#externalstypemodule)
 - [`'import'`](#externalstypeimport)
@@ -478,7 +514,7 @@ export default {
 이는 다음과 같이 생성됩니다.
 
 ```js
-import fs from "fs-extra";
+const fs = require("fs-extra");
 ```
 
 출력 번들에 `require()`가 있다는 점을 유의하세요.
@@ -522,7 +558,7 @@ jq(".my-element").animate(/* ... */);
 
 외부의 기본 유형을 `'module'`로 지정하세요. Webpack은 모듈에서 사용되는 외부 요소에 대해 `import * as X from '...'`와 같은 코드를 생성합니다.
 
-우선 [`experiments.outputModule`](/configuration/experiments/#experimentsoutputmodule)을 활성화해야 합니다. 그렇지 않으면 webpack에서 오류가 발생합니다.
+우선 [`output.module`](/configuration/output/#outputmodule)을 활성화해야 합니다. 그렇지 않으면 webpack에서 오류가 발생합니다.
 
 #### Example
 
@@ -536,8 +572,8 @@ jq(".my-element").animate(/* ... */);
 
 ```js
 export default {
-  experiments: {
-    outputModule: true,
+  output: {
+    module: true,
   },
   externalsType: "module",
   externals: {
@@ -577,9 +613,7 @@ import source v from "external-mod";
 
 ### externalsType.import
 
-<Badge text="5.94.0+" />
-
-외부의 기본 유형을 '가져오기'로 지정합니다. Webpack은 모듈에 사용되는 외부에 대해 '가져오기('...')'와 같은 코드를 생성합니다.
+외부의 기본 유형을 `'import'`로 지정합니다. Webpack은 모듈에 사용되는 external에 대해 `import('...')`와 같은 코드를 생성합니다.
 
 #### Example
 
@@ -646,7 +680,7 @@ const src = await import.source("external-mod");
 
 외부의 기본 유형을 ``module-import'`로 지정합니다. 이것은 [`'module'`](#externalstypemodule)과 [`'import'`](#externalstypeimport)를 결합합니다. Webpack은 자동으로 가져오기 구문의 유형을 감지하여 정적 가져오기의 경우 ``module'`로, 동적 가져오기의 경우 ``import'`로 설정합니다.
 
-정적 가져오기가 있는 경우 먼저 [`experiments.outputModule`](/configuration/experiments/#experimentsoutputmodule)을 활성화해야 합니다. 그렇지 않으면 webpack에서 오류가 발생합니다.
+정적 가져오기가 있는 경우 먼저 [`output.module`](/configuration/output/#outputmodule)을 활성화해야 합니다. 그렇지 않으면 webpack에서 오류가 발생합니다.
 
 #### Example
 
@@ -676,7 +710,7 @@ export default {
 ```js
 import * as __WEBPACK_EXTERNAL_MODULE_lodash__ from "lodash";
 
-const lodash = __WEBPACK_EXTERNAL_MODULE_jquery__;
+const lodash = __WEBPACK_EXTERNAL_MODULE_lodash__;
 
 const __webpack_modules__ = {
   jQuery: (module) => {
@@ -728,8 +762,8 @@ jq(".my-element").animate(/* ... */);
 
 ```js
 module.export = {
-  experiments: {
-    outputModule: true,
+  output: {
+    module: true,
   },
   externalsType: "node-commonjs",
   externals: {
@@ -766,7 +800,7 @@ util.inherits(ChunkStream, Stream);
 const { builtinModules } = require("node:module");
 
 export default {
-  experiments: { outputModule: true },
+  output: { module: true },
   externalsType: "node-commonjs",
   externals: ({ request }, callback) => {
     if (request.startsWith("node:") || builtinModules.includes(request)) {
@@ -1055,18 +1089,21 @@ jq(".my-element").animate(/* ... */);
 
 특정 대상에 대한 외부 프리셋 설정을 활성화합니다.
 
-| Option             | Description                                                                                                                                                                             | Input Type |
-| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
-| `electron`         | `electron`, `ipc` 또는 `shell`과 같은 main 및 preload 컨텍스트에서 공통 일렉트론 내장 모듈을 외부로 취급하고, 사용 시 `require()`를 통해 로드합니다.                                    | boolean    |
-| `electronMain`     | `app`, `ipc-main` 또는 `shell`과 같은 같은 주 컨텍스트에서 일렉트론 내장 모듈을 외부로 취급하고, 사용 시 `require()`를 통해 로드합니다.                                                 | boolean    |
-| `electronPreload`  | `web-frame`, `ipc-renderer` 또는 `shell`과 같은 사전 로드 컨텍스트에서 일렉트론 내장 모듈을 외부로 취급하고, 사용 시 require()를 통해 로드합니다.                                       | boolean    |
-| `electronRenderer` | `web-frame`, `ipc-renderer` 또는 `shell`과 같은 렌더러 컨텍스트에서 일렉토론 내장 모듈을 외부로 취급하고, 사용 시 `require()`를 통해 로드합니다.                                        | boolean    |
-| `node`             | `fs`, `path` 또는 `vm`과 같은 node.js 내장 모듈을 외부 모듈로 취급하고, 사용 시 `require()`를 통해 로드합니다.                                                                          | boolean    |
-| `nwjs`             | `NW.js` 레거시 `nw.gui` 모듈을 외부 모듈로 취급하고, 사용 시 `require()`를 통해 로드합니다.                                                                                             | boolean    |
-| `web`              | `http(s)://...` 그리고 `std:...`에 대한 참조를 외부로 취급하고, 사용 시 `import`를 통해 로드합니다 **(청크의 다른 코드보다 먼저 외부가 실행되므로 실행 순서가 변경됩니다)**.            | boolean    |
-| `webAsync`         | `http(s)://...` 그리고 `std:...`에 대한 참조를 외부로 취급하고, 사용 시 `async import()`를 통해 로드합니다 **(이 유형의 외부 모듈은 `async` 모듈이며, 실행에 다양한 영향을 미칩니다)**. | boolean    |
+| 옵션               | 설명                                                                                                                                                                                                                                          | 입력 타입       |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
+| `electron`         | main 및 preload context에서 `electron`, `ipc`, `shell` 같은 일반 Electron 내장 모듈을 external로 처리하고 사용할 때 `require()`로 로드합니다.                                                                                                 | boolean         |
+| `electronMain`     | main context에서 `app`, `ipc-main`, `shell` 같은 Electron 내장 모듈을 external로 처리하고 사용할 때 `require()`로 로드합니다.                                                                                                                 | boolean         |
+| `electronPreload`  | preload context에서 `web-frame`, `ipc-renderer`, `shell` 같은 Electron 내장 모듈을 external로 처리하고 사용할 때 `require()`로 로드합니다.                                                                                                    | boolean         |
+| `electronRenderer` | renderer context에서 `web-frame`, `ipc-renderer`, `shell` 같은 Electron 내장 모듈을 external로 처리하고 사용할 때 `require()`로 로드합니다.                                                                                                   | boolean         |
+| `bun`              | `bun`, `bun:sqlite`, `bun:ffi` 같은 Bun 내장 모듈과 Node.js 내장 모듈을 external로 처리하고 사용할 때 `import`로 로드합니다(Bun 런타임용).                                                                                                    | boolean         |
+| `deno`             | `fs`, `path`, `vm` 같은 Node.js 내장 모듈을 external로 처리하고 사용할 때 필수 `node:` specifier로 로드합니다(Deno 런타임용).                                                                                                                 | boolean         |
+| `node`             | `fs`, `path`, `vm` 같은 Node.js 내장 모듈을 external로 처리하고 사용할 때 `require()`로 로드합니다.                                                                                                                                           | boolean         |
+| `nodeModules`      | <Badge text="5.110.0+" /> 설치된 패키지(`node_modules` 디렉터리로 리졸브되는 요청)를 external로 처리하고 번들링 대신 런타임에 `require()`/`import`로 로드합니다. [`externalsPresets.nodeModules`](#externalspresetsnodemodules)를 참고하세요. | boolean, object |
+| `nwjs`             | `NW.js` legacy `nw.gui` 모듈을 external로 처리하고 사용할 때 `require()`로 로드합니다.                                                                                                                                                        | boolean         |
+| `web`              | `http(s)://...` 및 `std:...` 참조를 external로 처리하고 사용할 때 `import`로 로드합니다. **(external이 청크의 다른 코드보다 먼저 실행되므로 실행 순서가 변경됩니다.)**                                                                        | boolean         |
+| `webAsync`         | `http(s)://...` 및 `std:...` 참조를 external로 처리하고 사용할 때 `async import()`로 로드합니다. **(이 external 타입은 `async` 모듈이므로 실행에 여러 영향을 줍니다.)**                                                                       | boolean         |
 
-node.js 관련 프리셋으로 ES 모듈을 출력하려는 경우, webpack은 기본`externalsType`을 [`node-commonjs`](#externalstypenode-commonjs)로 설정하여, `require()`를 사용하는 대신 require 함수를 구성하기 위해 `createRequire`를 사용합니다.
+node.js 관련 프리셋으로 ES 모듈을 출력하는 경우, 내장 모듈은 [`module-import`](#externalstypemodule-import)로 외부화됩니다. ES 모듈 출력에서 [`node-commonjs`](#externalstypenode-commonjs) external 및 `externalsPresets.node`가 설정된 경우 `commonjs*` external은 `require()` 대신 `createRequire`를 사용하여 require 함수를 구성합니다.
 
 **Example**
 
@@ -1082,3 +1119,60 @@ export default {
   },
 };
 ```
+
+### externalsPresets.nodeModules
+
+<Badge text="5.110.0+" />
+
+`boolean` `object`
+
+`node_modules` 디렉터리로 리졸브되는 모든 요청을 external로 처리하고 번들링 대신 런타임에 `require()` 또는 `import`로 로드합니다. 일반적으로 server-side 빌드에 필요한 동작입니다. 의존성이 이미 출력 옆에 설치되어 있으므로 번들링하면 빌드가 느려지고 출력만 커집니다.
+
+**webpack.config.js**
+
+```js
+export default {
+  // ...
+  target: "node",
+  externalsPresets: {
+    nodeModules: true,
+  },
+};
+```
+
+preset은 요청의 작성 방식이 아니라 리졸브 위치를 확인하므로 symlink를 통해 `node_modules`로 리졸브되는 요청(pnpm store 또는 연결된 workspace 패키지)도 external 처리합니다. 다음 항목은 external 처리되지 않으므로 별도로 나열할 필요가 없습니다.
+
+- 설치된 패키지가 아닌 상대 및 절대 요청과 `#` subpath import
+- 런타임이 자체적으로 로드할 수 있는 파일로 리졸브되지 않는 항목, 즉 `.js`, `.mjs`, `.cjs`, `.json`, `.node` 이외의 파일. JavaScript에서 가져온 패키지 CSS나 애셋은 번들에 남아 webpack이 계속 처리합니다.
+- 자체 preset이 처리하는 CSS `@import` 및 `url()` 참조
+- [`resolve.alias`](/configuration/resolve/#resolvealias)가 다른 패키지로 보내는 요청. external은 원래 요청을 유지하여 잘못된 대상을 로드하기 때문입니다.
+
+external은 [`node-commonjs`](#externalstypenode-commonjs)로 내보내며 [`output.module`](/configuration/output/#outputmodule)이 활성화되면 [`module-import`](#externalstypemodule-import)로 내보냅니다. `require()` 의존성은 어느 경우에도 `node-commonjs`를 유지하여 `require()` semantics를 보존합니다.
+
+T> 이 preset은 webpack 외부에서 같은 작업을 하던 [`webpack-node-externals`](https://github.com/liady/webpack-node-externals) plugin을 대체합니다. 요청 문자열에서 추측하지 않고 resolver 결과를 사용할 수 있습니다.
+
+#### externalsPresets.nodeModules.allowlist
+
+일부 설치된 패키지는 계속 번들링해야 합니다. 출력은 CommonJS인데 ESM만 제공하는 패키지, 출력 옆에 배포되지 않는 workspace 패키지, loader로 처리하려는 패키지 등이 해당합니다. 번들에 유지할 항목을 `allowlist`에 전달하세요.
+
+```js
+export default {
+  // ...
+  externalsPresets: {
+    nodeModules: {
+      allowlist: [
+        // 정확한 요청
+        "some-esm-only-package",
+        // scope 아래의 모든 항목
+        /^@my-company\//,
+        // 또는 요청별로 결정
+        (request) => request.startsWith("internal-"),
+      ],
+    },
+  },
+};
+```
+
+각 항목은 정확히 일치하는 문자열, 요청을 검사하는 `RegExp`, 또는 번들에 유지할 요청에 `true`를 반환하는 함수입니다.
+
+T> 목록을 조정할 때 [`performance.unusedConfig`](/configuration/performance/#performanceunusedconfig)를 활성화하세요. 어떤 모듈도 가져오지 않은 `externals` 요청을 보고하므로 철자가 틀린 allowlist 항목을 찾을 수 있습니다.

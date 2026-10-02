@@ -66,39 +66,17 @@ webpack의 가장 멋진 기능 중 하나는 JavaScript 외에도 로더 또는
 
 ## Loading CSS
 
-JavaScript 모듈 내에서 CSS 파일을 `import` 하려면 [style-loader](/loaders/style-loader)와 [css-loader](/loaders/css-loader)를 설치하고 [`module` 설정](/configuration/module)에 추가해야 합니다.
+Webpack은 CSS를 자체적으로 이해하므로 별도의 설치나 설정 없이 JavaScript 모듈에서 CSS 파일을 `import`할 수 있습니다.
 
-```bash
-npm install --save-dev style-loader css-loader
+```js
+import "./style.css";
 ```
 
-**webpack.config.js**
+Webpack은 파일을 파싱하고 `@import`와 `url()` 참조를 리졸브한 뒤 번들 옆의 `.css` 출력 파일로 추출합니다. CSS Modules, minification, content hash도 아직 실험적인 동일한 내장 기능에서 제공합니다. 지원 범위와 여전히 loader가 필요한 항목은 [What's built-in](/guides/native-css/#whats-built-in)을 참고하세요.
 
-```diff
- import path from 'node:path';
- import { fileURLToPath } from 'node:url';
+T> 내장 CSS는 기본값이 `'auto'`인 [`experiments.css`](/configuration/experiments/#experimentscss)로 제어합니다. loader가 지정된 `module.rules` 항목이 `.css` 파일과 이미 일치하지 않으면 자동으로 활성화됩니다. 따라서 기존 `css-loader`/`style-loader` 설정은 그대로 작동합니다. [CSS loader 마이그레이션](/guides/native-css/#migration-guide)을 참고하세요.
 
- const __filename = fileURLToPath(import.meta.url);
- const __dirname = path.dirname(__filename);
-
- export default {
-   entry: './src/index.js',
-   output: {
-     filename: 'bundle.js',
-     path: path.resolve(__dirname, 'dist'),
-   },
-+  module: {
-+    rules: [
-+      {
-+        test: /\.css$/i,
-+        use: ['style-loader', 'css-loader'],
-+      },
-+    ],
-+  },
- };
-```
-
-모듈 로더는 체인으로 연결할 수 있습니다. 체인의 각 로더는 처리 대상 리소스에 변환을 적용하며, 실행 순서는 역순(오른쪽에서 왼쪽)입니다.
+Preprocessor는 계속 loader를 사용하며 module loader는 체인으로 연결할 수 있습니다. 체인의 각 loader는 처리하는 리소스에 변환을 적용하고 체인은 역순(오른쪽에서 왼쪽)으로 실행됩니다.
 
 예를 들어 다음과 같은 규칙이 있다고 해보겠습니다.
 
@@ -109,13 +87,14 @@ export default {
       {
         test: /\.scss$/i,
         use: ["postcss-loader", "sass-loader"],
+        type: "css/auto",
       },
     ],
   },
 };
 ```
 
-`use` 배열에서는 `postcss-loader`가 `sass-loader`보다 앞에 있지만, webpack은 먼저 `sass-loader`를 실행해 Sass를 CSS로 변환하고 그 결과에 다시 `postcss-loader`를 적용합니다.
+`use` 배열에서 `postcss-loader`가 `sass-loader`보다 앞에 있지만 webpack은 `sass-loader`를 먼저 실행하여 Sass를 CSS로 컴파일한 뒤 결과에 `postcss-loader`를 실행합니다. `type: 'css/auto'`는 체인에서 나온 CSS를 webpack 자체 CSS 파이프라인으로 처리하도록 지정합니다.
 
 이 순서가 올바르게 유지되지 않으면 webpack에서 오류가 발생할 수 있습니다.
 
@@ -169,23 +148,39 @@ $ npm run build
 
 ...
 [webpack-cli] Compilation finished
-asset bundle.js 72.6 KiB [emitted] [minimized] (name: main) 1 related asset
-runtime modules 1000 bytes 5 modules
-orphan modules 326 bytes [orphan] 1 module
-cacheable modules 539 KiB
-  modules by path ./node_modules/ 538 KiB
-    ./node_modules/lodash/lodash.js 530 KiB [built] [code generated]
-    ./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js 6.67 KiB [built] [code generated]
-    ./node_modules/css-loader/dist/runtime/api.js 1.57 KiB [built] [code generated]
-  modules by path ./src/ 965 bytes
-    ./src/index.js + 1 modules 639 bytes [built] [code generated]
-    ./node_modules/css-loader/dist/cjs.js!./src/style.css 326 bytes [built] [code generated]
-webpack 5.x.x compiled successfully in 2231 ms
+asset bundle.js 69.6 KiB [emitted] [minimized] (name: main) 1 related asset
+asset bundle.css 17 bytes [emitted] [minimized] (name: main)
+runtime modules 1020 bytes 6 modules
+cacheable modules 533 KiB (javascript) 23 bytes (css)
+  ./src/index.js + 1 modules 313 bytes [built] [code generated]
+  ./node_modules/lodash/lodash.js 533 KiB [built] [code generated]
+  css ./src/style.css 23 bytes [built] [code generated]
+webpack 5.x.x compiled successfully in 1689 ms
 ```
 
-브라우저에서 `dist/index.html`을 다시 열면 이제 `Hello webpack`이 빨간색으로 표시됩니다. webpack이 무엇을 했는지 확인하려면 페이지를 검사하여 head 태그를 살펴보세요. (`<style>`태그는 JavaScript를 통해 동적으로 생성되며 결과를 표시하지 않으므로 페이지 소스를 확인하지 마세요) head 태그에 `index.js`에서 가져온 스타일 블록이 포함되어 있을 것입니다.
+Webpack은 CSS를 자체 파일인 `bundle.css`로 추출했습니다. 이름은 기본적으로 `output.filename`에서 파생되는 [`output.cssFilename`](/configuration/output/#outputcssfilename)을 따릅니다. 페이지에서 연결하세요.
 
-대부분의 경우 필수겠지만, 이제 프로덕션에서 로드 시간을 단축하기 위해 [css를 압축](/plugins/mini-css-extract-plugin/#minimizing-for-production) 할 수 있습니다. 또한 생각할 수 있는 거의 모든 종류의 CSS 로더가 존재합니다. 몇 가지 예를 들면 [postcss](/loaders/postcss-loader), [sass](/loaders/sass-loader) 및 [less](/loaders/less-loader) 등이 있습니다.
+**dist/index.html**
+
+```diff
+ <!DOCTYPE html>
+ <html>
+   <head>
+     <meta charset="utf-8" />
+     <title>Asset Management</title>
++    <link rel="stylesheet" href="bundle.css" />
+   </head>
+   <body>
+     <script src="bundle.js"></script>
+   </body>
+ </html>
+```
+
+브라우저에서 `dist/index.html`을 다시 열면 `Hello webpack`이 빨간색으로 표시됩니다.
+
+T> 브라우저가 번들과 병렬로 가져오고 독립적으로 cache할 수 있으므로 별도의 스타일시트가 기본값입니다. 기존 `style-loader`처럼 런타임에 JavaScript에서 style을 주입하려면 [`exportType: 'style'`](/guides/native-css/#output-modes-exporttype)을 설정하세요. 이 경우 `<link>`가 필요하지 않습니다.
+
+Minification도 내장되어 있습니다. [`mode: 'production'`](/configuration/mode/)에서 webpack은 별도 plugin 없이 출력 CSS를 최소화하고 browserslist target에 맞춰 vendor prefix를 관리할 수 있습니다. [Minification](/guides/native-css/#minification)을 참고하세요. 이와 별개로 [postcss](/loaders/postcss-loader), [sass](/loaders/sass-loader), [less](/loaders/less-loader) 등 다양한 CSS용 loader도 제공됩니다.
 
 ## Loading Images
 
@@ -206,22 +201,18 @@ webpack 5.x.x compiled successfully in 2231 ms
      filename: 'bundle.js',
      path: path.resolve(__dirname, 'dist'),
    },
-   module: {
-     rules: [
-       {
-         test: /\.css$/i,
-         use: ['style-loader', 'css-loader'],
-       },
++  module: {
++    rules: [
 +      {
 +        test: /\.(png|svg|jpg|jpeg|gif)$/i,
 +        type: 'asset/resource',
 +      },
-     ],
-   },
++    ],
++  },
  };
 ```
 
-이제 `import myImage from './my-image.png'`를 사용하면 해당 이미지가 처리되어 `output` 디렉터리에 추가됩니다. _그리고_ `MyImage` 변수는 이미지의 최종 URL을 포함합니다. 위와 같이 [css-loader](/loaders/css-loader)를 사용하면 CSS 내의 `url('./my-image.png')`에도 유사한 프로세스가 적용됩니다. 로더는 이것이 로컬 파일임을 인식하고` './my-image.png'` 경로를 `output` 디렉터리에 있는 이미지의 최종 경로로 변경합니다. [html-loader](/loaders/html-loader)는 `<img src="./my-image.png" />`를 동일한 방식으로 처리합니다.
+`import MyImage from './my-image.png'`를 사용하면 이미지가 처리되어 `output` 디렉터리에 추가되고 `MyImage` 변수에는 처리 후 이미지의 최종 URL이 포함됩니다. CSS 안의 `url('./my-image.png')`도 마찬가지입니다. webpack은 이를 로컬 파일로 인식하고 `output` 디렉터리의 최종 경로로 재작성합니다. [`experiments.html`](/configuration/experiments/#experimentshtml)을 활성화하면 HTML 파일의 `<img src="./my-image.png" />`도 같은 방식으로 처리합니다. [Native HTML](/guides/native-html/)을 참고하세요.
 
 이제 프로젝트에 이미지를 추가하고 어떻게 작동하는지 살펴볼까요? 원하는 이미지를 아무거나 사용해도 좋습니다.
 
@@ -284,25 +275,20 @@ $ npm run build
 
 ...
 [webpack-cli] Compilation finished
-assets by status 9.88 KiB [cached] 1 asset
-asset bundle.js 73.4 KiB [emitted] [minimized] (name: main) 1 related asset
-runtime modules 1.82 KiB 6 modules
-orphan modules 326 bytes [orphan] 1 module
-cacheable modules 540 KiB (javascript) 9.88 KiB (asset)
-  modules by path ./node_modules/ 539 KiB
-    modules by path ./node_modules/css-loader/dist/runtime/*.js 2.38 KiB
-      ./node_modules/css-loader/dist/runtime/api.js 1.57 KiB [built] [code generated]
-      ./node_modules/css-loader/dist/runtime/getUrl.js 830 bytes [built] [code generated]
-    ./node_modules/lodash/lodash.js 530 KiB [built] [code generated]
-    ./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js 6.67 KiB [built] [code generated]
-  modules by path ./src/ 1.45 KiB (javascript) 9.88 KiB (asset)
-    ./src/index.js + 1 modules 794 bytes [built] [code generated]
-    ./src/icon.png 42 bytes (javascript) 9.88 KiB (asset) [built] [code generated]
-    ./node_modules/css-loader/dist/cjs.js!./src/style.css 648 bytes [built] [code generated]
-webpack 5.x.x compiled successfully in 1972 ms
+asset bundle.js 70.1 KiB [emitted] [minimized] (name: main) 1 related asset
+asset 86c447381066a936d5c5.png 7.67 KiB [emitted] [immutable] [from: src/icon.png] (auxiliary name: main)
+asset bundle.css 58 bytes [emitted] [minimized] (name: main)
+runtime modules 1.95 KiB 7 modules
+cacheable modules 534 KiB (javascript) 58 bytes (css) 7.67 KiB (asset) 42 bytes (asset-url)
+  javascript modules 534 KiB
+    ./src/index.js + 1 modules 511 bytes [built] [code generated]
+    ./node_modules/lodash/lodash.js 533 KiB [built] [code generated]
+  css ./src/style.css 58 bytes [built] [code generated]
+  ./src/icon.png 7.67 KiB (asset) 42 bytes (javascript) 42 bytes (asset-url) [built] [code generated]
+webpack 5.x.x compiled successfully in 1684 ms
 ```
 
-모든 것이 순조롭게 진행되었다면 이제 아이콘이 반복해서 배경으로 표시되고, `Hello webpack` 텍스트 옆에 `img` 요소가 보이게 됩니다. 이 요소를 살펴보면 실제 파일 이름이 `29822eaa871e8eadeaa4.png`와 같이 변경된 것을 볼 수 있습니다. 이것은 webpack이 `src` 폴더에서 파일을 찾아서 처리했음을 의미합니다!
+모든 작업이 올바르게 진행되었다면 icon이 반복되는 배경으로 표시되고 `Hello webpack` 텍스트 옆에 `img` 요소가 나타납니다. 요소를 검사하면 실제 파일 이름이 `86c447381066a936d5c5.png`와 같은 형태로 변경된 것을 볼 수 있습니다. webpack이 `src` 폴더에서 파일을 찾아 처리했다는 의미입니다.
 
 ## Loading Fonts
 
@@ -325,10 +311,6 @@ webpack 5.x.x compiled successfully in 1972 ms
    },
    module: {
      rules: [
-       {
-         test: /\.css$/i,
-         use: ['style-loader', 'css-loader'],
-       },
        {
          test: /\.(png|svg|jpg|jpeg|gif)$/i,
          type: 'asset/resource',
@@ -363,7 +345,7 @@ webpack 5.x.x compiled successfully in 1972 ms
    └── /node_modules
 ```
 
-로더를 설정하고 폰트가 맞는 위치에 있으면 `@font-face` 선언을 통해 적용 할 수 있습니다. 로컬 `url(...)` 지시문은 이미지와 마찬가지로 webpack에서 골라냅니다.
+규칙을 설정하고 폰트를 배치한 뒤 `@font-face` 선언으로 사용할 수 있습니다. 이미지와 마찬가지로 webpack이 로컬 `url(...)` directive를 처리합니다.
 
 **src/style.css**
 
@@ -390,27 +372,22 @@ $ npm run build
 
 ...
 [webpack-cli] Compilation finished
-assets by status 9.88 KiB [cached] 1 asset
-assets by info 33.2 KiB [immutable]
-  asset 55055dbfc7c6a83f60ba.woff 18.8 KiB [emitted] [immutable] [from: src/my-font.woff] (auxiliary name: main)
-  asset 8f717b802eaab4d7fb94.woff2 14.5 KiB [emitted] [immutable] [from: src/my-font.woff2] (auxiliary name: main)
-asset bundle.js 73.7 KiB [emitted] [minimized] (name: main) 1 related asset
-runtime modules 1.82 KiB 6 modules
-orphan modules 326 bytes [orphan] 1 module
-cacheable modules 541 KiB (javascript) 43.1 KiB (asset)
-  javascript modules 541 KiB
-    modules by path ./node_modules/ 539 KiB
-      modules by path ./node_modules/css-loader/dist/runtime/*.js 2.38 KiB 2 modules
-      ./node_modules/lodash/lodash.js 530 KiB [built] [code generated]
-      ./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js 6.67 KiB [built] [code generated]
-    modules by path ./src/ 1.98 KiB
-      ./src/index.js + 1 modules 794 bytes [built] [code generated]
-      ./node_modules/css-loader/dist/cjs.js!./src/style.css 1.21 KiB [built] [code generated]
-  asset modules 126 bytes (javascript) 43.1 KiB (asset)
-    ./src/icon.png 42 bytes (javascript) 9.88 KiB (asset) [built] [code generated]
-    ./src/my-font.woff2 42 bytes (javascript) 14.5 KiB (asset) [built] [code generated]
-    ./src/my-font.woff 42 bytes (javascript) 18.8 KiB (asset) [built] [code generated]
-webpack 5.x.x compiled successfully in 2142 ms
+assets by status 7.67 KiB [cached] 1 asset
+assets by status 33.5 KiB [emitted]
+  asset f32e23c95fbf20947766.woff 18.8 KiB [emitted] [immutable] [from: src/my-font.woff] (auxiliary name: main)
+  asset f8668ded30a04fd1aed7.woff2 14.5 KiB [emitted] [immutable] [from: src/my-font.woff2] (auxiliary name: main)
+  asset bundle.css 237 bytes [emitted] [minimized] (name: main)
+asset bundle.js 70.1 KiB [compared for emit] [minimized] (name: main) 1 related asset
+runtime modules 1.95 KiB 7 modules
+cacheable modules 534 KiB (javascript) 41 KiB (asset) 126 bytes (asset-url) 255 bytes (css)
+  modules by path ./src/ 553 bytes (javascript) 41 KiB (asset) 126 bytes (asset-url)
+    ./src/index.js + 1 modules 511 bytes [built] [code generated]
+    ./src/icon.png 7.67 KiB (asset) 42 bytes (javascript) 42 bytes (asset-url) [built] [code generated]
+    ./src/my-font.woff2 14.5 KiB (asset) 42 bytes (asset-url) [built] [code generated]
+    ./src/my-font.woff 18.8 KiB (asset) 42 bytes (asset-url) [built] [code generated]
+  ./node_modules/lodash/lodash.js 533 KiB [built] [code generated]
+  css ./src/style.css 255 bytes [built] [code generated]
+webpack 5.x.x compiled successfully in 1644 ms
 ```
 
 `dist/index.html`을 다시 열고 `Hello webpack` 텍스트가 새 폰트로 변경되었는지 확인합니다. 모든 것이 잘되었다면, 변경된 폰트를 확인할 수 있을 것입니다.
@@ -440,10 +417,6 @@ npm install --save-dev csv-loader xml-loader
    },
    module: {
      rules: [
-       {
-         test: /\.css$/i,
-         use: ['style-loader', 'css-loader'],
-       },
        {
          test: /\.(png|svg|jpg|jpeg|gif)$/i,
          type: 'asset/resource',
@@ -634,10 +607,6 @@ npm install toml yamljs json5 --save-dev
    module: {
      rules: [
        {
-         test: /\.css$/i,
-         use: ['style-loader', 'css-loader'],
-       },
-       {
          test: /\.(png|svg|jpg|jpeg|gif)$/i,
          type: 'asset/resource',
        },
@@ -791,10 +760,6 @@ npm install toml yamljs json5 --save-dev
 -  module: {
 -    rules: [
 -      {
--        test: /\.css$/i,
--        use: ['style-loader', 'css-loader'],
--      },
--      {
 -        test: /\.(png|svg|jpg|jpeg|gif)$/i,
 -        type: 'asset/resource',
 -      },
@@ -882,7 +847,7 @@ npm install toml yamljs json5 --save-dev
 그리고 추가했던 의존성을 제거합니다.
 
 ```bash
-npm uninstall css-loader csv-loader json5 style-loader toml xml-loader yamljs
+npm uninstall csv-loader json5 toml xml-loader yamljs
 ```
 
 ## Next guide

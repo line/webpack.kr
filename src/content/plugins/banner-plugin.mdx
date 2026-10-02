@@ -1,5 +1,6 @@
 ---
 title: BannerPlugin
+description: BannerPlugin의 기능과 사용 방법을 설명합니다.
 group: webpack
 contributors:
   - simon04
@@ -70,6 +71,6 @@ import webpack from "webpack";
 
 new webpack.BannerPlugin({
   banner:
-    "fullhash:[fullhash], chunkhash:[chunkhash], name:[name], filebase:[filebase], query:[query], file:[file]",
+    "fullhash:[fullhash], chunkhash:[chunkhash], name:[name], base:[base], query:[query], file:[file]",
 });
 ```

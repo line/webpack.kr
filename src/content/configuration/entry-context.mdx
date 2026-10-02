@@ -1,5 +1,6 @@
 ---
 title: Entry and Context
+description: webpack의 Entry and Context 설정과 사용 방법을 설명합니다.
 sort: 4
 contributors:
   - sokra
@@ -44,7 +45,20 @@ export default {
 
 ## entry
 
-`string` `[string]` `object = { <key> string | [string] | object = { import string | [string], dependOn string | [string], filename string, layer string, runtime string | false }}` `(function() => string | [string] | object = { <key> string | [string] } | object = { import string | [string], dependOn string | [string], filename string, layer string, runtime string | false })`
+`string` `string[]` `EntryObject` `EntryFn`
+
+```ts
+type Entry = string | string[] | EntryObject | EntryFn;
+
+// Each key names a chunk; see Entry descriptor below for EntryDescription.
+type EntryObject = Record<string, string | string[] | EntryDescription>;
+
+type EntryFn = () =>
+  | string
+  | string[]
+  | EntryObject
+  | Promise<string | string[] | EntryObject>;
+```
 
 애플리케이션 번들 처리를 시작할 지점입니다. 배열이 전달되면 배열의 모든 항목이 처리됩니다.
 
@@ -98,7 +112,23 @@ export default {
 
 디스크립터를 사용하여 추가 옵션을 엔트리 포인트에 전달할 수 있습니다.
 
-T> `worker` 플래그(webpack 5.108.0에 추가됨)는 엔트리를 worker로 표시하여, 출력 파일이 일반 청크 파일명 대신 [`output.workerChunkFilename`](/configuration/output/#outputworkerchunkfilename)을 사용하도록 합니다. webpack은 `new Worker(new URL(...))`에서 생성하는 엔트리에 대해 자동으로 설정하므로, 수동으로 설정하는 경우는 드뭅니다.
+`html` 옵션 <Badge text="5.108.0+" />은 이 엔트리 포인트의 JS와 CSS 출력 청크가 주입된 HTML 파일을 생성합니다. [`output.html`](/configuration/output/#outputhtml)과 같은 값을 받으며, webpack 5.110.0부터는 이 엔트리의 설정을 옵션별로 재정의하는 객체도 받습니다. 따라서 특정 엔트리만 페이지 생성을 제외하거나 title만 변경할 수 있습니다.
+
+```js
+export default {
+  entry: {
+    app: "./src/app.js",
+    admin: { import: "./src/admin.js", html: { title: "Admin" } },
+    worker: { import: "./src/worker.js", html: false },
+  },
+  output: { html: true },
+  experiments: { html: true },
+};
+```
+
+T> [`output.html.inline`](/configuration/output/#outputhtmlinline)은 생성된 페이지마다 한 번 리졸브되며 `output.html`에서만 설정할 수 있습니다.
+
+T> webpack 5.108.0에 추가된 `worker` 플래그는 엔트리를 worker로 표시하여 출력 파일이 일반 청크 파일 이름 대신 [`output.workerChunkFilename`](/configuration/output/#outputworkerchunkfilename)을 사용하도록 합니다. webpack은 `new Worker(new URL(...))`에서 생성하는 엔트리에 이 값을 자동으로 설정하므로 직접 설정하는 경우는 드뭅니다.
 
 ### Output filename
 
@@ -160,6 +190,23 @@ export default {
   },
 };
 ```
+
+### Polyfills in an entry
+
+The array form is also how polyfills are loaded, because the order of an entry array is the order the files run in. Anything a polyfill repairs has to be repaired before the application touches it, so the polyfill goes first:
+
+```js
+export default {
+  // ...
+  entry: {
+    main: ["core-js/stable", "./src/index.js"],
+  },
+};
+```
+
+W> Importing all of `core-js/stable` ships every polyfill regardless of what the code uses or what the browsers need — 637 modules, 215 KB minified and 71 KB gzipped with core-js 3.50. Prefer `@babel/preset-env` with [`useBuiltIns: 'usage'`](https://babeljs.io/docs/babel-preset-env#usebuiltins) and a [browserslist](https://github.com/browserslist/browserslist) query, which imports only the polyfills your source actually reaches and your targets actually lack.
+
+See [Loading Polyfills](/guides/shimming/#loading-polyfills) for when a separate polyfill entry is worth the extra request, and [Serving a smaller polyfill to modern browsers](/guides/shimming/#serving-a-smaller-polyfill-to-modern-browsers) for building the same source twice so modern browsers download less.
 
 ### Dynamic entry
 

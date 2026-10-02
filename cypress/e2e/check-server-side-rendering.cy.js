@@ -12,7 +12,7 @@ describe("server side rendered page", () => {
 
   it("should find html tag with lang", () => {
     cy.visit("/");
-    cy.get('html[lang="ko"]');
+    cy.get('html[lang="en"]');
   });
 
   it("should find meta charset", () => {
@@ -20,12 +20,12 @@ describe("server side rendered page", () => {
     cy.get('meta[charset="utf-8"]');
   });
 
-  it("should find the default meta description", () => {
+  it("should find the home page meta description", () => {
     cy.visit("/");
     cy.get('head meta[name="description"]').should(
       "have.attr",
       "content",
-      "Webpack은 모듈 번들러입니다. 주요 목적은 브라우저에서 사용할 수 있도록 JavaScript 파일을 번들로 묶는 것이지만, 리소스나 애셋을 변환하고 번들링 또는 패키징할 수도 있습니다.",
+      "webpack은 JavaScript, CSS, HTML, WebAssembly와 애셋을 브라우저, Node.js, Deno, Bun 및 기타 환경에 최적화된 결과물로 번들링합니다.",
     );
   });
 
@@ -34,6 +34,6 @@ describe("server side rendered page", () => {
     cy.title().should("eq", "webpack");
 
     cy.visit("/guides/getting-started/");
-    cy.title().should("eq", "Getting Started | Webpack");
+    cy.title().should("eq", "Getting Started | webpack");
   });
 });

@@ -1,5 +1,6 @@
 ---
 title: Plugin Patterns
+description: webpack에 기여할 때 필요한 Plugin Patterns 내용을 설명합니다.
 sort: 5
 contributors:
   - nveenjain
@@ -22,11 +23,11 @@ class MyPlugin {
     compiler.hooks.emit.tapAsync("MyPlugin", (compilation, callback) => {
       // 각 청크(빌드 출력)를 탐색합니다.
       for (const chunk of compilation.chunks) {
-        // 청크 내의 각 모듈(빌드 입력)을 탐색합니다.
-        for (const module of chunk.getModules()) {
-          // 모듈에 포함된 각 소스 파일 경로를 살펴보세요.
-          if (module.buildInfo && module.buildInfo.fileDependencies) {
-            for (const fileDependency of module.buildInfo.fileDependencies) {
+        // 청크 내의 각 모듈(빌드 입력)을 탐색합니다:
+        for (const module of compilation.chunkGraph.getChunkModules(chunk)) {
+          // 모듈에 포함된 각 소스 파일 경로를 탐색합니다:
+          if (module.buildInfo && module.buildInfo.snapshot) {
+            for (const fileDependency of module.buildInfo.snapshot.getFileIterable()) {
               // 이제 소스 코드 구조에 대해 많은 것을 알게 되었습니다...
               console.log(fileDependency);
             }
@@ -52,34 +53,30 @@ export default MyPlugin;
 
 W> **Deprecation warning**: 배열 함수는 계속 작동합니다.
 
-- `module.fileDependencies`: 모듈에 포함된 소스 파일 경로의 배열입니다. 이것은 자바스크립트 파일 자체(예: `index.js`)와 필요한 모든 의존성 애셋 파일들(스타일 시트, 이미지 등)을 포함합니다. 의존성을 검토하는 것은 어떤 소스 파일이 모듈에 속하는지 파악하는데 유용합니다.
-- `compilation.chunks`: 컴파일의 청크 세트(빌드 출력)입니다. 각 청크는 최종 렌더링된 애셋의 구성을 관리합니다.
+- `module.buildInfo.snapshot.getFileIterable()`: 모듈에 포함된 소스 파일 경로의 이터러블입니다. 자바스크립트 소스 파일 자체(예: `index.js`)와 그것이 필요로 하는 모든 의존성 애셋 파일(스타일시트, 이미지 등)을 포함합니다. 의존성을 검토하면 어떤 소스 파일이 모듈에 속하는지 파악할 수 있습니다.
+- `compilation.chunks`: 컴파일의 청크(빌드 출력) 집합입니다. 각 청크는 최종 렌더링된 애셋의 구성을 관리합니다.
 
 W> **Deprecation warning**: 배열 함수는 계속 작동합니다.
 
-- `chunk.getModules()`: 청크에 포함된 모듈의 배열입니다. 각 모듈의 의존성을 통해 어떤 원시 소스 파일이 청크에 공급되는지 확인할 수 있습니다.
+- `compilation.chunkGraph.getChunkModules(chunk)`: 청크에 포함된 모듈의 배열입니다. 각 모듈의 의존성을 통해 어떤 원시 소스 파일이 청크에 공급되는지 확인할 수 있습니다.
 - `chunk.files`: 청크에 의해 생성된 출력 파일 이름의 집합입니다. `compilation.assets` 테이블에서 이러한 애셋 소스를 액세스할 수 있습니다.
 
 ### Monitoring the watch graph
 
-webpack 미들웨어를 실행하는 동안, 각 컴파일 결과물은 `fileDependencies` `Set` (감시되고 있는 파일) 그리고 된 파일 경로를 타임스탬프에 매핑하는 `fileTimestamps` `Map` 을 포함합니다. 다음은 컴파일 결과물 내에서 변경된 파일을 감지하는데 매우 유용합니다.
+webpack 미들웨어를 실행하는 동안, 각 컴파일 결과물은 `fileDependencies` `Set`(감시 중인 파일 목록)을 포함하며, 컴파일러는 현재 재빌드를 트리거한 파일 목록이 담긴 `modifiedFiles` `Set`을 노출합니다(첫 번째 빌드에서는 `undefined`). 다음은 컴파일 결과물 내에서 변경된 파일을 감지하는데 매우 유용합니다:
 
 ```js
 class MyPlugin {
-  constructor() {
-    this.startTime = Date.now();
-    this.prevTimestamps = new Map();
-  }
-
   apply(compiler) {
     compiler.hooks.emit.tapAsync("MyPlugin", (compilation, callback) => {
-      const changedFiles = [...compilation.fileTimestamps.keys()].filter(
-        (watchfile) =>
-          (this.prevTimestamps.get(watchfile) || this.startTime) <
-          (compilation.fileTimestamps.get(watchfile) || Infinity),
-      );
+      // 이전 빌드 이후 변경된 감시 파일만
+      const changedFiles = compiler.modifiedFiles
+        ? [...compiler.modifiedFiles].filter((file) =>
+            compilation.fileDependencies.has(file),
+          )
+        : [];
 
-      this.prevTimestamps = compilation.fileTimestamps;
+      console.log("Changed files:", changedFiles);
       callback();
     });
   }
@@ -98,11 +95,11 @@ W> wepback 5부터, `compilation.fileDependencies` , `compilation.contextDepende
 
 감시 그래프와 유사하게, 컴파일 내에서 변경된 청크는 콘텐츠 해시를 추적하여 모니터링할 수 있습니다.
 
-W> `compilation.chunks`는 배열이 아니라 `Set`입니다. `.filter()` 또는 `.map()`을 직접 호출하면 `TypeError`가 발생합니다.
+W> `compilation.chunks`는 배열이 아니라 `Set`입니다. `.filter()` 또는 `.map()`을 직접 호출하면 더 이상 사용되지 않는 호환성 레이어(`experiments.backCompat`, 기본적으로 활성화)를 통해서만 동작하며, 이 레이어가 비활성화되면 `TypeError`가 발생합니다.
 `for...of`를 사용하거나 먼저 배열로 펼쳐서 사용하세요.
 
-W> 청크 객체에는 `chunk.hash`가 정의되어 있지 않습니다. 대신 `chunk.contentHash.javascript`를 사용하세요.
-`chunk.hash`에 접근하면 `undefined`가 반환되어, 재빌드할 때마다 모든 청크가 변경된 것처럼 보입니다.
+T> `chunk.hash`는 청크의 전체 해시이며, `chunk.contentHash[type]`은 소스 타입별(예: `javascript`, `css`) 콘텐츠 해시입니다.
+청크의 JavaScript 콘텐츠 변경을 감지하려면 `chunk.contentHash.javascript`를 사용하는 것이 좋습니다.
 
 ```js
 class MyPlugin {
@@ -143,5 +140,5 @@ class MyPlugin {
 export default MyPlugin;
 ```
 
-T> Use `chunk.id ?? chunk.name` as the tracking key. Some chunks have an `id` but no `name`, so relying on `chunk.name` alone can miss changes.
-CSS or other non-JS chunks may not have a `javascript` key in `contentHash` — the `continue` guard skips those safely.
+T> 추적 key로 `chunk.id ?? chunk.name`을 사용하세요. 일부 chunk에는 `id`가 있지만 `name`이 없으므로 `chunk.name`에만 의존하면 변경 사항을 놓칠 수 있습니다.
+CSS 또는 기타 JavaScript가 아닌 chunk에는 `contentHash`의 `javascript` key가 없을 수 있습니다. `continue` guard는 이러한 chunk를 안전하게 건너뜁니다.

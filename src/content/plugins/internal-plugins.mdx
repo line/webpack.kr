@@ -1,5 +1,6 @@
 ---
 title: Internal webpack plugins
+description: Internal webpack plugins의 기능과 사용 방법을 설명합니다.
 group: webpack
 contributors:
   - iAziz786
@@ -48,7 +49,7 @@ W> Webpack 기반으로 나만의 컴파일러를 구축하거나, 내부 검토
 
 `ProgressPlugin(handler)`
 
-컴파일러에 훅을 하여 진행 정보를 추출합니다. `handler`는 `function(percentage, message)`라는 서명이 있어야 합니다. Percentage는 0과 1 사이의 값으로 불립니다. 0은 시작, 1은 끝을 나타냅니다.
+컴파일러에 훅을 하여 진행 정보를 추출합니다. `handler`는 `(percentage: number, message: string) => void` 서명이 있어야 합니다. Percentage는 0과 1 사이의 값으로 호출됩니다. 0은 시작, 1은 끝을 나타냅니다.
 
 ### RecordIdsPlugin
 
@@ -76,17 +77,17 @@ W> Webpack 기반으로 나만의 컴파일러를 구축하거나, 내부 검토
 
 ### JsonpTemplatePlugin
 
-`JsonpTemplatePlugin(options)`
+`web/JsonpTemplatePlugin()`
 
 청크는 JSONP-calls로 래핑되어 있습니다. 로딩 알고리즘은 엔트리 청크에 포함이 됩니다. `<script>` 태그를 추가함으로써 청크를 로드합니다.
 
-`options`는 출력 옵션입니다.
+옵션이 없으며 [`output.chunkLoading`](/configuration/output/#outputchunkloading)을 `'jsonp'`로 설정합니다. 출력 옵션을 통해 설정됩니다.
 
-`options.jsonpFunction`은 JSONP 함수입니다.
+[`output.chunkLoadingGlobal`](/configuration/output/#outputchunkloadingglobal)이 JSONP 함수입니다.
 
-`options.publicPath`는 청크를 로딩하기 위한 경로로 사용됩니다.
+[`output.publicPath`](/configuration/output/#outputpublicpath)는 청크를 로딩하기 위한 경로로 사용됩니다.
 
-`options.chunkFilename`는 청크가 예상되는 파일 이름 이름입니다.
+[`output.chunkFilename`](/configuration/output/#outputchunkfilename)은 청크가 예상되는 파일 이름입니다.
 
 ### NodeTemplatePlugin
 
@@ -94,9 +95,7 @@ W> Webpack 기반으로 나만의 컴파일러를 구축하거나, 내부 검토
 
 청크는 번들 모듈을 내보내는 Node.js 모듈로 래핑되어 있습니다. 엔트리 청크는 청크를 요구함으로써 로드됩니다.
 
-`options`는 출력 옵션입니다.
-
-`options.chunkFilename`는 청크를 로딩하기 위한 경로로 사용됩니다.
+`options.asyncChunkLoading` (`boolean`)은 [`output.chunkLoading`](/configuration/output/#outputchunkloading)으로 `'require'` 대신 `'async-node'`를 선택합니다.
 
 ### LibraryTemplatePlugin
 
@@ -106,35 +105,41 @@ W> Webpack 기반으로 나만의 컴파일러를 구축하거나, 내부 검토
 
 ### WebWorkerTemplatePlugin
 
-`webworker/WebWorkerTemplatePlugin(options)`
+`webworker/WebWorkerTemplatePlugin()`
 
 청크는 `importScripts`에 의해 로드됩니다. 그렇지 않다면 [`JsonpTemplatePlugin`](#jsonptemplateplugin)과 비슷합니다.
 
-`options`은 출력 옵션입니다.
+옵션이 없으며 [`output.chunkLoading`](/configuration/output/#outputchunkloading)을 `'import-scripts'`로 설정합니다.
 
 ### EvalDevToolModulePlugin
 
-`// @sourceURL`로 주석이 달린 `eval`로 각각의 모듈을 래핑함으로써 모듈 템플릿을 꾸밉니다.
+`EvalDevToolModulePlugin(options)`
+
+`//# sourceURL=` 주석(`options.sourceUrlComment`, 기본값은 `//# sourceURL=[url]`)이 달린 `eval`로 각 모듈을 감싸 모듈 템플릿을 꾸밉니다.
 
 ### SourceMapDevToolPlugin
 
-`SourceMapDevToolPlugin(sourceMapFilename, sourceMappingURLComment, moduleFilenameTemplate, fallbackModuleFilenameTemplate)`
+`SourceMapDevToolPlugin(options)`
 
 각 청크에 대한 소스맵을 생성함으로써 템플릿들을 꾸밉니다.
 
-`sourceMapFilename`은 소스맵의 파일 이름 템플릿입니다. `[hash]`, `[name]`, `[id]`, `[file]` 과 `[filebase]`는 교체되었습니다. 만약에 인자가 없으면, 소스맵은 DataUrl로 인라인 될 것입니다.
+`options.filename`은 소스맵의 파일 이름 템플릿입니다. `[fullhash]`, `[name]`, `[id]`, `[file]` 및 `[base]`가 교체됩니다. 이 옵션이 없으면 소스맵은 DataUrl로 인라인 됩니다.
+
+`options.append`, `options.moduleFilenameTemplate`, `options.fallbackModuleFilenameTemplate` 및 나머지 옵션은 [SourceMapDevToolPlugin 페이지](/plugins/source-map-dev-tool-plugin/)에서 설명합니다.
 
 ### HotModuleReplacementPlugin
 
-`HotModuleReplacementPlugin(options)`
+`HotModuleReplacementPlugin()`
 
 Hot module replacement 대한 지원을 추가합니다. 런타임 코드를 추가한 템플릿을 꾸밉니다. `module.hot' API를 추가합니다.
 
-`options.hotUpdateChunkFilename`은 hot 업데이트 청크 파일 이름입니다.
+옵션이 없으며 다음 출력 옵션을 읽습니다.
 
-`options.hotUpdateMainFilename`은 hot 업데이트 매니페스트 파일 이름입니다.
+`output.hotUpdateChunkFilename`은 hot 업데이트 청크의 파일 이름입니다.
 
-`options.hotUpdateFunction`는 hot 업데이트의 JSON 함수 이름입니다.
+`output.hotUpdateMainFilename`은 hot 업데이트 매니페스트의 파일 이름입니다.
+
+[`output.hotUpdateGlobal`](/configuration/output/#outputhotupdateglobal)은 hot 업데이트를 로드하기 위한 전역 함수 이름입니다.
 
 ## source
 
@@ -142,11 +147,11 @@ Hot module replacement 대한 지원을 추가합니다. 런타임 코드를 추
 
 ### APIPlugin
 
-webpack_public_path, webpack_require, webpack_modules 과 webpack_chunk_load에 접근할 수 있도록 설정합니다. `require.valueOf`와 `require.onError`가 다른 플러그인으로 처리되지 않도록 합니다.
+`__webpack_*` 변수(`__webpack_public_path__`, `__webpack_require__`, `__webpack_modules__`, `__webpack_chunk_load__`, `__webpack_hash__`, `__webpack_nonce__`, ...)를 모듈에서 접근 가능하게 하고, `require.onError`를 런타임 오류 핸들러(`__webpack_require__.oe`)에 매핑합니다.
 
 ### CompatibilityPlugin
 
-현재는 쓸모가 없습니다. 다른 모듈 로더과의 호환성을 보장합니다.
+레거시 패턴을 재작성하여 다른 모듈 로더와의 호환성을 보장합니다. browserify 스타일의 `require` 위임자, 자체 `__webpack_require__`를 선언하는 사용자 코드, hashbang 라인 등이 해당됩니다.
 
 ### ConstPlugin
 
@@ -175,13 +180,13 @@ if (FOO === 0) {
 
 ### ProvidePlugin
 
-`ProvidePlugin(name, request)`
+`ProvidePlugin(definitions)`
 
-모듈에서 `name`이 사용되는 경우 `import ... from <request>`/`import(<request>)`/`require(<request>)`를 통해 로드된 모듈의 값으로 채워집니다.
+`definitions`의 각 `name: request` 항목에서, `name`이 모듈에서 사용되면 `import ... from <request>`/`import(<request>)`/`require(<request>)`로 로드된 모듈로 채워집니다.
 
 ### NodeStuffPlugin
 
-`NodeStuffPlugin(options, context)`
+`NodeStuffPlugin(options)`
 
 Node.js 모듈에서는 일반적으로 사용할 수 있는 항목을 제공합니다.
 
@@ -195,11 +200,9 @@ require.js에서는 일반적으로 사용할 수 있는 항목을 제공합니�
 
 ### NodeSourcePlugin
 
-`node/NodeSourcePlugin(options)`
+`node/NodeSourcePlugin()`
 
-이 모듈은 Node.js 환경이 아니면 사용할 수 없는 Node.js의 내용을 추가합니다.
-
-사용되는 경우에는 `process`, `console`, `Buffer`와 `glo`에 대한 polyfills을 추가해야 합니다.
+이 플러그인은 하위 호환성을 위해 유지되는 no-op입니다. webpack 5는 더 이상 `process`, `Buffer` 등의 Node.js 코어 모듈이나 전역 변수를 폴리필하지 않습니다.
 
 ### NodeTargetPlugin
 
@@ -223,9 +226,9 @@ CommonJs 스타일의 `require` 모듈을 제공합니다.
 
 ### RequireContextPlugin
 
-`dependencies/RequireContextPlugin(modulesDirectories, extensions)`
+`dependencies/RequireContextPlugin()`
 
-`require.content`를 제공합니다. `modulesDirectories`와 `extensions` 파라미터는 파일에 대한 요청을 대체할 수 있는 것을 찾는 데 사용됩니다. 리졸버에 제공하는 것과 동일한 배열을 제공하는 것이 유용합니다.
+Provides `require.context`. Alternative requests for files are derived from the configured [resolve options](/configuration/resolve/) (`modules`, `extensions`, `mainFiles`, `enforceExtension`).
 
 ### RequireEnsurePlugin
 
@@ -257,7 +260,7 @@ CommonJs 스타일의 `require` 모듈을 제공합니다.
 
 병합 청크의 제한된 청크 수는 `options.maxChunks'보다 작습니다.
 
-각 청크에 대한 오버헤드는 `options.chunkOverhead` 또는 기본값인 10000에 의해 제공됩니다. 엔트리 청크의 크기는 `options.entryChunkMultiplicator` (또는 10)에 의해 곱해집니다.
+`options.chunkOverhead` and `options.entryChunkMultiplicator` are still accepted but no longer have any effect.
 
 전체적인 크기를 가장 많이 줄인 청크가 첫 번째로 병합됩니다. 만약 여러 조합이 같으면 병합된 크기가 작은 것이 선택됩니다.
 
@@ -271,11 +274,11 @@ CommonJs 스타일의 `require` 모듈을 제공합니다.
 
 `optimize/RemoveEmptyChunksPlugin()`
 
-모든 부모 청크에 포함된 모듈은 청크로부터 제거됩니다.
+모듈을 포함하지 않는 청크(런타임 청크나 엔트리 청크가 아닌 것)는 제거됩니다.
 
 ### MinChunkSizePlugin
 
-`optimize/MinChunkSizePlugin(minChunkSize)`-
+`optimize/MinChunkSizePlugin({ minChunkSize })`
 
 각 청크의 최소 크기가 `minChunkSize`가 될 때까지 청크를 병합합니다.
 

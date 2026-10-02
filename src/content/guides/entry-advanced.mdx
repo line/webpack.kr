@@ -1,5 +1,6 @@
 ---
 title: Advanced entry
+description: webpack에서 Advanced entry을 사용하는 방법을 설명합니다.
 sort: 25
 contributors:
   - EugeneHlushko
@@ -37,13 +38,11 @@ console.log("account page type");
 // 계정 페이지의 개별 스타일
 ```
 
-CSS를 위한 `프로덕션` 모드에서 [`MiniCssExtractPlugin`](/plugins/mini-css-extract-plugin/)을 모범사례로 사용하겠습니다.
+Webpack은 CSS를 자체적으로 추출하므로 `sass-loader`만 필요합니다. 규칙에 [CSS module 타입](/guides/native-css/#css-module-types)을 지정하면 나머지는 webpack이 처리합니다.
 
 **webpack.config.js**
 
 ```js
-import MiniCssExtractPlugin from "mini-css-extract-plugin";
-
 export default {
   mode: process.env.NODE_ENV,
   entry: {
@@ -52,27 +51,20 @@ export default {
   },
   output: {
     filename: "[name].js",
+    cssFilename: "[name].css",
   },
   module: {
     rules: [
       {
         test: /\.scss$/,
-        use: [
-          // 개발환경에서는 style-loader로 대체 합니다
-          process.env.NODE_ENV !== "production"
-            ? "style-loader"
-            : MiniCssExtractPlugin.loader,
-          "css-loader",
-          "sass-loader",
-        ],
+        use: ["sass-loader"],
+        type: "css/auto",
       },
     ],
   },
-  plugins: [
-    new MiniCssExtractPlugin({
-      filename: "[name].css",
-    }),
-  ],
+  experiments: {
+    css: true,
+  },
 };
 ```
 

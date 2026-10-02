@@ -1,5 +1,6 @@
 ---
 title: Plugins
+description: webpack의 Plugins 개념과 동작 방식을 설명합니다.
 sort: 4
 contributors:
   - TheLarkInn
@@ -30,7 +31,7 @@ const pluginName = "ConsoleLogOnBuildWebpackPlugin";
 
 class ConsoleLogOnBuildWebpackPlugin {
   apply(compiler) {
-    compiler.hooks.run.tap(pluginName, (compilation) => {
+    compiler.hooks.run.tap(pluginName, (compiler) => {
       console.log("The webpack build process is starting!");
     });
   }
@@ -54,14 +55,16 @@ webpack을 사용하는 방법에 따라 여러 가지 방법으로 플러그인
 ```js
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import HtmlWebpackPlugin from "html-webpack-plugin";
-import webpack from "webpack"; // 빌트인 플러그인에 접근하기 위함
+import webpack from "webpack"; // 내장 plugin에 접근
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export default {
-  entry: "./path/to/my/entry/file.js",
+  entry: "./src/index.html",
+  experiments: {
+    html: true,
+  },
   output: {
     filename: "my-first-webpack.bundle.js",
     path: path.resolve(__dirname, "dist"),
@@ -74,14 +77,11 @@ export default {
       },
     ],
   },
-  plugins: [
-    new webpack.ProgressPlugin(),
-    new HtmlWebpackPlugin({ template: "./src/index.html" }),
-  ],
+  plugins: [new webpack.ProgressPlugin()],
 };
 ```
 
-`ProgressPlugin`은 컴파일하는 동안 리포트를 사용자 정의로 생성 할 수 있으며 `HtmlWebpackPlugin`은 `script`를 사용하여 `my-first-webpack.bundle.js` 파일을 포함하는 HTML 파일을 생성합니다.
+`ProgressPlugin`은 compilation 중 진행 상황의 보고 방식을 설정합니다. `src/index.html`이 엔트리이므로 webpack은 해당 페이지를 내보내고 참조된 `<script src>`를 빌드된 청크로 재작성합니다. 별도 plugin은 필요하지 않습니다. [Native HTML](/guides/native-html/)을 참고하세요.
 
 ### Node API
 
@@ -103,3 +103,24 @@ compiler.run((err, stats) => {
 ```
 
 T> 위에서 본 예제가 [webpack 런타임 자체](https://github.com/webpack/webpack/blob/e7087ffeda7fa37dfe2ca70b5593c6e899629a2c/bin/webpack.js#L290-L292)와 매우 유사한 걸 눈치채셨나요? [webpack 소스 코드](https://github.com/webpack/webpack)에는 사용자의 설정과 스크립트에 적용할 수 있는 훌륭하고 많은 사용 사례가 숨어 있습니다!
+
+## Writing your own
+
+[플러그인 작성하기](/contribute/writing-a-plugin/) 가이드는 위의 객체를 시작으로 옵션, 비동기 훅, watch 모드를 위한 파일 디펜던시, 타입, 테스트까지 갖춘 실제 플러그인으로 발전시킵니다.
+
+플러그인이 올바르게 동작하는지를 결정하는 두 가지 요소가 있으며, 둘 다 _어떤_ 훅을 탭하느냐에 관한 것입니다.
+
+### Where the hooks live
+
+[빌드 라이프사이클](/concepts/under-the-hood/#the-build-lifecycle)은 각 훅이 속한 단계를 보여줍니다. 훅은 해당 훅을 소유하는 객체에 속하며, 두 개의 레퍼런스 페이지에서 실행 순서대로 나열되어 있습니다.
+
+- [컴파일러 훅](/api/compiler-hooks/) — 빌드당 한 번, 전체 실행을 감싸는 훅: `run`, `watchRun`, `compile`, `make`, `emit`, `done`.
+- [컴파일레이션 훅](/api/compilation-hooks/) — 단일 빌드 내에서 모듈, 청크, 애셋에 걸쳐 동작합니다.
+
+컴파일러는 실행한 빌드보다 오래 존재합니다. watch 모드에서는 매번 리빌드 시 동일한 [`Compiler`](/api/compiler-object/)에서 새로운 [`Compilation`](/api/compilation-object/)이 생성됩니다. 리빌드 후에도 유지되어야 하는 상태는 컴파일러에, 단일 빌드에 관한 상태는 컴파일레이션에 저장해야 합니다.
+
+### Creating or changing assets
+
+작업에 맞는 [stage](/api/compilation-hooks/#choosing-a-stage)를 지정하여 [`processAssets`](/api/compilation-hooks/#processassets)에서 처리하세요. 새 파일을 내보내려면 `PROCESS_ASSETS_STAGE_ADDITIONAL`, 최소화하려면 `PROCESS_ASSETS_STAGE_OPTIMIZE_SIZE` 등을 사용합니다.
+
+W> 컴파일러의 [`emit`](/api/compiler-hooks/#emit) 훅에서 파일을 내보내는 플러그인은 흔한 실수이며 webpack은 이를 더 이상 사용되지 않는 방식으로 보고합니다. `emit`은 컴파일레이션이 봉인된 후 실행되므로, 해당 파일은 최소화, 압축, 소스맵 생성, 해시 처리 등 모든 단계를 건너뛰게 되며 다른 플러그인에서도 볼 수 없습니다. stage 시스템은 플러그인들이 설정에서 수동으로 순서를 지정하지 않고도 서로 조합될 수 있도록 존재합니다.

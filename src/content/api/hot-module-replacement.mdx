@@ -1,5 +1,6 @@
 ---
 title: Hot Module Replacement
+description: Hot Module Replacement API의 기능과 사용 방법을 설명합니다.
 sort: 4
 contributors:
   - sokra
@@ -329,19 +330,19 @@ import.meta.webpackHot
 {
   type: 'self-declined' | 'declined' |
         'unaccepted' | 'accepted' |
-        'disposed' | 'accept-errored' |
+        'disposed' | 'accept-errored' | 'accept-error-handler-errored' |
         'self-accept-errored' | 'self-accept-error-handler-errored',
   moduleId: 4, // 질문의 모듈.
-  dependencyId: 3, // 에러의 경우: accept 핸들러를 소유한 모듈 id.
+  dependencyId: 3, // 에러의 경우: accept 핸들러를 throw한 업데이트된 디펜던시의 id (`moduleId`는 핸들러를 소유한 모듈).
   chain: [1, 2, 3, 4], // 거부/허용/허용되지 않음의 경우: 업데이트가 전파된 체인.
-  parentId: 5, // 거부된 경우: 거부하는 상위의 모듈 ic
+  parentId: 5, // 거부된 경우: 거부하는 상위의 모듈 id
   outdatedModules: [1, 2, 3, 4], // 허용된 경우: 오래되어 폐기될 모듈
   outdatedDependencies: { // 허용된 경우: 업데이트를 처리할 accept 핸들러의 위치
     5: [4]
   },
   error: new Error(...), // 에러의 경우: throw 된 에러
-  originalError: new Error(...) // For self-accept-error-handler-errored:
-                                // 에러 핸들러가 처리를 시도하기 전에 모듈에서 발생한 에러.
+  originalError: new Error(...) // accept-error-handler-errored 및 self-accept-error-handler-errored의 경우:
+                                // 에러 핸들러가 처리를 시도하기 전에 accept 핸들러 또는 모듈에서 발생한 에러.
 }
 ```
 

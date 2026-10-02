@@ -1,5 +1,6 @@
 ---
 title: ProgressPlugin
+description: ProgressPlugin의 기능과 사용 방법을 설명합니다.
 group: webpack
 contributors:
   - elliottsj
@@ -40,21 +41,21 @@ new webpack.ProgressPlugin(handler);
 
 `ProgressPlugin`에 `object`를 제공할 때, 다음의 속성이 지원됩니다
 
-- `activeModules` (`boolean = false`): 활성화된 모듈의 수와 활성화된 모듈 하나를 진행 메세지로 보여줍니다.
-- `entries` (`boolean = true`): 엔트리 수를 진행 메세지로 보여줍니다.
+- `activeModules` (`boolean = false`): 활성화된 모듈의 수와 활성화된 모듈 하나를 진행 메시지로 보여줍니다.
+- `entries` (`boolean = true`): 엔트리 수를 진행 메시지로 보여줍니다.
 - `handler` ([Providing function](#providing-function)을 보세요)
-- `modules` (`boolean = true`): 모듈 수를 진행 메세지로 보여줍니다.
+- `modules` (`boolean = true`): 모듈 수를 진행 메시지로 보여줍니다.
 - `modulesCount` (`number = 5000`): 시작할 모듈 수의 최솟값이며 `modules` 속성이 활성화되면 적용됩니다.
 - `profile` (`boolean = false`): 진행 단계의 프로필 정보를 수집하도록 `ProgressPlugin`에게 알려줍니다.
-- `dependencies` (`boolean = true`): 종속성 수를 진행 메세지로 보여줍니다.
-- `dependenciesCount` (`number = 10000`): 시작할 종속성 수의 최솟값이며 `dependencies` 속성이 활성화되면 적용됩니다.
-- `percentBy` (`string = null: 'entries' | 'dependencies' | 'modules' | null`): 진행률을 계산할 방법을 `ProgressPlugin`에게 알려줍니다.
-- `progressBar` (`boolean | 'auto' | object = false`) <Badge text="5.107.0+" />: 단순한 percentage 메세지 대신 터미널에 progress bar를 렌더링합니다. 기본 handler를 사용할 때만 적용됩니다. 즉 사용자 지정 `handler`를 제공하지 않았을 때만 동작합니다. 기본값으로 활성화하려면 `true`를 전달하고, 대화형 터미널(TTY)에서만 활성화하려면 `'auto'` <Badge text="5.109.0+" />를 전달하거나, 아래 속성을 가진 object를 전달할 수 있습니다.
+- `dependencies` (`boolean = true`): 디펜던시 수를 진행 메시지로 보여줍니다.
+- `dependenciesCount` (`number = 10000`): 시작할 디펜던시 수의 최솟값이며 `dependencies` 속성이 활성화되면 적용됩니다.
+- `percentBy` (`'entries' | 'dependencies' | 'modules' | null = null`): 진행률을 계산할 방법을 `ProgressPlugin`에게 알려줍니다.
+- `progressBar` (`boolean | 'auto' | object = false`) <Badge text="5.107.0+" />: 단순한 percentage 메시지 대신 터미널에 progress bar를 렌더링합니다. 기본 handler를 사용할 때만 적용됩니다. 즉 사용자 지정 `handler`를 제공하지 않았을 때만 동작합니다. 기본값으로 활성화하려면 `true`를 전달하고, 대화형 터미널(TTY)에서만 활성화하려면 `'auto'` <Badge text="5.109.0+" />를 전달하거나, 아래 속성을 가진 object를 전달할 수 있습니다.
   - `name` (`string = 'Build'`): progress bar 앞에 표시되는 이름입니다.
   - `color` (`string = 'green'`): bar가 채워진 부분에 사용할 색상입니다. 지정한 색상을 지원하지 않으면 `'green'`을 사용합니다.
   - `width` (`number = 25`) <Badge text="5.109.0+" />: progress bar의 문자 단위 너비입니다.
-- `estimatedTime` (`boolean = false`) <Badge text="5.109.0+" />: build progress를 기준으로 남은 예상 시간을 보여줍니다.
-- `phaseTimings` (`boolean = false`) <Badge text="5.109.0+" />: build가 완료되면 각 build phase의 timing breakdown을 보여줍니다.
+- `estimatedTime` (`boolean = false`) <Badge text="5.109.0+" />: build 진행률을 기준으로 남은 예상 시간을 보여줍니다.
+- `phaseTimings` (`boolean = false`) <Badge text="5.109.0+" />: build가 완료되면 각 build 단계의 timing breakdown을 보여줍니다.
 
 ```js
 new webpack.ProgressPlugin({
@@ -91,13 +92,17 @@ new webpack.ProgressPlugin({
 static createDefaultHandler: (
   profile: undefined | null | boolean,
   logger: WebpackLogger,
-  progressBar?: { name: string, color: string } | false
+  options?: {
+    progressBar?: { name: string; color: string; width: number } | false;
+    estimatedTime?: boolean;
+    phaseTimings?: boolean;
+  },
 ) => (percentage: number, msg: string, ...args: string[]) => void;
 ```
 
 ## Percentage calculation
 
-기본적으로 진행률은 빌드된 모듈 수와 총 모듈 수를 기반으로 계산됩니다: `built / total`
+기본적으로 진행률은 빌드된 모듈 수 대 전체 모듈 수, 완료된 엔트리 수 대 전체 엔트리 수, 처리된 디펜던시 수 대 전체 디펜던시 수, 세 비율의 중앙값입니다. `percentBy`를 설정하면 이 비율 중 하나를 대신 사용합니다.
 
 총 모듈 수는 사전에는 알 수 없고 빌드를 거치면서 변합니다. 이는 부정확한 진행률을 야기할 수 있습니다.
 
@@ -113,63 +118,73 @@ T> _\* 표시된 훅은 plugin이 `reportProgress`를 이용하여 진행 정보
 
 **Compiler**
 
-- compilation
+- beforeRun\*
+- run\*
+- watchRun\*
+- normalModuleFactory\*
+- contextModuleFactory\*
+- beforeCompile\*
+- compile\*
+- thisCompilation\*
+- compilation\*
+- make
+- finishMake\*
 - emit\*
 - afterEmit\*
-- done
+- done\*
+- watchClose\*
+
+**Compiler cache** (`compiler.cache.hooks`)
+
+- endIdle\*
+- storeBuildDependencies\*
+- shutdown\*
+- beginIdle\*
 
 **Compilation**
 
-- buildModule
-- failedModule
-- succeedModule
+- buildModule (only when `activeModules` is enabled)
+- addEntry
+- failedEntry
+- succeedEntry
 - finishModules\*
 - seal\*
-- optimizeDependenciesBasic\*
 - optimizeDependencies\*
-- optimizeDependenciesAdvanced\*
 - afterOptimizeDependencies\*
+- beforeChunks\*
+- afterChunks\*
 - optimize\*
-- optimizeModulesBasic\*
 - optimizeModules\*
-- optimizeModulesAdvanced\*
 - afterOptimizeModules\*
-- optimizeChunksBasic\*
 - optimizeChunks\*
-- optimizeChunksAdvanced\*
 - afterOptimizeChunks\*
 - optimizeTree\*
 - afterOptimizeTree\*
-- optimizeChunkModulesBasic\*
 - optimizeChunkModules\*
-- optimizeChunkModulesAdvanced\*
 - afterOptimizeChunkModules\*
 - reviveModules\*
-- optimizeModuleOrder\*
-- advancedOptimizeModuleOrder\*
 - beforeModuleIds\*
 - moduleIds\*
 - optimizeModuleIds\*
 - afterOptimizeModuleIds\*
 - reviveChunks\*
-- optimizeChunkOrder\*
 - beforeChunkIds\*
+- chunkIds\*
 - optimizeChunkIds\*
 - afterOptimizeChunkIds\*
 - recordModules\*
 - recordChunks\*
+- beforeModuleHash\*
+- beforeCodeGeneration\*
+- beforeRuntimeRequirements\*
 - beforeHash\*
 - afterHash\*
 - recordHash\*
 - beforeModuleAssets\*
 - beforeChunkAssets\*
-- additionalChunkAssets\*
+- processAssets\*
+- afterProcessAssets\*
 - record\*
-- additionalAssets\*
-- optimizeChunkAssets\*
-- afterOptimizeChunkAssets\*
-- optimizeAssets\*
-- afterOptimizeAssets\*
 - afterSeal\*
 
 ## Source

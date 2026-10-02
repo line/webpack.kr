@@ -1,5 +1,6 @@
 ---
 title: Authoring Libraries
+description: webpack에서 Authoring Libraries을 사용하는 방법을 설명합니다.
 sort: 7
 contributors:
   - pksjce
@@ -124,10 +125,9 @@ webpack으로 애플리케이션을 번들해보았다면 익숙할 것입니다
 
 ### Adding Source Maps
 
-When bundling a library, it is recommended to generate source maps. Source maps
-allow consumers of your library to debug your original source code rather than
-the minified bundle. This can be done using the
-[`devtool`](/configuration/devtool/) option:
+라이브러리를 번들링할 때는 source map을 생성하는 것이 좋습니다. Source map을
+사용하면 라이브러리 사용자가 최소화된 번들 대신 원본 소스 코드를 디버깅할 수
+있습니다. [`devtool`](/configuration/devtool/) 옵션으로 설정할 수 있습니다.
 
 **webpack.config.js**
 
@@ -148,9 +148,8 @@ the minified bundle. This can be done using the
   };
 ```
 
-T> Using `'source-map'` as the `devtool` value generates a separate `.map` file
-alongside your bundle. Make sure to also publish this `.map` file so consumers
-can use it for debugging.
+T> `devtool` 값으로 `'source-map'`을 사용하면 번들과 함께 별도의 `.map` 파일이
+생성됩니다. 사용자가 디버깅에 활용할 수 있도록 이 `.map` 파일도 함께 배포하세요.
 
 ## Expose the Library
 
@@ -345,4 +344,4 @@ W> `module` 속성은 ES2015 모듈 구문을 사용하는 스크립트를 가�
 
 이제 사용자에게 배포하기 위해 [npm 패키지로 게시하고](https://docs.npmjs.com/getting-started/publishing-npm-packages) [unpkg.com](https://unpkg.com/#/)에서 찾을 수 있습니다.
 
-T> 라이브러리와 관련된 스타일 시트를 노출하려면 [`MiniCssExtractPlugin`](/plugins/mini-css-extract-plugin)을 사용해야 합니다. 사용자는 다른 스타일 시트와 마찬가지로 이를 사용하고 로드 할 수 있습니다.
+T> 라이브러리와 관련된 스타일시트를 노출하려면 엔트리에서 CSS를 가져오고 webpack의 [내장 CSS 지원](/guides/native-css/)이 이를 추출하도록 하세요. 내보낸 `.css` 파일의 이름은 [`output.cssFilename`](/configuration/output/#outputcssfilename)에 따라 정해지며, 사용자는 다른 스타일시트와 같은 방식으로 이를 사용하고 로드할 수 있습니다.

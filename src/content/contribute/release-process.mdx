@@ -1,5 +1,6 @@
 ---
 title: Release Process
+description: webpack에 기여할 때 필요한 Release Process 내용을 설명합니다.
 sort: 6
 contributors:
   - d3viant0ne
@@ -18,12 +19,10 @@ pull requests를 `main`브랜치로 병합할 때, _Create Merge Commit_ 옵션�
 
 ## Releasing
 
-```bash
-npm version patch && git push --follow-tags && npm publish
-npm version minor && git push --follow-tags && npm publish
-npm version major && git push --follow-tags && npm publish
-```
+릴리즈는 [changesets](https://github.com/changesets/changesets)로 자동화되어 있습니다:
 
-_그러면 패키지 버전이 증가되고, 변경 내용이 커밋되며, **로컬 태그**를 잘라내고, github에 푸시 후 npm 패키지를 배포합니다._
+1. 사용자에게 영향을 미치는 모든 pull request는 `.changeset/`에 버전 증가 수준(`patch`, `minor`, `major`)을 선언하는 [changeset](https://github.com/webpack/webpack/blob/main/.changeset/README.md) 파일을 추가합니다.
+2. `main`에 푸시할 때마다 [릴리즈 워크플로우](https://github.com/webpack/webpack/blob/main/.github/workflows/release.yml)가 대기 중인 changeset을 소비하고, `package.json`의 버전을 업데이트하며, `CHANGELOG.md`를 작성하는 `chore(release): new release` pull request를 갱신합니다.
+3. 해당 pull request를 병합하면 새 버전이 npm에 배포되고 대응하는 git 태그와 [GitHub 릴리즈](https://github.com/webpack/webpack/releases)가 생성됩니다.
 
-그런 다음 github [릴리스 페이지](https://github.com/webpack/webpack/releases)로 이동하여 새 태그에 대한 변경 로그를 작성합니다.
+릴리즈를 출시한다는 것은 릴리즈 pull request를 병합하는 것을 의미합니다. 릴리즈 시기(패치 릴리즈는 최대한 빠르게, 마이너 릴리즈는 4주마다)는 [`RELEASE_SCHEDULE.md`](https://github.com/webpack/webpack/blob/main/RELEASE_SCHEDULE.md)에 설명되어 있습니다.
